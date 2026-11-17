@@ -4,7 +4,7 @@ import types
 
 import pytest
 
-from turkish_asr_rdl.decoding.memory import GIB, NoVram, VramRecord, default_vram, library_versions
+from turkish_asr_rdl.decoding.memory import NoVram, VramRecord, default_vram, library_versions
 
 
 def fake_torch(available=True, calls=None):
@@ -13,10 +13,10 @@ def fake_torch(available=True, calls=None):
     cuda = types.SimpleNamespace(
         is_available=lambda: available,
         empty_cache=lambda: calls.append("empty_cache"),
-        mem_get_info=lambda: calls.append("mem_get_info") or (10 * GIB, 12 * GIB),
+        mem_get_info=lambda: calls.append("mem_get_info") or (10 * 2**30, 12 * 2**30),
         reset_peak_memory_stats=lambda: calls.append("reset_peak_memory_stats"),
-        max_memory_allocated=lambda: 5 * GIB,
-        max_memory_reserved=lambda: 7 * GIB,
+        max_memory_allocated=lambda: 5 * 2**30,
+        max_memory_reserved=lambda: 7 * 2**30,
     )
     return types.SimpleNamespace(cuda=cuda, version=types.SimpleNamespace(cuda="12.8"), __version__="2.9.0+cu128")
 
@@ -26,6 +26,25 @@ def test_default_vram_without_torch_measures_nothing(monkeypatch):
     meter = default_vram()
     assert meter.method == "none" and meter.free_and_total_gib() == (None, None)
     assert meter.reset_peak() is None and meter.peak_reserved_gib() is None
+
+
+@pytest.fixture
+def broken_torch(tmp_path, monkeypatch):
+    """A SYNTHETIC torch whose import fails with OSError, as a missing CUDA DLL does on Windows."""
+    package = tmp_path / "torch"
+    package.mkdir()
+    (package / "__init__.py").write_text('raise OSError("SYNTHETIC: a DLL could not be loaded")\n', encoding="utf-8")
+    monkeypatch.syspath_prepend(str(tmp_path))
+    monkeypatch.delitem(sys.modules, "torch", raising=False)
+    monkeypatch.setitem(sys.modules, "transformers", None)
+
+
+def test_default_vram_with_a_torch_that_fails_to_load_measures_nothing(broken_torch):
+    assert isinstance(default_vram(), NoVram)
+
+
+def test_library_versions_are_null_when_torch_fails_to_load(broken_torch):
+    assert library_versions() == {"torch": None, "cuda": None, "transformers": None}
 
 
 def test_default_vram_without_cuda_measures_nothing(monkeypatch):

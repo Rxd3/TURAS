@@ -1,0 +1,32 @@
+name: Packaging
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  package:
+    name: Package (Python ${{ matrix.python-version }})
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ['3.11', '3.13']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Build and install scaffold without runtime dependencies
+        run: python -m pip install --no-deps .
+      - name: Import empty packages
+        run: >-
+          python -c "import importlib; [importlib.import_module('turkish_asr_rdl' + suffix)
+          for suffix in ('', '.data', '.baselines', '.models', '.training', '.decoding',
+          '.rdl', '.evaluation', '.reporting', '.schemas', '.utils')]"
+      - name: Check whitespace
+        run: git diff --check

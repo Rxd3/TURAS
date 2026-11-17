@@ -1,0 +1,96 @@
+project3-turkish-asr-rdl/
+|-- .github/
+|   |-- workflows/
+|   |   `-- packaging.yml
+|   `-- pull_request_template.md
+|-- configs/
+|   |-- baselines/
+|   |   `-- .gitkeep
+|   |-- datasets/
+|   |   `-- .gitkeep
+|   |-- decoding/
+|   |   `-- .gitkeep
+|   |-- evaluation/
+|   |   `-- .gitkeep
+|   |-- fine-tuning/
+|   |   `-- .gitkeep
+|   |-- rdl/
+|   |   `-- .gitkeep
+|   `-- README.md
+|-- contributions/
+|   |-- README.md
+|   |-- member_1.md
+|   |-- member_2.md
+|   |-- member_3.md
+|   |-- member_4.md
+|   |-- member_5.md
+|   `-- member_6.md
+|-- data/
+|   |-- manifests/
+|   |   `-- .gitkeep
+|   |-- metadata/
+|   |   `-- .gitkeep
+|   |-- relational/
+|   |   `-- README.md
+|   |-- splits/
+|   |   `-- .gitkeep
+|   |-- verification/
+|   |   `-- .gitkeep
+|   `-- README.md
+|-- docs/
+|   |-- contracts/
+|   |   |-- README.md
+|   |   |-- artifacts.md
+|   |   |-- data.md
+|   |   |-- nbest.md
+|   |   |-- normalization.md
+|   |   |-- predictions.md
+|   |   `-- rdl.md
+|   |-- README.md
+|   |-- architecture.md
+|   |-- dataset.md
+|   |-- decisions.md
+|   |-- directory_tree.txt
+|   |-- evaluation.md
+|   |-- reference_review.md
+|   |-- repository_setup.md
+|   `-- reproducibility.md
+|-- experiments/
+|   `-- PROTOCOL.md
+|-- presentation/
+|   `-- README.md
+|-- results/
+|   `-- README.md
+|-- scripts/
+|   `-- README.md
+|-- src/
+|   `-- turkish_asr_rdl/
+|       |-- baselines/
+|       |   `-- __init__.py
+|       |-- data/
+|       |   `-- __init__.py
+|       |-- decoding/
+|       |   `-- __init__.py
+|       |-- evaluation/
+|       |   `-- __init__.py
+|       |-- models/
+|       |   `-- __init__.py
+|       |-- rdl/
+|       |   `-- __init__.py
+|       |-- reporting/
+|       |   `-- __init__.py
+|       |-- schemas/
+|       |   `-- __init__.py
+|       |-- training/
+|       |   `-- __init__.py
+|       |-- utils/
+|       |   `-- __init__.py
+|       `-- __init__.py
+|-- tests/
+|   `-- README.md
+|-- .gitattributes
+|-- .gitignore
+|-- CONTRIBUTING.md
+|-- README.md
+|-- TEAM_TASKS.md
+`-- pyproject.toml

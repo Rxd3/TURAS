@@ -53,6 +53,7 @@ class EvaluateTests(unittest.TestCase):
         self.assertEqual(len(problems), 1)
         self.assertIn("3.12.7", problems[0])
         self.assertIn("3.13", problems[0])
+        self.assertIn("docs/reproducibility.md", problems[0])
 
     def test_newer_python_is_one_problem(self):
         self.assertEqual(len(check_env.evaluate({**READY, "python": (3, 14, 0)})), 1)
@@ -66,6 +67,7 @@ class EvaluateTests(unittest.TestCase):
         problems = check_env.evaluate(info)
         self.assertEqual(len(problems), 1)
         self.assertIn("not installed", problems[0])
+        self.assertIn("requirements/windows-cu130.txt", problems[0])
 
     def test_torch_load_failure_shows_message(self):
         info = {**READY, "torch_version": None, "torch_load_error": "DLL load failed xyz"}
@@ -87,6 +89,7 @@ class EvaluateTests(unittest.TestCase):
         self.assertIn("555.97", problems[0])
         self.assertIn("580", problems[0])
         self.assertIn("too old", problems[0])
+        self.assertIn("docs/reproducibility.md", problems[0])
 
     def test_cuda_unavailable_without_nvidia_smi(self):
         info = {**READY, "cuda_available": False, "driver_version": None,

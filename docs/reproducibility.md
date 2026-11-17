@@ -1,7 +1,7 @@
 # Reproducibility plan
 
-Only scaffold packaging can be checked now. No ASR experiment is reproducible
-from this repository yet because implementations, approved data, checkpoints
+Packaging and the environment check can be verified now. No ASR experiment is
+reproducible from this repository yet because implementations, approved data, checkpoints
 and results do not exist. The Windows CUDA environment is pinned in
 `requirements/windows-cu130.txt` (see [Environment setup](#environment-setup-windows)).
 CI checks packaging and runs the unit tests on Python 3.11 and 3.13.

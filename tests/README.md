@@ -1,6 +1,7 @@
 # Meaningful test policy
 
-No application tests exist yet. Packaging imports validate only the scaffold.
+Unit tests cover the environment check (`turkish_asr_rdl.utils.env_check` and
+`scripts/check_env.py`); CI runs them on Python 3.11 and 3.13.
 Tests are added alongside actual behavior, using tiny hand-checkable fixtures;
 no dataset/model download, GPU or live API is allowed in unit tests. Small
 synthetic text fixtures in future tests must be clearly labeled and never become

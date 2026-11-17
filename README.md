@@ -69,13 +69,13 @@ part of repository initialization.
 | `configs/` | Separate dataset, baseline, fine-tuning, RDL, decoding, evaluation settings areas |
 | `docs/` | Architecture, working decisions, data/evaluation policies, contracts, reproducibility |
 | `data/` | Future metadata, manifests, split definitions, verification and relational schema documentation |
-| `scripts/` | Reserved for lightweight executable entry points; none implemented |
+| `scripts/` | Lightweight executable entry points (`check_env.py` environment check) |
 | `experiments/` | Preregistered comparison and ablation protocol; future notes |
 | `results/` | Future benchmark outputs and reports; no results |
-| `tests/` | Future meaningful automated tests; no fabricated test suite |
+| `tests/` | Meaningful automated unit tests; no fabricated test suite |
 | `contributions/` | Six individual, initially empty contribution records |
 | `presentation/` | Evidence requirements for the future final presentation |
-| `.github/` | PR template and packaging-only CI |
+| `.github/` | PR template and CI (packaging checks and unit tests) |
 
 Repository: [Rxd3/project3-turkish-asr-rdl](https://github.com/Rxd3/project3-turkish-asr-rdl).
 Architecture references are [NALTRA](https://github.com/Rxd3/NALTRA) and

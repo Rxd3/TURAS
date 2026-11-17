@@ -9,8 +9,10 @@ _NOTE_CHARS = 200
 INTRO = (
     "Clips: WorldSpeech `tr_tr` train shard `train-00000` at a pinned revision, 3 warm-up clips and the "
     "timed clips, each at most 30 s. This is a feasibility check: accuracy is not measured. Each model "
-    "ran alone in its own process, batch 1, one timed repeat. Peak VRAM is `torch.cuda.max_memory_allocated` "
-    "from just before the model load to the end of the timed run."
+    "ran alone in its own process, batch 1, one timed repeat. Inference peak VRAM is "
+    "`torch.cuda.max_memory_allocated` over the timed repeat: the timing harness resets the peak counters when "
+    "the repeat starts, so model load and warm-up peaks are not in it (the loaded weights are). Training "
+    "and PyG peaks run from just before the model load to the end of the probe."
 )
 
 

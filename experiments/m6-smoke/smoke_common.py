@@ -64,7 +64,10 @@ def cuda_torch() -> Any:
 
 
 class CudaVram:
-    """Peak GPU memory since reset(), with the free dedicated memory measured at reset(), in GiB."""
+    """Peak GPU memory since torch's peak counters were last reset, and the free dedicated memory at reset(), in GiB.
+
+    The timing harness resets the same counters when a timed repeat starts.
+    """
 
     def __init__(self) -> None:
         self._free_before: float | None = None

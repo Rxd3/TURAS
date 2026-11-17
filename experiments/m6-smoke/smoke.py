@@ -174,12 +174,15 @@ def load_labels(audio_dir: Path) -> dict[str, str]:
 
 
 def nbest_facts(rows: Sequence[Mapping[str, Any]], requested_n: int) -> dict[str, Any]:
-    """Candidate counts, raw-text duplicates and the validate_nbest verdict for exported N-best rows."""
+    """Candidate counts, raw-text duplicates and the validate_nbest verdict for exported N-best rows.
+
+    The export keeps the first of each raw text, so duplicates are counted from each row's dedup_map.
+    """
     if requested_n == 0:
         return {"requested_n": 0}
     report = validate_nbest(rows)
     counts = [len(row["candidates"]) for row in rows]
-    duplicates = [len(texts) - len(set(texts)) for texts in ([c["text"] for c in row["candidates"]] for row in rows)]
+    duplicates = [len(m) if isinstance(m, Mapping) else 0 for m in (row.get("dedup_map") for row in rows)]
     return {
         "requested_n": requested_n, "rows": len(rows),
         "min_candidates": min(counts, default=0), "max_candidates": max(counts, default=0),

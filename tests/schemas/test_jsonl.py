@@ -40,7 +40,7 @@ def test_written_bytes_are_utf8_lf_without_bom(tmp_path):
 
 def test_line_separator_inside_string_roundtrips(tmp_path):
     path = tmp_path / "rows.jsonl"
-    rows = [{"text": "SYNTHETIC a b\u0085c"}]
+    rows = [{"text": "SYNTHETIC a\u2028b\u0085c"}]
     write_jsonl(path, rows)
     assert read_jsonl(path) == rows
 
@@ -145,6 +145,15 @@ def test_write_refuses_row_that_is_not_an_object(tmp_path):
 def test_write_refuses_keys_that_would_collide(tmp_path):
     with pytest.raises(ValueError, match="row 1"):
         write_jsonl(tmp_path / "rows.jsonl", [{1: "a", "1": "b"}])
+
+
+def test_write_refuses_row_nested_too_deeply(tmp_path):
+    nested: list = []
+    for _ in range(100_000):
+        nested = [nested]
+    with pytest.raises(ValueError, match="row 2: cannot be written as strict JSON"):
+        write_jsonl(tmp_path / "rows.jsonl", [{"a": 1}, {"deep": nested}])
+    assert not (tmp_path / "rows.jsonl").exists()
 
 
 def test_write_json_is_lf_utf8_and_hashed(tmp_path):

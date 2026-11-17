@@ -1,8 +1,8 @@
 """Validators for prediction JSONL rows and strict inference inputs (contract 0.1).
 
-The rule helpers below (`row_label`, `is_sha256`, `forbidden_key_paths`,
-`non_finite_paths`, `field_set_problems`, `duplicate_id_errors`,
-`check_expected_ids`) are shared with the N-best validator.
+The rule helpers below (`row_label`, `is_number`, `preview`, `content_problems`,
+`string_problems`, `hash_problems`, `schema_version_problems`,
+`duplicate_id_errors`, `check_expected_ids`) are shared with the N-best validator.
 """
 from __future__ import annotations
 

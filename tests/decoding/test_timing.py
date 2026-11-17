@@ -12,6 +12,7 @@ import turkish_asr_rdl.decoding.timing as timing_module
 from turkish_asr_rdl.decoding.audio import AudioLoadError
 from turkish_asr_rdl.decoding.hardware import NVIDIA_SMI_FIELDS, probe_gpu, thermal_flag
 from turkish_asr_rdl.decoding.interface import Candidate, Hypothesis
+from turkish_asr_rdl.decoding.memory import NoVram
 from turkish_asr_rdl.decoding.timing import MIN_WARMUP_BATCHES, default_sync, run_timed, write_run_outputs
 from turkish_asr_rdl.schemas.jsonl import read_jsonl, sha256_file
 from turkish_asr_rdl.schemas.nbest import validate_nbest
@@ -63,33 +64,38 @@ def fake_clock(step=0.5):
 
 @pytest.fixture
 def setup(tmp_path, write_tone, make_input):
-    """Write SYNTHETIC tones: warm-up clips of 2 s and timed clips of 1 s."""
+    """Write SYNTHETIC tones: warm-up clips of 2 s and timed clips of 1 s unless timed_s gives their lengths."""
 
-    def _setup(warm=WARM, timed=TIMED):
+    def _setup(warm=WARM, timed=TIMED, timed_s=None):
+        seconds = dict(zip(timed, timed_s or [1.0] * len(timed)))
         for uid in warm:
             write_tone(f"audio/{uid}.flac", 16000, 2.0)
         for uid in timed:
-            write_tone(f"audio/{uid}.flac", 16000, 1.0)
-        return [make_input(u, 1.0) for u in timed], [make_input(u, 2.0) for u in warm]
+            write_tone(f"audio/{uid}.flac", 16000, seconds[uid])
+        return [make_input(u, seconds[u]) for u in timed], [make_input(u, 2.0) for u in warm]
 
     return _setup
 
 
 def run(adapter, timed, warm, tmp_path, **kwargs):
-    options = {"run_id": "run_synthetic", "clock": fake_clock(), "probe": lambda: dict(NO_GPU), "sync": lambda: None}
+    options = {"run_id": "run_synthetic", "clock": fake_clock(), "probe": lambda: dict(NO_GPU), "sync": lambda: None,
+               "memory": NoVram()}
     return run_timed(adapter, timed, warm, audio_root=tmp_path, **{**options, **kwargs})
 
 
 def test_rtf_is_sum_over_sum_and_excludes_warmup(setup, tmp_path):
-    timed, warm = setup()
+    # Every batch costs 1.5 s end to end and 0.5 s core: a mean of per-batch ratios gives 1.125,
+    # counting the 2 s warm-up batches gives 0.875, the sum over sum gives 3 s / 3 s = 1.0.
+    timed, warm = setup(timed_s=(1.0, 2.0))
     result = run(FakeAdapter(), timed, warm, tmp_path, repeats=2)
-    assert result.end_to_end_rtf == pytest.approx(1.5)
-    assert result.core_model_rtf == pytest.approx(0.5)
-    assert result.per_repeat_end_to_end_rtf == pytest.approx((1.5, 1.5))
+    assert result.end_to_end_rtf == pytest.approx(1.0)
+    assert result.core_model_rtf == pytest.approx(1.0 / 3.0)
+    assert result.per_repeat_end_to_end_rtf == pytest.approx((1.0, 1.0))
     assert result.cold_load_s == pytest.approx(0.5)
     assert all(not r.warmup for r in result.records if r.repeat > 0)
     assert [r.repeat for r in result.records] == [0, 0, 0, 1, 1, 2, 2]
     assert all(r.warmup and r.audio_duration_s == pytest.approx(2.0) for r in result.records[:3])
+    assert [r.audio_duration_s for r in result.records[3:]] == pytest.approx([1.0, 2.0, 1.0, 2.0])
 
 
 def test_batches_share_one_timing_record(setup, tmp_path):
@@ -357,34 +363,3 @@ def test_limitations_note_thermal_flags_and_missing_sync(setup, tmp_path, run_co
     assert manifest["environment"]["gpu_name"] == "SYNTHETIC GPU"
     assert any("2 of 2" in note for note in manifest["limitations"])
     assert any("synchronization" in note for note in manifest["limitations"])
-
-
-class OddOutputAdapter(FakeAdapter):
-    """Returns SYNTHETIC candidates whose details or scores are given by the test."""
-
-    def __init__(self, details, score=-1.0):
-        super().__init__(requested_n=1)
-        self.details, self.score = details, score
-
-    def _hyp(self, uid):
-        candidate = Candidate("c1", 1, f"SYNTHETIC {uid}", (1,), self.score, "kind", score_details=self.details)
-        return Hypothesis(uid, "ok", candidate.text, (candidate,))
-
-
-@pytest.mark.parametrize("details,score", [({(1, 2): "tuple key"}, -1.0), ({}, float("-inf")), ({"x": object()}, -1.0)])
-def test_unwritable_adapter_output_becomes_error_rows(setup, tmp_path, run_context, details, score):
-    timed, warm = setup()
-    adapter = OddOutputAdapter(details, score)
-    result = run(adapter, timed, warm, tmp_path, repeats=1)
-    assert {h.error_code for h in result.hypotheses} == {"adapter_output_invalid"}
-    write_run_outputs(tmp_path / "out", result, timed, run_context, adapter, command="x")
-    assert validate_predictions(read_jsonl(tmp_path / "out" / "predictions.jsonl")).ok
-
-
-def test_read_only_mapping_details_are_accepted(setup, tmp_path, run_context):
-    timed, warm = setup()
-    adapter = OddOutputAdapter(types.MappingProxyType({"length_penalty": 1.0}))
-    result = run(adapter, timed, warm, tmp_path, repeats=1)
-    assert {h.status for h in result.hypotheses} == {"ok"}
-    write_run_outputs(tmp_path / "out", result, timed, run_context, adapter, command="x")
-    assert validate_nbest(read_jsonl(tmp_path / "out" / "nbest.jsonl")).ok

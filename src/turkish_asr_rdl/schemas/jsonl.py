@@ -113,14 +113,15 @@ def _dumps_strict(obj: Any, indent: int | None = None) -> str:
     return text
 
 
-def _encode_rows(rows: Iterable[Mapping[str, Any]]) -> bytes:
+def encode_jsonl(rows: Iterable[Mapping[str, Any]]) -> bytes:
+    """The exact bytes write_jsonl writes for rows; raise ValueError naming the first row that cannot be written."""
     parts = []
     for row_no, row in enumerate(rows, start=1):
         if not isinstance(row, Mapping):
             raise ValueError(f"row {row_no}: must be a JSON object, got {type(row).__name__}")
         try:
             parts.append(_dumps_strict(dict(row)).encode("utf-8") + b"\n")
-        except (TypeError, ValueError) as exc:
+        except (TypeError, ValueError, RecursionError) as exc:
             raise ValueError(f"row {row_no}: cannot be written as strict JSON: {exc}") from exc
     return b"".join(parts)
 
@@ -142,7 +143,7 @@ def _write_atomic(path: Path, data: bytes) -> str:
 
 def write_jsonl(path: Path, rows: Iterable[Mapping[str, Any]]) -> str:
     """Write rows as strict JSONL atomically; return the SHA-256 hex of the bytes written."""
-    return _write_atomic(path, _encode_rows(rows))
+    return _write_atomic(path, encode_jsonl(rows))
 
 
 def write_json(path: Path, obj: Any) -> str:

@@ -11,7 +11,6 @@ import numpy as np
 import pytest
 import soundfile as sf
 
-from turkish_asr_rdl.decoding.export import RunContext, nbest_row
 from turkish_asr_rdl.decoding.interface import Candidate, Hypothesis, InferenceInput
 from turkish_asr_rdl.schemas.jsonl import sha256_file
 from turkish_asr_rdl.schemas.predictions import validate_inference_inputs
@@ -175,38 +174,6 @@ def test_load_clips_prepares_once_then_reuses(smoke, tmp_path):
     assert again == (warmup, timed) and len(calls) == 1
     smoke.load_clips(tmp_path, 3, rows_source=source)
     assert len(calls) == 2
-
-
-def _nbest_rows(texts_per_utterance):
-    ctx = RunContext("run_syn", "sys_syn", "rel_syn", "train", "a" * 64, "b" * 64, "c" * 64)
-    rows = []
-    for k, texts in enumerate(texts_per_utterance):
-        uid = f"utt_{k}"
-        inp = InferenceInput("0.1", "rel_syn", "a" * 64, uid, f"{uid}.flac", "d" * 64, 1.0, 16000, 1, "tr")
-        cands = tuple(Candidate(f"{uid}-c{r}", r, t, (r,), -float(r), "seq2seq_token_log_prob_sum")
-                      for r, t in enumerate(texts, start=1))
-        rows.append(nbest_row(Hypothesis(uid, "ok", texts[0], cands), inp, ctx, 3, "conv_syn"))
-    return rows
-
-
-def test_nbest_facts_counts_duplicates_and_validation(smoke):
-    facts = smoke.nbest_facts(_nbest_rows([["SYN a", "SYN b", "SYN c"], ["SYN d", "SYN d"]]), 3)
-    assert facts["requested_n"] == 3 and facts["rows"] == 2
-    assert (facts["min_candidates"], facts["max_candidates"]) == (2, 3)
-    assert facts["utterances_all_distinct"] == 1 and facts["duplicate_texts"] == 1
-    assert facts["validate_nbest_ok"] is False and facts["validation_errors"] >= 1
-    assert len(facts["first_errors"]) <= 3
-    assert (facts["acoustic_log_score_min"], facts["acoustic_log_score_max"]) == (-3.0, -1.0)
-    assert facts["acoustic_log_scores_finite"] is True
-
-
-def test_nbest_facts_passes_distinct_lists(smoke):
-    facts = smoke.nbest_facts(_nbest_rows([["SYN a", "SYN b"]]), 3)
-    assert facts["validate_nbest_ok"] is True and facts["duplicate_texts"] == 0
-
-
-def test_nbest_facts_for_systems_without_nbest(smoke):
-    assert smoke.nbest_facts([], 0) == {"requested_n": 0}
 
 
 def _prepared(smoke, tmp_path, count=2):

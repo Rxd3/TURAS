@@ -93,13 +93,14 @@ def test_bad_dedup_map_fails(dedup_map):
     assert any("dedup_map" in e for e in errors_of([{**nbest_row(), "dedup_map": dedup_map}]))
 
 
-def test_rank_gaps_after_dedup_allowed():
-    assert validate_nbest([nbest_row(ranks=[1, 3, 4])]).ok
-
-
-@pytest.mark.parametrize("ranks", [[2, 3, 4], [1, 3, 5]])
-def test_ranks_kept_after_dedup_may_start_above_one(ranks):
+@pytest.mark.parametrize("ranks", [[1, 3, 4], [1, 3, 5]])
+def test_rank_gaps_after_dedup_allowed(ranks):
     assert validate_nbest([nbest_row(ranks=ranks)]).ok
+
+
+@pytest.mark.parametrize("ranks", [[2, 3, 4], [3, 4, 5]])
+def test_ranks_kept_after_dedup_must_start_at_one(ranks):
+    assert any("first candidate must have rank 1" in e for e in errors_of([nbest_row(ranks=ranks)]))
 
 
 @pytest.mark.parametrize("ranks", [[1, 1, 2], [1, 3, 2], [0, 1, 2], [1, 2, 6]])

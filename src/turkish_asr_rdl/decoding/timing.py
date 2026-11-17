@@ -2,7 +2,9 @@
 
 End-to-end time runs from before audio reading through result serialization; core
 model time covers `adapter.transcribe` only. Every RTF is a sum of seconds over a
-sum of audio seconds across the timed (non-warm-up) batches.
+sum of audio seconds across the timed (non-warm-up) batches. Free VRAM is read before
+the load and peak reserved VRAM after each repeat; a peak above the free memory, or any
+timed error row, is named in the manifest limitations.
 """
 from __future__ import annotations
 
@@ -32,11 +34,13 @@ from turkish_asr_rdl.decoding.export import (
 )
 from turkish_asr_rdl.decoding.hardware import probe_gpu, thermal_flag
 from turkish_asr_rdl.decoding.interface import AsrAdapter, AudioItem, Hypothesis, InferenceInput, check_adapter
+from turkish_asr_rdl.decoding.memory import VramMeter, VramRecord, default_vram, library_versions, spill_suspected
 from turkish_asr_rdl.schemas.jsonl import encode_jsonl, write_json, write_jsonl
 
 MIN_WARMUP_BATCHES = 3
 END_TO_END_SCOPE = "audio read, decode and resample through result serialization"
 CORE_MODEL_SCOPE = "adapter.transcribe only"
+SPILL_LIMITATION = "RTF invalid: peak reserved VRAM exceeded free VRAM before load (suspected sysmem fallback)"
 _MAX_MESSAGE_CHARS = 500
 
 
@@ -54,6 +58,7 @@ class TimingRecord:
     end_to_end_s: float
     core_model_s: float
     sync_method: str
+    error_rows: int = 0
 
 
 @dataclass(frozen=True)
@@ -68,6 +73,8 @@ class TimedRun:
     per_repeat_end_to_end_rtf: tuple[float, ...]
     hardware: tuple[Mapping[str, Any], ...]
     thermal_flags: int
+    vram: VramRecord = VramRecord()
+    timed_error_rows: int = 0
 
 
 def _no_sync() -> None:
@@ -175,7 +182,7 @@ def _rtf(records: Sequence[TimingRecord], seconds: Callable[[TimingRecord], floa
 
 
 def _summarize(hypotheses: list[Hypothesis], records: list[TimingRecord], hardware: list[dict],
-               cold_load_s: float, repeats: int) -> TimedRun:
+               cold_load_s: float, repeats: int, vram: VramRecord) -> TimedRun:
     timed = [r for r in records if not r.warmup]
     per_repeat = tuple(_rtf([r for r in timed if r.repeat == k], lambda r: r.end_to_end_s)
                        for k in range(1, repeats + 1))
@@ -188,7 +195,51 @@ def _summarize(hypotheses: list[Hypothesis], records: list[TimingRecord], hardwa
         per_repeat_end_to_end_rtf=per_repeat,
         hardware=tuple(hardware),
         thermal_flags=sum(1 for sample in hardware if thermal_flag(sample)),
+        vram=vram,
+        timed_error_rows=sum(r.error_rows for r in timed),
     )
+
+
+@dataclass(frozen=True)
+class _Batcher:
+    """Runs and times one batch of one run."""
+
+    adapter: AsrAdapter
+    audio_root: Path
+    sync: Callable[[], None]
+    sync_name: str
+    clock: Callable[[], float]
+    run_id: str
+    batch_size: int
+
+    def run(self, batch: Sequence[InferenceInput], repeat: int,
+            record_id: str) -> tuple[list[Hypothesis], TimingRecord]:
+        hyps, end_to_end_s, core_s, audio_s = _timed_batch(self.adapter, batch, self.audio_root, self.sync,
+                                                           self.clock)
+        ids = tuple(i.utterance_id for i in batch)
+        errors = sum(1 for h in hyps if h.status == "error")
+        return hyps, TimingRecord(record_id, self.run_id, repeat, ids, audio_s, self.batch_size, repeat == 0,
+                                  end_to_end_s, core_s, self.sync_name, errors)
+
+
+def _cold_load(adapter: AsrAdapter, sync: Callable[[], None], clock: Callable[[], float]) -> float:
+    sync()
+    start = clock()
+    adapter.load()
+    sync()
+    return clock() - start
+
+
+def _timed_repeat(batcher: _Batcher, inputs: Sequence[InferenceInput], repeat: int, probe: Callable[[], dict],
+                  meter: VramMeter) -> tuple[list[Hypothesis], list[TimingRecord], list[dict], float | None]:
+    """One repeat between two GPU samples; the VRAM peak covers its batches only."""
+    before = {"repeat": repeat, "position": "before", **probe()}
+    meter.reset_peak()
+    batches = enumerate(_batches(inputs, batcher.batch_size), start=1)
+    results = [batcher.run(batch, repeat, f"{batcher.run_id}-r{repeat}-b{k:04d}") for k, batch in batches]
+    peak = meter.peak_reserved_gib()
+    after = {"repeat": repeat, "position": "after", **probe()}
+    return [h for hyps, _ in results for h in hyps], [r for _, r in results], [before, after], peak
 
 
 def run_timed(
@@ -203,36 +254,29 @@ def run_timed(
     sync: Callable[[], None] | None = None,
     clock: Callable[[], float] = time.perf_counter,
     probe: Callable[[], dict] = probe_gpu,
+    memory: VramMeter | None = None,
 ) -> TimedRun:
     """Load once (cold load), run the warm-up batches, then time every repeat of the timed inputs."""
     _check_arguments(timed_inputs, warmup_inputs, repeats, batch_size)
     check_adapter(adapter)
     sync_fn, sync_name = default_sync() if sync is None else (sync, getattr(sync, "__name__", type(sync).__name__))
-    sync_fn()
-    start = clock()
-    adapter.load()
-    sync_fn()
-    cold_load_s = clock() - start
-
-    def record(batch: Sequence[InferenceInput], repeat: int, record_id: str) -> tuple[list[Hypothesis], TimingRecord]:
-        hyps, end_to_end_s, core_s, audio_s = _timed_batch(adapter, batch, Path(audio_root), sync_fn, clock)
-        ids = tuple(i.utterance_id for i in batch)
-        return hyps, TimingRecord(record_id, run_id, repeat, ids, audio_s, batch_size, repeat == 0,
-                                  end_to_end_s, core_s, sync_name)
-
+    meter = default_vram() if memory is None else memory
+    free_gib, total_gib = meter.free_and_total_gib()
+    cold_load_s = _cold_load(adapter, sync_fn, clock)
+    batcher = _Batcher(adapter, Path(audio_root), sync_fn, sync_name, clock, run_id, batch_size)
     warmup_batches = enumerate(_batches(warmup_inputs, batch_size), start=1)
-    records = [record(batch, 0, f"{run_id}-warmup-{k:04d}")[1] for k, batch in warmup_batches]
+    records = [batcher.run(batch, 0, f"{run_id}-warmup-{k:04d}")[1] for k, batch in warmup_batches]
     hypotheses: list[Hypothesis] = []
     hardware: list[dict] = []
+    peaks: list[float | None] = []
     for repeat in range(1, repeats + 1):
-        hardware.append({"repeat": repeat, "position": "before", **probe()})
-        for k, batch in enumerate(_batches(timed_inputs, batch_size), start=1):
-            hyps, timing_record = record(batch, repeat, f"{run_id}-r{repeat}-b{k:04d}")
-            records.append(timing_record)
-            if repeat == 1:
-                hypotheses.extend(hyps)
-        hardware.append({"repeat": repeat, "position": "after", **probe()})
-    return _summarize(hypotheses, records, hardware, cold_load_s, repeats)
+        hyps, repeat_records, samples, peak = _timed_repeat(batcher, timed_inputs, repeat, probe, meter)
+        hypotheses.extend(hyps if repeat == 1 else [])
+        records.extend(repeat_records)
+        hardware.extend(samples)
+        peaks.append(peak)
+    vram = VramRecord(getattr(meter, "method", type(meter).__name__), total_gib, free_gib, tuple(peaks))
+    return _summarize(hypotheses, records, hardware, cold_load_s, repeats, vram)
 
 
 def _check_run_matches(run: TimedRun, inputs: Sequence[InferenceInput], ctx: RunContext, adapter: AsrAdapter) -> None:
@@ -255,6 +299,19 @@ def _environment(run: TimedRun) -> dict[str, Any]:
         "soxr": soxr.__version__,
         "gpu_name": gpu.get("name"),
         "gpu_driver": gpu.get("driver_version"),
+        **library_versions(),
+    }
+
+
+def _memory_fields(vram: VramRecord, repeat: int) -> dict[str, Any]:
+    """The run's VRAM before load and the peak of this record's repeat (None for warm-up batches)."""
+    peak = vram.peak_reserved_gib[repeat - 1] if 1 <= repeat <= len(vram.peak_reserved_gib) else None
+    return {
+        "memory_method": vram.memory_method,
+        "vram_total_gib": vram.vram_total_gib,
+        "vram_free_before_load_gib": vram.vram_free_before_load_gib,
+        "peak_reserved_gib": peak,
+        "vram_spill_suspected": spill_suspected(peak, vram.vram_free_before_load_gib),
     }
 
 
@@ -265,7 +322,8 @@ def _timing_rows(run: TimedRun, environment: Mapping[str, Any]) -> list[dict[str
         "scope": {"end_to_end": END_TO_END_SCOPE, "core_model": CORE_MODEL_SCOPE},
         "environment_sha256": hashlib.sha256(canonical).hexdigest(),
     }
-    batches = [{"record_type": "batch", **dataclasses.asdict(r), **shared} for r in run.records]
+    batches = [{"record_type": "batch", **dataclasses.asdict(r), **shared, **_memory_fields(run.vram, r.repeat)}
+               for r in run.records]
     return batches + [{"record_type": "hardware", **sample} for sample in run.hardware]
 
 
@@ -295,6 +353,10 @@ def _limitations(run: TimedRun) -> list[str]:
         notes.append(f"thermal or hardware slowdown flagged in {run.thermal_flags} of {len(run.hardware)} GPU samples")
     if run.records[0].sync_method == "none":
         notes.append("no device synchronization was used (no CUDA device)")
+    if run.vram.vram_spill_suspected:
+        notes.append(SPILL_LIMITATION)
+    if run.timed_error_rows:
+        notes.append(f"RTF includes {run.timed_error_rows} timed error rows")
     return notes
 
 

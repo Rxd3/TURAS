@@ -3,10 +3,11 @@
 `tr-normalized-v1` follows the normalization contract 0.2 rules, in this order:
 NFC; Turkish-aware lowercase; delete format characters (Cf); delete an
 apostrophe (U+0027, U+2019, U+02BC) between two letters, otherwise make it a
-space; every other punctuation character except `%` becomes a space; collapse
-`str.isspace()` runs to one ASCII space and strip both ends; NFC again, so a
-pair left next to each other by a deletion is composed and normalizing twice
-gives the same text as normalizing once.
+space, where an apostrophe never counts as a letter neighbour (U+02BC is
+category Lm); every other punctuation character except `%` becomes a space;
+collapse `str.isspace()` runs to one ASCII space and strip both ends; NFC
+again, so a pair left next to each other by a deletion is composed and
+normalizing twice gives the same text as normalizing once.
 """
 
 import unicodedata
@@ -18,14 +19,14 @@ _APOSTROPHES = frozenset("'\u2019\u02bc")
 _KEPT_PUNCTUATION = frozenset("%")
 
 
-def _is_letter(char: str) -> bool:
-    return unicodedata.category(char).startswith("L")
+def _is_letter_neighbour(char: str) -> bool:
+    return char not in _APOSTROPHES and unicodedata.category(char).startswith("L")
 
 
 def _between_letters(text: str, index: int) -> bool:
     if index == 0 or index == len(text) - 1:
         return False
-    return _is_letter(text[index - 1]) and _is_letter(text[index + 1])
+    return _is_letter_neighbour(text[index - 1]) and _is_letter_neighbour(text[index + 1])
 
 
 def _map_char(text: str, index: int) -> str:

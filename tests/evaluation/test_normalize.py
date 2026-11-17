@@ -86,9 +86,18 @@ def test_apostrophe_neighbours_come_from_the_text_after_cf_deletion():
     assert normalize("a\u200b'b", TR_NORMALIZED_V1) == "ab"
 
 
-def test_doubled_apostrophe_becomes_space():
-    # SYNTHETIC: each apostrophe has a non-letter neighbour in the original run.
-    assert normalize("a''b", TR_NORMALIZED_V1) == "a b"
+@pytest.mark.parametrize(
+    "src", ["a''b", "aʼʼb", "a'ʼb", "aʼ'b", "aʼʼʼb"]
+)
+def test_apostrophe_run_between_letters_becomes_space(src):
+    # SYNTHETIC: no apostrophe counts as a letter neighbour, U+02BC (Lm) included,
+    # so every apostrophe in a run has a non-letter neighbour.
+    assert normalize(src, TR_NORMALIZED_V1) == "a b"
+
+
+def test_other_modifier_letters_still_count_as_letter_neighbours():
+    # SYNTHETIC: U+02B0 is category Lm but not an apostrophe.
+    assert normalize("aʰ'b", TR_NORMALIZED_V1) == "aʰb"
 
 
 def test_apostrophe_at_edges_becomes_space():

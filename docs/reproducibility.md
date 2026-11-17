@@ -9,10 +9,11 @@ CI checks packaging and runs the unit tests on Python 3.11 and 3.13.
 ## Scaffold inspection
 
 Use Python 3.11+ to parse `pyproject.toml` with `tomllib`; use `PYTHONPATH=src`
-or install the package to import the empty package/subpackages. Check whitespace
-with `git diff --check`. These checks require no data/model/ML dependencies and
-do not demonstrate inference or training. Initialization-specific checks and
-remote state are recorded in [repository setup](repository_setup.md).
+or install the package to import the package and its subpackages (all empty apart
+from `utils.env_check`, which imports torch only when the check runs). Check
+whitespace with `git diff --check`. These checks require no data/model/ML
+dependencies and do not demonstrate inference or training. Initialization-specific
+checks and remote state are recorded in [repository setup](repository_setup.md).
 
 ## Future evidence levels
 
@@ -82,7 +83,9 @@ output of `python scripts/check_env.py` with the team.
    `NOT READY` (exit 1) with one line per problem. It checks the Python minor
    version, that torch is installed, loads and is a CUDA build, that CUDA is
    available, and that a small GPU computation succeeds. The `torch arch list`
-   line is information only.
+   line is information only. When the check cannot run (the package is not
+   importable, or an unexpected error stops the report) it prints one line and
+   exits 1 without `READY`/`NOT READY`.
 
 **Gotcha (uv in the Claude desktop app):** when installing Python with uv inside
 the Claude desktop app, set `UV_PYTHON_INSTALL_DIR` to a folder outside `AppData`

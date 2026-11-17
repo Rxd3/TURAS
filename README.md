@@ -41,7 +41,8 @@ and CER, domain terminology metrics, RTF, latency, and controlled ablations.
 ## Start here
 
 1. Read [TEAM_TASKS.md](TEAM_TASKS.md) for ownership, exact handoffs, and next tasks.
-2. Read [CONTRIBUTING.md](CONTRIBUTING.md) for branch and PR rules.
+2. Read [CONTRIBUTING.md](CONTRIBUTING.md) for branch and PR rules, and
+   [AGENTS.md](AGENTS.md) for the six rules every coding agent follows.
 3. Review [architecture](docs/architecture.md), [contracts](docs/contracts/README.md),
    and [working decisions](docs/decisions.md) before implementation.
 4. Start the assigned `feat/m<N>-...` branch after identity/ownership assignment.
@@ -77,7 +78,9 @@ part of repository initialization.
 | `presentation/` | Evidence requirements for the future final presentation |
 | `.github/` | PR template and CI (packaging checks and unit tests) |
 
-Repository: [Rxd3/project3-turkish-asr-rdl](https://github.com/Rxd3/project3-turkish-asr-rdl).
+Repository: [Rxd3/TURAS](https://github.com/Rxd3/TURAS), public, renamed from
+`Rxd3/project3-turkish-asr-rdl` (the old URL redirects). `main` is protected;
+changes reach it through reviewed pull requests.
 Architecture references are [NALTRA](https://github.com/Rxd3/NALTRA) and
 [RECAP](https://github.com/Rxd3/RECAP); see the inspected revisions and adaptation
 boundaries in [reference review](docs/reference_review.md). No unrelated

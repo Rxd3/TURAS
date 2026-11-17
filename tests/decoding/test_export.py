@@ -228,8 +228,9 @@ def hyp_of(*candidates: Candidate) -> Hypothesis:
 
 
 def test_dedupe_keeps_the_first_occurrence_of_each_text():
-    c01, c02, c03, c04, c05 = (cand("c01", 1, "SYNTHETIC a"), cand("c02", 2, "SYNTHETIC b"), cand("c03", 3, "SYNTHETIC a"),
-                               cand("c04", 4, "SYNTHETIC b"), cand("c05", 5, "SYNTHETIC c"))
+    c01, c02, c03, c04, c05 = (cand("c01", 1, "SYNTHETIC a"), cand("c02", 2, "SYNTHETIC b"),
+                               cand("c03", 3, "SYNTHETIC a"), cand("c04", 4, "SYNTHETIC b"),
+                               cand("c05", 5, "SYNTHETIC c"))
     kept, dedup_map = export_module._dedupe((c01, c02, c03, c04, c05))
     assert kept == (c01, c02, c05)
     assert dedup_map == {"c03": "c01", "c04": "c02"}
@@ -283,6 +284,18 @@ def test_candidates_carry_the_duplicate_policy_unless_the_adapter_gives_one(make
     assert export_module.DUPLICATE_POLICY == DUPLICATE_POLICY_TEXT
     assert first["score_details"]["duplicate_policy"] == DUPLICATE_POLICY_TEXT
     assert second["score_details"]["duplicate_policy"] == "SYNTHETIC own policy"
+
+
+def test_nbest_row_refuses_copies_of_one_hypothesis(make_input, run_context):
+    hyp = hyp_of(cand("c01", 1, "SYNTHETIC a", (7, 8)), cand("c02", 2, "SYNTHETIC a", [7, 8]))
+    with pytest.raises(ValueError, match=r"^decoder returned copies of one hypothesis \(same text and token_ids\)"):
+        nbest_row(hyp, make_input("utt_a"), run_context, 2, "conv")
+
+
+def test_shared_token_ids_with_different_texts_are_not_copies(make_input, run_context):
+    hyp = hyp_of(cand("c01", 1, "SYNTHETIC a", (7, 8)), cand("c02", 2, "SYNTHETIC a ", (7, 8)))
+    row = nbest_row(hyp, make_input("utt_a"), run_context, 2, "conv")
+    assert row["actual_n"] == 2 and validate_nbest([row]).ok
 
 
 @pytest.mark.parametrize("removed_id", [3, None, ""])

@@ -121,6 +121,51 @@ def test_repeated_texts_are_deduplicated_in_the_written_nbest(run_and_write):
     assert validate_nbest(rows).ok
 
 
+COPIES_MESSAGE = (
+    "decoder returned copies of one hypothesis (same text and token_ids); use the core GenerationMixin beam path, "
+    "not WhisperForConditionalGeneration.generate with num_return_sequences"
+)
+
+
+class PerUtteranceAdapter(FixedResultAdapter):
+    """Returns the SYNTHETIC result the test gives for each utterance ID."""
+
+    def __init__(self, results, requested_n):
+        super().__init__(None, requested_n)
+        self.results = results
+
+    def transcribe(self, batch):
+        return [replace(self.results[item.utterance_id], utterance_id=item.utterance_id) for item in batch]
+
+
+def one_text(token_ids_for):
+    candidates = tuple(Candidate(f"c{k:02d}", k, "SYNTHETIC a", token_ids_for(k), -1.0 * k, "kind")
+                       for k in range(1, 11))
+    return Hypothesis("utt_x", "ok", "SYNTHETIC a", candidates)
+
+
+def test_copies_of_one_hypothesis_become_an_error_row_and_the_run_continues(run_and_write):
+    copies, beams = one_text(lambda k: (5, 6, 7)), one_text(lambda k: (5, 6, 7 + k))
+    run, out = run_and_write(PerUtteranceAdapter({"utt_a": copies, "utt_b": beams}, requested_n=10))
+    first, second = run.hypotheses
+    assert (first.status, first.error_code, first.error_message) == ("error", "adapter_output_invalid", COPIES_MESSAGE)
+    assert first.text is None and not first.candidates
+    assert second.status == "ok"
+    rows = read_jsonl(out / "nbest.jsonl")
+    assert rows[0]["candidates"] == [] and "dedup_map" not in rows[0]
+    assert rows[1]["actual_n"] == 1 and rows[1]["dedup_map"] == {f"c{k:02d}": "c01" for k in range(2, 11)}
+    assert validate_nbest(rows).ok
+    assert validate_predictions(read_jsonl(out / "predictions.jsonl"), expected_ids=list(TIMED)).ok
+
+
+def test_copies_of_a_later_candidate_are_caught_too(run_and_write):
+    candidates = (Candidate("c1", 1, "SYNTHETIC a", (1, 2), -1.0, "kind"),
+                  Candidate("c2", 2, "SYNTHETIC a", (3, 4), -2.0, "kind"),
+                  Candidate("c3", 3, "SYNTHETIC a", (3, 4), -3.0, "kind"))
+    run, _ = run_and_write(FixedResultAdapter(Hypothesis("utt_x", "ok", "SYNTHETIC a", candidates), requested_n=3))
+    assert {h.error_message for h in run.hypotheses} == {COPIES_MESSAGE}
+
+
 def test_read_only_mapping_details_are_accepted(run_and_write):
     details = types.MappingProxyType({"length_penalty": 1.0})
     run, out = run_and_write(FixedResultAdapter(with_candidate(score_details=details)))

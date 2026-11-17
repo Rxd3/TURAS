@@ -23,6 +23,7 @@ import soxr
 
 from turkish_asr_rdl.decoding.audio import TARGET_SAMPLE_RATE_HZ, load_audio, resolve_audio_path
 from turkish_asr_rdl.decoding.export import (
+    CopiedHypothesisError,
     RunContext,
     adapter_result_fields,
     nbest_row,
@@ -136,11 +137,16 @@ def _serialized(hypothesis: Hypothesis, requested_n: int) -> Hypothesis:
     """Build and encode what the output files take from one result; one that cannot be written becomes an error row."""
     try:
         encode_jsonl([adapter_result_fields(hypothesis, requested_n)])
+    except CopiedHypothesisError as exc:
+        return _invalid_output(hypothesis, str(exc))
     except Exception as exc:  # any failure here would stop write_run_outputs after the whole timed run
-        message = _one_line(f"adapter result cannot be written: {type(exc).__name__}: {exc}")
-        return Hypothesis(hypothesis.utterance_id, "error", None, error_code="adapter_output_invalid",
-                          error_message=message)
+        return _invalid_output(hypothesis, _one_line(f"adapter result cannot be written: {type(exc).__name__}: {exc}"))
     return hypothesis
+
+
+def _invalid_output(hypothesis: Hypothesis, message: str) -> Hypothesis:
+    return Hypothesis(hypothesis.utterance_id, "error", None, error_code="adapter_output_invalid",
+                      error_message=message)
 
 
 def _timed_batch(adapter: AsrAdapter, batch: Sequence[InferenceInput], audio_root: Path,

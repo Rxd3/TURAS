@@ -14,12 +14,20 @@ from turkish_asr_rdl.schemas.predictions import SCHEMA_VERSION
 
 NOT_PRODUCED = "not produced by this system"
 DUPLICATE_POLICY = "exact raw-text match; first (lowest-rank) occurrence kept; removed IDs listed in dedup_map"
+COPIED_HYPOTHESIS_MESSAGE = (
+    "decoder returned copies of one hypothesis (same text and token_ids); use the core GenerationMixin beam path, "
+    "not WhisperForConditionalGeneration.generate with num_return_sequences"
+)
 MANIFEST_GROUPS = (
     "identity", "code", "environment", "inputs", "configuration", "randomness",
     "model_knowledge", "selection", "outputs", "evaluation_timing", "limitations",
 )
 _GIT_TIMEOUT_S = 10
 _PACKAGE_DIR = Path(__file__).resolve().parent
+
+
+class CopiedHypothesisError(ValueError):
+    """Two candidates of one result share text and token_ids: copies of one hypothesis, not a beam."""
 
 
 @dataclass(frozen=True)
@@ -125,9 +133,20 @@ def _dedupe(candidates: Sequence[Candidate]) -> tuple[tuple[Candidate, ...], dic
     return tuple(kept.values()), dedup_map
 
 
+def _refuse_copies(candidates: Sequence[Candidate]) -> None:
+    """Beam search never returns one token sequence twice, so a repeated (text, token_ids) pair is a copy."""
+    seen: set[tuple[Any, tuple[Any, ...]]] = set()
+    for candidate in candidates:
+        key = (candidate.text, tuple(candidate.token_ids))
+        if key in seen:
+            raise CopiedHypothesisError(COPIED_HYPOTHESIS_MESSAGE)
+        seen.add(key)
+
+
 def _candidate_rows(hyp: Hypothesis) -> tuple[list[dict[str, Any]], dict[str, str]]:
     if not isinstance(hyp.candidates, (tuple, list)):
         raise ValueError(f"result for {hyp.utterance_id!r}: candidates must be a tuple or list")
+    _refuse_copies(hyp.candidates)
     kept, dedup_map = _dedupe(hyp.candidates)
     return [_candidate_row(c) for c in kept], dedup_map
 

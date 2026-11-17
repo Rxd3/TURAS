@@ -126,8 +126,6 @@ def _candidate_name(candidate: Any, position: int) -> str:
 def _rank_problems(candidates: list[Any], requested: Any) -> list[str]:
     ranks = [c["rank"] for c in candidates if isinstance(c, Mapping) and _is_int(c.get("rank"))]
     problems = []
-    if ranks and ranks[0] != 1:
-        problems.append("the first candidate must have rank 1")
     if any(later <= earlier for earlier, later in zip(ranks, ranks[1:])):
         problems.append("candidate rank values must be strictly increasing")
     upper = requested if _is_int(requested) and requested >= 1 else None

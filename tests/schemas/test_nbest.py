@@ -97,7 +97,12 @@ def test_rank_gaps_after_dedup_allowed():
     assert validate_nbest([nbest_row(ranks=[1, 3, 4])]).ok
 
 
-@pytest.mark.parametrize("ranks", [[1, 1, 2], [1, 3, 2], [2, 3, 4], [0, 1, 2], [1, 2, 6]])
+@pytest.mark.parametrize("ranks", [[2, 3, 4], [1, 3, 5]])
+def test_ranks_kept_after_dedup_may_start_above_one(ranks):
+    assert validate_nbest([nbest_row(ranks=ranks)]).ok
+
+
+@pytest.mark.parametrize("ranks", [[1, 1, 2], [1, 3, 2], [0, 1, 2], [1, 2, 6]])
 def test_bad_rank_sequences_fail(ranks):
     assert any("rank" in e for e in errors_of([nbest_row(ranks=ranks)]))
 

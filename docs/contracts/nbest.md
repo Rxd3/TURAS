@@ -22,6 +22,38 @@ after rank 1: 1, 3, 4 is valid; 2, 3, 4 is not. Candidates whose raw
 texts differ but match after `tr-normalized-v1` are allowed and reported as a
 warning.
 
+## Who deduplicates
+
+0.2 (proposed by M6): the shared N-best export in `turkish_asr_rdl.decoding`
+owns deduplication, so every producer deduplicates the same way.
+
+- Adapters return the decoder's raw candidate list in rank order, duplicates
+  included, and never pre-deduplicate.
+- The export compares raw `text` exactly, code point for code point, across the
+  whole list, not only neighbouring candidates. It keeps the first (lowest-rank)
+  occurrence of each text with its original `rank` and `candidate_id` and drops
+  the later copies.
+- It writes the row-level `dedup_map` {removed `candidate_id`: kept
+  `candidate_id`} only when it removed at least one candidate; a row without
+  duplicates has no `dedup_map` key.
+- `actual_n` is the number of kept candidates.
+- `score_details.duplicate_policy` carries the policy text. The export's
+  default is:
+  `"exact raw-text match; first (lowest-rank) occurrence kept; removed IDs listed in dedup_map"`.
+- Candidates with the same `text` and identical `token_ids` are copies of one
+  hypothesis, not two beam paths: beam search never returns the same token
+  sequence twice. The export does not deduplicate such a result; it turns it
+  into an error row (`status` `error`, code `adapter_output_invalid`). This
+  catches the transformers 5.23.0 trap where Whisper
+  `generate(num_return_sequences>1)` returns copies of the 1-best.
+
+Measured basis (smoke run of 2026-11-17 on the M6 RTX 5070 Ti laptop; see
+[smoke results](../m6-smoke-results.md#duplicate-candidates)): the four beam
+systems (whisper-small and whisper-large-v3 at beam 10, Qwen3-ASR-1.7B and
+Qwen3-ASR-0.6B at beam 5) produced 76 duplicate-text pairs (29, 5, 23 and 19),
+and 0 of them had identical `token_ids`. Every real duplicate was a different
+token path that decodes to the same text.
+
 ## Candidates
 
 Each candidate has `candidate_id`, original `rank` (1-based), raw `text`,
@@ -97,3 +129,11 @@ and the ceiling imposed by candidate coverage, including identical/empty lists.
   and keeps original rank values with gaps allowed. Amended by M6 on 2026-11-17:
   kept ranks are strictly increasing integers in 1..`requested_n`, the first
   kept rank is 1, and gaps from deduplication are allowed only after it.
+  Amended by M6 on 2026-11-18, still 0.2 (proposed by M6): the shared export
+  owns deduplication (exact raw-text match; first, lowest-rank occurrence kept
+  with its original rank and `candidate_id`; `dedup_map` written only when
+  non-empty; `actual_n` is the kept count; policy text in
+  `score_details.duplicate_policy`). Adapters return the decoder's raw list and
+  never pre-deduplicate. Candidates with the same text and identical `token_ids`
+  make the result an error row. Basis: the 2026-11-17 smoke run found 76
+  duplicate pairs across four beam systems, 0 with identical `token_ids`.

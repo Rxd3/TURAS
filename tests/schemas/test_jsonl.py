@@ -40,7 +40,7 @@ def test_written_bytes_are_utf8_lf_without_bom(tmp_path):
 
 def test_line_separator_inside_string_roundtrips(tmp_path):
     path = tmp_path / "rows.jsonl"
-    rows = [{"text": "SYNTHETIC a b\u0085c"}]
+    rows = [{"text": "SYNTHETIC a\u2028b\u0085c"}]
     write_jsonl(path, rows)
     assert read_jsonl(path) == rows
 

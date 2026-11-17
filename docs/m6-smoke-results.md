@@ -13,8 +13,8 @@ Every result number carries one of three labels:
 - **estimate**: arithmetic on measured numbers; nothing was run to check it.
 - **UNMEASURED**: not run at all.
 
-Settings (batch size, beam width, learning rate, model revisions, model limits)
-describe what was run and carry no label.
+Settings (batch size, beam width, learning rate, model revisions, software
+versions, model limits) describe what was run and carry no label.
 
 ## What ran
 
@@ -26,7 +26,7 @@ describe what was run and carry no label.
 - Inference: 3 warm-up clips, then 20 timed clips with 287.6 s of audio in
   total (measured). Batch 1, one repeat, `max_new_tokens` 440, language `tr`.
   Thermal flags: 0 (measured). The first two timed clips come from one
-  recording (`tr_28_3_1`); the smoke report does not say how many recordings
+  recording (`tr_28_3_1`); the run output does not say how many recordings
   the 20 clips span, so treat them as a narrow sample.
 - No references were used: accuracy is UNMEASURED.
 - These runs used Member 6's smoke wrappers, not the owners' adapters. Each
@@ -45,14 +45,14 @@ Pinned models (Hugging Face commit SHAs):
 
 ## Inference
 
-| System | Informs | Decoding | Peak VRAM GiB | Peak reserved GiB | End-to-end RTF | Core RTF | N-best as exported | Label |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| whisper-small | B1 | beam 10, 10 returned | 1.37 | 1.94 | 0.049 | 0.049 | invalid, duplicate text only (24 errors); 8/20 lists all distinct | measured |
-| whisper-large-v3 | B2 | beam 10, 10 returned | 5.67 | 6.50 | 0.167 | 0.166 | invalid, duplicate text only (5 errors); 16/20 lists all distinct | measured |
-| qwen3-asr-1.7b | B3 | beam 5, 5 returned | 4.56 | 5.63 | 0.098 | 0.097 | invalid, duplicate text only (16 errors); 8/20 lists all distinct | measured |
-| qwen3-asr-0.6b | B3 | beam 5, 5 returned | 2.22 | 3.30 | 0.090 | 0.090 | invalid, duplicate text only (15 errors); 9/20 lists all distinct | measured |
-| xlsr-tr-cv7 | B4 | greedy, 1 returned | 1.62 | 2.77 | 0.006 | 0.006 | valid (1-best only) | measured |
-| xlsr-tr-cv8 | B4 | greedy, 1 returned | 1.62 | 2.77 | 0.006 | 0.005 | valid (1-best only) | measured |
+| System | Informs | Precision | Decoding | Peak VRAM GiB | Peak reserved GiB | End-to-end RTF | Core RTF | N-best as exported | Label |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| whisper-small | B1 | float16 | beam 10, 10 returned | 1.37 | 1.94 | 0.049 | 0.049 | invalid, duplicate text only (24 errors); 8/20 lists all distinct | measured |
+| whisper-large-v3 | B2 | float16 | beam 10, 10 returned | 5.67 | 6.50 | 0.167 | 0.166 | invalid, duplicate text only (5 errors); 16/20 lists all distinct | measured |
+| qwen3-asr-1.7b | B3 | bfloat16 | beam 5, 5 returned | 4.56 | 5.63 | 0.098 | 0.097 | invalid, duplicate text only (16 errors); 8/20 lists all distinct | measured |
+| qwen3-asr-0.6b | B3 | bfloat16 | beam 5, 5 returned | 2.22 | 3.30 | 0.090 | 0.090 | invalid, duplicate text only (15 errors); 9/20 lists all distinct | measured |
+| xlsr-tr-cv7 | B4 | float32 | greedy, 1 returned | 1.62 | 2.77 | 0.006 | 0.006 | valid (1-best only) | measured |
+| xlsr-tr-cv8 | B4 | float32 | greedy, 1 returned | 1.62 | 2.77 | 0.006 | 0.005 | valid (1-best only) | measured |
 
 Every system returned 20 `ok` results, 0 `empty` and 0 `error`, and every
 acoustic log score was finite (measured). Whether the beam lists validate once
@@ -234,9 +234,9 @@ CER.
 
 `raw-v1` keeps model output byte for byte, because the
 [normalization contract](contracts/normalization.md#raw-v1) forbids silent
-correction: return the decoder's text unchanged. The report states the CER
-space policy and gives a per-system count of hypotheses where
-`text != text.strip()`. If every hypothesis were affected and clips had
+correction: return the decoder's text unchanged. The evaluation report will
+state the CER space policy and give a per-system count of hypotheses where
+`text != text.strip()` (on `main` after PR-E). If every hypothesis were affected and clips had
 150–200 code points, raw-v1 CER would rise by at most about 0.5 to 0.67 points
 (estimate); the affected count is UNMEASURED.
 

@@ -44,8 +44,9 @@ owns deduplication, so every producer deduplicates the same way.
   hypothesis, not two beam paths: beam search never returns the same token
   sequence twice. The export does not deduplicate such a result; it turns it
   into an error row (`status` `error`, code `adapter_output_invalid`). This
-  catches the transformers 5.23.0 trap where Whisper
-  `generate(num_return_sequences>1)` returns copies of the 1-best.
+  catches the transformers 5.23.0 trap where
+  `WhisperForConditionalGeneration.generate` with `num_return_sequences>1`
+  returns copies of the 1-best.
 
 Measured basis (smoke run of 2026-11-17 on the M6 RTX 5070 Ti laptop; see
 [smoke results](../m6-smoke-results.md#duplicate-candidates)): the four beam

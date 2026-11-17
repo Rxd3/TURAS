@@ -12,7 +12,7 @@ import unicodedata
 RAW_V1 = "raw-v1"
 TR_NORMALIZED_V1 = "tr-normalized-v1"
 
-_APOSTROPHES = frozenset("'’ʼ")
+_APOSTROPHES = frozenset("'\u2019\u02bc")
 _KEPT_PUNCTUATION = frozenset("%")
 
 

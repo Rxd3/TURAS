@@ -13,18 +13,18 @@ from turkish_asr_rdl.evaluation.normalize import (
 CASES = [
     ("IŞIK", "ışık"),
     ("İZMİR", "izmir"),
-    ("İ", "i"),
-    ("i̇", "i̇"),
+    ("I\u0307", "i"),
+    ("i\u0307", "i\u0307"),
     ("Ankara'da", "ankarada"),
-    ("Ankara’da", "ankarada"),
-    ("Ankaraʼda", "ankarada"),
+    ("Ankara\u2019da", "ankarada"),
+    ("Ankara\u02bcda", "ankarada"),
     ("2026'da", "2026 da"),
     ("1.250,50", "1 250 50"),
     ("%5", "%5"),
     ("₺100", "₺100"),
     ("a+b-c/d", "a+b c d"),
-    ("a​b", "ab"),
-    ("a   b", "a b"),
+    ("a\u200bb", "ab"),
+    ("a\u00a0  b", "a b"),
     ("", ""),
     ("   ", ""),
 ]
@@ -46,7 +46,7 @@ def test_idempotent():
     reason="the six contract steps end without a final NFC, so deleting a Cf or an "
     "apostrophe can leave a pair that NFC composes on a second pass",
 )
-@pytest.mark.parametrize("src", ["e​́", "ᄀ'ᅡ"])
+@pytest.mark.parametrize("src", ["e\u200b\u0301", "\u1100'\u1161"])
 def test_idempotent_when_deletion_leaves_a_composable_pair(src):
     # SYNTHETIC: base letter + ZWSP + combining acute; Hangul L + apostrophe + V jamo.
     once = normalize(src, TR_NORMALIZED_V1)
@@ -55,7 +55,7 @@ def test_idempotent_when_deletion_leaves_a_composable_pair(src):
 
 def test_apostrophe_neighbours_come_from_the_text_after_cf_deletion():
     # SYNTHETIC: U+200B next to the apostrophe is gone before step 4 looks.
-    assert normalize("a​'b", TR_NORMALIZED_V1) == "ab"
+    assert normalize("a\u200b'b", TR_NORMALIZED_V1) == "ab"
 
 
 def test_doubled_apostrophe_becomes_space():
@@ -73,7 +73,7 @@ def test_whitespace_includes_information_separators():
 
 
 def test_bom_inside_text_is_deleted_as_format_character():
-    assert normalize("﻿ab", TR_NORMALIZED_V1) == "ab"
+    assert normalize("\ufeffab", TR_NORMALIZED_V1) == "ab"
 
 
 def test_raw_is_identity():
@@ -86,5 +86,5 @@ def test_unknown_version_raises():
 
 
 def test_word_tokens_split_on_unicode_whitespace():
-    assert word_tokens(" a b\tc ") == ["a", "b", "c"]
+    assert word_tokens(" a\u00a0b\tc ") == ["a", "b", "c"]
     assert word_tokens("") == []

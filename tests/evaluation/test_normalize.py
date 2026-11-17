@@ -41,16 +41,34 @@ def test_idempotent():
         assert normalize(once, TR_NORMALIZED_V1) == once
 
 
-@pytest.mark.xfail(
-    strict=True,
-    reason="the six contract steps end without a final NFC, so deleting a Cf or an "
-    "apostrophe can leave a pair that NFC composes on a second pass",
-)
 @pytest.mark.parametrize("src", ["e\u200b\u0301", "\u1100'\u1161"])
 def test_idempotent_when_deletion_leaves_a_composable_pair(src):
     # SYNTHETIC: base letter + ZWSP + combining acute; Hangul L + apostrophe + V jamo.
     once = normalize(src, TR_NORMALIZED_V1)
     assert normalize(once, TR_NORMALIZED_V1) == once
+
+
+# SYNTHETIC: inputs where a step can leave text that a later pass would change.
+TRICKY = [
+    "e\u200b\u0301",
+    "A\u200b\u0301",
+    "\u1100'\u1161",
+    "I\u0307",
+    "\u0130ZM\u0130R",
+    "a'\u02bcb",
+    " a\t\u00a0b\u2003\n\u3000c\x1c ",
+]
+
+
+@pytest.mark.parametrize("src", TRICKY)
+def test_normalizing_twice_equals_normalizing_once(src):
+    once = normalize(src, TR_NORMALIZED_V1)
+    assert normalize(once, TR_NORMALIZED_V1) == once
+
+
+def test_final_step_composes_pairs_left_by_deletion():
+    assert normalize("e\u200b\u0301", TR_NORMALIZED_V1) == "\u00e9"
+    assert normalize("\u1100'\u1161", TR_NORMALIZED_V1) == "\uac00"
 
 
 def test_compatibility_characters_are_kept():

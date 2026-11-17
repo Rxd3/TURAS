@@ -4,7 +4,9 @@
 NFC; Turkish-aware lowercase; delete format characters (Cf); delete an
 apostrophe (U+0027, U+2019, U+02BC) between two letters, otherwise make it a
 space; every other punctuation character except `%` becomes a space; collapse
-`str.isspace()` runs to one ASCII space and strip both ends.
+`str.isspace()` runs to one ASCII space and strip both ends; NFC again, so a
+pair left next to each other by a deletion is composed and normalizing twice
+gives the same text as normalizing once.
 """
 
 import unicodedata
@@ -40,7 +42,7 @@ def _tr_normalized_v1(text: str) -> str:
     lowered = composed.replace("I", "ı").replace("İ", "i").lower()
     visible = "".join(c for c in lowered if unicodedata.category(c) != "Cf")
     spaced = "".join(_map_char(visible, i) for i in range(len(visible)))
-    return " ".join(spaced.split())
+    return unicodedata.normalize("NFC", " ".join(spaced.split()))
 
 
 def normalize(text: str, version: str) -> str:

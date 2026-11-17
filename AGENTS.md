@@ -27,9 +27,14 @@ merges (list at the end).
    (on `main` after PR-B). Both enforce the
    [contracts](docs/contracts/README.md).
 6. **Known traps.**
-   - In transformers 5.23.0, Whisper `generate(num_return_sequences>1)` returns
-     copies of the 1-best. Repeated candidate texts fail the
-     [N-best contract](docs/contracts/nbest.md).
+   - Repeated candidate texts are normal in beam N-best. Return the decoder's
+     raw list, duplicates included: the shared export deduplicates it
+     automatically and records `dedup_map` (on `main` after PR-B;
+     [N-best contract](docs/contracts/nbest.md#who-deduplicates)). Candidates
+     with the same text and identical `token_ids` are the Whisper trap: in
+     transformers 5.23.0, `WhisperForConditionalGeneration.generate` with
+     `num_return_sequences>1` returns copies of the 1-best, and the export turns
+     that result into an error row.
    - WorldSpeech `asr_transcript` is never a reference
      ([dataset](docs/dataset.md)).
    - Python `lower()` and `casefold()` are wrong for Turkish (`I` becomes `i`,
@@ -37,6 +42,10 @@ merges (list at the end).
 
 Environment: install the pinned environment and run `python scripts/check_env.py`
 (on `main` after PR-A); see [setup](docs/reproducibility.md#environment-setup-windows).
+
+Hardware: VRAM, speed, training-memory and N-best findings from the 2026-11-17
+smoke run, with next steps for Members 2–5, are in
+[smoke results](docs/m6-smoke-results.md).
 
 Pull requests: PR-A `feat/m6-env` (environment and env check); PR-B
 `feat/m6-harness` (audio loader, `AsrAdapter`, `run_timed`, validators); PR-C

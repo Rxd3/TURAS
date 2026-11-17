@@ -262,7 +262,7 @@ def test_distinct_texts_write_no_dedup_map(make_input, run_context):
 
 
 def test_texts_are_compared_byte_for_byte(make_input, run_context):
-    texts = (" SYNTHETIC a", "SYNTHETIC a", "SYNTHETIC A", "SYNTHETIC a ", "SYNTHETIC ç", "SYNTHETIC ç")
+    texts = (" SYNTHETIC a", "SYNTHETIC a", "SYNTHETIC A", "SYNTHETIC a ", "SYNTHETIC \u00e7", "SYNTHETIC c\u0327")
     hyp = hyp_of(*(cand(f"c{k:02d}", k, text) for k, text in enumerate(texts, start=1)))
     row = nbest_row(hyp, make_input("utt_a"), run_context, 6, "conv")
     assert [c["text"] for c in row["candidates"]] == list(texts)

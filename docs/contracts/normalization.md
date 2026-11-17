@@ -38,6 +38,13 @@ Apply these operations in order:
 6. Collapse every run of whitespace to one ASCII space and strip ends.
    Preserve digits, decimal grouping content after punctuation removal, currency
    symbols (category S), accents, suffixes and nonpunctuation characters.
+7. Unicode NFC again. Deleting a format character (step 3) or an apostrophe
+   (step 4) can leave a base letter next to a combining mark that NFC composes,
+   for example `e` + U+200B + U+0301 `→ é` (U+00E9).
+
+`tr-normalized-v1` is idempotent: applied to its own output, it returns that
+output unchanged, for every input. Step 7 is what makes it so; without it, the
+example above would give `e` + U+0301 on the first pass and `é` on the second.
 
 Normalized WER splits on the resulting ASCII space. Normalized CER uses Unicode
 code points including resulting single internal spaces. Do not expand digits to
@@ -55,6 +62,7 @@ The policy examples are string transformation rules, **not dataset transcripts**
 `I` + U+0307 `→ i`, while `i` + U+0307 stays `i` + U+0307;
 `Ankara'da`, `Ankara’da` and `Ankaraʼda` (U+0027, U+2019, U+02BC) `→ ankarada`;
 `%5 → %5`, `₺100 → ₺100`, `a+b-c/d → a+b c d`; `a` + U+200B + `b → ab`;
+`e` + U+200B + U+0301 `→ é` (U+00E9) in one pass;
 `a` + U+00A0 + space + U+2028 + `b → a b`; empty or whitespace-only text `→` empty.
 Keep dotted/dotless families distinct. Planned implementation tests should cover
 decomposed dotted I, apostrophes, format characters, `%`, repeated whitespace,
@@ -85,3 +93,5 @@ otherwise a substitution), then deletion, then insertion. Golden test: reference
   keeps `%`, defines whitespace as `str.isspace()`, documents the digit
   apostrophe and number grouping effects, and states the alignment tie-break with
   its backtrace direction. The label `tr-normalized-v1` is kept until first freeze.
+  Amended by M6 on 2026-11-17: adds a final NFC (step 7) and states that
+  `tr-normalized-v1` is idempotent for every input.

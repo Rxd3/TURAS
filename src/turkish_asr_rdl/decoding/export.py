@@ -60,7 +60,6 @@ def prediction_row(
     nbest_artifact_sha256: str | None,
 ) -> dict:
     """One prediction row in contract field order; the text stays raw."""
-    error = {"code": hyp.error_code, "message": hyp.error_message} if hyp.status == "error" else None
     return {
         **_identity(hyp, inp, ctx),
         "status": hyp.status,
@@ -71,8 +70,12 @@ def prediction_row(
         "decoder_config_sha256": ctx.decoder_config_sha256,
         "normalization_version": ctx.normalization_version,
         "timing_record_id": timing_record_id,
-        "error": error,
+        "error": _error_object(hyp),
     }
+
+
+def _error_object(hyp: Hypothesis) -> dict[str, Any] | None:
+    return {"code": hyp.error_code, "message": hyp.error_message} if hyp.status == "error" else None
 
 
 def _candidate_row(candidate: Candidate) -> dict[str, Any]:
@@ -82,6 +85,8 @@ def _candidate_row(candidate: Candidate) -> dict[str, Any]:
         "rdl_log_score": None,
         "combined_score": None,
     }
+    if not isinstance(candidate.score_details, Mapping):
+        raise ValueError(f"candidate {candidate.candidate_id!r}: score_details must be an object")
     given = candidate.score_details.get("null_reasons", {})
     if not isinstance(given, Mapping):
         raise ValueError(f"candidate {candidate.candidate_id!r}: score_details.null_reasons must be an object")
@@ -103,7 +108,7 @@ def nbest_row(
     hyp: Hypothesis, inp: InferenceInput, ctx: RunContext, requested_n: int, score_convention_id: str
 ) -> dict:
     """One N-best row; scores the system does not produce are null with a reason."""
-    candidates = [_candidate_row(c) for c in hyp.candidates]
+    candidates = _candidate_rows(hyp)
     return {
         **_identity(hyp, inp, ctx),
         "model_artifact_sha256": ctx.model_artifact_sha256,
@@ -113,6 +118,16 @@ def nbest_row(
         "score_convention_id": score_convention_id,
         "candidates": candidates,
     }
+
+
+def _candidate_rows(hyp: Hypothesis) -> list[dict[str, Any]]:
+    return [_candidate_row(c) for c in hyp.candidates]
+
+
+def adapter_result_fields(hyp: Hypothesis, requested_n: int) -> dict[str, Any]:
+    """Every value the prediction row, and the N-best row when requested_n > 0, takes from one result."""
+    fields = {"status": hyp.status, "hypothesis_text": hyp.text, "error": _error_object(hyp)}
+    return {**fields, "candidates": _candidate_rows(hyp)} if requested_n > 0 else fields
 
 
 def _git(repo_dir: Path, *args: str) -> str | None:

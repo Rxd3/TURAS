@@ -9,6 +9,7 @@ import turkish_asr_rdl.decoding.export as export_module
 from turkish_asr_rdl.decoding.export import (
     MANIFEST_GROUPS,
     NOT_PRODUCED,
+    adapter_result_fields,
     git_state,
     nbest_row,
     prediction_row,
@@ -131,6 +132,22 @@ def test_nbest_row_refuses_non_object_null_reasons(make_input, run_context):
     bad = Candidate("c1", 1, "SYNTHETIC x", (1,), -1.0, "kind", score_details={"null_reasons": "none"})
     with pytest.raises(ValueError, match="null_reasons"):
         nbest_row(Hypothesis("utt_a", "ok", "SYNTHETIC x", (bad,)), make_input("utt_a"), run_context, 1, "conv")
+
+
+@pytest.mark.parametrize("details", [None, ["SYNTHETIC"], "SYNTHETIC"])
+def test_nbest_row_refuses_non_object_score_details(make_input, run_context, details):
+    bad = Candidate("c1", 1, "SYNTHETIC x", (1,), -1.0, "kind", score_details=details)
+    with pytest.raises(ValueError, match="'c1': score_details must be an object"):
+        nbest_row(Hypothesis("utt_a", "ok", "SYNTHETIC x", (bad,)), make_input("utt_a"), run_context, 1, "conv")
+
+
+def test_adapter_result_fields_are_the_values_the_rows_take_from_the_result(make_input, run_context):
+    hyp = scored_hyp()
+    pred = prediction_row(hyp, make_input("utt_a"), run_context, "t1", None)
+    nbest = nbest_row(hyp, make_input("utt_a"), run_context, 5, "conv")
+    expected = {key: pred[key] for key in ("status", "hypothesis_text", "error")}
+    assert adapter_result_fields(hyp, 5) == {**expected, "candidates": nbest["candidates"]}
+    assert adapter_result_fields(hyp, 0) == expected
 
 
 def test_error_hypothesis_nbest_row_has_no_candidates(make_input, run_context):

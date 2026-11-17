@@ -22,10 +22,16 @@ import soundfile as sf
 import soxr
 
 from turkish_asr_rdl.decoding.audio import TARGET_SAMPLE_RATE_HZ, load_audio, resolve_audio_path
-from turkish_asr_rdl.decoding.export import RunContext, nbest_row, prediction_row, run_manifest
+from turkish_asr_rdl.decoding.export import (
+    RunContext,
+    adapter_result_fields,
+    nbest_row,
+    prediction_row,
+    run_manifest,
+)
 from turkish_asr_rdl.decoding.hardware import probe_gpu, thermal_flag
 from turkish_asr_rdl.decoding.interface import AsrAdapter, AudioItem, Hypothesis, InferenceInput
-from turkish_asr_rdl.schemas.jsonl import write_json, write_jsonl
+from turkish_asr_rdl.schemas.jsonl import encode_jsonl, write_json, write_jsonl
 
 MIN_WARMUP_BATCHES = 3
 END_TO_END_SCOPE = "audio read, decode and resample through result serialization"
@@ -102,7 +108,9 @@ def _check_arguments(timed: Sequence[InferenceInput], warmup: Sequence[Inference
 
 
 def _one_line(text: str) -> str:
-    return " ".join(text.split())[:_MAX_MESSAGE_CHARS]
+    """One line of valid UTF-8 text: characters UTF-8 cannot encode become backslash escapes."""
+    writable = text.encode("utf-8", "backslashreplace").decode("utf-8")
+    return " ".join(writable.split())[:_MAX_MESSAGE_CHARS]
 
 
 def _error_hypotheses(items: Sequence[AudioItem], code: str, message: str) -> list[Hypothesis]:
@@ -124,21 +132,12 @@ def _transcribe(adapter: AsrAdapter, items: Sequence[AudioItem]) -> list[Hypothe
     return hypotheses
 
 
-def _plain(value: Any) -> Any:
-    """json.dumps fallback: dataclasses and read-only mappings become plain objects."""
-    if dataclasses.is_dataclass(value) and not isinstance(value, type):
-        return {f.name: getattr(value, f.name) for f in dataclasses.fields(value)}
-    if isinstance(value, Mapping):
-        return dict(value)
-    raise TypeError(f"{type(value).__name__} is not JSON serializable")
-
-
-def _serialized(hypothesis: Hypothesis) -> Hypothesis:
-    """Serialize one result as strict JSON; a result that cannot be written becomes an error row."""
+def _serialized(hypothesis: Hypothesis, requested_n: int) -> Hypothesis:
+    """Build and encode what the output files take from one result; one that cannot be written becomes an error row."""
     try:
-        json.dumps(hypothesis, default=_plain, ensure_ascii=False, allow_nan=False)
-    except (TypeError, ValueError, RecursionError) as exc:
-        message = _one_line(f"adapter result cannot be written as strict JSON: {exc}")
+        encode_jsonl([adapter_result_fields(hypothesis, requested_n)])
+    except Exception as exc:  # any failure here would stop write_run_outputs after the whole timed run
+        message = _one_line(f"adapter result cannot be written: {type(exc).__name__}: {exc}")
         return Hypothesis(hypothesis.utterance_id, "error", None, error_code="adapter_output_invalid",
                           error_message=message)
     return hypothesis
@@ -155,7 +154,7 @@ def _timed_batch(adapter: AsrAdapter, batch: Sequence[InferenceInput], audio_roo
     hypotheses = _transcribe(adapter, items)
     sync()
     c1 = clock()
-    hypotheses = [_serialized(h) for h in hypotheses]
+    hypotheses = [_serialized(h, adapter.requested_n) for h in hypotheses]
     sync()
     t1 = clock()
     audio_s = sum(len(item.samples) for item in items) / TARGET_SAMPLE_RATE_HZ

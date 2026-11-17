@@ -63,14 +63,15 @@ def fake_clock(step=0.5):
 
 @pytest.fixture
 def setup(tmp_path, write_tone, make_input):
-    """Write SYNTHETIC tones: warm-up clips of 2 s and timed clips of 1 s."""
+    """Write SYNTHETIC tones: warm-up clips of 2 s and timed clips of 1 s unless timed_s gives their lengths."""
 
-    def _setup(warm=WARM, timed=TIMED):
+    def _setup(warm=WARM, timed=TIMED, timed_s=None):
+        seconds = dict(zip(timed, timed_s or [1.0] * len(timed)))
         for uid in warm:
             write_tone(f"audio/{uid}.flac", 16000, 2.0)
         for uid in timed:
-            write_tone(f"audio/{uid}.flac", 16000, 1.0)
-        return [make_input(u, 1.0) for u in timed], [make_input(u, 2.0) for u in warm]
+            write_tone(f"audio/{uid}.flac", 16000, seconds[uid])
+        return [make_input(u, seconds[u]) for u in timed], [make_input(u, 2.0) for u in warm]
 
     return _setup
 
@@ -81,15 +82,18 @@ def run(adapter, timed, warm, tmp_path, **kwargs):
 
 
 def test_rtf_is_sum_over_sum_and_excludes_warmup(setup, tmp_path):
-    timed, warm = setup()
+    # Every batch costs 1.5 s end to end and 0.5 s core: a mean of per-batch ratios gives 1.125,
+    # counting the 2 s warm-up batches gives 0.875, the sum over sum gives 3 s / 3 s = 1.0.
+    timed, warm = setup(timed_s=(1.0, 2.0))
     result = run(FakeAdapter(), timed, warm, tmp_path, repeats=2)
-    assert result.end_to_end_rtf == pytest.approx(1.5)
-    assert result.core_model_rtf == pytest.approx(0.5)
-    assert result.per_repeat_end_to_end_rtf == pytest.approx((1.5, 1.5))
+    assert result.end_to_end_rtf == pytest.approx(1.0)
+    assert result.core_model_rtf == pytest.approx(1.0 / 3.0)
+    assert result.per_repeat_end_to_end_rtf == pytest.approx((1.0, 1.0))
     assert result.cold_load_s == pytest.approx(0.5)
     assert all(not r.warmup for r in result.records if r.repeat > 0)
     assert [r.repeat for r in result.records] == [0, 0, 0, 1, 1, 2, 2]
     assert all(r.warmup and r.audio_duration_s == pytest.approx(2.0) for r in result.records[:3])
+    assert [r.audio_duration_s for r in result.records[3:]] == pytest.approx([1.0, 2.0, 1.0, 2.0])
 
 
 def test_batches_share_one_timing_record(setup, tmp_path):

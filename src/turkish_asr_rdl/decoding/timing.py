@@ -31,7 +31,7 @@ from turkish_asr_rdl.decoding.export import (
     run_manifest,
 )
 from turkish_asr_rdl.decoding.hardware import probe_gpu, thermal_flag
-from turkish_asr_rdl.decoding.interface import AsrAdapter, AudioItem, Hypothesis, InferenceInput
+from turkish_asr_rdl.decoding.interface import AsrAdapter, AudioItem, Hypothesis, InferenceInput, check_adapter
 from turkish_asr_rdl.schemas.jsonl import encode_jsonl, write_json, write_jsonl
 
 MIN_WARMUP_BATCHES = 3
@@ -206,6 +206,7 @@ def run_timed(
 ) -> TimedRun:
     """Load once (cold load), run the warm-up batches, then time every repeat of the timed inputs."""
     _check_arguments(timed_inputs, warmup_inputs, repeats, batch_size)
+    check_adapter(adapter)
     sync_fn, sync_name = default_sync() if sync is None else (sync, getattr(sync, "__name__", type(sync).__name__))
     sync_fn()
     start = clock()
@@ -301,8 +302,7 @@ def write_run_outputs(out_dir: Path, run: TimedRun, inputs: Sequence[InferenceIn
                       adapter: AsrAdapter, *, command: str) -> Mapping[str, str]:
     """Write predictions, N-best (when produced), timing and manifest files; return {file name: sha256}."""
     _check_run_matches(run, inputs, ctx, adapter)
-    if adapter.requested_n > 0 and not adapter.score_convention_id:
-        raise ValueError("the adapter produces an N-best list but has no score_convention_id")
+    check_adapter(adapter)
     out = Path(out_dir)
     out.mkdir(parents=True, exist_ok=True)
     pairs = list(zip(run.hypotheses, inputs))

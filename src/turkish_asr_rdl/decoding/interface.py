@@ -1,12 +1,14 @@
 """The inference interface every system implements for the shared timing harness."""
 from __future__ import annotations
 
+import reprlib
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass, field
 from typing import Any, Protocol
 
 import numpy as np
 
+from turkish_asr_rdl.schemas.jsonl import encode_jsonl
 from turkish_asr_rdl.schemas.predictions import INFERENCE_INPUT_FIELDS, validate_inference_inputs
 
 
@@ -83,3 +85,25 @@ class AsrAdapter(Protocol):
 
     def transcribe(self, batch: Sequence[AudioItem]) -> list[Hypothesis]:
         """Return one Hypothesis per AudioItem, in the same order."""
+
+
+def check_adapter(adapter: AsrAdapter) -> None:
+    """Raise a one-line ValueError when the adapter's N-best settings or config cannot be written."""
+    requested_n = getattr(adapter, "requested_n", None)
+    if not isinstance(requested_n, int) or isinstance(requested_n, bool) or requested_n < 0:
+        raise ValueError(f"adapter.requested_n must be an integer of at least 0, got {reprlib.repr(requested_n)}")
+    convention = getattr(adapter, "score_convention_id", None)
+    if requested_n > 0 and not (isinstance(convention, str) and convention):
+        raise ValueError("adapter.score_convention_id must be a non-empty string when requested_n > 0, "
+                         f"got {reprlib.repr(convention)}")
+    _check_config(getattr(adapter, "config", None))
+
+
+def _check_config(config: Any) -> None:
+    if not isinstance(config, Mapping):
+        raise ValueError(f"adapter.config must be a mapping written as strict JSON, got {type(config).__name__}")
+    try:
+        encode_jsonl([config])
+    except ValueError as exc:
+        detail = " ".join(str(exc.__cause__ or exc).split())
+        raise ValueError(f"adapter.config cannot be written as strict JSON: {detail}") from exc

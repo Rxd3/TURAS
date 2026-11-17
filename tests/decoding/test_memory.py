@@ -67,6 +67,7 @@ def test_cpu_torch_build_has_no_cuda_version(monkeypatch):
 @pytest.mark.parametrize("peaks,expected", [
     ((6.5, 10.0), False),
     ((6.5, 11.0), True),
+    ((11.0, 6.5), True),
     ((None, 11.0), True),
     ((6.5, None), None),
     ((), None),

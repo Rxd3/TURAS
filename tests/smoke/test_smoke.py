@@ -1,0 +1,334 @@
+"""5070 Ti smoke script: clip preparation, inference record, report. SYNTHETIC tones and text only."""
+import io
+import json
+import math
+import os
+import subprocess
+import sys
+from pathlib import Path
+
+import numpy as np
+import pytest
+import soundfile as sf
+
+from turkish_asr_rdl.decoding.export import RunContext, nbest_row
+from turkish_asr_rdl.decoding.interface import Candidate, Hypothesis, InferenceInput
+from turkish_asr_rdl.schemas.jsonl import sha256_file
+from turkish_asr_rdl.schemas.predictions import validate_inference_inputs
+
+SMOKE_DIR = Path(__file__).resolve().parents[2] / "experiments" / "m6-smoke"
+REPO_ROOT = SMOKE_DIR.parents[1]
+NO_GPU = {"ok": False, "error": "SYNTHETIC no gpu"}
+
+
+def tone(rate: int, seconds: float, channels: int = 1, amplitude: float = 0.5) -> np.ndarray:
+    t = np.arange(int(round(rate * seconds))) / rate
+    mono = (amplitude * np.sin(2 * np.pi * 440.0 * t)).astype(np.float32)
+    return mono if channels == 1 else np.stack([mono] * channels, axis=1)
+
+
+def encoded(data: np.ndarray, rate: int, fmt: str, subtype: str) -> bytes:
+    buffer = io.BytesIO()
+    sf.write(buffer, data, rate, format=fmt, subtype=subtype)
+    return buffer.getvalue()
+
+
+def shard_row(segment_id: str, audio, text="SYNTHETIC text") -> dict:
+    return {"segment_id": segment_id, "audio": audio, "human_transcript": text}
+
+
+def good_row(segment_id: str, seconds: float = 1.0) -> dict:
+    return shard_row(segment_id, {"bytes": encoded(tone(16000, seconds), 16000, "FLAC", "PCM_16"), "path": None})
+
+
+def synthetic_clips(smoke, count: int, seconds: float = 1.0):
+    return tuple(smoke.Clip(f"syn_{k}", tone(16000, seconds), f"SYNTHETIC text {k}") for k in range(count))
+
+
+class FakeVram:
+    def __init__(self):
+        self.resets = 0
+
+    def reset(self):
+        self.resets += 1
+
+    def peak(self):
+        return {"peak_vram_gib": 1.5, "peak_reserved_gib": 2.0, "total_vram_gib": 12.0}
+
+
+class FakeAdapter:
+    """SYNTHETIC two-candidate adapter that fails on the IDs it is given."""
+
+    system_id = "smoke-synthetic"
+    model_artifact_sha256 = "b" * 64
+    decoder_config_sha256 = "a" * 64
+    requested_n = 2
+    score_convention_id = "smoke-synthetic-v1"
+
+    def __init__(self, fail_ids=()):
+        self.config = {"repo_id": "synthetic/model", "revision": "c" * 40, "precision": "float16"}
+        self.fail_ids = set(fail_ids)
+
+    def load(self):
+        return None
+
+    def transcribe(self, batch):
+        if any(item.utterance_id in self.fail_ids for item in batch):
+            raise RuntimeError("SYNTHETIC decode failure")
+        return [self._hyp(item.utterance_id) for item in batch]
+
+    def _hyp(self, uid):
+        candidates = tuple(
+            Candidate(f"{uid}-c{k}", k, f"SYNTHETIC {uid} v{k}", (k, 2), -1.0 * k, "seq2seq_token_log_prob_sum")
+            for k in (1, 2)
+        )
+        return Hypothesis(uid, "ok", candidates[0].text, candidates)
+
+    def extra_facts(self, items):
+        return {"decode_path": "beam 2", "items_seen": len(items)}
+
+
+def test_help_runs_without_torch_or_pyarrow():
+    env = {**os.environ, "PYTHONPATH": str(REPO_ROOT / "src")}
+    done = subprocess.run([sys.executable, str(SMOKE_DIR / "smoke.py"), "--help"], capture_output=True,
+                          text=True, env=env, timeout=60, check=False)
+    assert done.returncode == 0, done.stderr
+    assert "--model" in done.stdout and "pyg-hetero" in done.stdout and "--summarize" in done.stdout
+
+
+def test_audio_bytes_reads_struct_and_raw_bytes(smoke):
+    assert smoke.audio_bytes({"bytes": b"abc", "path": "x.opus"}) == b"abc"
+    assert smoke.audio_bytes(b"abc") == b"abc"
+
+
+@pytest.mark.parametrize("value", [None, {"bytes": None}, {"path": "x"}, "abc", {"bytes": b""}])
+def test_audio_bytes_rejects_missing_audio(smoke, value):
+    with pytest.raises(ValueError):
+        smoke.audio_bytes(value)
+
+
+def test_decode_clip_turns_synthetic_opus_into_16k_mono(smoke):
+    samples = smoke.decode_clip(encoded(tone(24000, 1.0, channels=2), 24000, "OGG", "OPUS"))
+    assert samples.dtype == np.float32 and samples.ndim == 1
+    assert abs(len(samples) - 16000) <= 800
+
+
+def test_select_clips_skips_bad_long_and_untranscribed_rows(smoke):
+    rows = [
+        shard_row("bad", {"bytes": b"not audio"}),
+        good_row("long", seconds=smoke.MAX_CLIP_S + 1),
+        shard_row("untranscribed", good_row("x")["audio"], text=""),
+        good_row("keep_1"),
+        good_row("keep_2"),
+        good_row("never_read"),
+    ]
+    consumed = []
+
+    def source():
+        for row in rows:
+            consumed.append(row["segment_id"])
+            yield row
+
+    clips, skipped = smoke.select_clips(source(), 2)
+    assert [c.segment_id for c in clips] == ["keep_1", "keep_2"]
+    assert skipped == {"undecodable": 1, "outside_duration": 1, "no_transcript": 1}
+    assert "never_read" not in consumed
+
+
+def test_select_clips_fails_when_the_shard_has_too_few(smoke):
+    with pytest.raises(ValueError, match="only 1 usable"):
+        smoke.select_clips([good_row("only")], 2)
+
+
+def test_write_clips_rows_pass_the_inference_allowlist(smoke, tmp_path):
+    loud = smoke.Clip("loud", tone(16000, 0.5, amplitude=1.5), "SYNTHETIC loud")
+    clips = synthetic_clips(smoke, 2) + (loud,)
+    rows = smoke.write_clips(clips, tmp_path / "audio")
+    assert validate_inference_inputs(rows).ok
+    assert [r["utterance_id"] for r in rows] == ["syn_0", "syn_1", "loud"]
+    assert len({r["split_manifest_sha256"] for r in rows}) == 1
+    for row in rows:
+        path = tmp_path / "audio" / row["audio_uri"]
+        info = sf.info(path)
+        assert (info.samplerate, info.channels, info.format) == (16000, 1, "FLAC")
+        assert sha256_file(path) == row["audio_sha256"]
+    loud_samples, _ = sf.read(tmp_path / "audio" / rows[2]["audio_uri"])
+    assert np.max(np.abs(loud_samples)) <= 1.0
+    assert np.max(np.abs(loud.samples)) == pytest.approx(1.5, abs=1e-3)
+
+
+def test_load_clips_prepares_once_then_reuses(smoke, tmp_path):
+    calls = []
+
+    def source():
+        calls.append(1)
+        return [good_row(f"seg_{k}") for k in range(8)]
+
+    warmup, timed = smoke.load_clips(tmp_path, 2, rows_source=source)
+    assert len(warmup) == smoke.WARMUP_CLIPS and len(timed) == 2
+    assert all(isinstance(i, InferenceInput) for i in warmup + timed)
+    assert {i.utterance_id for i in warmup}.isdisjoint(i.utterance_id for i in timed)
+    labels = smoke.load_labels(tmp_path)
+    assert set(labels) == {i.utterance_id for i in warmup + timed}
+    again = smoke.load_clips(tmp_path, 2, rows_source=source)
+    assert again == (warmup, timed) and len(calls) == 1
+    smoke.load_clips(tmp_path, 3, rows_source=source)
+    assert len(calls) == 2
+
+
+def _nbest_rows(texts_per_utterance):
+    ctx = RunContext("run_syn", "sys_syn", "rel_syn", "train", "a" * 64, "b" * 64, "c" * 64)
+    rows = []
+    for k, texts in enumerate(texts_per_utterance):
+        uid = f"utt_{k}"
+        inp = InferenceInput("0.1", "rel_syn", "a" * 64, uid, f"{uid}.flac", "d" * 64, 1.0, 16000, 1, "tr")
+        cands = tuple(Candidate(f"{uid}-c{r}", r, t, (r,), -float(r), "seq2seq_token_log_prob_sum")
+                      for r, t in enumerate(texts, start=1))
+        rows.append(nbest_row(Hypothesis(uid, "ok", texts[0], cands), inp, ctx, 3, "conv_syn"))
+    return rows
+
+
+def test_nbest_facts_counts_duplicates_and_validation(smoke):
+    facts = smoke.nbest_facts(_nbest_rows([["SYN a", "SYN b", "SYN c"], ["SYN d", "SYN d"]]), 3)
+    assert facts["requested_n"] == 3 and facts["rows"] == 2
+    assert (facts["min_candidates"], facts["max_candidates"]) == (2, 3)
+    assert facts["utterances_all_distinct"] == 1 and facts["duplicate_texts"] == 1
+    assert facts["validate_nbest_ok"] is False and facts["validation_errors"] >= 1
+    assert len(facts["first_errors"]) <= 3
+
+
+def test_nbest_facts_passes_distinct_lists(smoke):
+    facts = smoke.nbest_facts(_nbest_rows([["SYN a", "SYN b"]]), 3)
+    assert facts["validate_nbest_ok"] is True and facts["duplicate_texts"] == 0
+
+
+def test_nbest_facts_for_systems_without_nbest(smoke):
+    assert smoke.nbest_facts([], 0) == {"requested_n": 0}
+
+
+def _prepared(smoke, tmp_path, count=2):
+    audio_dir = tmp_path / "smoke" / "audio"
+    source = lambda: [good_row(f"seg_{k}") for k in range(smoke.WARMUP_CLIPS + count)]  # noqa: E731
+    return audio_dir, *smoke.load_clips(audio_dir, count, rows_source=source)
+
+
+def test_measure_inference_with_a_fake_adapter(smoke, tmp_path):
+    audio_dir, warmup, timed = _prepared(smoke, tmp_path)
+    vram = FakeVram()
+    record = smoke.measure_inference(FakeAdapter(), warmup, timed, audio_dir=audio_dir, run_dir=tmp_path / "run",
+                                     vram=vram, command="SYNTHETIC", timing={"probe": lambda: NO_GPU})
+    assert record["ok"] is True and record["kind"] == "inference"
+    assert record["statuses"] == {"ok": 2, "empty": 0, "error": 0}
+    assert record["nbest"]["validate_nbest_ok"] is True and record["nbest"]["rows"] == 2
+    assert record["peak_vram_gib"] == 1.5 and vram.resets == 1
+    assert record["clips"]["warmup"] == 3 and record["clips"]["timed"] == 2
+    assert record["timed_audio_s"] == pytest.approx(2.0)
+    assert record["load_s"] >= 0 and record["end_to_end_rtf"] > 0
+    assert record["decode_path"] == "beam 2" and record["items_seen"] == 2
+    assert len(record["sample_hypotheses"]) == 2
+    assert {"predictions.jsonl", "nbest.jsonl", "timing.jsonl", "manifest.json"} <= set(record["outputs"])
+    assert (tmp_path / "run" / "manifest.json").is_file()
+
+
+def test_measure_inference_marks_error_rows_as_failed(smoke, tmp_path):
+    audio_dir, warmup, timed = _prepared(smoke, tmp_path)
+    adapter = FakeAdapter(fail_ids={timed[0].utterance_id})
+    record = smoke.measure_inference(adapter, warmup, timed, audio_dir=audio_dir, run_dir=tmp_path / "run",
+                                     vram=FakeVram(), command="SYNTHETIC", timing={"probe": lambda: NO_GPU})
+    assert record["ok"] is False and record["statuses"]["error"] == 1
+    assert "SYNTHETIC decode failure" in record["first_error"]
+
+
+def test_finite_json_replaces_non_finite_numbers_without_mutating(smoke):
+    original = {"a": [1.0, math.nan, {"b": math.inf}], "c": "x", "d": (2, -math.inf)}
+    cleaned = smoke.finite_json(original)
+    assert cleaned == {"a": [1.0, None, {"b": None}], "c": "x", "d": [2, None]}
+    assert math.isnan(original["a"][1]) and original["a"][2]["b"] == math.inf
+
+
+def test_collect_records_a_failure_with_its_traceback(smoke, tmp_path):
+    def broken(name, artifacts, clips, command):
+        raise RuntimeError("SYNTHETIC broken\nsecond line")
+
+    record = smoke.collect("pyg-hetero", tmp_path, 20, command="SYNTHETIC", runner=broken)
+    assert record["ok"] is False and record["name"] == "pyg-hetero"
+    assert record["error"] == "RuntimeError: SYNTHETIC broken second line"
+    assert "Traceback" in record["traceback"]
+    assert record["wall_s"] >= 0 and record["started_utc"].endswith("+00:00")
+
+
+def test_main_writes_the_record_and_returns_its_exit_code(smoke, tmp_path, monkeypatch, capsys):
+    monkeypatch.setattr(smoke, "run_model", lambda name, artifacts, clips, command: {"kind": "pyg", "ok": True})
+    assert smoke.main(["--model", "pyg-hetero", "--artifacts", str(tmp_path)]) == 0
+    saved = json.loads((tmp_path / "smoke" / "pyg-hetero.json").read_text(encoding="utf-8"))
+    assert saved["ok"] is True and saved["name"] == "pyg-hetero"
+    assert capsys.readouterr().out.strip().startswith("pyg-hetero: ok")
+
+    monkeypatch.setattr(smoke, "run_model", lambda name, artifacts, clips, command: {"kind": "pyg", "ok": False})
+    assert smoke.main(["--model", "pyg-hetero", "--artifacts", str(tmp_path)]) == 1
+    out = capsys.readouterr().out.strip()
+    assert out.startswith("pyg-hetero: FAILED") and "\n" not in out
+
+
+@pytest.mark.parametrize("argv", [
+    ["--model", "pyg-hetero"],
+    ["--model", "pyg-hetero", "--artifacts", "x", "--clips", "0"],
+    ["--model", "unknown", "--artifacts", "x"],
+    [],
+])
+def test_main_rejects_bad_arguments(smoke, argv):
+    with pytest.raises(SystemExit) as caught:
+        smoke.main(argv)
+    assert caught.value.code == 2
+
+
+def _records(smoke):
+    inference_ok = {"name": "whisper-small", "kind": "inference", "ok": True, "config": {"precision": "float16"},
+                    "load_s": 2.5, "peak_vram_gib": 1.25, "end_to_end_rtf": 0.05, "core_model_rtf": 0.04,
+                    "nbest": {"requested_n": 10, "min_candidates": 10, "utterances_all_distinct": 20, "rows": 20,
+                              "duplicate_texts": 0, "validate_nbest_ok": True},
+                    "decode_path": "beam 10", "sample_hypotheses": ["SYNTHETIC hidden text"],
+                    "whisper_generate_trap": {"duplicate_texts": 37, "utterances_with_duplicates": 9}}
+    inference_failed = {"name": "qwen3-asr-1.7b", "kind": "inference", "ok": False, "error": "RuntimeError: SYN"}
+    training = {"name": "train-whisper-small-full", "kind": "training", "ok": True, "outcome": "completed",
+                "batch_size": 8, "peak_vram_gib": 7.5, "total_vram_gib": 11.9, "fits_in_dedicated_vram": True,
+                "seconds_per_step": 1.2}
+    oom = {"name": "train-whisper-large-v3-full", "kind": "training", "ok": True, "outcome": "out_of_memory",
+           "batch_size": 1, "peak_vram_gib": 11.5, "total_vram_gib": 11.9, "fits_in_dedicated_vram": False,
+           "oom_message": "OutOfMemoryError: SYNTHETIC"}
+    pyg = {"name": "pyg-hetero", "kind": "pyg", "ok": True, "outcome": "completed", "torch_geometric": "2.8.1",
+           "fp32": {"ok": True}, "bf16": {"ok": False, "error": "RuntimeError: SYN bf16"}}
+    return {r["name"]: r for r in (inference_ok, inference_failed, training, oom, pyg)}
+
+
+def test_render_report_lists_every_model_and_hides_hypotheses(smoke):
+    report = smoke.render_report(_records(smoke))
+    for name in smoke.MODEL_NAMES:
+        assert name in report
+    assert "not run" in report and "FAILED" in report and "out of memory" in report
+    assert "SYNTHETIC hidden text" not in report
+    assert "37" in report and "RuntimeError: SYN bf16" in report
+
+
+def test_summarize_reads_results_and_writes_the_report(smoke, tmp_path):
+    folder = tmp_path / "smoke"
+    folder.mkdir()
+    for name, record in _records(smoke).items():
+        (folder / f"{name}.json").write_text(json.dumps(record), encoding="utf-8")
+    (folder / "xlsr-tr-cv7.json").write_text("{broken", encoding="utf-8")
+    path = smoke.summarize(tmp_path)
+    assert path == folder / "REPORT.md"
+    text = path.read_text(encoding="utf-8")
+    assert "unreadable" in text and "whisper-small" in text
+
+
+def test_main_summarize_prints_the_report_path(smoke, tmp_path, capsys):
+    (tmp_path / "smoke").mkdir()
+    assert smoke.main(["--summarize", str(tmp_path)]) == 0
+    assert "REPORT.md" in capsys.readouterr().out
+
+
+def test_main_summarize_reports_a_missing_folder(smoke, tmp_path, capsys):
+    assert smoke.main(["--summarize", str(tmp_path / "missing")]) == 1
+    out = capsys.readouterr().out.strip()
+    assert "\n" not in out and "missing" in out

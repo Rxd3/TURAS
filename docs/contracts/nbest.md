@@ -15,8 +15,10 @@ the candidate ID that was kept. After deduplication, the candidate `text` values
 in a row are pairwise distinct, compared exactly, code point for code point; a
 repeated text is invalid even when `dedup_map` is present. `actual_n` is the
 number of kept candidates and is at most `requested_n`. Kept candidates keep
-their original `rank` values: integers, strictly increasing, from 1 to
-`requested_n`, with gaps allowed (for example 1, 3, 4). Candidates whose raw
+their original `rank` values. Kept ranks are strictly increasing integers in
+1..`requested_n`. In a row with at least one kept candidate, the first kept
+rank is 1. Gaps, left where deduplication removed a candidate, are allowed only
+after rank 1: 1, 3, 4 is valid; 2, 3, 4 is not. Candidates whose raw
 texts differ but match after `tr-normalized-v1` are allowed and reported as a
 warning.
 
@@ -92,4 +94,6 @@ and the ceiling imposed by candidate coverage, including identical/empty lists.
 - 0.2 (proposed by M6 on 2026-11-17, pending review by M4/M5 and M3;
   [D18](../decisions.md)): names `score_details.null_reasons`, adds the optional
   row-level `dedup_map`, requires distinct candidate texts after deduplication,
-  and keeps original rank values with gaps allowed.
+  and keeps original rank values with gaps allowed. Amended by M6 on 2026-11-17:
+  kept ranks are strictly increasing integers in 1..`requested_n`, the first
+  kept rank is 1, and gaps from deduplication are allowed only after it.

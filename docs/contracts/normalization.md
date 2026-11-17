@@ -39,7 +39,7 @@ Apply these operations in order:
    Preserve digits, decimal grouping content after punctuation removal, currency
    symbols (category S), accents, suffixes and nonpunctuation characters.
 7. Unicode NFC again. Deleting a format character (step 3) or an apostrophe
-   (step 4) can leave a base letter next to a combining mark that NFC composes,
+   (step 4) can leave two code points next to each other that NFC composes,
    for example `e` + U+200B + U+0301 `→ é` (U+00E9).
 
 `tr-normalized-v1` is idempotent: applied to its own output, it returns that

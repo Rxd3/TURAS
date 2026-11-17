@@ -162,10 +162,11 @@ def test_copies_of_one_hypothesis_become_an_error_row_and_the_run_continues(run_
     assert validate_predictions(read_jsonl(out / "predictions.jsonl"), expected_ids=list(TIMED)).ok
 
 
-def test_copies_of_a_later_candidate_are_caught_too(run_and_write):
-    candidates = (Candidate("c1", 1, "SYNTHETIC a", (1, 2), -1.0, "kind"),
-                  Candidate("c2", 2, "SYNTHETIC a", (3, 4), -2.0, "kind"),
-                  Candidate("c3", 3, "SYNTHETIC a", (3, 4), -3.0, "kind"))
+@pytest.mark.parametrize("token_ids", [((1, 2), (3, 4), (3, 4)), ((1, 2), (3, 4), (1, 2))],
+                         ids=["copy_of_a_later_candidate", "copy_not_next_to_its_original"])
+def test_any_two_copied_candidates_are_caught(run_and_write, token_ids):
+    candidates = tuple(Candidate(f"c{k}", k, "SYNTHETIC a", ids, -1.0 * k, "kind")
+                       for k, ids in enumerate(token_ids, start=1))
     run, _ = run_and_write(FixedResultAdapter(Hypothesis("utt_x", "ok", "SYNTHETIC a", candidates), requested_n=3))
     assert {h.error_message for h in run.hypotheses} == {COPIES_MESSAGE}
 

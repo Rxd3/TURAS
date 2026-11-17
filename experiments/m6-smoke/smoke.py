@@ -186,6 +186,16 @@ def nbest_facts(rows: Sequence[Mapping[str, Any]], requested_n: int) -> dict[str
         "utterances_all_distinct": sum(1 for d in duplicates if d == 0), "duplicate_texts": sum(duplicates),
         "validate_nbest_ok": report.ok, "validation_errors": len(report.errors),
         "first_errors": list(report.errors[:3]),
+        **_score_range([c.get("acoustic_log_score") for row in rows for c in row["candidates"]]),
+    }
+
+
+def _score_range(scores: Sequence[Any]) -> dict[str, Any]:
+    numbers = [s for s in scores if isinstance(s, (int, float)) and not isinstance(s, bool)]
+    return {
+        "acoustic_log_score_min": min(numbers, default=None),
+        "acoustic_log_score_max": max(numbers, default=None),
+        "acoustic_log_scores_finite": len(numbers) == len(scores) and all(math.isfinite(s) for s in numbers),
     }
 
 
@@ -195,17 +205,9 @@ def _context(adapter: Any, timed: Sequence[InferenceInput]) -> RunContext:
                       first.split_manifest_sha256, adapter.model_artifact_sha256, adapter.decoder_config_sha256)
 
 
-def measure_inference(adapter: Any, warmup: Sequence[InferenceInput], timed: Sequence[InferenceInput], *,
-                      audio_dir: Path, run_dir: Path, vram: Any, command: str,
-                      timing: Mapping[str, Any] | None = None) -> dict[str, Any]:
-    """Load, warm up and time the adapter through run_timed; export and check its outputs."""
-    vram.reset()
-    run = run_timed(adapter, timed, warmup, audio_root=audio_dir, run_id=adapter.system_id, repeats=1,
-                    batch_size=1, **dict(timing or {}))
-    memory = vram.peak()
-    outputs = write_run_outputs(run_dir, run, timed, _context(adapter, timed), adapter, command=command)
-    rows = read_jsonl(Path(run_dir) / "nbest.jsonl") if "nbest.jsonl" in outputs else []
-    items = [AudioItem(i.utterance_id, load_audio(resolve_audio_path(audio_dir, i.audio_uri))) for i in timed]
+def _run_facts(adapter: Any, run: Any, warmup: Sequence[InferenceInput], timed: Sequence[InferenceInput],
+               memory: Mapping[str, Any]) -> dict[str, Any]:
+    """Speed, memory and status facts, available as soon as run_timed returns."""
     statuses = Counter(h.status for h in run.hypotheses)
     timed_records = [r for r in run.records if not r.warmup]
     return {
@@ -217,11 +219,35 @@ def measure_inference(adapter: Any, warmup: Sequence[InferenceInput], timed: Seq
         "sync_method": timed_records[0].sync_method, "thermal_flags": run.thermal_flags,
         "statuses": {status: statuses[status] for status in STATUSES},
         "first_error": next((h.error_message for h in run.hypotheses if h.status == "error"), None),
-        "nbest": nbest_facts(rows, adapter.requested_n),
         "sample_hypotheses": [h.text[:_SAMPLE_CHARS] for h in run.hypotheses if h.status == "ok"][:2],
-        "outputs": dict(outputs),
-        **adapter.extra_facts(items),
     }
+
+
+def _output_facts(adapter: Any, run: Any, timed: Sequence[InferenceInput], audio_dir: Path, run_dir: Path,
+                  command: str) -> dict[str, Any]:
+    """Export the run, check the N-best file and add the adapter's own facts."""
+    outputs = write_run_outputs(run_dir, run, timed, _context(adapter, timed), adapter, command=command)
+    rows = read_jsonl(Path(run_dir) / "nbest.jsonl") if "nbest.jsonl" in outputs else []
+    items = [AudioItem(i.utterance_id, load_audio(resolve_audio_path(audio_dir, i.audio_uri))) for i in timed]
+    return {"nbest": nbest_facts(rows, adapter.requested_n), "outputs": dict(outputs), **adapter.extra_facts(items)}
+
+
+def measure_inference(adapter: Any, warmup: Sequence[InferenceInput], timed: Sequence[InferenceInput], *,
+                      audio_dir: Path, run_dir: Path, vram: Any, command: str,
+                      timing: Mapping[str, Any] | None = None) -> dict[str, Any]:
+    """Load, warm up and time the adapter through run_timed; export and check its outputs.
+
+    A failure after the timed run keeps the speed and memory facts and is recorded as the error.
+    """
+    vram.reset()
+    run = run_timed(adapter, timed, warmup, audio_root=audio_dir, run_id=adapter.system_id, repeats=1,
+                    batch_size=1, **dict(timing or {}))
+    facts = _run_facts(adapter, run, warmup, timed, vram.peak())
+    try:
+        later = _output_facts(adapter, run, timed, audio_dir, run_dir, command)
+    except Exception as exc:  # recorded with its traceback; the measured numbers above are kept
+        return {**facts, "ok": False, "error": smoke_common.one_line(exc), "traceback": traceback.format_exc()}
+    return {**facts, **later}
 
 
 def run_model(name: str, artifacts: Path, clips: int, command: str) -> dict[str, Any]:
@@ -231,12 +257,14 @@ def run_model(name: str, artifacts: Path, clips: int, command: str) -> dict[str,
     vram = smoke_common.CudaVram()
     if name in PYG_MODELS:
         facts = probes.pyg_probe(vram)
-        return {"kind": "pyg", "ok": facts["outcome"] == "completed", **facts}
+        return {"kind": "pyg", "ok": facts["outcome"] != "failed", **facts}
     warmup, timed = load_clips(audio_dir, clips)
     if name in TRAINING_MODELS:
         labels = load_labels(audio_dir)
         pairs = [(load_audio(resolve_audio_path(audio_dir, i.audio_uri)), labels[i.utterance_id]) for i in timed]
         return {"kind": "training", "ok": True, **probes.train_probe(name, pairs, vram)}
+    import transformers  # noqa: F401  imported before the timed cold load, which then measures only the weights
+
     adapter = adapters.build_adapter(name)
     return measure_inference(adapter, warmup, timed, audio_dir=audio_dir, run_dir=root / "runs" / name,
                              vram=vram, command=command)

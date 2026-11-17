@@ -190,3 +190,9 @@ def test_cuda_torch_refuses_a_machine_without_cuda(common, monkeypatch):
     monkeypatch.setitem(sys.modules, "torch", fake)
     with pytest.raises(RuntimeError, match="CUDA is not available"):
         common.cuda_torch()
+
+
+@pytest.mark.parametrize("fp32, bf16, outcome", [(True, True, "completed"), (True, False, "fp32 only"),
+                                                 (False, True, "failed"), (False, False, "failed")])
+def test_pyg_outcome_fails_only_when_fp32_fails(probes, fp32, bf16, outcome):
+    assert probes._pyg_outcome({"fp32": {"ok": fp32}, "bf16": {"ok": bf16}}) == outcome

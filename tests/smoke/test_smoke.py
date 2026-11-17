@@ -53,7 +53,8 @@ class FakeVram:
         self.resets += 1
 
     def peak(self):
-        return {"peak_vram_gib": 1.5, "peak_reserved_gib": 2.0, "total_vram_gib": 12.0}
+        return {"peak_vram_gib": 1.5, "peak_reserved_gib": 2.0, "free_vram_before_gib": 10.5,
+                "total_vram_gib": 12.0}
 
 
 class FakeAdapter:
@@ -195,6 +196,8 @@ def test_nbest_facts_counts_duplicates_and_validation(smoke):
     assert facts["utterances_all_distinct"] == 1 and facts["duplicate_texts"] == 1
     assert facts["validate_nbest_ok"] is False and facts["validation_errors"] >= 1
     assert len(facts["first_errors"]) <= 3
+    assert (facts["acoustic_log_score_min"], facts["acoustic_log_score_max"]) == (-3.0, -1.0)
+    assert facts["acoustic_log_scores_finite"] is True
 
 
 def test_nbest_facts_passes_distinct_lists(smoke):
@@ -220,7 +223,7 @@ def test_measure_inference_with_a_fake_adapter(smoke, tmp_path):
     assert record["ok"] is True and record["kind"] == "inference"
     assert record["statuses"] == {"ok": 2, "empty": 0, "error": 0}
     assert record["nbest"]["validate_nbest_ok"] is True and record["nbest"]["rows"] == 2
-    assert record["peak_vram_gib"] == 1.5 and vram.resets == 1
+    assert record["peak_vram_gib"] == 1.5 and record["free_vram_before_gib"] == 10.5 and vram.resets == 1
     assert record["clips"]["warmup"] == 3 and record["clips"]["timed"] == 2
     assert record["timed_audio_s"] == pytest.approx(2.0)
     assert record["load_s"] >= 0 and record["end_to_end_rtf"] > 0
@@ -237,6 +240,26 @@ def test_measure_inference_marks_error_rows_as_failed(smoke, tmp_path):
                                      vram=FakeVram(), command="SYNTHETIC", timing={"probe": lambda: NO_GPU})
     assert record["ok"] is False and record["statuses"]["error"] == 1
     assert "SYNTHETIC decode failure" in record["first_error"]
+
+
+def test_measure_inference_keeps_the_numbers_when_a_later_step_fails(smoke, tmp_path):
+    class LateFailure(FakeAdapter):
+        def extra_facts(self, items):
+            raise RuntimeError("SYNTHETIC extra facts failure")
+
+    audio_dir, warmup, timed = _prepared(smoke, tmp_path)
+    record = smoke.measure_inference(LateFailure(), warmup, timed, audio_dir=audio_dir, run_dir=tmp_path / "run",
+                                     vram=FakeVram(), command="SYNTHETIC", timing={"probe": lambda: NO_GPU})
+    assert record["ok"] is False and record["error"] == "RuntimeError: SYNTHETIC extra facts failure"
+    assert "Traceback" in record["traceback"]
+    assert record["end_to_end_rtf"] > 0 and record["peak_vram_gib"] == 1.5 and record["statuses"]["ok"] == 2
+
+
+def test_score_range_flags_missing_or_non_finite_scores(smoke):
+    assert smoke._score_range([-1.0, None])["acoustic_log_scores_finite"] is False
+    assert smoke._score_range([-1.0, float("nan")])["acoustic_log_scores_finite"] is False
+    assert smoke._score_range([]) == {"acoustic_log_score_min": None, "acoustic_log_score_max": None,
+                                      "acoustic_log_scores_finite": True}
 
 
 def test_finite_json_replaces_non_finite_numbers_without_mutating(smoke):
@@ -296,7 +319,7 @@ def _records(smoke):
     oom = {"name": "train-whisper-large-v3-full", "kind": "training", "ok": True, "outcome": "out_of_memory",
            "batch_size": 1, "peak_vram_gib": 11.5, "total_vram_gib": 11.9, "fits_in_dedicated_vram": False,
            "oom_message": "OutOfMemoryError: SYNTHETIC"}
-    pyg = {"name": "pyg-hetero", "kind": "pyg", "ok": True, "outcome": "completed", "torch_geometric": "2.8.1",
+    pyg = {"name": "pyg-hetero", "kind": "pyg", "ok": True, "outcome": "fp32 only", "torch_geometric": "2.8.1",
            "fp32": {"ok": True}, "bf16": {"ok": False, "error": "RuntimeError: SYN bf16"}}
     return {r["name"]: r for r in (inference_ok, inference_failed, training, oom, pyg)}
 
@@ -307,7 +330,7 @@ def test_render_report_lists_every_model_and_hides_hypotheses(smoke):
         assert name in report
     assert "not run" in report and "FAILED" in report and "out of memory" in report
     assert "SYNTHETIC hidden text" not in report
-    assert "37" in report and "RuntimeError: SYN bf16" in report
+    assert "37" in report and "RuntimeError: SYN bf16" in report and "fp32 only" in report
 
 
 def test_summarize_reads_results_and_writes_the_report(smoke, tmp_path):

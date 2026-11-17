@@ -72,7 +72,8 @@ C:\Users\benda\Downloads\nlp\project3-asr\.venv\Scripts\python.exe -m pip instal
 C:\Users\benda\Downloads\nlp\project3-asr\.venv\Scripts\python.exe C:\Users\benda\Downloads\nlp\TURAS\experiments\m6-smoke\smoke.py --model pyg-hetero --artifacts G:\turas-artifacts --clips 20
 ```
 
-Only if the `pyg-hetero` line says FAILED: remove exactly the packages that pip named on
+`pyg-hetero` says FAILED only when the fp32 check fails; if only bf16 fails, it says ok and the
+JSON shows `"outcome": "fp32 only"`. Only if the `pyg-hetero` line says FAILED: remove exactly the packages that pip named on
 its `Successfully installed` line (expected: `torch_geometric`, `aiohttp`, `pyparsing` and
 aiohttp's own dependencies). Write the names without their version numbers, separated by
 spaces, in place of `<names>`:

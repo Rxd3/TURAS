@@ -64,18 +64,23 @@ def cuda_torch() -> Any:
 
 
 class CudaVram:
-    """Peak and total GPU memory from torch.cuda, in GiB."""
+    """Peak GPU memory since reset(), with the free dedicated memory measured at reset(), in GiB."""
+
+    def __init__(self) -> None:
+        self._free_before: float | None = None
 
     def reset(self) -> None:
         torch = cuda_torch()
         torch.cuda.empty_cache()
         torch.cuda.reset_peak_memory_stats()
+        self._free_before = torch.cuda.mem_get_info()[0] / GIB
 
-    def peak(self) -> dict[str, float]:
+    def peak(self) -> dict[str, float | None]:
         torch = cuda_torch()
         return {
             "peak_vram_gib": torch.cuda.max_memory_allocated() / GIB,
             "peak_reserved_gib": torch.cuda.max_memory_reserved() / GIB,
+            "free_vram_before_gib": self._free_before,
             "total_vram_gib": torch.cuda.get_device_properties(0).total_memory / GIB,
         }
 

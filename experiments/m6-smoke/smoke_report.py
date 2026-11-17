@@ -48,8 +48,9 @@ def _nbest_cell(nbest: Mapping[str, Any] | None) -> str:
     if not nbest or not nbest.get("requested_n"):
         return "none"
     verdict = "valid" if nbest.get("validate_nbest_ok") else f"invalid ({nbest.get('validation_errors')} errors)"
+    finite = "scores finite" if nbest.get("acoustic_log_scores_finite") else "scores NOT all finite"
     return (f"{nbest.get('min_candidates')}-{nbest.get('max_candidates')} of {nbest['requested_n']}, "
-            f"{nbest.get('utterances_all_distinct')}/{nbest.get('rows')} distinct, {verdict}")
+            f"{nbest.get('utterances_all_distinct')}/{nbest.get('rows')} distinct, {verdict}, {finite}")
 
 
 def _inference_notes(record: Mapping[str, Any]) -> str:
@@ -87,19 +88,20 @@ def _inference_table(names: Sequence[str], records: Mapping[str, Mapping[str, An
 
 def _training_table(names: Sequence[str], records: Mapping[str, Mapping[str, Any]]) -> list[str]:
     lines = ["## Training probes (3 AdamW steps, bf16, gradient checkpointing)", "",
-             "| Probe | Result | Batch | Peak VRAM GiB | Dedicated VRAM GiB | Fits | s/step | Notes |",
-             "|---|---|---|---|---|---|---|---|"]
+             "| Probe | Result | Batch | Peak alloc GiB | Peak reserved GiB | Free before GiB | Fits | s/step "
+             "| Notes |",
+             "|---|---|---|---|---|---|---|---|---|"]
     for name in names:
         record = records.get(name)
         status = _status(record)
         if status is not None:
-            lines.append(_row([name, status, "-", "-", "-", "-", "-", _failure_note(record)]))
+            lines.append(_row([name, status, "-", "-", "-", "-", "-", "-", _failure_note(record)]))
             continue
         outcome = "out of memory" if record.get("outcome") == "out_of_memory" else record.get("outcome", "-")
         fits = "yes" if record.get("fits_in_dedicated_vram") else "no"
         lines.append(_row([name, outcome, record.get("batch_size", "-"), _number(record.get("peak_vram_gib"), 2),
-                           _number(record.get("total_vram_gib"), 2), fits, _number(record.get("seconds_per_step"), 2),
-                           record.get("oom_message", "")]))
+                           _number(record.get("peak_reserved_gib"), 2), _number(record.get("free_vram_before_gib"), 2),
+                           fits, _number(record.get("seconds_per_step"), 2), record.get("oom_message", "")]))
     return lines
 
 
@@ -114,7 +116,7 @@ def _pyg_table(names: Sequence[str], records: Mapping[str, Mapping[str, Any]]) -
              "| Probe | Result | Version | fp32 | bf16 | Notes |", "|---|---|---|---|---|---|"]
     for name in names:
         record = records.get(name)
-        result = _status(record) or "ok"
+        result = _status(record) or str(record.get("outcome", "ok"))
         if result in ("not run", "unreadable") or "error" in (record or {}):
             lines.append(_row([name, result, "-", "-", "-", _failure_note(record)]))
             continue

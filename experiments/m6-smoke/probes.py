@@ -49,7 +49,8 @@ def train_probe(name: str, clips: Sequence[tuple[np.ndarray, str]], vram: Any) -
     except torch.cuda.OutOfMemoryError as exc:
         result = {"outcome": "out_of_memory", "oom_message": smoke_common.one_line(exc)}
     memory = vram.peak()
-    fits = result["outcome"] == "completed" and memory["peak_vram_gib"] < memory["total_vram_gib"]
+    # Windows can spill into shared memory instead of raising, so the fit is judged against free dedicated memory
+    fits = result["outcome"] == "completed" and memory["peak_reserved_gib"] < memory["free_vram_before_gib"]
     return {
         "base_model": {"repo_id": files.repo_id, "revision": files.revision},
         "mode": mode, "batch_size": batch_size, "steps": TRAIN_STEPS, "learning_rate": LEARNING_RATE,
@@ -121,11 +122,18 @@ def pyg_probe(vram: Any) -> dict[str, Any]:
     checks = {label: _pyg_check(torch, dtype) for label, dtype in (("fp32", torch.float32), ("bf16", torch.bfloat16))}
     return {
         "torch_geometric": torch_geometric.__version__, "expected_version": PYG_VERSION,
-        "outcome": "completed" if all(check["ok"] for check in checks.values()) else "failed",
+        "outcome": _pyg_outcome(checks),
         "graph": {"nodes": PYG_NODES, "relations": list(PYG_RELATIONS), "reverse_edges": True,
                   "edges_per_relation": PYG_EDGES_PER_RELATION, "layers": 2, "hidden": PYG_HIDDEN},
         **checks, **vram.peak(),
     }
+
+
+def _pyg_outcome(checks: dict[str, dict[str, Any]]) -> str:
+    """"failed" only when fp32 fails: fp32 alone is enough to keep torch_geometric installed."""
+    if not checks["fp32"]["ok"]:
+        return "failed"
+    return "completed" if checks["bf16"]["ok"] else "fp32 only"
 
 
 def _pyg_check(torch: Any, dtype: Any) -> dict[str, Any]:

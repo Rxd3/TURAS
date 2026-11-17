@@ -12,6 +12,7 @@ import turkish_asr_rdl.decoding.timing as timing_module
 from turkish_asr_rdl.decoding.audio import AudioLoadError
 from turkish_asr_rdl.decoding.hardware import NVIDIA_SMI_FIELDS, probe_gpu, thermal_flag
 from turkish_asr_rdl.decoding.interface import Candidate, Hypothesis
+from turkish_asr_rdl.decoding.memory import NoVram
 from turkish_asr_rdl.decoding.timing import MIN_WARMUP_BATCHES, default_sync, run_timed, write_run_outputs
 from turkish_asr_rdl.schemas.jsonl import read_jsonl, sha256_file
 from turkish_asr_rdl.schemas.nbest import validate_nbest
@@ -77,7 +78,8 @@ def setup(tmp_path, write_tone, make_input):
 
 
 def run(adapter, timed, warm, tmp_path, **kwargs):
-    options = {"run_id": "run_synthetic", "clock": fake_clock(), "probe": lambda: dict(NO_GPU), "sync": lambda: None}
+    options = {"run_id": "run_synthetic", "clock": fake_clock(), "probe": lambda: dict(NO_GPU), "sync": lambda: None,
+               "memory": NoVram()}
     return run_timed(adapter, timed, warm, audio_root=tmp_path, **{**options, **kwargs})
 
 

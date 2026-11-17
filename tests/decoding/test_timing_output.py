@@ -7,6 +7,7 @@ from dataclasses import replace
 import pytest
 
 from turkish_asr_rdl.decoding.interface import Candidate, Hypothesis
+from turkish_asr_rdl.decoding.memory import NoVram
 from turkish_asr_rdl.decoding.timing import run_timed, write_run_outputs
 from turkish_asr_rdl.schemas.jsonl import read_jsonl
 from turkish_asr_rdl.schemas.nbest import validate_nbest
@@ -53,7 +54,7 @@ def run_and_write(tmp_path, write_tone, make_input, run_context):
         ticks = itertools.count(0.0, 0.5)
         result = run_timed(adapter, timed, warm, audio_root=tmp_path, run_id="run_synthetic", repeats=1,
                            clock=lambda: next(ticks), probe=lambda: {"ok": False, "error": "no gpu"},
-                           sync=lambda: None)
+                           sync=lambda: None, memory=NoVram())
         write_run_outputs(tmp_path / "out", result, timed, run_context, adapter, command="SYNTHETIC cmd")
         return result, tmp_path / "out"
 

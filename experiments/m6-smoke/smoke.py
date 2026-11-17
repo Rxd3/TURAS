@@ -309,19 +309,28 @@ def render_report(records: Mapping[str, Mapping[str, Any]]) -> str:
     return smoke_report.render(records, INFERENCE_MODELS, TRAINING_MODELS, PYG_MODELS)
 
 
+class NoResultsFolder(FileNotFoundError):
+    """The artifact folder has no smoke/ subfolder, so there is nothing to summarize."""
+
+
+def _read_record(path: Path) -> dict[str, Any]:
+    """One result file; a file that cannot be read or is not a JSON object is marked unreadable."""
+    try:
+        record = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, UnicodeDecodeError, json.JSONDecodeError) as exc:
+        return {"name": path.stem, "unreadable": smoke_common.one_line(exc)}
+    if not isinstance(record, dict):
+        return {"name": path.stem, "unreadable": "not a JSON object"}
+    return record
+
+
 def summarize(artifacts: Path) -> Path:
     """Read every DIR/smoke/<NAME>.json and write DIR/smoke/REPORT.md."""
     folder = Path(artifacts) / "smoke"
     if not folder.is_dir():
-        raise FileNotFoundError(f"no smoke results folder at {folder}")
-    records: dict[str, Any] = {}
-    for name in MODEL_NAMES:
-        path = folder / f"{name}.json"
-        if path.is_file():
-            try:
-                records[name] = json.loads(path.read_text(encoding="utf-8"))
-            except (UnicodeDecodeError, json.JSONDecodeError) as exc:
-                records[name] = {"name": name, "unreadable": smoke_common.one_line(exc)}
+        raise NoResultsFolder(f"no smoke results folder at {folder}")
+    records = {name: _read_record(folder / f"{name}.json") for name in MODEL_NAMES
+               if (folder / f"{name}.json").is_file()}
     target = folder / "REPORT.md"
     target.write_text(render_report(records), encoding="utf-8", newline="\n")
     return target
@@ -353,6 +362,9 @@ def main(argv: Sequence[str] | None = None) -> int:
     if args.summarize is not None:
         try:
             print(f"wrote {summarize(args.summarize)}")
+        except NoResultsFolder as exc:
+            print(f"cannot summarize: {smoke_common.one_line(exc)}")
+            return 1
         except OSError as exc:
             print(f"cannot write the report: {smoke_common.one_line(exc)}")
             return 1

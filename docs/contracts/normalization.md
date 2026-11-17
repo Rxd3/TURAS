@@ -30,7 +30,10 @@ Apply these operations in order:
 4. Delete the intra-word apostrophes U+0027, U+2019 and U+02BC (modifier letter
    apostrophe) only when both adjacent code points in the text from step 3 are
    Unicode letters (general category L). Otherwise each of these three becomes a
-   space. U+02BC is itself category Lm, so this step is what removes it.
+   space. U+02BC is itself category Lm, so this step is what removes it. When
+   testing an apostrophe's neighbours, these three apostrophe characters never
+   count as letters, U+02BC included: `a''b → a b` and
+   `a` + U+02BC + U+02BC + `b → a b`.
 5. All other punctuation (Unicode category P), including other apostrophes,
    becomes a space, except `%` (U+0025), which is kept like a symbol because it
    carries meaning in quantities such as `%5`. This yields a declared spelling
@@ -95,3 +98,7 @@ otherwise a substitution), then deletion, then insertion. Golden test: reference
   its backtrace direction. The label `tr-normalized-v1` is kept until first freeze.
   Amended by M6 on 2026-11-17: adds a final NFC (step 7) and states that
   `tr-normalized-v1` is idempotent for every input.
+  Amended by M6 on 2026-11-18, still 0.2 (proposed by M6): in step 4, the
+  apostrophe characters U+0027, U+2019 and U+02BC never count as letters when
+  testing an apostrophe's neighbours (`a''b → a b`; `a` + U+02BC + U+02BC +
+  `b → a b`). The label `tr-normalized-v1` is still unfrozen.

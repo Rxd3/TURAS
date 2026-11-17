@@ -24,7 +24,8 @@ merges (list at the end).
    `turas-check predictions FILE --ids SPLIT_FILE` and
    `turas-check nbest FILE --ids SPLIT_FILE`. Until then, call
    `validate_predictions` and `validate_nbest` from `turkish_asr_rdl.schemas`
-   (on `main` after PR-B).
+   (on `main` after PR-B). Both enforce the
+   [contracts](docs/contracts/README.md).
 6. **Known traps.**
    - In transformers 5.23.0, Whisper `generate(num_return_sequences>1)` returns
      copies of the 1-best. Repeated candidate texts fail the

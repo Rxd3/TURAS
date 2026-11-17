@@ -28,9 +28,12 @@ def test_hand_checked():
     assert align_counts(list("kitten"), list("sitting")) == EditCounts(2, 0, 1, 4)
 
 
-def test_tie_prefers_substitution_then_deletion():
-    # SYNTHETIC: ref "a b" vs hyp "c": one S and one D, never two D plus an I.
-    assert align_counts(["a", "b"], ["c"]) == EditCounts(1, 1, 0, 0)
+def test_tie_prefers_deletion_over_insertion():
+    # SYNTHETIC: two optimal alignments cost 3; an insertion-first backtrace
+    # gives EditCounts(2, 0, 1, 1), the deletion-first rule gives 0 S, 1 D, 2 I.
+    assert align_counts(["a", "b", "a"], ["b", "c", "a", "b"]) == EditCounts(
+        substitutions=0, deletions=1, insertions=2, hits=2
+    )
 
 
 def test_accepts_code_point_strings():

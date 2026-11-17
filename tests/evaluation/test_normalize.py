@@ -53,6 +53,16 @@ def test_idempotent_when_deletion_leaves_a_composable_pair(src):
     assert normalize(once, TR_NORMALIZED_V1) == once
 
 
+def test_compatibility_characters_are_kept():
+    # SYNTHETIC: ligature fi + superscript two; NFKC would give "fi2".
+    assert normalize("ﬁ²", TR_NORMALIZED_V1) == "ﬁ²"
+
+
+def test_modifier_letter_apostrophe_next_to_a_digit_becomes_space():
+    # SYNTHETIC: U+02BC is category Lm, so only the apostrophe rule turns it into a space.
+    assert normalize("2026ʼda", TR_NORMALIZED_V1) == "2026 da"
+
+
 def test_apostrophe_neighbours_come_from_the_text_after_cf_deletion():
     # SYNTHETIC: U+200B next to the apostrophe is gone before step 4 looks.
     assert normalize("a\u200b'b", TR_NORMALIZED_V1) == "ab"

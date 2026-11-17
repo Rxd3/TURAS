@@ -67,9 +67,10 @@ def test_requested_n_must_be_an_int_of_at_least_zero(refused, requested_n):
     assert "requested_n" in message
 
 
+@pytest.mark.parametrize("requested_n", [1, 2])
 @pytest.mark.parametrize("convention", [None, "", 5])
-def test_nbest_needs_a_score_convention_id(refused, convention):
-    assert "score_convention_id" in refused(ConfigAdapter(requested_n=2, score_convention_id=convention))
+def test_nbest_needs_a_score_convention_id(refused, convention, requested_n):
+    assert "score_convention_id" in refused(ConfigAdapter(requested_n=requested_n, score_convention_id=convention))
 
 
 @pytest.mark.parametrize("config", [
@@ -127,14 +128,14 @@ class FakeMeter:
 def timed_run(tmp_path, write_tone, make_input, run_context):
     """Run two repeats on SYNTHETIC 1 s tones with a fake clock, write the outputs; return (run, out dir)."""
 
-    def _run(adapter, memory):
-        for uid in (*WARM, *TIMED):
+    def _run(adapter, memory, batch_size=1, warm_ids=WARM):
+        for uid in (*warm_ids, *TIMED):
             write_tone(f"audio/{uid}.flac", 16000, 1.0)
-        timed, warm = [make_input(u) for u in TIMED], [make_input(u) for u in WARM]
+        timed, warm = [make_input(u) for u in TIMED], [make_input(u) for u in warm_ids]
         ticks = itertools.count(0.0, 0.5)
         result = run_timed(adapter, timed, warm, audio_root=tmp_path, run_id="run_synthetic", repeats=2,
                            clock=lambda: next(ticks), probe=lambda: {"ok": False, "error": "no gpu"},
-                           sync=lambda: None, memory=memory)
+                           sync=lambda: None, memory=memory, batch_size=batch_size)
         write_run_outputs(tmp_path / "out", result, timed, run_context, adapter, command="SYNTHETIC cmd")
         return result, tmp_path / "out"
 
@@ -192,6 +193,16 @@ def test_timed_error_rows_from_every_repeat_are_counted_but_not_warmup(timed_run
     assert run.timed_error_rows == 1
     assert [r.error_rows for r in run.records] == [1, 0, 0, 0, 0, 0, 1]
     assert "RTF includes 1 timed error rows" in manifest_of(out)["limitations"]
+
+
+def test_a_failed_batch_counts_each_of_its_rows(timed_run):
+    events = []
+    adapter = EventAdapter(events, fail_on={("utt_b", 2)})
+    warm_ids = tuple(f"warm_{k}" for k in range(1, 6))
+    run, out = timed_run(adapter, FakeMeter(events, (1.0, 1.0)), batch_size=2, warm_ids=warm_ids)
+    assert [r.error_rows for r in run.records] == [0, 0, 0, 0, 2]
+    assert run.timed_error_rows == 2
+    assert "RTF includes 2 timed error rows" in manifest_of(out)["limitations"]
 
 
 def test_no_error_rows_means_no_error_limitation(timed_run):

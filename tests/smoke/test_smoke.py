@@ -45,14 +45,18 @@ def synthetic_clips(smoke, count: int, seconds: float = 1.0):
 
 
 class FakeVram:
+    """The peak grows once the adapter's extra facts (the Whisper generate() check) have run."""
+
     def __init__(self):
         self.resets = 0
+        self.after_extra_facts = False
 
     def reset(self):
         self.resets += 1
 
     def peak(self):
-        return {"peak_vram_gib": 1.5, "peak_reserved_gib": 2.0, "free_vram_before_gib": 10.5,
+        allocated, reserved = (9.0, 9.5) if self.after_extra_facts else (1.5, 2.0)
+        return {"peak_vram_gib": allocated, "peak_reserved_gib": reserved, "free_vram_before_gib": 10.5,
                 "total_vram_gib": 12.0}
 
 
@@ -65,9 +69,10 @@ class FakeAdapter:
     requested_n = 2
     score_convention_id = "smoke-synthetic-v1"
 
-    def __init__(self, fail_ids=()):
+    def __init__(self, fail_ids=(), vram=None):
         self.config = {"repo_id": "synthetic/model", "revision": "c" * 40, "precision": "float16"}
         self.fail_ids = set(fail_ids)
+        self.vram = vram
 
     def load(self):
         return None
@@ -85,6 +90,8 @@ class FakeAdapter:
         return Hypothesis(uid, "ok", candidates[0].text, candidates)
 
     def extra_facts(self, items):
+        if self.vram is not None:
+            self.vram.after_extra_facts = True
         return {"decode_path": "beam 2", "items_seen": len(items)}
 
 
@@ -133,6 +140,14 @@ def test_select_clips_skips_bad_long_and_untranscribed_rows(smoke):
     assert [c.segment_id for c in clips] == ["keep_1", "keep_2"]
     assert skipped == {"undecodable": 1, "outside_duration": 1, "no_transcript": 1}
     assert "never_read" not in consumed
+
+
+def test_select_clips_keeps_exactly_max_clip_s_and_skips_zero_samples(smoke):
+    empty = shard_row("empty", {"bytes": encoded(np.zeros(0, dtype=np.float32), 16000, "WAV", "PCM_16")})
+    clips, skipped = smoke.select_clips([empty, good_row("longest", seconds=smoke.MAX_CLIP_S), good_row("keep")], 2)
+    assert [c.segment_id for c in clips] == ["longest", "keep"]
+    assert len(clips[0].samples) == smoke.MAX_CLIP_S * 16000
+    assert skipped == {"undecodable": 0, "outside_duration": 1, "no_transcript": 0}
 
 
 def test_select_clips_fails_when_the_shard_has_too_few(smoke):
@@ -185,12 +200,14 @@ def _prepared(smoke, tmp_path, count=2):
 def test_measure_inference_with_a_fake_adapter(smoke, tmp_path):
     audio_dir, warmup, timed = _prepared(smoke, tmp_path)
     vram = FakeVram()
-    record = smoke.measure_inference(FakeAdapter(), warmup, timed, audio_dir=audio_dir, run_dir=tmp_path / "run",
-                                     vram=vram, command="SYNTHETIC", timing={"probe": lambda: NO_GPU})
+    record = smoke.measure_inference(FakeAdapter(vram=vram), warmup, timed, audio_dir=audio_dir,
+                                     run_dir=tmp_path / "run", vram=vram, command="SYNTHETIC",
+                                     timing={"probe": lambda: NO_GPU})
     assert record["ok"] is True and record["kind"] == "inference"
     assert record["statuses"] == {"ok": 2, "empty": 0, "error": 0}
     assert record["nbest"]["validate_nbest_ok"] is True and record["nbest"]["rows"] == 2
-    assert record["peak_vram_gib"] == 1.5 and record["free_vram_before_gib"] == 10.5 and vram.resets == 1
+    assert record["peak_vram_gib"] == 1.5 and record["peak_reserved_gib"] == 2.0 and vram.resets == 1
+    assert record["free_vram_before_gib"] == 10.5 and vram.after_extra_facts is True
     assert record["clips"]["warmup"] == 3 and record["clips"]["timed"] == 2
     assert record["timed_audio_s"] == pytest.approx(2.0)
     assert record["load_s"] >= 0 and record["end_to_end_rtf"] > 0

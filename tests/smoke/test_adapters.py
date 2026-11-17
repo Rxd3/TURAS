@@ -26,7 +26,7 @@ def test_beam_hypothesis_sums_scores_through_the_stop_token(common):
         "u1",
         [" SYNTHETIC a", " SYNTHETIC b"],
         [[11, 12, 9, 9], [11, 13, 14, 9]],
-        [[-0.5, -0.25, -0.25, 0.0], [-1.0, -1.0, -1.0, -1.0]],
+        [[-0.5, -0.25, -0.25, -9.0], [-1.0, -1.0, -1.0, -1.0]],
         [-0.3, -1.0],
         kind="seq2seq_token_log_prob_sum",
         details={"nbest_algorithm": "beam search"},
@@ -262,3 +262,65 @@ def test_build_adapter_imports_the_model_classes_so_load_imports_nothing(adapter
                                                                               float32="f32"))
     adapter.load()
     assert set(fake.loads) == expected and len(fake.loads) == len(expected)
+
+
+class _Steps:
+    """What compute_transition_scores returns: a tensor stand-in with float() and tolist()."""
+
+    def __init__(self, rows):
+        self.rows = rows
+
+    def float(self):
+        return self
+
+    def tolist(self):
+        return self.rows
+
+
+@pytest.mark.parametrize("beams, normalized", [(1, True), (5, False)])
+def test_score_rows_normalizes_only_greedy_logits(adapters, beams, normalized):
+    calls = []
+
+    class FakeModel:
+        def compute_transition_scores(self, sequences, scores, beam_indices=None, normalize_logits=False):
+            calls.append((sequences, scores, beam_indices, normalize_logits))
+            return _Steps([[-0.5, -0.25]])
+
+    fields = {"sequences": "SYN sequences", "scores": "SYN scores"}
+    out = types.SimpleNamespace(**fields, **({"beam_indices": "SYN beams"} if beams > 1 else {}))
+    assert adapters._score_rows(FakeModel(), out, beams) == [[-0.5, -0.25]]
+    assert calls == [("SYN sequences", "SYN scores", "SYN beams" if beams > 1 else None, normalized)]
+
+
+class _FitVram:
+    """Allocated < free before load < total, with the reserved peak set by the test."""
+
+    def __init__(self, reserved):
+        self.reserved = reserved
+
+    def reset(self):
+        return None
+
+    def peak(self):
+        return {"peak_vram_gib": 9.0, "peak_reserved_gib": self.reserved, "free_vram_before_gib": 10.5,
+                "total_vram_gib": 12.0}
+
+
+@pytest.mark.parametrize("outcome, reserved, fits", [("completed", 10.0, True), ("completed", 10.5, False),
+                                                     ("completed", 11.0, False), ("out_of_memory", 10.0, False)])
+def test_train_probe_fits_only_when_completed_below_free_memory(probes, monkeypatch, outcome, reserved, fits):
+    class FakeOutOfMemory(Exception):
+        pass
+
+    def fake_train(torch, files, mode, clips):
+        if outcome == "out_of_memory":
+            raise FakeOutOfMemory("SYNTHETIC out of memory")
+        return {"outcome": "completed", "seconds_per_step": 0.5}
+
+    fake_torch = types.SimpleNamespace(cuda=types.SimpleNamespace(OutOfMemoryError=FakeOutOfMemory))
+    monkeypatch.setattr(probes.smoke_common, "cuda_torch", lambda: fake_torch)
+    monkeypatch.setattr(probes.adapters, "fetch_model", _fake_fetch(probes.adapters))
+    monkeypatch.setattr(probes, "_train", fake_train)
+    result = probes.train_probe("train-whisper-small-full", [(None, "SYNTHETIC")] * 8, _FitVram(reserved))
+    assert result["fits_in_dedicated_vram"] is fits and result["outcome"] == outcome
+    assert result["peak_reserved_gib"] == reserved and result["free_vram_before_gib"] == 10.5

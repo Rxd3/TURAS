@@ -213,3 +213,80 @@ def test_git_state_with_failing_status_keeps_commit(tmp_path, monkeypatch):
 
     monkeypatch.setattr(export_module.subprocess, "run", fake_git)
     assert git_state(tmp_path) == {"commit": "e" * 40, "dirty": None}
+
+
+DUPLICATE_POLICY_TEXT = "exact raw-text match; first (lowest-rank) occurrence kept; removed IDs listed in dedup_map"
+
+
+def cand(cid, rank: int, text: str, token_ids=None, **changes) -> Candidate:
+    tokens = (rank, rank + 100) if token_ids is None else token_ids
+    return Candidate(cid, rank, text, tokens, -1.0 * rank, "seq2seq_teacher_forced_log_prob", **changes)
+
+
+def hyp_of(*candidates: Candidate) -> Hypothesis:
+    return Hypothesis("utt_a", "ok", candidates[0].text, candidates)
+
+
+def test_dedupe_keeps_the_first_occurrence_of_each_text():
+    c01, c02, c03, c04, c05 = (cand("c01", 1, "SYNTHETIC a"), cand("c02", 2, "SYNTHETIC b"), cand("c03", 3, "SYNTHETIC a"),
+                               cand("c04", 4, "SYNTHETIC b"), cand("c05", 5, "SYNTHETIC c"))
+    kept, dedup_map = export_module._dedupe((c01, c02, c03, c04, c05))
+    assert kept == (c01, c02, c05)
+    assert dedup_map == {"c03": "c01", "c04": "c02"}
+
+
+def test_nbest_row_drops_repeated_texts_and_keeps_original_ranks(make_input, run_context):
+    hyp = hyp_of(cand("c01", 1, "SYNTHETIC a"), cand("c02", 2, "SYNTHETIC b"), cand("c03", 3, "SYNTHETIC a"),
+                 cand("c04", 4, "SYNTHETIC b"), cand("c05", 5, "SYNTHETIC c"))
+    row = nbest_row(hyp, make_input("utt_a"), run_context, 5, "conv")
+    assert [c["candidate_id"] for c in row["candidates"]] == ["c01", "c02", "c05"]
+    assert tuple(c["rank"] for c in row["candidates"]) == (1, 2, 5)
+    assert row["dedup_map"] == {"c03": "c01", "c04": "c02"}
+    assert row["actual_n"] == 3 and tuple(row) == (*NBEST_ROW_FIELDS, "dedup_map")
+    assert validate_nbest([row]).ok
+
+
+def test_every_removed_id_maps_to_the_kept_id_not_the_previous_copy(make_input, run_context):
+    hyp = hyp_of(cand("c01", 1, "SYNTHETIC a"), cand("c02", 2, "SYNTHETIC a"), cand("c03", 3, "SYNTHETIC a"),
+                 cand("c04", 4, "SYNTHETIC b"), cand("c05", 5, "SYNTHETIC b"))
+    row = nbest_row(hyp, make_input("utt_a"), run_context, 5, "conv")
+    assert row["dedup_map"] == {"c02": "c01", "c03": "c01", "c05": "c04"}
+    assert row["actual_n"] == 2 and validate_nbest([row]).ok
+
+
+def test_distinct_texts_write_no_dedup_map(make_input, run_context):
+    row = nbest_row(scored_hyp(), make_input("utt_a"), run_context, 5, "conv")
+    assert "dedup_map" not in row and tuple(row) == NBEST_ROW_FIELDS
+    assert "dedup_map" not in adapter_result_fields(scored_hyp(), 5)
+
+
+def test_texts_are_compared_byte_for_byte(make_input, run_context):
+    texts = (" SYNTHETIC a", "SYNTHETIC a", "SYNTHETIC A", "SYNTHETIC a ", "SYNTHETIC ç", "SYNTHETIC ç")
+    hyp = hyp_of(*(cand(f"c{k:02d}", k, text) for k, text in enumerate(texts, start=1)))
+    row = nbest_row(hyp, make_input("utt_a"), run_context, 6, "conv")
+    assert [c["text"] for c in row["candidates"]] == list(texts)
+    assert "dedup_map" not in row and row["actual_n"] == 6
+
+
+def test_adapter_result_fields_hold_the_deduplicated_candidates_and_map(make_input, run_context):
+    hyp = hyp_of(cand("c01", 1, "SYNTHETIC a"), cand("c02", 2, "SYNTHETIC a"), cand("c03", 3, "SYNTHETIC b"))
+    row = nbest_row(hyp, make_input("utt_a"), run_context, 3, "conv")
+    fields = adapter_result_fields(hyp, 3)
+    assert list(fields) == ["status", "hypothesis_text", "error", "candidates", "dedup_map"]
+    assert fields["candidates"] == row["candidates"] and fields["dedup_map"] == row["dedup_map"] == {"c02": "c01"}
+
+
+def test_candidates_carry_the_duplicate_policy_unless_the_adapter_gives_one(make_input, run_context):
+    own = {"duplicate_policy": "SYNTHETIC own policy"}
+    hyp = hyp_of(cand("c01", 1, "SYNTHETIC a"), cand("c02", 2, "SYNTHETIC b", score_details=own))
+    first, second = nbest_row(hyp, make_input("utt_a"), run_context, 2, "conv")["candidates"]
+    assert export_module.DUPLICATE_POLICY == DUPLICATE_POLICY_TEXT
+    assert first["score_details"]["duplicate_policy"] == DUPLICATE_POLICY_TEXT
+    assert second["score_details"]["duplicate_policy"] == "SYNTHETIC own policy"
+
+
+@pytest.mark.parametrize("removed_id", [3, None, ""])
+def test_removed_candidate_id_must_be_a_non_empty_string(make_input, run_context, removed_id):
+    hyp = hyp_of(cand("c01", 1, "SYNTHETIC a"), cand(removed_id, 2, "SYNTHETIC a"))
+    with pytest.raises(ValueError, match="candidate_id"):
+        nbest_row(hyp, make_input("utt_a"), run_context, 2, "conv")

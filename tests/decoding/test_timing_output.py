@@ -80,6 +80,8 @@ UNWRITABLE = {
     "candidates_one_shot_iterator": Hypothesis("utt_x", "ok", "SYNTHETIC c1", iter(with_candidate().candidates)),
     "dict_candidate": Hypothesis("utt_x", "ok", "SYNTHETIC", ({"candidate_id": "c1"},)),
     "object_error_message": Hypothesis("utt_x", "error", None, error_code="SYNTHETIC", error_message=object()),
+    "removed_id_not_a_string": Hypothesis("utt_x", "ok", "SYNTHETIC c1", (
+        Candidate("c1", 1, "SYNTHETIC c1", (1,), -1.0, "kind"), Candidate(3, 2, "SYNTHETIC c1", (2,), -2.0, "kind"))),
 }
 
 
@@ -104,6 +106,19 @@ def test_candidates_are_not_checked_when_no_nbest_is_written(run_and_write):
     assert {h.status for h in run.hypotheses} == {"ok"}
     assert validate_predictions(read_jsonl(out / "predictions.jsonl")).ok
     assert not (out / "nbest.jsonl").exists()
+
+
+def test_repeated_texts_are_deduplicated_in_the_written_nbest(run_and_write):
+    candidates = (Candidate("c1", 1, "SYNTHETIC a", (1, 2), -1.0, "kind"),
+                  Candidate("c2", 2, "SYNTHETIC b", (1, 3), -2.0, "kind"),
+                  Candidate("c3", 3, "SYNTHETIC a", (4, 2), -3.0, "kind"))
+    run, out = run_and_write(FixedResultAdapter(Hypothesis("utt_x", "ok", "SYNTHETIC a", candidates), requested_n=3))
+    assert {h.status for h in run.hypotheses} == {"ok"}
+    rows = read_jsonl(out / "nbest.jsonl")
+    assert [row["dedup_map"] for row in rows] == [{"c3": "c1"}] * len(TIMED)
+    assert [[c["candidate_id"] for c in row["candidates"]] for row in rows] == [["c1", "c2"]] * len(TIMED)
+    assert {row["actual_n"] for row in rows} == {2}
+    assert validate_nbest(rows).ok
 
 
 def test_read_only_mapping_details_are_accepted(run_and_write):

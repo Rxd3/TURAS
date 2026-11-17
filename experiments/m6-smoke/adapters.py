@@ -50,6 +50,13 @@ def fetch_model(name: str) -> ModelFiles:
     return ModelFiles(name, repo_id, revision, path, weights_sha256(path, weights))
 
 
+def transformers_classes(names: Sequence[str]) -> dict[str, Any]:
+    """Import the named transformers classes now, so a later timed load() reads weights, not library code."""
+    import transformers
+
+    return {name: getattr(transformers, name) for name in names}
+
+
 def _score_rows(model: Any, out: Any, beams: int) -> list[list[float]]:
     """Per-step log-probs of the chosen tokens; greedy scores are raw logits, so they are normalized."""
     steps = model.compute_transition_scores(out.sequences, out.scores, getattr(out, "beam_indices", None),
@@ -67,9 +74,10 @@ class WhisperAdapter(BeamAdapter):
     requested_n = 10
     score_convention_id = "smoke-whisper-token-logprob-sum-v1"
     KIND = "seq2seq_token_log_prob_sum"
+    TRANSFORMERS_CLASSES = ("WhisperForConditionalGeneration", "WhisperProcessor")
 
-    def __init__(self, files: ModelFiles):
-        super().__init__(files, {
+    def __init__(self, files: ModelFiles, classes: Mapping[str, Any]):
+        super().__init__(files, classes, {
             "family": "whisper", "precision": "float16", "language": "tr", "task": "transcribe",
             "timestamps": False, "num_beams": 10, "num_return_sequences": 10, "max_new_tokens": MAX_NEW_TOKENS,
             "length_penalty": 1.0, "generate": "transformers.GenerationMixin.generate",
@@ -77,10 +85,8 @@ class WhisperAdapter(BeamAdapter):
 
     def load(self) -> None:
         torch = cuda_torch()
-        from transformers import WhisperForConditionalGeneration, WhisperProcessor
-
-        self._processor = WhisperProcessor.from_pretrained(self.files.path)
-        model = WhisperForConditionalGeneration.from_pretrained(self.files.path, dtype=torch.float16)
+        self._processor = self._classes["WhisperProcessor"].from_pretrained(self.files.path)
+        model = self._classes["WhisperForConditionalGeneration"].from_pretrained(self.files.path, dtype=torch.float16)
         self._model = model.to(DEVICE).eval()
         tokenizer = self._processor.tokenizer
         self._prompt = tuple(tokenizer.convert_tokens_to_ids(list(WHISPER_PROMPT_TOKENS)))
@@ -161,9 +167,10 @@ class QwenAsrAdapter(BeamAdapter):
     requested_n = 5
     score_convention_id = "smoke-qwen3-asr-joint-token-logprob-sum-v1"
     KIND = "speech_llm_joint_token_log_prob_sum"
+    TRANSFORMERS_CLASSES = ("AutoModelForMultimodalLM", "AutoProcessor")
 
-    def __init__(self, files: ModelFiles):
-        super().__init__(files, {
+    def __init__(self, files: ModelFiles, classes: Mapping[str, Any]):
+        super().__init__(files, classes, {
             "family": "qwen3-asr", "precision": "bfloat16", "language": "tr", "num_beams": 5,
             "num_return_sequences": 5, "max_new_tokens": MAX_NEW_TOKENS, "model_class": "AutoModelForMultimodalLM",
             "input": "AutoProcessor.apply_transcription_request",
@@ -171,10 +178,8 @@ class QwenAsrAdapter(BeamAdapter):
 
     def load(self) -> None:
         torch = cuda_torch()
-        from transformers import AutoModelForMultimodalLM, AutoProcessor
-
-        self._processor = AutoProcessor.from_pretrained(self.files.path)
-        model = AutoModelForMultimodalLM.from_pretrained(self.files.path, dtype=torch.bfloat16)
+        self._processor = self._classes["AutoProcessor"].from_pretrained(self.files.path)
+        model = self._classes["AutoModelForMultimodalLM"].from_pretrained(self.files.path, dtype=torch.bfloat16)
         self._model = model.to(DEVICE).eval()
         eos = self._model.generation_config.eos_token_id
         self._stop = frozenset(eos if isinstance(eos, (list, tuple)) else [eos])
@@ -217,20 +222,19 @@ class XlsrAdapter(SmokeAdapter):
     requested_n = 1
     score_convention_id = "smoke-ctc-exact-sequence-logprob-v1"
     KIND = "ctc_sequence_log_prob_exact"
+    TRANSFORMERS_CLASSES = ("Wav2Vec2CTCTokenizer", "Wav2Vec2FeatureExtractor", "Wav2Vec2ForCTC")
 
-    def __init__(self, files: ModelFiles):
-        super().__init__(files, {
+    def __init__(self, files: ModelFiles, classes: Mapping[str, Any]):
+        super().__init__(files, classes, {
             "family": "wav2vec2-ctc", "precision": "float32", "decoding": "greedy",
             "processor": "Wav2Vec2CTCTokenizer and Wav2Vec2FeatureExtractor, no language model",
         })
 
     def load(self) -> None:
         torch = cuda_torch()
-        from transformers import Wav2Vec2CTCTokenizer, Wav2Vec2FeatureExtractor, Wav2Vec2ForCTC
-
-        self._tokenizer = Wav2Vec2CTCTokenizer.from_pretrained(self.files.path)
-        self._processor = Wav2Vec2FeatureExtractor.from_pretrained(self.files.path)
-        model = Wav2Vec2ForCTC.from_pretrained(self.files.path, dtype=torch.float32)
+        self._tokenizer = self._classes["Wav2Vec2CTCTokenizer"].from_pretrained(self.files.path)
+        self._processor = self._classes["Wav2Vec2FeatureExtractor"].from_pretrained(self.files.path)
+        model = self._classes["Wav2Vec2ForCTC"].from_pretrained(self.files.path, dtype=torch.float32)
         self._model = model.to(DEVICE).eval()
         self._blank = self._tokenizer.pad_token_id
 
@@ -262,10 +266,15 @@ class XlsrAdapter(SmokeAdapter):
 
 
 def build_adapter(name: str) -> SmokeAdapter:
-    """Download the model files, then return the adapter for its family (not loaded yet)."""
+    """Download the model files and import its transformers classes; return the adapter, not loaded yet.
+
+    Both happen before run_timed, so its timed cold load measures reading the weights only.
+    """
     files = fetch_model(name)
     if name.startswith("whisper"):
-        return WhisperAdapter(files)
-    if name.startswith("qwen3-asr"):
-        return QwenAsrAdapter(files)
-    return XlsrAdapter(files)
+        family = WhisperAdapter
+    elif name.startswith("qwen3-asr"):
+        family = QwenAsrAdapter
+    else:
+        family = XlsrAdapter
+    return family(files, transformers_classes(family.TRANSFORMERS_CLASSES))

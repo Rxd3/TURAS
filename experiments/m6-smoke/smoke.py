@@ -266,9 +266,7 @@ def run_model(name: str, artifacts: Path, clips: int, command: str) -> dict[str,
         labels = load_labels(audio_dir)
         pairs = [(load_audio(resolve_audio_path(audio_dir, i.audio_uri)), labels[i.utterance_id]) for i in timed]
         return {"kind": "training", "ok": True, **probes.train_probe(name, pairs, vram)}
-    import transformers  # noqa: F401  imported before the timed cold load, which then measures only the weights
-
-    adapter = adapters.build_adapter(name)
+    adapter = adapters.build_adapter(name)  # downloads and imports the model classes before the timed cold load
     return measure_inference(adapter, warmup, timed, audio_dir=audio_dir, run_dir=root / "runs" / name,
                              vram=vram, command=command)
 

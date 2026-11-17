@@ -77,14 +77,65 @@ EXPECTED = {
 }
 
 
-@pytest.mark.parametrize("name", sorted(EXPECTED))
-def test_build_adapter_picks_the_family_without_loading(adapters, monkeypatch, name):
+FAMILY_CLASSES = {
+    "WhisperAdapter": {"WhisperForConditionalGeneration", "WhisperProcessor"},
+    "QwenAsrAdapter": {"AutoModelForMultimodalLM", "AutoProcessor"},
+    "XlsrAdapter": {"Wav2Vec2CTCTokenizer", "Wav2Vec2FeatureExtractor", "Wav2Vec2ForCTC"},
+}
+
+
+class _FakeLoaded:
+    """What a fake from_pretrained returns: stands in for a model, processor or tokenizer."""
+
+    def __init__(self, path, kwargs):
+        self.path, self.kwargs = path, kwargs
+        self.generation_config = types.SimpleNamespace(forced_decoder_ids=[[1, 50]], eos_token_id=[7, 8])
+        self.tokenizer = types.SimpleNamespace(convert_tokens_to_ids=lambda tokens: list(range(len(tokens))),
+                                               eos_token_id=9)
+        self.pad_token_id = 0
+
+    def to(self, device):
+        return self
+
+    def eval(self):
+        return self
+
+
+class FakeTransformers(types.ModuleType):
+    """A transformers stand-in that records which classes are taken from it and which are loaded."""
+
+    def __init__(self):
+        super().__init__("transformers")
+        self.resolved, self.loads = [], []
+
+    def __getattr__(self, name):
+        if name.startswith("__"):
+            raise AttributeError(name)
+        self.resolved.append(name)
+        loads = self.loads
+
+        def from_pretrained(path, **kwargs):
+            loads.append(name)
+            return _FakeLoaded(path, kwargs)
+
+        return type(name, (), {"from_pretrained": staticmethod(from_pretrained)})
+
+
+def _fake_fetch(adapters):
     def fake_fetch(model_name):
         repo_id, revision, _ = adapters.MODEL_REPOS[model_name]
         return adapters.ModelFiles(model_name, repo_id, revision, Path("unused"), "e" * 64)
 
-    monkeypatch.setattr(adapters, "fetch_model", fake_fetch)
+    return fake_fetch
+
+
+@pytest.mark.parametrize("name", sorted(EXPECTED))
+def test_build_adapter_picks_the_family_without_loading(adapters, monkeypatch, name):
+    fake = FakeTransformers()
+    monkeypatch.setitem(sys.modules, "transformers", fake)
+    monkeypatch.setattr(adapters, "fetch_model", _fake_fetch(adapters))
     adapter = adapters.build_adapter(name)
+    assert fake.loads == []
     class_name, requested_n, precision = EXPECTED[name]
     assert type(adapter).__name__ == class_name and adapter.requested_n == requested_n
     assert adapter.config["precision"] == precision and adapter.config["repo_id"] == adapters.MODEL_REPOS[name][0]
@@ -111,7 +162,7 @@ def test_beam_adapter_falls_back_to_greedy_once_and_keeps_the_traceback(adapters
         def greedy(self, item):
             return Hypothesis(item.utterance_id, "ok", "SYNTHETIC greedy")
 
-    adapter = Flaky(_files(adapters), {"num_beams": 5})
+    adapter = Flaky(_files(adapters), {}, {"num_beams": 5})
     items = [AudioItem("u1", None), AudioItem("u2", None)]
     hyps = adapter.transcribe(items)
     assert [h.text for h in hyps] == ["SYNTHETIC greedy"] * 2 and adapter.beams_tried == 1
@@ -131,7 +182,7 @@ def test_beam_adapter_reports_the_beam_path_when_it_works(adapters):
         def greedy(self, item):
             raise AssertionError("greedy must not run")
 
-    adapter = Steady(_files(adapters), {"num_beams": 5})
+    adapter = Steady(_files(adapters), {}, {"num_beams": 5})
     assert adapter.transcribe([AudioItem("u1", None)])[0].text == "SYNTHETIC beam"
     facts = adapter.extra_facts([])
     assert facts["decode_path"] == "beam 5" and facts["beam_error"] is None
@@ -148,7 +199,7 @@ def test_transcribe_keeps_the_first_traceback_and_reraises(adapters):
             self.calls += 1
             raise ValueError(f"SYNTHETIC failure {self.calls}")
 
-    adapter = Broken(_files(adapters), {})
+    adapter = Broken(_files(adapters), {}, {})
     for _ in range(2):
         with pytest.raises(ValueError):
             adapter.transcribe([AudioItem("u1", None)])
@@ -196,3 +247,18 @@ def test_cuda_torch_refuses_a_machine_without_cuda(common, monkeypatch):
                                                  (False, True, "failed"), (False, False, "failed")])
 def test_pyg_outcome_fails_only_when_fp32_fails(probes, fp32, bf16, outcome):
     assert probes._pyg_outcome({"fp32": {"ok": fp32}, "bf16": {"ok": bf16}}) == outcome
+
+
+@pytest.mark.parametrize("name", ["whisper-small", "qwen3-asr-1.7b", "xlsr-tr-cv8"])
+def test_build_adapter_imports_the_model_classes_so_load_imports_nothing(adapters, monkeypatch, name):
+    fake = FakeTransformers()
+    monkeypatch.setitem(sys.modules, "transformers", fake)
+    monkeypatch.setattr(adapters, "fetch_model", _fake_fetch(adapters))
+    adapter = adapters.build_adapter(name)
+    expected = FAMILY_CLASSES[type(adapter).__name__]
+    assert set(fake.resolved) == expected and fake.loads == []
+    monkeypatch.setitem(sys.modules, "transformers", None)  # any import of transformers now raises ImportError
+    monkeypatch.setattr(adapters, "cuda_torch", lambda: types.SimpleNamespace(float16="f16", bfloat16="bf16",
+                                                                              float32="f32"))
+    adapter.load()
+    assert set(fake.loads) == expected and len(fake.loads) == len(expected)

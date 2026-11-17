@@ -137,13 +137,17 @@ def beam_hypothesis(utterance_id: str, texts: Sequence[str], token_rows: Sequenc
 
 
 class SmokeAdapter:
-    """AsrAdapter attributes shared by every family; subclasses implement load() and decode(item)."""
+    """AsrAdapter attributes shared by every family; subclasses implement load() and decode(item).
+
+    classes holds the transformers classes load() uses, imported by build_adapter before the timed load.
+    """
 
     requested_n = 0
     score_convention_id: str | None = None
 
-    def __init__(self, files: ModelFiles, settings: Mapping[str, Any]):
+    def __init__(self, files: ModelFiles, classes: Mapping[str, Any], settings: Mapping[str, Any]):
         self.files = files
+        self._classes = dict(classes)
         self.system_id = f"smoke-{files.name}"
         self.model_artifact_sha256 = files.artifact_sha256
         self.config = {"repo_id": files.repo_id, "revision": files.revision, **settings}
@@ -175,8 +179,8 @@ class SmokeAdapter:
 class BeamAdapter(SmokeAdapter):
     """Tries beam search; after the first beam failure every item is decoded greedily and the failure kept."""
 
-    def __init__(self, files: ModelFiles, settings: Mapping[str, Any]):
-        super().__init__(files, settings)
+    def __init__(self, files: ModelFiles, classes: Mapping[str, Any], settings: Mapping[str, Any]):
+        super().__init__(files, classes, settings)
         self.beam_error: str | None = None
         self.beam_traceback: str | None = None
 

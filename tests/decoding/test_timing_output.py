@@ -1,5 +1,6 @@
 """Timing harness: adapter results the output files cannot hold. SYNTHETIC tones and results only."""
 import itertools
+import json
 import types
 from dataclasses import replace
 
@@ -151,6 +152,9 @@ def test_copies_of_one_hypothesis_become_an_error_row_and_the_run_continues(run_
     assert (first.status, first.error_code, first.error_message) == ("error", "adapter_output_invalid", COPIES_MESSAGE)
     assert first.text is None and not first.candidates
     assert second.status == "ok"
+    assert run.timed_error_rows == 1
+    manifest = json.loads((out / "manifest.json").read_text(encoding="utf-8"))
+    assert "RTF includes 1 timed error rows" in manifest["limitations"]
     rows = read_jsonl(out / "nbest.jsonl")
     assert rows[0]["candidates"] == [] and "dedup_map" not in rows[0]
     assert rows[1]["actual_n"] == 1 and rows[1]["dedup_map"] == {f"c{k:02d}": "c01" for k in range(2, 11)}

@@ -24,7 +24,7 @@ CASES = [
     ("₺100", "₺100"),
     ("a+b-c/d", "a+b c d"),
     ("a\u200bb", "ab"),
-    ("a\u00a0  b", "a b"),
+    ("a\u00a0 \u2028b", "a b"),
     ("", ""),
     ("   ", ""),
 ]
@@ -73,12 +73,12 @@ def test_final_step_composes_pairs_left_by_deletion():
 
 def test_compatibility_characters_are_kept():
     # SYNTHETIC: ligature fi + superscript two; NFKC would give "fi2".
-    assert normalize("ﬁ²", TR_NORMALIZED_V1) == "ﬁ²"
+    assert normalize("\ufb01\u00b2", TR_NORMALIZED_V1) == "\ufb01\u00b2"
 
 
 def test_modifier_letter_apostrophe_next_to_a_digit_becomes_space():
     # SYNTHETIC: U+02BC is category Lm, so only the apostrophe rule turns it into a space.
-    assert normalize("2026ʼda", TR_NORMALIZED_V1) == "2026 da"
+    assert normalize("2026\u02bcda", TR_NORMALIZED_V1) == "2026 da"
 
 
 def test_apostrophe_neighbours_come_from_the_text_after_cf_deletion():

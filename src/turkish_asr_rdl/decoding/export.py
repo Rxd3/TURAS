@@ -129,6 +129,8 @@ def _dedupe(candidates: Sequence[Candidate]) -> tuple[tuple[Candidate, ...], dic
         removed_id = candidate.candidate_id
         if not isinstance(removed_id, str) or not removed_id:
             raise ValueError(f"removed duplicate candidate_id {removed_id!r} must be a non-empty string")
+        if removed_id in dedup_map:
+            raise ValueError(f"removed duplicate candidate_id {removed_id!r} appears more than once")
         dedup_map[removed_id] = first.candidate_id
     return tuple(kept.values()), dedup_map
 

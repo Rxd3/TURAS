@@ -303,3 +303,12 @@ def test_removed_candidate_id_must_be_a_non_empty_string(make_input, run_context
     hyp = hyp_of(cand("c01", 1, "SYNTHETIC a"), cand(removed_id, 2, "SYNTHETIC a"))
     with pytest.raises(ValueError, match="candidate_id"):
         nbest_row(hyp, make_input("utt_a"), run_context, 2, "conv")
+
+
+@pytest.mark.parametrize("texts", [("SYNTHETIC a", "SYNTHETIC a"), ("SYNTHETIC a", "SYNTHETIC b")])
+def test_two_removed_candidates_with_one_id_are_refused(make_input, run_context, texts):
+    first, second = texts
+    hyp = hyp_of(cand("c01", 1, "SYNTHETIC a"), cand("c02", 2, "SYNTHETIC b"),
+                 cand("c09", 3, first), cand("c09", 4, second))
+    with pytest.raises(ValueError, match=r"^removed duplicate candidate_id 'c09' appears more than once$"):
+        nbest_row(hyp, make_input("utt_a"), run_context, 4, "conv")

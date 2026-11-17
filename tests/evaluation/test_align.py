@@ -29,8 +29,8 @@ def test_hand_checked():
 
 
 def test_tie_prefers_deletion_over_insertion():
-    # SYNTHETIC: two optimal alignments cost 3; an insertion-first backtrace
-    # gives EditCounts(2, 0, 1, 1), the deletion-first rule gives 0 S, 1 D, 2 I.
+    # SYNTHETIC: several alignments cost 3; a backtrace that tries insertion
+    # before deletion gives EditCounts(2, 0, 1, 1).
     assert align_counts(["a", "b", "a"], ["b", "c", "a", "b"]) == EditCounts(
         substitutions=0, deletions=1, insertions=2, hits=2
     )

@@ -357,3 +357,34 @@ def test_limitations_note_thermal_flags_and_missing_sync(setup, tmp_path, run_co
     assert manifest["environment"]["gpu_name"] == "SYNTHETIC GPU"
     assert any("2 of 2" in note for note in manifest["limitations"])
     assert any("synchronization" in note for note in manifest["limitations"])
+
+
+class OddOutputAdapter(FakeAdapter):
+    """Returns SYNTHETIC candidates whose details or scores are given by the test."""
+
+    def __init__(self, details, score=-1.0):
+        super().__init__(requested_n=1)
+        self.details, self.score = details, score
+
+    def _hyp(self, uid):
+        candidate = Candidate("c1", 1, f"SYNTHETIC {uid}", (1,), self.score, "kind", score_details=self.details)
+        return Hypothesis(uid, "ok", candidate.text, (candidate,))
+
+
+@pytest.mark.parametrize("details,score", [({(1, 2): "tuple key"}, -1.0), ({}, float("-inf")), ({"x": object()}, -1.0)])
+def test_unwritable_adapter_output_becomes_error_rows(setup, tmp_path, run_context, details, score):
+    timed, warm = setup()
+    adapter = OddOutputAdapter(details, score)
+    result = run(adapter, timed, warm, tmp_path, repeats=1)
+    assert {h.error_code for h in result.hypotheses} == {"adapter_output_invalid"}
+    write_run_outputs(tmp_path / "out", result, timed, run_context, adapter, command="x")
+    assert validate_predictions(read_jsonl(tmp_path / "out" / "predictions.jsonl")).ok
+
+
+def test_read_only_mapping_details_are_accepted(setup, tmp_path, run_context):
+    timed, warm = setup()
+    adapter = OddOutputAdapter(types.MappingProxyType({"length_penalty": 1.0}))
+    result = run(adapter, timed, warm, tmp_path, repeats=1)
+    assert {h.status for h in result.hypotheses} == {"ok"}
+    write_run_outputs(tmp_path / "out", result, timed, run_context, adapter, command="x")
+    assert validate_nbest(read_jsonl(tmp_path / "out" / "nbest.jsonl")).ok

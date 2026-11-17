@@ -124,6 +124,26 @@ def _transcribe(adapter: AsrAdapter, items: Sequence[AudioItem]) -> list[Hypothe
     return hypotheses
 
 
+def _plain(value: Any) -> Any:
+    """json.dumps fallback: dataclasses and read-only mappings become plain objects."""
+    if dataclasses.is_dataclass(value) and not isinstance(value, type):
+        return {f.name: getattr(value, f.name) for f in dataclasses.fields(value)}
+    if isinstance(value, Mapping):
+        return dict(value)
+    raise TypeError(f"{type(value).__name__} is not JSON serializable")
+
+
+def _serialized(hypothesis: Hypothesis) -> Hypothesis:
+    """Serialize one result as strict JSON; a result that cannot be written becomes an error row."""
+    try:
+        json.dumps(hypothesis, default=_plain, ensure_ascii=False, allow_nan=False)
+    except (TypeError, ValueError, RecursionError) as exc:
+        message = _one_line(f"adapter result cannot be written as strict JSON: {exc}")
+        return Hypothesis(hypothesis.utterance_id, "error", None, error_code="adapter_output_invalid",
+                          error_message=message)
+    return hypothesis
+
+
 def _timed_batch(adapter: AsrAdapter, batch: Sequence[InferenceInput], audio_root: Path,
                  sync: Callable[[], None], clock: Callable[[], float]) -> tuple[list[Hypothesis], float, float, float]:
     """Run one batch; return hypotheses, end-to-end seconds, core-model seconds and audio seconds."""
@@ -135,7 +155,7 @@ def _timed_batch(adapter: AsrAdapter, batch: Sequence[InferenceInput], audio_roo
     hypotheses = _transcribe(adapter, items)
     sync()
     c1 = clock()
-    json.dumps([dataclasses.asdict(h) for h in hypotheses], ensure_ascii=False, default=str)
+    hypotheses = [_serialized(h) for h in hypotheses]
     sync()
     t1 = clock()
     audio_s = sum(len(item.samples) for item in items) / TARGET_SAMPLE_RATE_HZ

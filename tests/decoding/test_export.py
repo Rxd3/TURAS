@@ -141,6 +141,12 @@ def test_nbest_row_refuses_non_object_score_details(make_input, run_context, det
         nbest_row(Hypothesis("utt_a", "ok", "SYNTHETIC x", (bad,)), make_input("utt_a"), run_context, 1, "conv")
 
 
+def test_nbest_row_refuses_candidates_that_are_not_a_tuple_or_list(make_input, run_context):
+    hyp = Hypothesis("utt_a", "ok", "SYNTHETIC bir", iter(scored_hyp().candidates))
+    with pytest.raises(ValueError, match="candidates must be a tuple or list"):
+        nbest_row(hyp, make_input("utt_a"), run_context, 5, "conv")
+
+
 def test_adapter_result_fields_are_the_values_the_rows_take_from_the_result(make_input, run_context):
     hyp = scored_hyp()
     pred = prediction_row(hyp, make_input("utt_a"), run_context, "t1", None)

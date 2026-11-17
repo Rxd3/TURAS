@@ -77,6 +77,7 @@ UNWRITABLE = {
     "lone_surrogate_in_candidate": with_candidate(text="SYNTHETIC \ud800"),
     "lone_surrogate_in_text": Hypothesis("utt_x", "ok", "SYNTHETIC \ud800"),
     "candidates_none": Hypothesis("utt_x", "ok", "SYNTHETIC", None),
+    "candidates_one_shot_iterator": Hypothesis("utt_x", "ok", "SYNTHETIC c1", iter(with_candidate().candidates)),
     "dict_candidate": Hypothesis("utt_x", "ok", "SYNTHETIC", ({"candidate_id": "c1"},)),
     "object_error_message": Hypothesis("utt_x", "error", None, error_code="SYNTHETIC", error_message=object()),
 }

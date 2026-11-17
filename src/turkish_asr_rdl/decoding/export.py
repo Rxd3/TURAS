@@ -121,6 +121,8 @@ def nbest_row(
 
 
 def _candidate_rows(hyp: Hypothesis) -> list[dict[str, Any]]:
+    if not isinstance(hyp.candidates, (tuple, list)):
+        raise ValueError(f"result for {hyp.utterance_id!r}: candidates must be a tuple or list")
     return [_candidate_row(c) for c in hyp.candidates]
 
 

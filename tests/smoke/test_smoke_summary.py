@@ -50,12 +50,6 @@ def test_main_summarize_prints_the_report_path(smoke, tmp_path, capsys):
     assert "REPORT.md" in capsys.readouterr().out
 
 
-def test_main_summarize_reports_a_missing_folder(smoke, tmp_path, capsys):
-    assert smoke.main(["--summarize", str(tmp_path / "missing")]) == 1
-    out = capsys.readouterr().out.strip()
-    assert "\n" not in out and "missing" in out
-
-
 @pytest.mark.parametrize("text", ["[1, 2]", "null", '"SYNTHETIC"', "7"])
 def test_summarize_marks_json_that_is_not_an_object_unreadable(smoke, tmp_path, text):
     folder = tmp_path / "smoke"

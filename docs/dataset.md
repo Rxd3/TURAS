@@ -58,3 +58,87 @@ M1 and M6 review counts, duration, topics, source/speaker overlap, verification,
 exclusions, duplicate statistics, rights and split hashes before approving a
 release. Split manifests and a release card are required; no counts or hours are
 claimed now. See the [data contract](contracts/data.md) for required fields.
+
+## Proposed release `turas-tr-econ-legis-v0.1` (M1, 2026-11-18)
+
+Status: **proposed, not frozen.** Validation/test references are still
+`unreviewed`; the release freezes only after listening verification and M6
+review. Source audit: [worldspeech-tr_tr-source-audit](../data/metadata/worldspeech-tr_tr-source-audit.md).
+Configuration: [`configs/datasets/turas-tr-econ-legis-v0.1.json`](../configs/datasets/turas-tr-econ-legis-v0.1.json);
+lexicon: [`turas-domain-lexicon-v0.1.json`](../configs/datasets/turas-domain-lexicon-v0.1.json).
+Rebuild: `python scripts/m1_build_release.py --artifact-root <dir outside Git>`.
+
+### Inclusion and exclusion (applied in this order; first reason is logged)
+
+| Reason | Rows |
+| --- | ---: |
+| `source_not_selected` (Ankara municipal council) | 2,451 |
+| `non_spoken_or_truncated_text` (speaker headers, stage directions, brackets, `...`) | 16,768 |
+| `repeated_text` (identical normalized text elsewhere in the corpus) | 3,175 |
+| `upstream_cer_above_max` (ASR alignment CER > 0.25) | 3,886 |
+| `not_in_domain` (lexicon rule below) | 184,567 |
+| `upstream_test_in_train_recording` (quarantined) | 1,069 |
+| `eligible_not_sampled` (eligible, beyond the per-recording cap) | 22,288 |
+| **selected** | **5,450** |
+
+Domain rule: at least 2 distinct economic terms, or 1 economic term plus a
+legislative term or an amount/percentage expression. Economic topics:
+public finance/budget, tax, inflation/interest/currency, banking/credit,
+wages/pensions/social security, trade/investment/growth; legislative topic:
+laws, articles, motions, constitution, regulations. 126.6 h in 172
+recordings are eligible; the release samples 25 h of it.
+
+### Splits (grouped by recording; one recording = one session date)
+
+| Split | Utterances | Hours | Recordings | Session dates | Upstream-test rows |
+| --- | ---: | ---: | ---: | --- | ---: |
+| train | 4,376 | 20.00 | 129 | 2017-01-10 – 2025-12-23 | 0 |
+| validation | 438 | 2.00 | 15 | 2025-10-01 – 2025-12-24 | 18 |
+| test | 636 | 3.00 | 28 | 2026-01-06 – 2026-04-22 | 23 |
+
+- **Test is temporal**: every 2026 recording, nothing else. It postdates the
+  training data and the planned baseline checkpoints.
+- **Validation**: 15 recordings drawn with seed 2026 from Sep–Dec 2025 sessions
+  (the window includes December budget debates).
+- **Train**: every other recording up to 2025-12-31.
+- One per-recording cap per split (water-filled: test 6.6 min, validation
+  8.4 min, train 10.1 min) spreads the hours over as many sessions as possible.
+  Inside a recording, segments are ranked by distinct economic terms +
+  min(legislative terms, 2) + min(quantities, 1).
+- Leakage checks (all 0): recordings or dates in two splits, train rows from
+  upstream test, normalized texts shared across splits, duplicate IDs, rows
+  without a split or reason.
+- Speakers are unknown; speaker-disjointness is **not** claimed.
+
+Share of utterances with each automatically detected topic (an utterance can
+have several; labels are lexicon screening, `domain_topics_origin =
+lexicon-screening-unverified`):
+
+| Topic | Train | Validation | Test |
+| --- | ---: | ---: | ---: |
+| Inflation, interest, currency | 67% | 63% | 70% |
+| Wages, pensions, social security | 44% | 39% | 57% |
+| Trade, investment, growth | 41% | 47% | 46% |
+| Public finance, budget | 29% | 32% | 28% |
+| Legislation | 24% | 22% | 23% |
+| Banking, credit | 18% | 16% | 30% |
+| Tax | 13% | 20% | 26% |
+
+### Outputs
+
+Public (in Git): `data/splits/turas-tr-econ-legis-v0.1/{train,validation,test}.txt`
+and `split_manifest.json`; `data/manifests/turas-tr-econ-legis-v0.1.json`
+(hashes of the protected files and inference exports); source registry CSV.
+Protected (artifact root, outside Git): `audio/<utterance_id>.flac` (16 kHz mono
+FLAC), `<release>.references.jsonl` (full data-contract rows),
+`<release>.inference.<split>.jsonl` (strict allowlist), `exclusion_ledger.jsonl`
+(every upstream row with its split or reason), relational tables.
+
+### Known limitations
+
+- References are TBMM minutes, edited rather than verbatim; validation/test
+  need listening verification ([guide](../data/verification/turas-verbatim-v0.1.md)).
+- The CER ≤ 0.25 filter favours segments an upstream ASR system handled well.
+- Topic labels and relational facts are automatic lexicon matches.
+- Unknown speakers; public YouTube/minutes origin means pretraining
+  contamination cannot be excluded for pre-2026 data.

@@ -1,0 +1,78 @@
+{
+  "schema_version": "0.1",
+  "dataset_release": "turas-tr-econ-legis-v0.1",
+  "status": "proposed by M1; not frozen until M6 review and validation/test verification",
+  "upstream": {
+    "dataset": "disco-eth/WorldSpeech",
+    "config": "tr_tr",
+    "revision": "b76b85395039f50332fbc421f7c098ee2f2653d7",
+    "data_glob": "data/tr_tr/*.parquet"
+  },
+  "config_sha256": "f80536392118d96ed32bb03b6486c7ef771a3d83b8b2b1543e38ff777f2a49d1",
+  "lexicon_sha256": "8ef903fe74135897a9d3781966c5e484c0711a6679d72346efb1ec89eff6df94",
+  "algorithm": "turkish_asr_rdl.data.selection.select (recording-grouped, temporal test, seeded validation)",
+  "group_key": "source_url",
+  "seed": 2026,
+  "caps_minutes": {
+    "test": 6.563,
+    "validation": 8.388,
+    "train": 10.144
+  },
+  "splits": {
+    "train": {
+      "file": "train.txt",
+      "sha256": "3758fae04956ef65464b9c15821527535bd40b4d00438885d7fbffdaf33bda1e",
+      "utterances": 4376,
+      "duration_s": 72008.398,
+      "recordings": 129,
+      "session_date_min": "2017-01-10",
+      "session_date_max": "2025-12-23",
+      "upstream_test_rows": 0,
+      "ordered_id_digest": "603e498e797d2f4646d41357e922560aad60a5a5cc5f2e9afb30b6f42ffc85ea"
+    },
+    "validation": {
+      "file": "validation.txt",
+      "sha256": "2dd6126b221ab586dc4417141291ff3f7dfef2264a397a2c317c2a5a505f936f",
+      "utterances": 438,
+      "duration_s": 7207.657,
+      "recordings": 15,
+      "session_date_min": "2025-10-01",
+      "session_date_max": "2025-12-24",
+      "upstream_test_rows": 18,
+      "ordered_id_digest": "6d2819326112267ebbe3d19ec5df226a2445f2b0e304867b1d24254d1466c981"
+    },
+    "test": {
+      "file": "test.txt",
+      "sha256": "35c6ed9f206c5b4a609e05eff641e1d8317c04c3d4a6f62627fc309b824d122f",
+      "utterances": 636,
+      "duration_s": 10814.486,
+      "recordings": 28,
+      "session_date_min": "2026-01-06",
+      "session_date_max": "2026-04-22",
+      "upstream_test_rows": 23,
+      "ordered_id_digest": "86b9ead025ac60ccd9f40ca608180d0c87133e53fca86d58b9c13c14ecd34879"
+    }
+  },
+  "leakage_checks": {
+    "recordings_in_more_than_one_split": 0,
+    "dates_in_more_than_one_split": 0,
+    "train_rows_from_upstream_test": 0,
+    "normalized_texts_shared_across_splits": 0,
+    "duplicate_segment_ids": 0,
+    "rows_without_split_or_reason": 0
+  },
+  "exclusion_counts": {
+    "not_in_domain": 184567,
+    "eligible_not_sampled": 22288,
+    "non_spoken_or_truncated_text": 16768,
+    "selected": 5450,
+    "upstream_cer_above_max": 3886,
+    "repeated_text": 3175,
+    "source_not_selected": 2451,
+    "upstream_test_in_train_recording": 1069
+  },
+  "speaker_identity": "unknown for every row; speaker-disjointness is NOT claimed",
+  "references_sha256": "627b9a1f99541e2ca1da8b85b02c40d25862b0be7ea3a6c4d0850709da8bbe92",
+  "exclusion_ledger_sha256": "6077dc6f804fff838f253eddf1bd4ebd91c2228f4ab41d916103511c6068c0c1",
+  "audio_written": false
+}

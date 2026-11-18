@@ -1,0 +1,32 @@
+{
+  "release_id": "turas-tr-econ-legis-v0.1",
+  "status": "proposed by M1; not frozen until M6 review and validation/test verification",
+  "upstream": {
+    "dataset": "disco-eth/WorldSpeech",
+    "config": "tr_tr",
+    "revision": "b76b85395039f50332fbc421f7c098ee2f2653d7",
+    "data_glob": "data/tr_tr/*.parquet"
+  },
+  "lexicon": "configs/datasets/turas-domain-lexicon-v0.1.json",
+  "filters": {
+    "sources": ["tbmm_parliament"],
+    "max_upstream_cer": 0.25,
+    "exclude_issue_codes": ["empty", "speaker_header", "parenthetical", "bracketed", "trailing_ellipsis"],
+    "exclude_repeated_text": true
+  },
+  "domain_rule": {
+    "description": "in-domain if >=2 distinct economic terms, or >=1 economic term plus (>=1 legislative term or >=1 amount/percentage expression)",
+    "min_economic_terms_alone": 2,
+    "min_economic_terms_with_support": 1
+  },
+  "segment_ranking": "within a recording: distinct economic terms + min(distinct legislative terms, 2) + min(amount/percentage expressions, 1), descending; ties by segment_id",
+  "splits": {
+    "group_key": "source_url",
+    "test": {"session_date_from": "2026-01-01", "target_hours": 3.0},
+    "validation": {"session_date_from": "2025-09-01", "session_date_to": "2025-12-31", "target_hours": 2.0, "seed": 2026},
+    "train": {"session_date_to": "2025-12-31", "target_hours": 20.0},
+    "per_recording_cap_minutes": {"train": 12.0, "validation": 9.0, "test": 7.0},
+    "upstream_test_rows_in_train_recordings": "quarantine"
+  },
+  "audio": {"sample_rate_hz": 16000, "channels": 1, "format": "FLAC", "subtype": "PCM_16", "downmix": "mean of channels", "resampler": "soxr VHQ"}
+}

@@ -138,11 +138,13 @@ very differently.
   second re-run's one; measured). From the second four-model re-run:
   qwen3-asr-0.6b 0.109 (measured), with an OS update using CPU just before
   that run.
-  whisper-large-v3 0.209 (measured)
-  ran while about 25 processes of unknown origin held GPU compute contexts and
-  total CPU load was 100% (both measured, in the snapshot before the run).
-  qwen3-asr-1.7b 0.118 (measured) ran with the same processes present. Treat
-  both as possibly contended.
+  whisper-large-v3 0.209 (measured) ran while about 25 python.exe processes on
+  the run's own interpreter were listed on the GPU and total CPU load was 100%
+  (both measured, in the snapshot before the run). Those processes were very
+  likely the run's own process tree; no outside job is known. qwen3-asr-1.7b
+  0.118 (measured) ran with the same processes present. Treat both as
+  same-session measurements: their ratios to 2026-11-17 (1.25 and 1.20;
+  estimate, from measured RTFs) match the other systems.
 
 Rule for everyone: compare RTFs only within one timing session. The official
 timing runs every system back to back in one session, records the machine

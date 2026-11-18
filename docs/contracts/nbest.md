@@ -1,4 +1,7 @@
-# N-best and score/rescoring contract — 0.2 (proposed by M6, pending review by M4/M5 and M3)
+# N-best and score/rescoring contract — 0.2
+
+Owner adoption for M4/M5 integration: 2026-11-19; see [D24](../owner_decisions.md).
+This records project approval, not independent peer-review sign-off.
 
 N-best is a separate UTF-8 JSONL artifact, one object per utterance. It requires
 schema/run/system/release/split IDs, utterance/audio/split hashes, decoder and model

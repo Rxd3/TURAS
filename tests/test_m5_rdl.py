@@ -137,6 +137,48 @@ def test_safe_graph_bundle_roundtrip_and_tamper_rejection(tables, tmp_path):
     model, linker, manifest = load_model(output)
     assert manifest["dataset_release"] == "fixture-only" and len(linker["aliases"]) == 4
     assert model.snapshot.validation_groups
+    # Full M1 quantity parser is now integrated; no fixture callback substitutes it.
+    from turkish_asr_rdl.rdl.scoring import score_hypothesis
+    _, coverage = score_hypothesis("fixturea 5 milyon 300 bin lira", model, linker)
+    assert coverage["quantifier_count"] == 1
+    assert coverage["unknown_or_contextless_quantifiers"] == 1
+    # Compose a clearly synthetic acoustic fixture with the real learned graph
+    # and M6's exporter. This checks interfaces, not ASR accuracy or latency.
+    from turkish_asr_rdl.decoding.interface import Candidate, Hypothesis, AudioItem, InferenceInput
+    from turkish_asr_rdl.decoding.relational import RelationalAsrAdapter
+    from turkish_asr_rdl.decoding.export import RunContext, prediction_row, nbest_row
+    from turkish_asr_rdl.schemas.nbest import validate_nbest
+    from turkish_asr_rdl.schemas.predictions import validate_predictions
+    import numpy as np
+    class SyntheticAcoustic:
+        requested_n = 3
+        score_convention_id = "synthetic-fixture-only"
+        system_id = "synthetic-fixture-only"
+        model_artifact_sha256 = "a" * 64
+        config = {"fixture": True}
+        def load(self):
+            self.loaded = True
+        def transcribe(self, batch):
+            return [Hypothesis(item.utterance_id, "ok", "fixturea", (
+                Candidate("c1", 1, "fixturea", (1,), -4., "synthetic"),
+                Candidate("c2", 2, "fixturea", (2,), -3., "synthetic"),
+                Candidate("c3", 3, "fixtureb", (3,), -1., "synthetic"))) for item in batch]
+    wrapper = RelationalAsrAdapter(SyntheticAcoustic(), output, sha256_file(output / "artifact-manifest.json"),
+        dataset_release="fixture-only", split_manifest_sha256=sha256_file(split),
+        fusion={"acoustic_weight": 1., "rdl_weight": 0.})
+    wrapper.load()
+    hypothesis = wrapper.transcribe([AudioItem("synthetic-validation", np.zeros(1600, dtype=np.float32))])[0]
+    assert hypothesis.status == "ok" and hypothesis.selected_candidate_id == "c3"
+    inp = InferenceInput("0.1", "fixture-only", sha256_file(split), "synthetic-validation", "synthetic.flac", "b" * 64, .1, 16000, 1, "tr_tr")
+    ctx = RunContext("synthetic-run", wrapper.system_id, "fixture-only", "validation", sha256_file(split),
+                     wrapper.model_artifact_sha256, wrapper.decoder_config_sha256)
+    nbest = nbest_row(hypothesis, inp, ctx, 3, wrapper.score_convention_id)
+    prediction = prediction_row(hypothesis, inp, ctx, "synthetic-timing-not-measured", "c" * 64)
+    assert nbest["dedup_map"] == {"c2": "c1"}
+    assert nbest["candidates"][0]["rdl_log_score"] is not None
+    assert nbest["candidates"][0]["combined_score"] == -4.
+    assert prediction["selected_candidate_id"] == "c3" and prediction["hypothesis_text"] == "fixtureb"
+    assert validate_nbest([nbest]).ok and validate_predictions([prediction]).ok
     (output / "linker.json").write_text("{}")
     with pytest.raises(ValueError, match="hash mismatch"):
         load_model(output)
@@ -161,10 +203,16 @@ def test_offline_rescoring_roundtrip_and_test_freeze_gate(tables, tmp_path):
     expected_ids.write_text("synthetic-validation\n")
     nbest = tmp_path / "fixture-nbest.jsonl"
     nbest.write_text(json.dumps({"schema_version": "0.1", "run_id": "fixture-only", "utterance_id": "synthetic-validation",
+        "system_id": "synthetic-fixture-only", "audio_sha256": "b" * 64, "model_artifact_sha256": "c" * 64,
+        "score_convention_id": "synthetic-fixture-only",
         "dataset_release": "fixture-only", "split": "validation", "split_manifest_sha256": sha256_file(split),
         "decoder_config_sha256": "a" * 64, "requested_n": 1, "actual_n": 1,
         "candidates": [{"candidate_id": "fixture-candidate", "rank": 1, "text": "fixturea fixtureb",
-                        "acoustic_log_score": -3.0, "token_count": 2}]}) + "\n")
+                        "acoustic_log_score": -3.0, "token_count": 2, "token_ids": [4, 5],
+                        "acoustic_score_kind": "synthetic", "decoder_sequence_score": None,
+                        "lm_log_score": None, "rdl_log_score": None, "combined_score": None,
+                        "score_details": {"null_reasons": {k: "not produced by fixture" for k in
+                            ["decoder_sequence_score", "lm_log_score", "rdl_log_score", "combined_score"]}}}]}) + "\n")
     config = {"protocol_reviewed": True, "dataset_release": "fixture-only", "split_manifest_sha256": sha256_file(split),
               "split": "validation", "fusion_frozen": False, "missing_probability": .1,
               "inputs": {"nbest": str(nbest), "nbest_sha256": sha256_file(nbest), "expected_ids": str(expected_ids),
@@ -178,6 +226,8 @@ def test_offline_rescoring_roundtrip_and_test_freeze_gate(tables, tmp_path):
     assert row["selected_candidate_id"] == "fixture-candidate"
     assert row["source_run_id"] == "fixture-only" and row["run_id"] != "fixture-only"
     assert row["candidates"][0]["rdl_log_score"] <= 0
+    assert result["seconds"] is None
+    assert output.with_suffix(".jsonl.run.json").exists()
     config["split"] = "test"
     assert any("frozen fusion" in b for b in preflight(config)["blockers"])
     with pytest.raises(ValueError, match="forbidden"):

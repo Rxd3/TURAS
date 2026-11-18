@@ -88,3 +88,9 @@ def test_real_ctc_tokenizer_rejects_unknown_numeric_training_labels(tmp_path):
     sf.write(audio, np.zeros(16000, dtype=np.float32), 16000)
     with pytest.raises(ValueError, match="OOV"):
         build_collator(processor)([{"audio_path": audio, "duration_s": 1.0, "reference_text": "30"}])
+    from turkish_asr_rdl.training.ctc import audit_targets
+    audit = audit_targets([{"split": "train", "utterance_id": "fixture-only", "reference_text": "30"}], tokenizer)
+    assert audit["unsupported_characters"] == {"0": 1, "3": 1}
+    assert audit["affected_utterance_ids"] == ["fixture-only"]
+    with pytest.raises(ValueError, match="training references only"):
+        audit_targets([{"split": "test"}], tokenizer)

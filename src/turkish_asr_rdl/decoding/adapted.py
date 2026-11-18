@@ -80,7 +80,7 @@ class AdaptedAsrAdapter:
         dtype = {"fp32": torch.float32, "bf16": torch.bfloat16, "fp16": torch.float16}[self.precision]
         self.model.to(device=self.device, dtype=dtype).eval()
 
-    def nbest(self, samples):
+    def nbest(self, samples, *, deduplicate: bool = False):
         """One 16 kHz mono utterance; caller owns audio hashing and RTF timing."""
         import torch
         import numpy as np
@@ -91,14 +91,15 @@ class AdaptedAsrAdapter:
                 from turkish_asr_rdl.decoding.whisper import whisper_nbest
                 features = self.processor.feature_extractor(samples, sampling_rate=16000, return_tensors="pt").input_features
                 return whisper_nbest(self.model, self.processor, features.to(self.device, dtype=self.model.dtype),
-                                      requested_n=self.requested_n, max_new_tokens=self.config["max_new_tokens"])
+                                      requested_n=self.requested_n, max_new_tokens=self.config["max_new_tokens"],
+                                      deduplicate=deduplicate)
             from turkish_asr_rdl.decoding.ctc import ctc_nbest
             batch = self.processor.feature_extractor(samples, sampling_rate=16000, return_attention_mask=True, return_tensors="pt")
             batch = {key: value.to(self.device, dtype=self.model.dtype) if key == "input_values" else value.to(self.device)
                      for key, value in batch.items()}
             frames = self.model(**batch).logits[0].float().log_softmax(-1).cpu().tolist()
             return ctc_nbest(frames, self.processor.tokenizer, blank_id=self.model.config.pad_token_id,
-                              requested_n=self.requested_n, beam_size=self.config["beam_size"])
+                              requested_n=self.requested_n, beam_size=self.config["beam_size"], deduplicate=deduplicate)
 
     def transcribe(self, batch):
         try:
@@ -108,14 +109,14 @@ class AdaptedAsrAdapter:
         output = []
         for item in batch:
             try:
-                rows, dedup = self.nbest(item.samples)
+                rows, _ = self.nbest(item.samples, deduplicate=False)
                 if not rows:
                     raise ValueError("decoder returned no valid candidates")
                 candidates = tuple(Candidate(
                     candidate_id=row["candidate_id"], rank=row["rank"], text=row["text"], token_ids=tuple(row["token_ids"]),
                     acoustic_log_score=row["acoustic_log_score"], acoustic_score_kind=row["acoustic_score_kind"],
                     decoder_sequence_score=row["decoder_sequence_score"],
-                    score_details={**row["score_details"], "dedup_map": dedup},
+                    score_details=row["score_details"],
                 ) for row in rows)
                 text = candidates[0].text
                 output.append(Hypothesis(item.utterance_id, "ok" if text else "empty", text, candidates))

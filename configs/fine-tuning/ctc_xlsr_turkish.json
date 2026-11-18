@@ -2,8 +2,6 @@
   "schema_version": "0.1",
   "dataset_release": "turas-tr-econ-legis-v0.1",
   "split_manifest_sha256": "a8fff65b99fcf11d9452685e438e250207032ecfe11152741562147126d095b8",
-  "protocol_reviewed": false,
-  "baseline_reviewed": false,
   "model": {
     "id": "mpoyraz/wav2vec2-xls-r-300m-cv7-turkish",
     "revision": "708639f50559d7970f462e13ec64d3f059ca89f6",
@@ -14,8 +12,8 @@
     "inference": null,
     "references": null,
     "audio_root": null,
-    "split_manifest": null,
-    "train_ids": null,
+    "split_manifest": "data/splits/turas-tr-econ-legis-v0.1/split_manifest.json",
+    "train_ids": "data/splits/turas-tr-econ-legis-v0.1/train.txt",
     "baseline_report": null,
     "references_sha256": null,
     "inference_sha256": null
@@ -35,5 +33,14 @@
     "beam_size": 10,
     "score_convention_id": "ctc-exact-alignment-marginalized-v1"
   },
-  "status": "draft; M3/M6 must agree the parent, frontend freeze and CTC target spelling/OOV policy"
+  "status": "owner-approved experimental protocol; missing inputs and actual evidence remain blocking",
+  "protocol_approved": true,
+  "approval": {
+    "authority": "project owner via explicit delegation",
+    "date": "2026-11-19",
+    "record": "docs/owner_decisions.md",
+    "scope": "experimental protocol; no claim of peer review, measured feasibility or completed baselines"
+  },
+  "baseline_evidence_required": true,
+  "target_policy": "shared tr-normalized-v1; strict OOV audit before weight download; no invented numeral readings"
 }

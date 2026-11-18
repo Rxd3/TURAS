@@ -82,6 +82,23 @@ def test_supplied_profiles_block_before_loading_models():
         assert "missing input: references" in report["blockers"]
 
 
+def test_baseline_gate_requires_actual_matching_validation_evidence(tmp_path):
+    from turkish_asr_rdl.training.acoustic import validate_baseline
+    path = tmp_path / "synthetic-baseline-report.json"
+    config = {"model": {"id": "fixture-only", "revision": "a" * 40},
+              "dataset_release": "fixture-only", "split_manifest_sha256": "b" * 64,
+              "inputs": {"baseline_report": str(path)}}
+    report = {"status": "completed", "training_mode": "pretrained", "split": "validation",
+              "model_id": "fixture-only", "revision": "a" * 40,
+              "dataset_release": "fixture-only", "split_manifest_sha256": "b" * 64}
+    path.write_text(json.dumps(report))
+    validate_baseline(config)
+    report["split"] = "test"
+    path.write_text(json.dumps(report))
+    with pytest.raises(ValueError, match="baseline validation evidence"):
+        validate_baseline(config)
+
+
 def tiny_whisper():
     torch = pytest.importorskip("torch")
     transformers = pytest.importorskip("transformers")

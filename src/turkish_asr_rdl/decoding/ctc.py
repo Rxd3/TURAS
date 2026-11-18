@@ -82,7 +82,8 @@ def prefix_beam_search(frames, *, blank_id: int, beam_size: int = 10, token_top_
         beams.items(), key=lambda item: (-logadd(*item[1]), item[0]))]
 
 
-def ctc_nbest(frames, tokenizer, *, blank_id: int, requested_n: int = 5, beam_size: int = 10):
+def ctc_nbest(frames, tokenizer, *, blank_id: int, requested_n: int = 5,
+              beam_size: int = 10, deduplicate: bool = False):
     if not 1 <= requested_n <= beam_size:
         raise ValueError("requested_n must be between one and beam_size")
     frames = validate_log_probs(frames, blank_id)
@@ -92,7 +93,7 @@ def ctc_nbest(frames, tokenizer, *, blank_id: int, requested_n: int = 5, beam_si
         # Prefixes are already CTC-collapsed; group_tokens=False preserves repeats.
         text = tokenizer.decode(list(tokens), group_tokens=False, skip_special_tokens=True)
         cid = f"ctc-{rank:04d}"
-        if text in kept:
+        if deduplicate and text in kept:
             dedup[cid] = kept[text]
             continue
         score = sequence_log_probability(frames, tokens, blank_id)

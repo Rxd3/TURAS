@@ -12,6 +12,12 @@ changes require affected owners and Member 6; no member can change shared data,
 scores or evaluation semantics alone. Every member must understand the overall
 methodology, their assumptions, dependencies, leakage risks and limitations.
 
+**2026-11-19 owner update:** M4/M5 experimental choices are now approved under
+[D22–D31](docs/owner_decisions.md). Repeated member agreement is not a dependency
+for those choices. Code review, actual data handoffs and actual experimental
+evidence remain separate; historical task wording does not imply another member
+has approved or acknowledged anything.
+
 ## Ownership and review matrix
 
 | Member | Workstream and branch | Owned areas (future leaf paths are reservations) | Required technical review |

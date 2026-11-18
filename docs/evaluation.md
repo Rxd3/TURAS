@@ -1,5 +1,8 @@
 # Evaluation and timing policy — 0.2 (proposed by M6, pending review by M1 and model owners M2–M5)
 
+Owner adoption for M4/M5 integration: 2026-11-19; see [D24](owner_decisions.md).
+This records project approval, not independent peer-review sign-off.
+
 M6 owns the shared offline evaluator; it is not implemented. All five baselines,
 fine-tuned systems and RDL conditions must be reported on the same frozen test
 IDs and reference release. A missing or incompatible prediction bundle blocks

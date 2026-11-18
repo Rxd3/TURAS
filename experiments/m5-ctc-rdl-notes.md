@@ -1,5 +1,10 @@
 # Member 5: CTC adaptation, heterogeneous RDL and rescoring
 
+Current integration status: owner decisions are approved and M1/M6 interfaces
+are integrated on `feat/m4-m5-integration`. CUDA and synthetic resource checks
+pass. See [owner decisions](../docs/owner_decisions.md) and
+[readiness](../docs/m45_readiness.md); the earlier handoff below is retained as history.
+
 Updated 2026-11-19. This is an implementation/review handoff, not an experiment
 report. Training bundles are not ready locally, no pretrained weights were
 downloaded, and no corpus model, prediction bundle or benchmark metric exists.

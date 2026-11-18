@@ -1,4 +1,7 @@
-# Inference and prediction JSONL contract — 0.2 (proposed by M6, pending review by M1 and model owners M2–M5)
+# Inference and prediction JSONL contract — 0.2
+
+Owner adoption for M4/M5 integration: 2026-11-19; see [D24](../owner_decisions.md).
+This records project approval, not independent peer-review sign-off.
 
 ## Strict inference inputs
 

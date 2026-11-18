@@ -3,12 +3,12 @@ from __future__ import annotations
 
 import copy
 import math
-import unicodedata
+import re
+from turkish_asr_rdl.evaluation.normalize import normalize, TR_NORMALIZED_V1
 
 
 def words(text: str):
-    text = unicodedata.normalize("NFC", text).replace("I", "ı").replace("İ", "i").lower()
-    return "".join(c if c.isalnum() or c.isspace() else " " for c in text).split()
+    return re.findall(r"\w+", normalize(text, TR_NORMALIZED_V1))
 
 
 def linker_from_tables(entities: list[dict], aliases: list[dict]):
@@ -16,7 +16,7 @@ def linker_from_tables(entities: list[dict], aliases: list[dict]):
     # M1 entities.csv has no topic_id; entity/topic pairs come from the static
     # belongs_to relationships and are supplied by the training command below.
     return {"aliases": [{"tokens": words(r["alias_text"]), "entity_id": r["entity_id"]} for r in aliases],
-            "entity_topics": entity_topics, "normalization": "NFC/Turkish-lower/alphanumeric token matching"}
+            "entity_topics": entity_topics, "normalization": "shared tr-normalized-v1 plus alphanumeric token matching"}
 
 
 def link_entities(text: str, linker: dict):
@@ -102,4 +102,5 @@ def attach_scores(candidates: list[dict], model, linker: dict, *, states=None, *
         score, details = score_hypothesis(candidate["text"], model, linker, states=states, **kwargs)
         candidate["rdl_log_score"] = score
         candidate.setdefault("score_details", {})["rdl"] = details
+        candidate["score_details"].get("null_reasons", {}).pop("rdl_log_score", None)
     return output

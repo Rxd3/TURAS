@@ -35,6 +35,17 @@ def test_saved_full_whisper_loads_and_generates_without_pretrained_download(tmp_
     adapter.load()
     rows, _ = adapter.nbest(np.zeros(16000, dtype=np.float32))
     assert rows and all(row["acoustic_log_score"] <= 0 for row in rows)
+    # Exercise the actual M6 interface and shared JSONL contract, not a copied bridge.
+    from turkish_asr_rdl.decoding.interface import AudioItem, InferenceInput
+    from turkish_asr_rdl.decoding.export import RunContext, nbest_row
+    from turkish_asr_rdl.schemas.nbest import validate_nbest
+    hyp = adapter.transcribe([AudioItem("fixture-utterance", np.zeros(16000, dtype=np.float32))])[0]
+    assert hyp.status in {"ok", "empty"}
+    inp = InferenceInput("0.1", "fixture-only", "b" * 64, "fixture-utterance", "synthetic.flac", "c" * 64, 1., 16000, 1, "tr_tr")
+    ctx = RunContext("fixture-only", adapter.system_id, "fixture-only", "validation", "b" * 64,
+                     adapter.model_artifact_sha256, adapter.decoder_config_sha256)
+    exported = nbest_row(hyp, inp, ctx, 2, adapter.score_convention_id)
+    assert validate_nbest([exported]).ok
     with pytest.raises(ValueError, match="at most 30 seconds"):
         adapter.nbest(np.zeros(480001, dtype=np.float32))
     # Any changed weight/config fails before a new load or network access.

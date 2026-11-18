@@ -36,6 +36,13 @@ to a member solely because its paths fall within that member's ownership.
 
 ## Current checks and future implementation checks
 
+For Members 4/5, [the owner's 2026-11-19 delegation](docs/owner_decisions.md)
+supplies approval for the recorded experimental choices. Teammates may reuse those
+choices without negotiating them again. Keep project approval distinct from
+independent code review: do not attribute the owner's decision to another member,
+fabricate an ACK, or mark baseline/training evidence complete. PR review continues
+to assess correctness and integration; this delegation does not itself merge PRs.
+
 The CI builds/installs this dependency-free scaffold, imports the packages and
 runs the unit tests on Python 3.11 and 3.13. It is **not** an ASR, training,
 evaluation, or reproducibility test suite.

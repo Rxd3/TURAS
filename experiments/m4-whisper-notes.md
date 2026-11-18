@@ -1,5 +1,10 @@
 # Member 4: Whisper adaptation implementation
 
+Current integration status: owner decisions are approved and M1/M6 interfaces
+are integrated on `feat/m4-m5-integration`. CUDA and synthetic resource checks
+pass. See [owner decisions](../docs/owner_decisions.md) and
+[readiness](../docs/m45_readiness.md); the earlier handoff below is retained as history.
+
 Updated 2026-11-19. Code and offline synthetic tests are being delivered; no
 pretrained weight was downloaded and no corpus training/evaluation has run.
 

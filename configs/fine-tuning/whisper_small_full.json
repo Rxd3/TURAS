@@ -2,8 +2,6 @@
   "schema_version": "0.1",
   "dataset_release": "turas-tr-econ-legis-v0.1",
   "split_manifest_sha256": "a8fff65b99fcf11d9452685e438e250207032ecfe11152741562147126d095b8",
-  "protocol_reviewed": false,
-  "baseline_reviewed": false,
   "model": {
     "id": "openai/whisper-small",
     "revision": "973afd24965f72e36ca33b3055d56a652f456b4d",
@@ -14,8 +12,8 @@
     "inference": null,
     "references": null,
     "audio_root": null,
-    "split_manifest": null,
-    "train_ids": null,
+    "split_manifest": "data/splits/turas-tr-econ-legis-v0.1/split_manifest.json",
+    "train_ids": "data/splits/turas-tr-econ-legis-v0.1/train.txt",
     "baseline_report": null,
     "references_sha256": null,
     "inference_sha256": null
@@ -35,5 +33,13 @@
     "max_new_tokens": 440,
     "score_convention_id": "whisper-original-logits-generated-plus-eos-v1"
   },
-  "status": "draft; no experiment has run; exact B1 identity and budget require M2/M6 review"
+  "status": "owner-approved experimental protocol; missing inputs and actual evidence remain blocking",
+  "protocol_approved": true,
+  "approval": {
+    "authority": "project owner via explicit delegation",
+    "date": "2026-11-19",
+    "record": "docs/owner_decisions.md",
+    "scope": "experimental protocol; no claim of peer review, measured feasibility or completed baselines"
+  },
+  "baseline_evidence_required": true
 }

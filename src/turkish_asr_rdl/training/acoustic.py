@@ -134,10 +134,8 @@ def preflight(config: dict) -> dict:
         value = config.get("inputs", {}).get(key)
         if not isinstance(value, str) or len(value) != 64:
             blockers.append("missing reviewed hash: " + key)
-    if not config.get("protocol_reviewed", False):
-        blockers.append("protocol has not been reviewed by the affected owners")
-    if not config.get("baseline_reviewed", False):
-        blockers.append("corresponding unmodified baseline has not been reviewed")
+    if not config.get("protocol_approved", config.get("protocol_reviewed", False)):
+        blockers.append("protocol has no recorded project approval")
     return {"status": "blocked" if blockers else "ready_for_input_validation", "blockers": blockers}
 
 
@@ -145,10 +143,11 @@ def validate_baseline(config: dict) -> None:
     report = json.loads(Path(config["inputs"]["baseline_report"]).read_text(encoding="utf-8"))
     expected = config["model"]
     if (report.get("status") != "completed" or report.get("training_mode") != "pretrained"
+            or report.get("split") != "validation"
             or report.get("model_id") != expected["id"] or report.get("revision") != expected["revision"]
             or report.get("dataset_release") != config["dataset_release"]
             or report.get("split_manifest_sha256") != config["split_manifest_sha256"]):
-        raise ValueError("baseline evidence is incompatible with the proposed adaptation")
+        raise ValueError("baseline validation evidence is incompatible with the proposed adaptation")
 
 
 def fit(model, rows: list[dict], collate, *, epochs: int, accumulation: int,

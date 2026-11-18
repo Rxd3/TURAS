@@ -28,6 +28,14 @@ amendment awaiting the listed reviewers. These are not experiment outcomes.
 | D20 | Proposed by M6 (2026-11-17): [data](contracts/data.md) 0.1 → 0.2. Release audio stored as 16 kHz mono FLAC under an artifact root outside Git; `audio_uri` is relative to that root with `/` separators | Reviewer: M1 (owner). Rationale: one shared loader reads the same files for every system inside the timed region, so end-to-end RTF stays comparable; relative `/` paths work on Windows and Linux. Compatibility: drops the 0.1 option of an access-controlled artifact URI; no release exists yet. Relates to D07 and D14 |
 | D21 | Proposed by M6 (2026-11-17): [evaluation](evaluation.md) 0.1 → 0.2. Headline RTF is end-to-end, batch 1, 3 repeats on a frozen 30-minute timing subset; core-model RTF is a labeled secondary view; `clocks_event_reasons` recorded before and after each repeat; course metric names mapped; deadline cuts listed as declared limitations | Reviewers: M1 and model owners M2–M5. Rationale: one timing protocol for every system on the shared re-run GPU; the 2026-11-23 deadline forces the 30-minute subset and single-seed runs. Compatibility: nothing has been timed or scored yet. Narrows D13 for this deadline without removing repeated seeds or full tuning from scope |
 
+## Owner delegation and integration (2026-11-19)
+
+The owner delegated M4/M5 technical decisions and approved documenting the choices
+for reuse. [D22–D31](owner_decisions.md) adopt the pinned parents, initial budgets,
+M6 contract 0.2, graph boundary, strict CTC target auditing and validation-only
+selection. They supersede pending inter-member agreement for those experimental
+choices; they do not invent peer reviews, data access or experimental evidence.
+
 To change a decision, append a dated rationale, status, reviewers, affected contract
 versions, compatibility/migration effects and supporting PR/evidence. Preserve the
 old decision history. A working decision cannot become approved solely because

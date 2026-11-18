@@ -18,3 +18,6 @@ marking a TEAM_TASKS item complete; ownership and specifications do not prove wo
 | [Member 4](member_4.md) | Whisper Fine-Tuning |
 | [Member 5](member_5.md) | CTC Fine-Tuning and RDL |
 | [Member 6](member_6.md) | Integration, Evaluation, and QA |
+
+[Owner-directed integration](owner_integration.md) records cross-workstream
+decisions and agent-assisted preparation; it is not a seventh membership assignment.

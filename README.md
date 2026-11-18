@@ -4,13 +4,20 @@
 project on domain-specific Turkish ASR, acoustic fine-tuning, and Relational Deep
 Learning (RDL).
 
-**Status on this feature branch: Members 4/5 implementation in progress.** Guarded
+**Status on this feature branch: owner-directed M1/M4/M5/M6 integration.** Guarded
 Whisper LoRA/full and CTC training, scored N-best extraction, heterogeneous graph
 learning and relational rescoring are implemented with offline tests. Approved
-training bundles, baseline handoffs, owner review and CUDA profiling are still
-needed. No corpus training, benchmark predictions or ASR results have been
+training bundles and genuine baseline/validation evidence are still needed.
+Technical choices are approved in [the owner decision record](docs/owner_decisions.md).
+Local CUDA execution and synthetic resource probes pass; no corpus training,
+benchmark predictions or ASR results have been
 produced. See [Member 4 notes](experiments/m4-whisper-notes.md) and
 [Member 5 notes](experiments/m5-ctc-rdl-notes.md).
+
+Use [the Member 1 handoff request](docs/member1-handoff-request.md) for missing
+private inputs. The [readiness record](docs/m45_readiness.md) lists what is verified
+here and how to stage the bundles; [GPU resource evidence](docs/m45_gpu_profile.md)
+is explicitly synthetic, not a benchmark result.
 
 The five baseline tracks below are the original project roster. The professor's
 later requirements also call for a GMM-HMM track and explicit HuBERT/transducer

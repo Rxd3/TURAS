@@ -69,11 +69,16 @@ def prediction_row(
     nbest_artifact_sha256: str | None,
 ) -> dict:
     """One prediction row in contract field order; the text stays raw."""
+    if hyp.selected_candidate_id is not None:
+        kept, _ = _candidate_rows(hyp)
+        selected = [c for c in kept if c["candidate_id"] == hyp.selected_candidate_id]
+        if len(selected) != 1 or selected[0]["text"] != hyp.text:
+            raise ValueError("selected candidate must survive shared deduplication and match hypothesis text")
     return {
         **_identity(hyp, inp, ctx),
         "status": hyp.status,
         "hypothesis_text": hyp.text,
-        "selected_candidate_id": None,
+        "selected_candidate_id": hyp.selected_candidate_id,
         "nbest_artifact_sha256": nbest_artifact_sha256,
         "model_artifact_sha256": ctx.model_artifact_sha256,
         "decoder_config_sha256": ctx.decoder_config_sha256,
@@ -90,9 +95,9 @@ def _error_object(hyp: Hypothesis) -> dict[str, Any] | None:
 def _candidate_row(candidate: Candidate) -> dict[str, Any]:
     scores = {
         "decoder_sequence_score": candidate.decoder_sequence_score,
-        "lm_log_score": None,
-        "rdl_log_score": None,
-        "combined_score": None,
+        "lm_log_score": candidate.lm_log_score,
+        "rdl_log_score": candidate.rdl_log_score,
+        "combined_score": candidate.combined_score,
     }
     if not isinstance(candidate.score_details, Mapping):
         raise ValueError(f"candidate {candidate.candidate_id!r}: score_details must be an object")

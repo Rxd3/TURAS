@@ -56,6 +56,9 @@ class Candidate:
     acoustic_score_kind: str
     decoder_sequence_score: float | None = None
     score_details: Mapping[str, Any] = field(default_factory=dict)
+    lm_log_score: float | None = None
+    rdl_log_score: float | None = None
+    combined_score: float | None = None
 
 
 @dataclass(frozen=True)
@@ -68,6 +71,7 @@ class Hypothesis:
     candidates: tuple[Candidate, ...] = ()
     error_code: str | None = None
     error_message: str | None = None
+    selected_candidate_id: str | None = None
 
 
 class AsrAdapter(Protocol):

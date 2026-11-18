@@ -31,7 +31,8 @@ def teacher_forced_score(model, input_features, sequence: list[int], prompt_leng
     return score
 
 
-def whisper_nbest(model, processor, input_features, *, requested_n: int = 5, max_new_tokens: int = 440):
+def whisper_nbest(model, processor, input_features, *, requested_n: int = 5,
+                  max_new_tokens: int = 440, deduplicate: bool = False):
     """Return candidates and a removed-to-kept dedup map; never pad a short list."""
     import torch
     from transformers import GenerationMixin
@@ -57,7 +58,7 @@ def whisper_nbest(model, processor, input_features, *, requested_n: int = 5, max
         tokens = scored_token_ids(sequence, len(prompt), eos)
         text = processor.tokenizer.decode(tokens, skip_special_tokens=True)
         candidate_id = f"beam-{index:04d}"
-        if text in kept:
+        if deduplicate and text in kept:
             dedup[candidate_id] = kept[text]
             continue
         kept[text] = candidate_id

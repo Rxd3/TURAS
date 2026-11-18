@@ -19,8 +19,8 @@ def preflight(config):
             blockers.append("missing input: " + key)
     if not config.get("inputs", {}).get("tables_sha256"):
         blockers.append("missing reviewed relational table hashes")
-    if not config.get("protocol_reviewed"):
-        blockers.append("graph provenance/split protocol awaits M1/M6 review")
+    if not config.get("protocol_approved", config.get("protocol_reviewed", False)):
+        blockers.append("graph protocol has no recorded project approval")
     return {"status": "blocked" if blockers else "ready_for_input_validation", "blockers": blockers}
 
 

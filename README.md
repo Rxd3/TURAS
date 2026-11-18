@@ -4,11 +4,13 @@
 project on domain-specific Turkish ASR, acoustic fine-tuning, and Relational Deep
 Learning (RDL).
 
-**Status on this feature branch: Member 4 implementation in progress.** Guarded
-Whisper LoRA/full training, scored beam extraction and offline random-model tests
-are implemented. Approved training bundles, baseline handoffs, owner review and
-CUDA profiling are still needed. No corpus training, benchmark predictions or
-ASR results have been produced. See [Member 4 notes](experiments/m4-whisper-notes.md).
+**Status on this feature branch: Members 4/5 implementation in progress.** Guarded
+Whisper LoRA/full and CTC training, scored N-best extraction, heterogeneous graph
+learning and relational rescoring are implemented with offline tests. Approved
+training bundles, baseline handoffs, owner review and CUDA profiling are still
+needed. No corpus training, benchmark predictions or ASR results have been
+produced. See [Member 4 notes](experiments/m4-whisper-notes.md) and
+[Member 5 notes](experiments/m5-ctc-rdl-notes.md).
 
 The five baseline tracks below are the original project roster. The professor's
 later requirements also call for a GMM-HMM track and explicit HuBERT/transducer
@@ -28,8 +30,8 @@ The project preserves all five baseline tracks and all adaptation tracks:
 | B5 | Alternative neural BiLSTM-CTC, trained from scratch | Member 3 | Working architecture choice; not implemented |
 | F1 | Whisper LoRA fine-tuning | Member 4 | Code and offline tests; no corpus training |
 | F2 | Whisper full fine-tuning where hardware permits | Member 4 | Code and offline tests; resource feasibility pending |
-| F3 | Wav2Vec2/XLSR CTC fine-tuning | Member 5 | Planned |
-| R1 | Trainable heterogeneous graph relation scorer and N-best rescoring | Member 5 | Planned |
+| F3 | Wav2Vec2/XLSR CTC fine-tuning | Member 5 | Code and offline tests; corpus training pending |
+| R1 | Trainable heterogeneous graph relation scorer and N-best rescoring | Member 5 | Code and offline tests; real graph/ASR experiments pending |
 
 The dataset contribution is a **curated Turkish legislative/financial speech
 benchmark**. [WorldSpeech](https://huggingface.co/datasets/disco-eth/WorldSpeech),
@@ -70,7 +72,7 @@ part of repository initialization.
 
 | Path | Purpose |
 | --- | --- |
-| `src/turkish_asr_rdl/` | Package boundaries and Member 4 training/decoding implementation |
+| `src/turkish_asr_rdl/` | Package boundaries and Members 4/5 training/decoding/RDL implementations |
 | `configs/` | Separate dataset, baseline, fine-tuning, RDL, decoding, evaluation settings areas |
 | `docs/` | Architecture, working decisions, data/evaluation policies, contracts, reproducibility |
 | `data/` | Future metadata, manifests, split definitions, verification and relational schema documentation |

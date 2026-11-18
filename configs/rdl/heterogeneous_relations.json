@@ -1,0 +1,37 @@
+{
+  "schema_version": "0.1",
+  "dataset_release": "turas-tr-econ-legis-v0.1",
+  "split_manifest_sha256": "a8fff65b99fcf11d9452685e438e250207032ecfe11152741562147126d095b8",
+  "protocol_reviewed": false,
+  "inputs": {
+    "static_dir": null,
+    "train_dir": null,
+    "train_ids": null,
+    "split_manifest": null,
+    "tables_sha256": {
+      "static/entities.csv": "b67b1394cff2c9328e54ccc5650aedc888d7420ba239c8fa409169571c50ccfc",
+      "static/entity_aliases.csv": "abc5e4174566a8563850c24d4c26e988afffa6d7637dcd2f7a9961d0bab6e7e6",
+      "static/provenance.csv": "e60561e061e7bfef68ea4fc72b927fabd9d71f2b78bdd1a3222b4787dff51723",
+      "static/relation_types.csv": "5133c00ba7642b0c3bb82023233b6b2b717b6f8a3e934ad2b60a076f38a50112",
+      "static/relationships_static.csv": "2792c18b7ab0c2c662d6d5d40b3515118b9fabb559eb90c7939bbd0d584a9b63",
+      "static/topics.csv": "3b045e9f35402914f3cce757ed62e1d76c023476f01c50038ecb0f1c435f282b",
+      "train/provenance.csv": "8662b92facb19a4c043f71839aa072751e81ea5545d557e151c2fb8f5fce6592",
+      "train/quantifiers.csv": "4b882af77bac12097edca1f16cf0f98274c49a3b4c186e58cc59e6540af42968",
+      "train/relationships.csv": "a19749be0cfd45cda191d488cb4695755dc98d892ac003021476a015a56b4c50",
+      "train/utterances.csv": "9dbb86b6bd56e884aac8402c2bc452eff6ca636fa6fc20f2ad1dde0d21175fc0"
+    }
+  },
+  "seed": 17,
+  "validation_fraction": 0.2,
+  "model": {
+    "hidden_dim": 64,
+    "layers": 2,
+    "dropout": 0.1
+  },
+  "training": {
+    "epochs": 20,
+    "learning_rate": 0.001
+  },
+  "status": "draft; no graph experiment has run; inputs are pinned to M1 branch 2ebfa78; M1/M6 review required",
+  "exclude_relations": []
+}

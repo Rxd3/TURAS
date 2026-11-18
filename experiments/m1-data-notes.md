@@ -87,3 +87,20 @@
   (sampled verification); documented in `docs/dataset.md`, sent to M6 for
   approval (D08). Freeze script gained `--sampled-verification`; trial run:
   40 validation/test clips verified (13 corrected), 1,034 unreviewed, 0 rejected.
+
+## 2026-11-18 — release frozen
+
+- M6 approved sampled verification (D08), as reported to M1. Froze with
+  `m1_freeze_release.py --sampled-verification`: 5,450 rows kept, 0 rejected,
+  16 references replaced by listening corrections (`local_human`), 50 rows
+  `verified`, 1,034 validation/test rows upstream minutes (`unreviewed`).
+  Split files unchanged; split manifest sha256 `a8fff65b…`.
+- Relational evidence regenerated from frozen references (train 31,639,
+  validation 3,784, test 6,249 relationships).
+- 24 integrity checks passed: hashes of references, ledger, exports and split
+  files; allowlist-only inference rows in split-file order; audio hashes;
+  verified IDs equal the pilot IDs.
+- Handoff bundles built (inference for all model owners; train references
+  for M3/M4/M5; evaluator-only for M6), hashes in
+  `data/manifests/turas-tr-econ-legis-v0.1-handoff.json`. Consumer
+  acknowledgments pending.

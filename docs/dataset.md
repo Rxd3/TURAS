@@ -61,9 +61,12 @@ claimed now. See the [data contract](contracts/data.md) for required fields.
 
 ## Proposed release `turas-tr-econ-legis-v0.1` (M1, 2026-11-18)
 
-Status: **proposed, not frozen.** Validation/test references are still
-`unreviewed`; the release freezes only after listening verification and M6
-review. Source audit: [worldspeech-tr_tr-source-audit](../data/metadata/worldspeech-tr_tr-source-audit.md).
+Status: **frozen on 2026-11-18** under the sampled-verification policy
+approved by M6 (D08; approval reported by M1). Final split manifest sha256
+`a8fff65b99fcf11d9452685e438e250207032ecfe11152741562147126d095b8`; all hashes in
+`data/splits/…/split_manifest.json`, `data/manifests/turas-tr-econ-legis-v0.1.json`
+and the handoff record `data/manifests/turas-tr-econ-legis-v0.1-handoff.json`.
+A correction from now on creates a new release. Source audit: [worldspeech-tr_tr-source-audit](../data/metadata/worldspeech-tr_tr-source-audit.md).
 Configuration: [`configs/datasets/turas-tr-econ-legis-v0.1.json`](../configs/datasets/turas-tr-econ-legis-v0.1.json);
 lexicon: [`turas-domain-lexicon-v0.1.json`](../configs/datasets/turas-domain-lexicon-v0.1.json).
 Rebuild: `python scripts/m1_build_release.py --artifact-root <dir outside Git>`.

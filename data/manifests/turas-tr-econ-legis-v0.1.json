@@ -1,10 +1,10 @@
 {
   "dataset_release": "turas-tr-econ-legis-v0.1",
-  "split_manifest_sha256": "1af56ddbc6b640d7c217c7f80872b3139d374adb355e0071e578b2fca5a00f63",
+  "split_manifest_sha256": "a8fff65b99fcf11d9452685e438e250207032ecfe11152741562147126d095b8",
   "inference_exports_sha256": {
-    "train": "f8565a87f72945a2562af4ffeefce51d9a1734fcf426c7121e43e6e81fc96106",
-    "validation": "81bf0f7706e9f7a4867c783c3157445c8d19af608f34c3427a688ed7fcda554b",
-    "test": "6468fad98707735e8d4f8b881c65c7f7ff7712d5e760991a61c95e44fa7a8395"
+    "train": "1e4bfd3df1bf10bb39bde558c50939631d71bdc003c56f19ff134a8edb36dc8d",
+    "validation": "1c6b12d4a7de3ed5b717d193f07d8194dc7105bd6785305029afef6d9e3ac3f2",
+    "test": "299dc6ae1f50772eb85081293c9bbe746c746a9aefc94870deff530a641059ef"
   },
   "topic_hours": {
     "train": {

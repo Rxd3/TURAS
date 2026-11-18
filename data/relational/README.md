@@ -17,9 +17,9 @@ Per-split utterance evidence lives outside Git under
 
 | Split | Utterances | Quantifiers | Relationships | Access |
 | --- | ---: | ---: | ---: | --- |
-| train | 4,376 | 1,459 | 31,640 | graph training allowed |
+| train | 4,376 | 1,459 | 31,639 | graph training allowed |
 | validation | 438 | 274 | 3,784 | evaluator/selection only, never in training snapshots |
-| test | 636 | 373 | 6,248 | evaluator-only |
+| test | 636 | 373 | 6,249 | evaluator-only |
 
 Relations: `utterance -mentions-> entity`, `utterance -has_topic-> topic`,
 `utterance -expresses-> quantifier` (amounts with TRY/USD/EUR and percentages,
@@ -51,3 +51,9 @@ listening corrections.
   `provenance_id` and `access_split` still come from the split's own table.
 - `annotation_status` for co-mentions is `auto_extracted:count=<n>`: the
   contract defines no count column, so the evidence count is carried there.
+
+### Frozen (2026-11-18)
+
+Regenerated from the frozen references, which include the 16 listening
+corrections; that changed train by −1 and test by +1 relationship. Counts above
+and `relational_manifest.json` are final for `turas-tr-econ-legis-v0.1`.

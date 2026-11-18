@@ -1,7 +1,7 @@
 {
   "schema_version": "0.1",
   "dataset_release": "turas-tr-econ-legis-v0.1",
-  "status": "proposed by M1; not frozen until M6 review and validation/test verification",
+  "status": "frozen by M1 on 2026-11-18; sampled verification approved by M6 on 2026-11-18 (D08, as reported by M1); PR https://github.com/Rxd3/TURAS/pull/2",
   "upstream": {
     "dataset": "disco-eth/WorldSpeech",
     "config": "tr_tr",
@@ -69,10 +69,11 @@
     "upstream_cer_above_max": 3886,
     "repeated_text": 3175,
     "source_not_selected": 2451,
-    "upstream_test_in_train_recording": 1069
+    "upstream_test_in_train_recording": 1069,
+    "rejected_in_listening_review": 0
   },
   "speaker_identity": "unknown for every row; speaker-disjointness is NOT claimed",
-  "references_sha256": "0de417c5b7cc1853135a106a16e5380e0f8f8619580b4d20ac59fd0b73f2a913",
+  "references_sha256": "5085e1cb1a76f12f7a523fda55e3db39b979c04ca68ac31a644f8edbe6dbd9a5",
   "exclusion_ledger_sha256": "6077dc6f804fff838f253eddf1bd4ebd91c2228f4ab41d916103511c6068c0c1",
   "audio_written": true,
   "policy": {
@@ -86,7 +87,7 @@
     }
   },
   "build": {
-    "code_commit": "ad66fa16d90439a665f84afe5d6a6f408bdd3087",
+    "code_commit": "9e55fdbd92af601da561dfe79af87b79668d75b1",
     "code_dirty": false,
     "python": "3.13.3",
     "libsndfile": "1.2.2",
@@ -95,5 +96,30 @@
     "numpy": "2.5.5",
     "pandas": "3.1.1",
     "pyarrow": "26.0.1"
-  }
+  },
+  "verification": {
+    "policy": "turas-verbatim-v0.1",
+    "scope": "sampled: validation/test references are upstream minutes; only the listed sample was verified by listening (docs/dataset.md, D08)",
+    "unreviewed_validation_test_rows": 1034,
+    "review_records_sha256": "9e036d0ff9fcb757764231a75d819d5df41cc1289b75e0547b1301fb4c32e13b",
+    "review_records": 50,
+    "reviewer_ids": 1,
+    "rows_by_split_status_origin": {
+      "test|unreviewed|upstream_human": 611,
+      "test|verified|local_human": 10,
+      "test|verified|upstream_human": 15,
+      "train|unreviewed|upstream_human": 4366,
+      "train|verified|local_human": 3,
+      "train|verified|upstream_human": 7,
+      "validation|unreviewed|upstream_human": 423,
+      "validation|verified|local_human": 3,
+      "validation|verified|upstream_human": 12
+    },
+    "rejected_in_listening_review": {
+      "train": 0,
+      "validation": 0,
+      "test": 0
+    }
+  },
+  "frozen_on": "2026-11-18"
 }

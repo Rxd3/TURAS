@@ -4,8 +4,7 @@ Name: unassigned (member to add). GitHub username: unassigned (member to add).
 Branch: `feat/m1-data-relational-schema`.
 Ownership/tasks/review routing: [TEAM_TASKS.md](../TEAM_TASKS.md).
 
-**Status (2026-11-18): release v0.1 rebuilt locally and fully tooled;
-lexicon frozen; pilot review done (sampled verification, pending M6 approval), then freeze.**
+**Status (2026-11-18): release `turas-tr-econ-legis-v0.1` frozen and handed off; consumer hash acknowledgments pending.**
 
 ## Actual contributions
 
@@ -31,7 +30,7 @@ lexicon frozen; pilot review done (sampled verification, pending M6 approval), t
 - Wrote the listening verification guide
   [`turas-verbatim-v0.1`](../data/verification/turas-verbatim-v0.1.md) and a
   self-contained review page generator for the 50-clip pilot.
-- Relational CSV tables (train 31,640 relationships, evaluator-only validation/test) per [RDL contract](../docs/contracts/rdl.md): static
+- Relational CSV tables (train 31,639 relationships at freeze, evaluator-only validation/test) per [RDL contract](../docs/contracts/rdl.md): static
   lexicon tables in `data/relational/turas-tr-econ-legis-v0.1/`; per-split
   automatic evidence tables in the artifact root, with train-only access for
   graph training.
@@ -84,6 +83,14 @@ artifacts (split files identical) and on a synthetic copy (reject/correct paths)
 - Decided on sampled verification (pending M6 approval D08) and documented
   its consequences for reported metrics.
 
+### 2026-11-18 — release frozen and handed off
+
+- Froze `turas-tr-econ-legis-v0.1` (split manifest `a8fff65b…`) after M6's
+  approval of sampled verification; merged the 16 listening corrections;
+  regenerated relational evidence; 24 integrity checks passed.
+- Built the three access-separated handoff bundles and recorded their hashes
+  (`data/manifests/turas-tr-econ-legis-v0.1-handoff.json`).
+
 ## Experiments and artifacts
 
 No model runs. Full audio build done 2026-11-18: 5,450 FLAC files (1.9 GB, 16 kHz mono), 200 sampled hashes re-verified, max duration drift 0.0001 s. Hashes: see
@@ -92,14 +99,16 @@ No model runs. Full audio build done 2026-11-18: 5,450 FLAC files (1.9 GB, 16 kH
 
 ## Reviews and handoffs
 
-Pending: M6 review of the source/schema policy and the data contract 0.2
-amendment (16 kHz mono FLAC, which this build follows); M5 review of the
-relational tables; consumer hash acknowledgments after freeze.
+- M6 approved sampled verification (D08) on 2026-11-18 (reported by M1).
+- M1 reviewed M6's data/predictions/normalization 0.2 proposals: approve, with
+  an audio-root clarification and a raw-text term-matching note (sent to M6).
+- Pending: M5 + M6 code review of PR #2; consumer hash acknowledgments.
 
 ## Remaining work
 
-- Pilot listening review (50 clips), then full validation/test verification.
-- Freeze the release with M6 after verification; regenerate references with
-  review records.
-- Lexicon frozen by hash 2026-11-18; waiting for M6 acknowledgment.
-- Regenerate per-split relational tables at freeze (extractor fixed).
+- Record consumer acknowledgments of split manifest `a8fff65b…` from M2–M6
+  in `data/manifests/turas-tr-econ-legis-v0.1-handoff.json`.
+- M6 acknowledgment of the lexicon hash `8ef903fe…`.
+- M5 + M6 review of PR #2 (https://github.com/Rxd3/TURAS/pull/2); a
+  non-author check of the rebuild instructions.
+- Optional: second-reviewer adjudication of the 16 pilot corrections.

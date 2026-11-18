@@ -30,8 +30,9 @@ versions, model limits) describe what was run and carry no label.
   Thermal flags: 0 (measured). The first two timed clips come from one
   recording (`tr_28_3_1`); the run output does not say how many recordings
   the 20 clips span, so treat them as a narrow sample.
-- Re-runs on 2026-11-18: the same 20 timed clips and the same software, with
-  the smoke kit at `dfc1bee`.
+- Re-runs on 2026-11-18: the same 20 timed clips (287.58 s of audio,
+  measured), the smoke kit at `dfc1bee`, and `793ff9c` for the old-code
+  comparison runs. Library versions were not re-recorded.
 - No references were used: accuracy is UNMEASURED.
 - These runs used Member 6's smoke wrappers, not the owners' adapters. Each
   owner's B1–B4 adapter needs its own check once it exists.
@@ -103,35 +104,45 @@ configuration fits when it does not.
 The 2026-11-18 re-runs showed that the same code on the same laptop can time
 very differently.
 
-- Another GPU-heavy application running at the same time made beam decoding
-  3–8x slower (measured). whisper-small went from 0.049 to about 0.29, with
-  the GPU at 100% utilisation drawing only about 33 W (measured): it was busy
-  with the other application's work. Closing that application removed the
-  slowdown (measured).
-- The smoke-kit change from `793ff9c` to `dfc1bee` did not change speed. On a
-  free GPU, four interleaved whisper-small runs gave 0.0660 and 0.0665 with
-  the old code and 0.0675 and 0.0659 with the new code (measured).
-- Within one session, repeats agreed within 2.5% (measured). Across sessions,
-  the same decoding work ran 1.2–1.4x slower on 2026-11-18 than on 2026-11-17
-  (measured ratios). For whisper-small, the old `793ff9c` code itself gave
-  0.066 against 0.049, and a 2026-11-18 run's output text matched the
-  2026-11-17 run on all 20 clips (measured). The cause is unexplained. The
-  2026-11-17 machine state was not recorded, and background programs were
-  active on 2026-11-18.
-- A run with a GPU monitor polling every 0.5 s, and part of the other
-  application still on the GPU, was about 14% slower than the four runs
-  without them (estimate, one run).
-- 2026-11-18 RTFs: whisper-small 0.066–0.070 over five runs on a free GPU
-  (measured); qwen3-asr-0.6b 0.109 (measured), with an OS update using CPU
-  just before that run. whisper-large-v3 0.209 and qwen3-asr-1.7b 0.118
-  (measured) ran while another program's processes held the GPU and total CPU
-  load was 100%, so treat those two as possibly contended.
+- With another GPU-heavy application running at the same time, beam decoding
+  was 3–8x slower (estimate, from measured RTFs such as whisper-small 0.049
+  against 0.291). In the whisper-small runs, the GPU sat at 100% utilisation
+  while drawing only about 33 W (measured): it was busy with the other
+  application's work. Closing that application brought whisper-small from
+  about 0.29 to 0.0755 (measured), removing about 4x of the slowdown
+  (estimate); the bullets below cover the remaining gap to 0.049. Only
+  whisper-small was A/B tested.
+- The smoke-kit change from `793ff9c` to `dfc1bee` did not change
+  whisper-small speed: with no other GPU workload running and no monitor,
+  four interleaved runs gave 0.0660 and 0.0665 with the old code and 0.0675
+  and 0.0659 with the new code (measured), new over old about 1.007
+  (estimate). The other systems were not A/B tested.
+- The four interleaved whisper-small runs agreed within 2.5% (estimate, from
+  measured RTFs); a fifth whisper-small run, in the four-model re-run, gave
+  0.0697 (measured). Across sessions, the same decoding work ran 1.2–1.4x
+  slower on 2026-11-18 than on 2026-11-17 (estimate, from measured RTFs). For
+  whisper-small, the old `793ff9c` code itself gave 0.066 against 0.049, and
+  a 2026-11-18 run's output text matched the 2026-11-17 run on all 20 clips
+  (measured). The cause is unexplained. The 2026-11-17 machine state was not
+  recorded, and background programs were active on 2026-11-18.
+- A run with a GPU monitor polling every 0.5 s, made after the other
+  application was closed, was about 14% slower than the four interleaved runs
+  without the monitor (estimate, one run). A small part of the other
+  application was still listed on the GPU in that run and in the four runs
+  without the monitor.
+- 2026-11-18 RTFs: whisper-small 0.066–0.070 over five runs with no other GPU
+  workload running (measured); qwen3-asr-0.6b 0.109 (measured), with an OS
+  update using CPU just before that run. whisper-large-v3 0.209 (measured)
+  ran while about 25 processes of unknown origin held GPU compute contexts and
+  total CPU load was 100% (both measured, in the snapshot before the run).
+  qwen3-asr-1.7b 0.118 (measured) ran with the same processes present. Treat
+  both as possibly contended.
 
 Rule for everyone: compare RTFs only within one timing session. The official
 timing runs every system back to back in one session, records the machine
-state (GPU processes, power source and plan, CPU load) and uses 3 repeats. No
-other GPU application is open, cloud-drive sync is paused and no OS update is
-installing.
+state (GPU processes, power source and plan, CPU load, top CPU processes) and
+uses 3 repeats. No other GPU application is open, cloud-drive sync is paused
+and no OS update is installing.
 
 ## Training probes
 

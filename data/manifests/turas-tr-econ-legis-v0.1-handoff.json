@@ -1,0 +1,46 @@
+{
+  "dataset_release": "turas-tr-econ-legis-v0.1",
+  "frozen_on": "2026-11-18",
+  "split_manifest_sha256": "a8fff65b99fcf11d9452685e438e250207032ecfe11152741562147126d095b8",
+  "distribution": "private team channel only; never committed (public repository)",
+  "bundles": [
+    {
+      "file": "turas-tr-econ-legis-v0.1-inference-ALL-MODEL-OWNERS.tar",
+      "sha256": "fe5a9e7eb20bb867a96387c88a85300f92fae58786d1979828cc9f63829e5f3b",
+      "recipients": [
+        "M2",
+        "M3",
+        "M4",
+        "M5",
+        "M6"
+      ],
+      "contents": "5,450 FLAC files, inference.{train,validation,test}.jsonl (contract allowlist, no text), split files, split manifest, SHA256SUMS"
+    },
+    {
+      "file": "turas-tr-econ-legis-v0.1-train-references-M3-M4-M5.tar",
+      "sha256": "3159c676ce00294913946875ed89d50170f7bdaa1bbcd6167d7f1c8717ce24cf",
+      "recipients": [
+        "M3",
+        "M4",
+        "M5"
+      ],
+      "contents": "train references only (4,376 rows) and train relational evidence; training use allowed"
+    },
+    {
+      "file": "turas-tr-econ-legis-v0.1-EVALUATOR-ONLY-M6.tar",
+      "sha256": "7a721b6bbfd6eefe01c44f5a392b759a76db8c7d0597e2801d905ed9ac980f3a",
+      "recipients": [
+        "M6"
+      ],
+      "contents": "all references incl. validation/test (evaluator-only), review status, validation/test relational evidence, pilot IDs"
+    }
+  ],
+  "acknowledgments": {
+    "M2": null,
+    "M3": null,
+    "M4": null,
+    "M5": null,
+    "M6": null
+  },
+  "acknowledgment_rule": "each consumer replies with the split_manifest_sha256 above; M1 records name/date here"
+}

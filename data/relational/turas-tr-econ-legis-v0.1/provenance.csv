@@ -1,0 +1,2 @@
+provenance_id,source_uri,source_revision,content_sha256,rights_record_id,origin_kind,available_at_utc,allowed_split,review_status
+prov_lexicon,configs/datasets/turas-domain-lexicon-v0.1.json,turas-domain-lexicon-v0.1,8ef903fe74135897a9d3781966c5e484c0711a6679d72346efb1ec89eff6df94,rights_turas_lexicon,external_knowledge,2026-11-18T00:00:00Z,train|validation|test,proposed

@@ -1,0 +1,29 @@
+{
+  "record": "lexicon freeze",
+  "lexicon_version": "turas-domain-lexicon-v0.1",
+  "lexicon_path": "configs/datasets/turas-domain-lexicon-v0.1.json",
+  "lexicon_sha256": "8ef903fe74135897a9d3781966c5e484c0711a6679d72346efb1ec89eff6df94",
+  "frozen_by": "M1",
+  "frozen_on": "2026-11-18",
+  "status": "frozen by M1; pending M6 acknowledgment of the same sha256",
+  "why_frozen_by_hash": "The lexicon file is left byte-identical. Its sha256 is already recorded in data/splits/turas-tr-econ-legis-v0.1/split_manifest.json and in the relational provenance table, and it drives domain selection. Editing even its status text would change that hash and force regeneration of the split manifest, the inference exports (which carry split_manifest_sha256) and the relational tables. The 'status' field inside the lexicon file is therefore superseded by this record.",
+  "contents": {
+    "topics": 7,
+    "terms": 90,
+    "aliases": 154,
+    "entity_types": ["concept", "organization", "currency", "legal_text"]
+  },
+  "matching_procedure": {
+    "implementation": "turkish_asr_rdl.data.screening: screening_tokens() then Lexicon.match()",
+    "text_view": "raw text; NFC, I->ı, İ->i, then lower(); tokens are maximal runs of Unicode letters/digits (regex [^\\W_]+), so apostrophes, punctuation and spaces separate tokens (TL'ye -> tl, ye)",
+    "note_for_terminology_metric": "Apply the matcher to raw reference and raw hypothesis text. Do not apply it to tr-normalized-v1 output: that view deletes intra-word apostrophes (TL'ye -> tlye, GİB'in -> gibin), which breaks exact-token aliases such as tl and gib (checked: 'tlye gibin' matches no term)."
+  },
+  "known_limitations": [
+    "Prefix aliases can over-match rare unrelated words, for example dolar* also matches 'dolarak' (from dolmak) and madde* matches 'madde' meaning a substance. Not measured; kept because any change would alter the release selection.",
+    "The exclusion 'liran' on MON_TURK_LIRASI also blocks the genitive 'liranın' ('liranın değeri' matches no term; 'Türk lirasının' still matches). Checked with the matcher; frequency not measured.",
+    "Equal-length ties go to the smaller term_id, so a lone 'borçlanma' maps to BANK_BORC, not PUBFIN_KAMU_BORCU ('kamu borçlanması' maps to PUBFIN_KAMU_BORCU). This affects topic labels, not selection counts.",
+    "Generic terms (ekonomi*, düzenleme*, komisyon*, kanun*) mark topic presence, not technical difficulty.",
+    "Aliases were written before any split existed; none were mined from validation or test references."
+  ],
+  "change_policy": "Any change creates turas-domain-lexicon-v0.2 with a new freeze record, and a new dataset release if selection changes."
+}

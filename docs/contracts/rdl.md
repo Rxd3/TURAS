@@ -1,8 +1,8 @@
 # Relational CSV and trainable heterogeneous graph contract — 0.1
 
 M1 owns the relational source schema; M5 owns graph construction, learning, and
-rescoring. These are written schemas only: no database, CSV rows, graph model or
-entity extractor exists. Future CSVs use UTF-8, a header, RFC 4180 quoting, stable
+rescoring. M1's relational CSV tables and lexicon extractor exist (see
+"Populated by M1" below); no database or graph model exists yet. CSVs use UTF-8, a header, RFC 4180 quoting, stable
 string keys, and empty fields for declared nullable values. All foreign keys,
 enum values, duplicates and split access must be validated before graph building.
 
@@ -40,6 +40,29 @@ Seed relation vocabulary (proposed, not populated):
 | `entity -related_to-> entity` | Typed relation whose subtype is explicitly registered |
 | `entity -has_quantifier-> quantifier` | Evidence-based entity/quantity relation |
 | `topic -parent_of-> topic` | Taxonomy relation with cycle checks |
+
+### Populated by M1 for `turas-tr-econ-legis-v0.1` (proposed, 2026-11-18)
+
+The relational source tables now exist; inventory, counts and hashes are in
+[`data/relational/README.md`](../../data/relational/README.md). Choices made
+within this schema (M5 to review):
+
+- Registered relation types: `rel_has_topic`, `rel_mentions`, `rel_expresses`,
+  `rel_belongs_to`, and one `related_to` subtype,
+  `related_to:co_mentioned_in_utterance` (undirected). `has_quantifier` and
+  `parent_of` are not populated: no audited entity–quantity evidence exists,
+  and the 7 topics are flat (`parent_topic_id` empty).
+- Static lexicon rows (`entity -belongs_to-> topic`, aliases, topics) have
+  `origin_kind = external_knowledge` and may be used by every split. They are
+  stored as `relationships_static.csv`, the lexicon part of `relationships.csv`.
+- Utterance evidence is written per split with `origin_kind =
+  <split>_annotation`, `access_split = <split>`,
+  `annotation_status = auto_extracted` (co-mentions: `auto_extracted:count=<n>`).
+  It is automatic lexicon matching on upstream references, not human annotation.
+- Quantifier types populated: `amount` (units `TRY`, `USD`, `EUR`) and
+  `percentage` (unit `percent`); `count` and `date` are not extracted. IDs are
+  value keys (`q__amount__TRY__5300000`) shared across splits by design; a
+  split's table still carries that split's provenance and access.
 
 Automatically generated reverse message-passing edges receive distinct type IDs
 and retain source edge provenance. No blanket reversal of directed fact meaning.

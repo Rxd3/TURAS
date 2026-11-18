@@ -52,7 +52,7 @@ def _kept_part(nbest: Mapping[str, Any]) -> str:
     """Kept-candidate counts; result files written before the export deduplicated have none."""
     if "actual_n_mean" not in nbest:
         return ""
-    return (f"actual_n mean {_number(nbest.get('actual_n_mean'), 2)}, min {nbest.get('actual_n_min')}, "
+    return (f"actual_n mean {_number(nbest.get('actual_n_mean'), 2)}, min {_number(nbest.get('actual_n_min'), 0)}, "
             f"{nbest.get('rows_with_dedup_map')}/{nbest.get('rows')} rows with dedup_map, ")
 
 

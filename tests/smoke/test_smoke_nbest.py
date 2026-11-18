@@ -80,3 +80,17 @@ def test_report_renders_a_result_file_written_before_the_export_deduplicated(smo
     row = _row(smoke.render_report({"whisper-small": _inference_record(old)}), "whisper-small")
     assert "10-10 of 10" in row and "8/20 distinct" in row and "invalid (24 errors)" in row
     assert "actual_n" not in row and "dedup_map" not in row
+
+
+def test_report_shows_a_dash_when_no_row_has_an_actual_n(smoke):
+    facts = smoke.nbest_facts([{**_nbest_rows([["SYN a"]])[0], "actual_n": None}], 3)
+    row = _row(smoke.render_report({"whisper-small": _inference_record(facts)}), "whisper-small")
+    assert "actual_n mean -, min -," in row and "None" not in row
+
+
+def test_report_shows_an_actual_n_minimum_of_zero(smoke):
+    rows = _nbest_rows([["SYN a", "SYN b"]])
+    error_row = {**rows[0], "utterance_id": "utt_err", "status": "error", "candidates": [], "actual_n": 0}
+    facts = smoke.nbest_facts(rows + [error_row], 3)
+    row = _row(smoke.render_report({"whisper-small": _inference_record(facts)}), "whisper-small")
+    assert "actual_n mean 1.00, min 0," in row

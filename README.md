@@ -4,11 +4,16 @@
 project on domain-specific Turkish ASR, acoustic fine-tuning, and Relational Deep
 Learning (RDL).
 
-**Status: scaffold only.** This repository contains documentation, written
-contracts, empty Python packages, minimal packaging metadata, and collaboration
-policies. No data release, model adapter, training, inference, graph model,
-evaluator, predictions, or experiment results have been implemented or produced.
-The package version identifies this scaffold, not a working ASR system.
+**Status on this feature branch: Member 4 implementation in progress.** Guarded
+Whisper LoRA/full training, scored beam extraction and offline random-model tests
+are implemented. Approved training bundles, baseline handoffs, owner review and
+CUDA profiling are still needed. No corpus training, benchmark predictions or
+ASR results have been produced. See [Member 4 notes](experiments/m4-whisper-notes.md).
+
+The five baseline tracks below are the original project roster. The professor's
+later requirements also call for a GMM-HMM track and explicit HuBERT/transducer
+language-support audits. That expanded baseline coverage remains pending with
+Members 2/3/6; adaptation code does not establish baseline compliance.
 
 ## Scope
 
@@ -21,8 +26,8 @@ The project preserves all five baseline tracks and all adaptation tracks:
 | B3 | Pretrained Qwen3-ASR, speech-language-model family | Member 2 | Planned; checkpoint/capability audit required |
 | B4 | Pretrained Turkish-capable Wav2Vec2/XLSR CTC | Member 3 | Planned; ASR checkpoint/head selection required |
 | B5 | Alternative neural BiLSTM-CTC, trained from scratch | Member 3 | Working architecture choice; not implemented |
-| F1 | Whisper LoRA fine-tuning | Member 4 | Planned |
-| F2 | Whisper full fine-tuning where hardware permits | Member 4 | Planned; resource feasibility required |
+| F1 | Whisper LoRA fine-tuning | Member 4 | Code and offline tests; no corpus training |
+| F2 | Whisper full fine-tuning where hardware permits | Member 4 | Code and offline tests; resource feasibility pending |
 | F3 | Wav2Vec2/XLSR CTC fine-tuning | Member 5 | Planned |
 | R1 | Trainable heterogeneous graph relation scorer and N-best rescoring | Member 5 | Planned |
 
@@ -65,14 +70,14 @@ part of repository initialization.
 
 | Path | Purpose |
 | --- | --- |
-| `src/turkish_asr_rdl/` | Empty packages for future implementation |
+| `src/turkish_asr_rdl/` | Package boundaries and Member 4 training/decoding implementation |
 | `configs/` | Separate dataset, baseline, fine-tuning, RDL, decoding, evaluation settings areas |
 | `docs/` | Architecture, working decisions, data/evaluation policies, contracts, reproducibility |
 | `data/` | Future metadata, manifests, split definitions, verification and relational schema documentation |
-| `scripts/` | Reserved for lightweight executable entry points; none implemented |
+| `scripts/` | Lightweight entry points, including Member 4 training |
 | `experiments/` | Preregistered comparison and ablation protocol; future notes |
 | `results/` | Future benchmark outputs and reports; no results |
-| `tests/` | Future meaningful automated tests; no fabricated test suite |
+| `tests/` | Offline synthetic-fixture and random-model tests; no benchmark data |
 | `contributions/` | Six individual, initially empty contribution records |
 | `presentation/` | Evidence requirements for the future final presentation |
 | `.github/` | PR template and packaging-only CI |

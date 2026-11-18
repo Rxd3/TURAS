@@ -82,7 +82,7 @@ exports; give evaluator-only references to M6. Record approvals and actual work 
 **Specific next task:** write the WorldSpeech `tr_tr` source/revision/terms/field
 audit and assess legislative/financial coverage using documentation first.
 
-## Member 2 — Seq2Seq and Speech-LLM Baselines
+## Member 2 — Seq2Seq and Speech-LLM Baselines Omar Alzyod
 
 **Branch:** `feat/m2-seq2seq-speech-llm-baselines`.
 

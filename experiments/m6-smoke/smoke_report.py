@@ -56,8 +56,8 @@ def _kept_part(nbest: Mapping[str, Any]) -> str:
             f"{nbest.get('rows_with_dedup_map')}/{nbest.get('rows')} rows with dedup_map, ")
 
 
-def _nbest_cell(nbest: Mapping[str, Any] | None) -> str:
-    if not nbest or not nbest.get("requested_n"):
+def _nbest_cell(nbest: Any) -> str:
+    if not isinstance(nbest, Mapping) or not nbest.get("requested_n"):
         return "none"
     verdict = "valid" if nbest.get("validate_nbest_ok") else f"invalid ({nbest.get('validation_errors')} errors)"
     finite = "scores finite" if nbest.get("acoustic_log_scores_finite") else "scores NOT all finite"
@@ -91,7 +91,8 @@ def _inference_table(names: Sequence[str], records: Mapping[str, Mapping[str, An
         if status is not None:
             lines.append(_row([name, status, "-", "-", "-", "-", "-", "-", _failure_note(record)]))
             continue
-        precision = record.get("config", {}).get("precision", "-")
+        config = record.get("config")
+        precision = config.get("precision", "-") if isinstance(config, Mapping) else "-"
         lines.append(_row([name, "ok", precision, _number(record.get("load_s"), 2),
                            _number(record.get("peak_vram_gib"), 2), _number(record.get("end_to_end_rtf")),
                            _number(record.get("core_model_rtf")), _nbest_cell(record.get("nbest")),

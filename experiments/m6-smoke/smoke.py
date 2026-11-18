@@ -368,7 +368,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         try:
             print(f"wrote {summarize(args.summarize)}")
         except NoResultsFolder as exc:
-            print(f"cannot summarize: {smoke_common.one_line(exc)}")
+            print(f"cannot summarize: {exc}")
             return 1
         except OSError as exc:
             print(f"cannot write the report: {smoke_common.one_line(exc)}")

@@ -89,7 +89,7 @@ def test_summarize_marks_a_file_it_cannot_read_unreadable(smoke, tmp_path, monke
 def test_main_summarize_names_a_missing_folder_without_blaming_the_write(smoke, tmp_path, capsys):
     assert smoke.main(["--summarize", str(tmp_path / "missing")]) == 1
     out = capsys.readouterr().out.strip()
-    assert "\n" not in out and "no smoke results folder" in out and "cannot write the report" not in out
+    assert out == f"cannot summarize: no smoke results folder at {tmp_path / 'missing' / 'smoke'}"
 
 
 def test_main_summarize_reports_a_failed_write(smoke, tmp_path, capsys):
@@ -97,3 +97,19 @@ def test_main_summarize_reports_a_failed_write(smoke, tmp_path, capsys):
     assert smoke.main(["--summarize", str(tmp_path)]) == 1
     out = capsys.readouterr().out.strip()
     assert "\n" not in out and out.startswith("cannot write the report: ")
+
+
+@pytest.mark.parametrize(("field", "value", "column", "cell"), [
+    ("nbest", [1], 7, "none"), ("nbest", "SYN", 7, "none"), ("nbest", 7, 7, "none"),
+    ("config", None, 2, "-"), ("config", [1], 2, "-"), ("config", "SYN", 2, "-"),
+])
+def test_summarize_treats_an_nbest_or_config_that_is_not_an_object_as_absent(smoke, tmp_path, field, value,
+                                                                              column, cell):
+    folder = tmp_path / "smoke"
+    folder.mkdir()
+    record = {**_records(smoke)["whisper-small"], field: value}
+    (folder / "whisper-small.json").write_text(json.dumps(record), encoding="utf-8")
+    report = smoke.summarize(tmp_path).read_text(encoding="utf-8")
+    row = next(line for line in report.splitlines() if line.startswith("| whisper-small |"))
+    cells = row[2:-2].split(" | ")
+    assert cells[1] == "ok" and cells[3] == "2.50" and cells[column] == cell

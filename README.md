@@ -76,13 +76,13 @@ part of repository initialization.
 | `configs/` | Separate dataset, baseline, fine-tuning, RDL, decoding, evaluation settings areas |
 | `docs/` | Architecture, working decisions, data/evaluation policies, contracts, reproducibility |
 | `data/` | Future metadata, manifests, split definitions, verification and relational schema documentation |
-| `scripts/` | Lightweight entry points, including Member 4 training |
+| `scripts/` | Lightweight entry points, training/rescoring and M6 environment checks |
 | `experiments/` | Preregistered comparison and ablation protocol; future notes |
 | `results/` | Future benchmark outputs and reports; no results |
 | `tests/` | Offline synthetic-fixture and random-model tests; no benchmark data |
 | `contributions/` | Six individual, initially empty contribution records |
 | `presentation/` | Evidence requirements for the future final presentation |
-| `.github/` | PR template and packaging-only CI |
+| `.github/` | PR template and CI (packaging checks and unit tests) |
 
 Repository: [Rxd3/project3-turkish-asr-rdl](https://github.com/Rxd3/project3-turkish-asr-rdl).
 Architecture references are [NALTRA](https://github.com/Rxd3/NALTRA) and

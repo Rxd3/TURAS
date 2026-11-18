@@ -1,8 +1,8 @@
 # Meaningful test policy
 
-Members 4/5 now have focused offline tests using tiny random models and synthetic
-fixtures; they produce no benchmark results. Packaging imports validate only the
-package layout. Tests are added alongside actual behavior, using hand-checkable fixtures;
+Members 4/5 have offline random-model tests; M6 has environment, schema,
+decoding and evaluation checks. M1 tests source selection and relational extraction.
+Tests use small hand-checkable fixtures and produce no benchmark results;
 no dataset/model download, GPU or live API is allowed in unit tests. Small
 synthetic text fixtures in future tests must be clearly labeled and never become
 claimed dataset transcripts or experiment predictions.

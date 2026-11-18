@@ -227,3 +227,25 @@ def topic_hours(rel: pd.DataFrame) -> dict[str, dict[str, float]]:
                 c[t] += dur / 3600
         out[split] = {k: round(v, 3) for k, v in sorted(c.items())}
     return out
+
+
+REGISTRY_TERMS = {
+    "terms_url": "https://huggingface.co/datasets/disco-eth/WorldSpeech",
+    "source_terms_url": "https://www.tbmm.gov.tr/",
+    "licence": "CC BY-NC 4.0",
+    "attribution": "WorldSpeech (disco-eth); Grand National Assembly of Turkey (TBMM)",
+    "allowed_use": "non-commercial research; audio/text not redistributed in Git",
+    "access_date": "2026-11-18",
+    "review_status": "pending team approval (D02/D16)",
+}
+
+
+def registry_columns(sources: pd.DataFrame, config: dict) -> pd.DataFrame:
+    """Source registry fields required by the data contract (same terms for every tr_tr source)."""
+    out = sources.copy()
+    out["source_recording_key"] = out["source_url"].map(lambda u: u.rsplit("v=", 1)[-1])
+    out["upstream_revision"] = config["upstream"]["revision"]
+    out["rights_record_id"] = "rights_worldspeech_tr_tr_tbmm"
+    for k, v in REGISTRY_TERMS.items():
+        out[k] = v
+    return out

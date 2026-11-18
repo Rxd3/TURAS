@@ -48,12 +48,18 @@ def _utc(value: object) -> str:
     return value
 
 
-def validate_decision(d: dict, ref: dict | None) -> bool:
-    """Raise ReviewError for an invalid decision; return False if undecided."""
+def validate_decision(d: dict, ref: dict | None, equivalent: dict[str, str] | None = None) -> bool:
+    """Raise ReviewError for an invalid decision; return False if undecided.
+
+    ``equivalent`` maps an audio hash a reviewer heard to the release hash it was
+    measured to be equivalent to (same length, max 1 LSB difference); see
+    ``scripts/m1_audio_equivalence.py``. No other hash difference is accepted.
+    """
     uid = d.get("utterance_id")
     if ref is None:
         raise ReviewError(f"{uid}: unknown utterance ID")
-    if d.get("audio_sha256") != ref["audio_sha256"]:
+    heard = d.get("audio_sha256")
+    if heard != ref["audio_sha256"] and (equivalent or {}).get(heard) != ref["audio_sha256"]:
         raise ReviewError(f"{uid}: audio hash differs from the release (stale kit?)")
     decision = d.get("decision")
     if decision is None:
@@ -82,13 +88,14 @@ def validate_decision(d: dict, ref: dict | None) -> bool:
     return True
 
 
-def make_record(d: dict, kit: str | None, role: str) -> dict:
+def make_record(d: dict, kit: str | None, role: str, release_audio_sha256: str | None = None) -> dict:
     if role not in ROLES:
         raise ReviewError(f"role {role!r} not in {ROLES}")
     codes = sorted(d.get("issue_codes") or [])
     body = {
         "utterance_id": d["utterance_id"], "reviewer_id": d["reviewer_id"], "role": role,
-        "review_utc": d["review_utc"], "audio_sha256": d["audio_sha256"],
+        "review_utc": d["review_utc"], "audio_sha256": release_audio_sha256 or d["audio_sha256"],
+        "reviewed_audio_sha256": d["audio_sha256"],
         "annotation_policy_version": d["annotation_policy_version"], "decision": d["decision"],
         "corrected_text": d["corrected_text"].strip() if d["decision"] == "correct" else None,
         "issue_codes": codes, "note": d.get("note", ""), "kit": kit,
@@ -131,7 +138,8 @@ def resolve_status(records: list[dict]) -> dict:
             "reference_origin": "local_human" if r["decision"] == "correct" else "upstream_human"}
 
 
-def ingest(refs: dict[str, dict], kits: list[dict], existing: list[dict], role: str) -> tuple[list[dict], Counter]:
+def ingest(refs: dict[str, dict], kits: list[dict], existing: list[dict], role: str,
+           equivalent: dict[str, str] | None = None) -> tuple[list[dict], Counter]:
     """Validate every decision first; return (new records, counters). All-or-nothing."""
     known = {r["verification_record_id"] for r in existing}
     new, stats = [], Counter()
@@ -139,13 +147,15 @@ def ingest(refs: dict[str, dict], kits: list[dict], existing: list[dict], role: 
     for kit in kits:
         for d in kit.get("reviews", []):
             try:
-                if not validate_decision(d, refs.get(d.get("utterance_id"))):
+                if not validate_decision(d, refs.get(d.get("utterance_id")), equivalent):
                     stats["undecided"] += 1
                     continue
             except ReviewError as exc:
                 errors.append(str(exc))
                 continue
-            rec = make_record(d, kit.get("kit"), role)
+            rec = make_record(d, kit.get("kit"), role, refs[d["utterance_id"]]["audio_sha256"])
+            if rec["reviewed_audio_sha256"] != rec["audio_sha256"]:
+                stats["heard_equivalent_audio"] += 1
             if rec["verification_record_id"] in known:
                 stats["already_ingested"] += 1
                 continue
@@ -198,3 +208,27 @@ def audit_markdown(release: str, refs: dict[str, dict], status: dict[str, dict],
               f"**{'yes' if frozen_ready else 'no'}** "
               f"(validation {split_size['validation']} rows, test {split_size['test']} rows).", ""]
     return "\n".join(lines)
+
+
+def apply_to_references(refs: dict[str, dict], records: list[dict]) -> tuple[list[dict], list[dict]]:
+    """Merge resolved review status into reference rows.
+
+    Returns (kept rows, rejected rows). A ``correct`` decision (verified or
+    adjudicated) replaces ``reference_text`` with the deciding record's text
+    and sets ``reference_origin = local_human``; IDs never change. Rows in
+    conflict stay ``in_review``; unreviewed rows keep their status.
+    """
+    by_id = {r["verification_record_id"]: r for r in records}
+    status = status_table(refs, records)
+    kept, rejected = [], []
+    for uid in sorted(refs):
+        row = dict(refs[uid])
+        st = status.get(uid)
+        if st is not None:
+            row["verification_status"] = st["verification_status"]
+            row["verification_record_id"] = st["verification_record_id"]
+            if st["verification_status"] in ("verified", "adjudicated") and st["decision"] == "correct":
+                row["reference_text"] = by_id[st["verification_record_id"]]["corrected_text"]
+                row["reference_origin"] = "local_human"
+        (rejected if row.get("verification_status") == "rejected" else kept).append(row)
+    return kept, rejected

@@ -50,3 +50,27 @@
   matching note. Comments handed to M1 to send.
 - Not done yet: pilot listening decisions (none received), full
   validation/test review, freeze build, consumer acknowledgments.
+
+## 2026-11-18 (evening) — local rebuild, relational regeneration, review pages
+
+- Full rebuild on M1's machine at commit `ad66fa1` (clean tree): 239,654
+  metadata rows; exclusion ledger sha256 `6077dc6f…` and all three split files
+  byte-identical to the cloud build. Max |measured − upstream duration|
+  0.0001 s. Hours 20.002 / 2.002 / 3.004.
+- FLAC bytes differ from the cloud build (total 28 bytes smaller). Checked on
+  the 50 pilot clips: same length, max 1 LSB per sample, SNR ≥ 99.8 dB, i.e.
+  decoder/encoder rounding. New split manifest sha256 `1af56ddb…`; library
+  versions now recorded in the manifest (libsndfile 1.2.2, soxr 1.1.0).
+  Pilot equivalence recorded as evidence (`audio_equivalence.jsonl`, 50/50 pass)
+  so pilot decisions made on the cloud audio can be ingested.
+- Relational evidence regenerated with the fixed extractor: quantifiers
+  train 1,435 → 1,459, test 370 → 373; relationships unchanged
+  (31,640 / 3,784 / 6,248). 144 compound train amounts now have full values.
+- Listening pages for full verification: test 611 clips in 7 pages,
+  validation 423 clips in 5 pages, ≤100 clips each, pilot IDs left out.
+- Freeze script written and tested on synthetic decisions in a temporary
+  copy (one reject left its split and entered the ledger with reason
+  `rejected_in_listening_review`; one correction became `local_human`). On the
+  real artifacts with no reviews it reproduces the split files exactly and
+  refuses to freeze (1,074 validation/test rows unreviewed).
+- Source registry now carries the contract's rights/terms columns.

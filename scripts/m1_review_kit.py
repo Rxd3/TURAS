@@ -13,6 +13,7 @@ file: share it only with reviewers, never commit it.
 from __future__ import annotations
 
 import argparse
+import csv
 import base64
 import html
 import json
@@ -123,6 +124,8 @@ def main() -> int:
     ap.add_argument("--pilot", action="store_true")
     ap.add_argument("--split", choices=["validation", "test", "train"])
     ap.add_argument("--ids-file", type=Path)
+    ap.add_argument("--exclude-ids-file", type=Path, help="e.g. the pilot IDs already reviewed")
+    ap.add_argument("--part-size", type=int, default=0, help="split into pages of N clips (<out>-partK.html)")
     args = ap.parse_args()
 
     refs = load_refs(args.artifact_root)
@@ -134,7 +137,9 @@ def main() -> int:
         wanted = None
         if args.ids_file:
             wanted = set(args.ids_file.read_text(encoding="utf-8").split())
-        items = [r for r in refs if r["split"] == args.split and (wanted is None or r["utterance_id"] in wanted)]
+        skip = set(args.exclude_ids_file.read_text(encoding="utf-8").split()) if args.exclude_ids_file else set()
+        items = [r for r in refs if r["split"] == args.split and (wanted is None or r["utterance_id"] in wanted)
+                 and r["utterance_id"] not in skip]
         items.sort(key=lambda r: r["utterance_id"])
         kit = f"{args.split}-v0.1"
     else:
@@ -142,14 +147,24 @@ def main() -> int:
         return 2
 
     registry = {}
-    with open(REPO / "data/metadata" / f"{RELEASE}-source-registry.csv", encoding="utf-8") as f:
-        next(f)
-        for line in f:
-            sid, url, date, _ = line.rstrip("\n").split(",")
-            registry[sid] = date
+    with open(REPO / "data/metadata" / f"{RELEASE}-source-registry.csv", encoding="utf-8", newline="") as f:
+        for row in csv.DictReader(f):
+            registry[row["source_id"]] = row["session_date"]
+    if args.part_size and not args.pilot:
+        n = args.part_size
+        parts = [items[i:i + n] for i in range(0, len(items), n)]
+        for k, chunk in enumerate(parts, 1):
+            out = args.out.with_name(f"{args.out.stem}-part{k:02d}of{len(parts):02d}{args.out.suffix}")
+            _write_page(args.artifact_root, chunk, f"{kit}-part{k:02d}", registry, out)
+        return 0
+    _write_page(args.artifact_root, items, kit, registry, args.out)
+    return 0
+
+
+def _write_page(artifact_root: Path, items: list[dict], kit: str, registry: dict, out: Path) -> None:
     payload = []
     for r in items:
-        audio = (args.artifact_root / RELEASE / r["audio_uri"]).read_bytes()
+        audio = (artifact_root / RELEASE / r["audio_uri"]).read_bytes()
         t = r["start_ms"] // 1000
         payload.append({
             "utterance_id": r["utterance_id"], "split": r["split"], "session_date": registry[r["source_id"]],
@@ -158,10 +173,9 @@ def main() -> int:
         })
     page = PAGE.replace("__ITEMS__", json.dumps(payload, ensure_ascii=False).replace("</", "<\\/"))
     page = page.replace("__KIT__", html.escape(kit))
-    args.out.parent.mkdir(parents=True, exist_ok=True)
-    args.out.write_text(page, encoding="utf-8")
-    print(f"{len(items)} items -> {args.out} ({args.out.stat().st_size / 1e6:.1f} MB)")
-    return 0
+    out.parent.mkdir(parents=True, exist_ok=True)
+    out.write_text(page, encoding="utf-8")
+    print(f"{len(items)} items -> {out} ({out.stat().st_size / 1e6:.1f} MB)")
 
 
 if __name__ == "__main__":

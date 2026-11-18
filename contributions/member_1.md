@@ -4,8 +4,8 @@ Name: unassigned (member to add). GitHub username: unassigned (member to add).
 Branch: `feat/m1-data-relational-schema`.
 Ownership/tasks/review routing: [TEAM_TASKS.md](../TEAM_TASKS.md).
 
-**Status: proposed release v0.1 built; validation/test listening verification
-pending; not frozen.**
+**Status (2026-11-18): release v0.1 rebuilt locally and fully tooled;
+lexicon frozen; waiting for validation/test listening verification, then freeze.**
 
 ## Actual contributions
 
@@ -60,6 +60,22 @@ against the pinned revision with leakage report all zero.
 Checks run: `pytest tests/test_data_*.py` — 49 passed (offline, synthetic
 fixtures); end-to-end run of `m1_apply_reviews.py` on a synthetic artifact
 root in the pilot page's export format (re-run adds 0 records).
+
+### 2026-11-18 (evening) — local rebuild and freeze tooling
+
+- Rebuilt the full release locally; split files and exclusion ledger
+  byte-identical to the first build; audio equivalence (≤1 LSB) measured and
+  recorded; regenerated relational tables with the fixed extractor.
+- Fixed the resampler erratum in the release config; source registry now
+  has the contract's rights/terms fields; RDL contract relational section
+  documents the populated tables.
+- Wrote `scripts/m1_freeze_release.py` (merge reviews, drop rejects to the
+  ledger, regenerate splits/manifests/exports; refuses while validation/test
+  rows are unreviewed) and `scripts/m1_audio_equivalence.py`; paged review
+  kits (7 test + 5 validation pages).
+
+Checks run: `pytest tests/test_data_*.py` — 51 passed; trial freeze on real
+artifacts (split files identical) and on a synthetic copy (reject/correct paths).
 
 ## Experiments and artifacts
 

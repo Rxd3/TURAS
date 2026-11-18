@@ -32,7 +32,7 @@ def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--artifact-root", required=True, type=Path)
     ap.add_argument("--role", choices=RV.ROLES, default="primary")
-    ap.add_argument("decisions", nargs="+", type=Path)
+    ap.add_argument("decisions", nargs="*", type=Path, help="none: only rewrite status and audit")
     args = ap.parse_args()
     root = args.artifact_root / RELEASE
     refs = {}
@@ -43,7 +43,13 @@ def main() -> int:
     existing = RV.load_records(rec_path)
     kits = [json.loads(p.read_text(encoding="utf-8")) for p in args.decisions]
     try:
-        new, stats = RV.ingest(refs, kits, existing, args.role)
+        eq_path = root / "audio_equivalence.jsonl"
+        equivalent = {}
+        if eq_path.exists():
+            for line in eq_path.read_text(encoding="utf-8").splitlines():
+                e = json.loads(line)
+                equivalent[e["reviewed_audio_sha256"]] = e["release_audio_sha256"]
+        new, stats = RV.ingest(refs, kits, existing, args.role, equivalent)
     except RV.ReviewError as exc:
         print(exc, file=sys.stderr)
         return 1

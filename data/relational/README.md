@@ -17,9 +17,9 @@ Per-split utterance evidence lives outside Git under
 
 | Split | Utterances | Quantifiers | Relationships | Access |
 | --- | ---: | ---: | ---: | --- |
-| train | 4,376 | 1,435 | 31,640 | graph training allowed |
+| train | 4,376 | 1,459 | 31,640 | graph training allowed |
 | validation | 438 | 274 | 3,784 | evaluator/selection only, never in training snapshots |
-| test | 636 | 370 | 6,248 | evaluator-only |
+| test | 636 | 373 | 6,248 | evaluator-only |
 
 Relations: `utterance -mentions-> entity`, `utterance -has_topic-> topic`,
 `utterance -expresses-> quantifier` (amounts with TRY/USD/EUR and percentages,
@@ -30,12 +30,14 @@ annotation. Quantifier IDs are shared value keys
 (`q__amount__TRY__5000000000`), so M5 must build the training graph from
 `train/` only and treat validation/test quantifier nodes as unseen.
 
-### Corrections after code review (2026-11-18, not yet regenerated)
+### Corrections after code review (2026-11-18, regenerated)
 
-The counts and per-split hashes above come from the first build. Two extractor
-bugs were fixed afterwards in `src/turkish_asr_rdl/data/relational.py`. The
-per-split tables are regenerated at release freeze, when the references are
-rebuilt anyway; until then the table above describes the old output.
+Two extractor bugs were fixed in `src/turkish_asr_rdl/data/relational.py`
+and the per-split tables were regenerated from the local rebuild (counts and
+hashes above; quantifiers went from 1,435 to 1,459 in train and 370 to 373 in
+test). In train, 144 compound amounts such as `1 trilyon 30 milyar liraya`
+now carry their full value. They are regenerated again at freeze, after the
+listening corrections.
 
 - Amount parsing: compound amounts were cut to their last part
   (`5 milyon 300 bin lira` gave 300000, now 5300000), a dot decimal before a

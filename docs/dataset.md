@@ -162,9 +162,9 @@ These need M6 approval with the split policy (D07); none changes split membershi
   `8ef903fe…` ([freeze record](../configs/datasets/turas-domain-lexicon-v0.1.freeze.json)).
   The file stays byte-identical, so its inner `status` text still says
   "proposed". Known matcher limitations are listed in the record.
-- **Erratum, resampler.** The release config says `soxr VHQ`; the audio was
-  written with soxr `HQ` (`release.py`). The config text is corrected at
-  freeze, when the manifests are regenerated anyway.
+- **Erratum, resampler (fixed).** The release config said `soxr VHQ`; the audio
+  was always written with soxr `HQ` (`release.py`). The config text now says
+  `HQ` (new config sha256 `d530be46…`).
 - **Duplicate audit scope.** Only exact duplicates of screening-normalized text
   were audited and removed. No audio near-duplicate audit was done.
   `duplicate_cluster_id` is a singleton placeholder (equal to `utterance_id`),
@@ -175,11 +175,31 @@ These need M6 approval with the split policy (D07); none changes split membershi
   export hashes can differ between machines. The build now records the code
   commit and library versions in `split_manifest.json`. The hashes that count
   are those of the freeze build, acknowledged by consumers.
+- **Local rebuild (2026-11-18).** Rebuilt on M1's machine from the pinned
+  revision. The exclusion ledger (`6077dc6f…`), the three split files and the
+  source registry are byte-identical to the first (cloud) build. The FLAC bytes
+  differ: same length, at most 1 LSB per sample, SNR ≥ 99.8 dB on the 50 pilot
+  clips. So the audio, references, manifest and inference hashes changed. The
+  local build is now the release; new split manifest sha256 `1af56ddb…`. The
+  pilot page was made from the cloud audio, so the pilot clips' equivalence is
+  recorded with its evidence in `<artifact-root>/<release>/audio_equivalence.jsonl`
+  (`scripts/m1_audio_equivalence.py`), and ingestion accepts only those pairs.
 - **Relational extractor fixes.** Amount parsing and co-mention IDs were
   corrected after the first build ([details](../data/relational/README.md)).
-  Per-split relational tables are regenerated at freeze.
+  Per-split relational tables were regenerated after the fix.
 - **Review tooling.** `scripts/m1_apply_reviews.py` now refuses invalid
   decisions (all or nothing), ignores re-imports of the same export, resolves
   status per the guide (`verified`/`local_human`/`in_review`/`adjudicated`/`rejected`;
   `--role adjudication` for the second reviewer), and rewrites a cumulative
   audit.
+
+### Commands (artifact root outside Git)
+
+| Step | Command |
+| --- | --- |
+| Build release (≈1 h, streams ≈26 GB, keeps ≈2 GB) | `python scripts/m1_build_release.py --artifact-root ../turas-artifacts` |
+| Relational evidence tables | `python scripts/m1_build_relational.py --artifact-root ../turas-artifacts` |
+| Listening pages, 100 clips each, pilot IDs left out | `python scripts/m1_review_kit.py --artifact-root ../turas-artifacts --split test --exclude-ids-file data/verification/turas-tr-econ-legis-v0.1-pilot-ids.txt --part-size 100 --out <dir>/turas-test.html` (same for `validation`) |
+| Pages built from another machine's audio | `python scripts/m1_audio_equivalence.py --artifact-root ../turas-artifacts <page.html>` |
+| Ingest exported decisions | `python scripts/m1_apply_reviews.py --artifact-root ../turas-artifacts <decisions.json> ...` (`--role adjudication` for the second reviewer) |
+| Freeze (refuses while validation/test rows are unreviewed) | `python scripts/m1_freeze_release.py --artifact-root ../turas-artifacts --status "frozen by M1 on <date>; M6 review: <PR>"`, then rerun the relational step |

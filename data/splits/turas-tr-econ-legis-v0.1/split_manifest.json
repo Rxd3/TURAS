@@ -8,7 +8,7 @@
     "revision": "b76b85395039f50332fbc421f7c098ee2f2653d7",
     "data_glob": "data/tr_tr/*.parquet"
   },
-  "config_sha256": "f80536392118d96ed32bb03b6486c7ef771a3d83b8b2b1543e38ff777f2a49d1",
+  "config_sha256": "d530be46e07f561ca5a93ac7368f16da51f3a1a8cbb5cbcdab086724b84da7b4",
   "lexicon_sha256": "8ef903fe74135897a9d3781966c5e484c0711a6679d72346efb1ec89eff6df94",
   "algorithm": "turkish_asr_rdl.data.selection.select (recording-grouped, temporal test, seeded validation)",
   "group_key": "source_url",
@@ -72,7 +72,28 @@
     "upstream_test_in_train_recording": 1069
   },
   "speaker_identity": "unknown for every row; speaker-disjointness is NOT claimed",
-  "references_sha256": "f0b182afa032c2716794caac5f85ef2bfddf5a611b2ac5bc11b97cd7030b21dc",
+  "references_sha256": "0de417c5b7cc1853135a106a16e5380e0f8f8619580b4d20ac59fd0b73f2a913",
   "exclusion_ledger_sha256": "6077dc6f804fff838f253eddf1bd4ebd91c2228f4ab41d916103511c6068c0c1",
-  "audio_written": true
+  "audio_written": true,
+  "policy": {
+    "upstream_split": "upstream test rows never enter TURAS train (quarantined); validation/test may contain them because upstream test shares every recording with upstream train",
+    "duplicates": "identical screening-normalized text anywhere in tr_tr -> all copies excluded; no audio near-duplicate audit (one recording = one source_url = one session date)",
+    "max_upstream_cer": 0.25,
+    "target_hours": {
+      "train": 20.0,
+      "validation": 2.0,
+      "test": 3.0
+    }
+  },
+  "build": {
+    "code_commit": "ad66fa16d90439a665f84afe5d6a6f408bdd3087",
+    "code_dirty": false,
+    "python": "3.13.3",
+    "libsndfile": "1.2.2",
+    "soundfile": "0.14.0",
+    "soxr": "1.1.0",
+    "numpy": "2.5.5",
+    "pandas": "3.1.1",
+    "pyarrow": "26.0.1"
+  }
 }

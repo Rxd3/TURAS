@@ -106,6 +106,7 @@ def main() -> int:
                .rename("selected_utterances").reset_index().sort_values("source_id"))
     meta_dir = REPO / "data/metadata"
     meta_dir.mkdir(parents=True, exist_ok=True)
+    sources = R.registry_columns(sources, cfg)
     sources.to_csv(meta_dir / f"{rid}-source-registry.csv", index=False, lineterminator="\n")
 
     ref_sha = R.write_jsonl(root / f"{rid}.references.jsonl", R.reference_rows(chosen, cfg))

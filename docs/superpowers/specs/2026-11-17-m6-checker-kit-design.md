@@ -168,7 +168,7 @@ Fixes: a failing check becomes a fix list on the owner's branch, or an M6 PR int
 
 ## 7. How code reaches the 5070 Ti
 
-Code is written on this laptop on `feat/m6-integration-evaluation-qa`. Member 6 gave a standing OK (2026-11-17) to push the `feat/m6-*` branches; each PR into `main` is still asked separately. After a push, the 5070 Ti session clones or pulls the branch (gh is logged in as `afel6` there too) and runs the exact commands sent by message. Small reports (JSON or Markdown) come back by message. Large artifacts stay on the 5070 Ti outside git (for example `G:\turas-artifacts\`). The 5070 Ti session never designs or edits code.
+Code is written on this laptop on `feat/m6-integration-evaluation-qa`. Member 6 gave a standing OK (2026-11-17) to push the `feat/m6-*` branches; each PR into `main` is still asked separately. After a push, the 5070 Ti session clones or pulls the branch (gh is logged in as `afel6` there too) and runs the exact commands sent by message. Small reports (JSON or Markdown) come back by message. Large artifacts stay on the 5070 Ti outside git (in a local folder outside git and outside any cloud-synced drive). The 5070 Ti session never designs or edits code.
 
 ## 8. Facts this design relies on (verified 2026-11-17)
 

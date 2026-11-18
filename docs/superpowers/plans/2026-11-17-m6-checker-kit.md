@@ -37,7 +37,7 @@
 ### Task 1: Pinned environment, env check and test CI in the repo
 
 **Files:**
-- Create: `requirements/requirements.in` (copy of `C:\Users\Asus\Downloads\nlp\project3-asr\requirements.in`)
+- Create: `requirements/requirements.in` (copy of the `requirements.in` from Member 6's shared project3-asr environment setup)
 - Create: `requirements/windows-cu130.txt` (copy of `...\project3-asr\requirements.txt`, byte-identical)
 - Create: `requirements/dev.txt` (pinned `pytest`, `pytest-cov`, plus `numpy==2.5.5`, `soundfile==0.14.0`, `soxr==1.1.0`, `jiwer==4.0.0`, with the current pytest/pytest-cov versions looked up on PyPI and pinned exactly)
 - Create: `src/turkish_asr_rdl/utils/env_check.py` (logic of `project3-asr/check_env.py`; `INSTALL_HINT = "pip install -r requirements/windows-cu130.txt"`; references to `SETUP.md` become `docs/reproducibility.md`)
@@ -565,9 +565,9 @@ Training probes: 3 optimizer steps on bf16 AdamW with gradient checkpointing, la
 PyG: `pip install torch_geometric==2.8.1` (it adds `aiohttp` and `pyparsing`; revert with `pip uninstall` if the check fails). Build a toy `HeteroData` with 2 node types and 2 edge types plus their reverses, run 2 `HeteroConv` layers of `SAGEConv` forward and backward on CUDA in fp32 and bf16, and record success or the error.
 
 `RUNBOOK.md` gives the exact commands for the 5070 Ti session, in order:
-1. clone `https://github.com/Rxd3/TURAS` to `C:\Users\benda\Downloads\nlp\TURAS` and check out `feat/m6-smoke-tests`;
-2. `C:\Users\benda\Downloads\nlp\project3-asr\.venv\Scripts\python -m pip install --no-deps -e .`;
-3. one `smoke.py` command per model, sequential, with `--artifacts G:\turas-artifacts`;
+1. clone `https://github.com/Rxd3/TURAS` to a local folder (`<repo>` below) and check out `feat/m6-smoke-tests`;
+2. from `<repo>`, `<venv>\Scripts\python -m pip install --no-deps -e .`, where `<venv>` is the shared project3-asr virtual environment;
+3. one `smoke.py` command per model, sequential, with `--artifacts <artifacts>`, a local folder outside git and outside any cloud-synced drive;
 4. `--summarize`;
 5. send back `REPORT.md` and the JSON files by message.
 

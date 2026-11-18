@@ -51,7 +51,7 @@ def fetch_model(name: str) -> ModelFiles:
 
 
 def transformers_classes(names: Sequence[str]) -> dict[str, Any]:
-    """Import the named transformers classes now, so a later timed load() reads weights, not library code."""
+    """Import the named transformers classes now, so the timed load() does not import them itself."""
     import transformers
 
     return {name: getattr(transformers, name) for name in names}
@@ -268,7 +268,10 @@ class XlsrAdapter(SmokeAdapter):
 def build_adapter(name: str) -> SmokeAdapter:
     """Download the model files and import its transformers classes; return the adapter, not loaded yet.
 
-    Both happen before run_timed, so its timed cold load measures reading the weights only.
+    Both happen before run_timed, so its timed cold load leaves them out. It still covers all of
+    from_pretrained (config, tokenizer and weight files) and the move to the GPU, and may include
+    importing the concrete modules that an Auto class or a processor resolves there (for example
+    AutoProcessor, AutoModelForMultimodalLM, or WhisperProcessor's tokenizer and feature extractor).
     """
     files = fetch_model(name)
     if name.startswith("whisper"):

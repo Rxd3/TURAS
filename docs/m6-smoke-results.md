@@ -3,7 +3,10 @@
 Member 6 ran the smoke kit on the M6 RTX 5070 Ti laptop on 2026-11-17. On
 2026-11-18 a follow-up check looked at the duplicate candidates, the four beam
 systems were re-run with the shared-export dedup (smoke kit at `dfc1bee`), and
-a timing slowdown in that re-run was diagnosed. This page is evidence from
+a timing slowdown in that re-run, caused by another GPU-heavy application
+running at the same time, was diagnosed. After that application was closed, a
+second four-model re-run at `dfc1bee` (called the clean re-run below) repeated
+all four beam systems. This page is evidence from
 these runs, not a specification: it says what was measured and what each model
 owner should do next. Track labels follow the [README](../README.md#scope): F1
 is Whisper LoRA, F2 is Whisper full fine-tuning (both Member 4), F3 is XLS-R
@@ -118,8 +121,8 @@ very differently.
   and 0.0659 with the new code (measured), new over old about 1.007
   (estimate). The other systems were not A/B tested.
 - The four interleaved whisper-small runs agreed within 2.5% (estimate, from
-  measured RTFs); a fifth whisper-small run, in the four-model re-run, gave
-  0.0697 (measured). Across sessions, the same decoding work ran 1.2–1.4x
+  measured RTFs); a fifth whisper-small run, in the clean four-model re-run,
+  gave 0.0697 (measured). Across sessions, the same decoding work ran 1.2–1.4x
   slower on 2026-11-18 than on 2026-11-17 (estimate, from measured RTFs). For
   whisper-small, the old `793ff9c` code itself gave 0.066 against 0.049, and
   a 2026-11-18 run's output text matched the 2026-11-17 run on all 20 clips
@@ -130,9 +133,11 @@ very differently.
   without the monitor (estimate, one run). A small part of the other
   application was still listed on the GPU in that run and in the four runs
   without the monitor.
-- 2026-11-18 RTFs: whisper-small 0.066–0.070 over five runs with no other GPU
-  workload running (measured); qwen3-asr-0.6b 0.109 (measured), with an OS
-  update using CPU just before that run. whisper-large-v3 0.209 (measured)
+- 2026-11-18 RTFs: whisper-small 0.066–0.070 over the five runs with no other
+  GPU workload running and no monitor (the four interleaved runs and the clean
+  re-run's one; measured). From the clean four-model re-run: qwen3-asr-0.6b
+  0.109 (measured), with an OS update using CPU just before that run.
+  whisper-large-v3 0.209 (measured)
   ran while about 25 processes of unknown origin held GPU compute contexts and
   total CPU load was 100% (both measured, in the snapshot before the run).
   qwen3-asr-1.7b 0.118 (measured) ran with the same processes present. Treat
@@ -320,7 +325,7 @@ not quote an RTF measured in another session.
 | Member 2 | B1, B2, B3 | Build Whisper N-best on the core `GenerationMixin` path and never call `WhisperForConditionalGeneration.generate` with `num_return_sequences > 1`; one process per system. Return the raw candidate list; the shared export deduplicates. Run the rank-1 check on a few clips. Qwen3-ASR: use the `-hf` checkpoints, label the score joint, keep `qwen-asr` out of the main environment. Return text exactly as decoded. Freeze beam size and requested N in each decoder config before the timed re-run. |
 | Member 3 | B4, B5 | B4: build the XLS-R processor explicitly, fp32, greedy; report the missing digits as a limitation. CTC N-best (prefix beam search, exact `-CTCLoss` score) is UNMEASURED; until it exists B4 gives 1-best only. B5: run a 3-step memory probe and time one epoch on the training machine before choosing a size; train-only vocabulary. |
 | Member 4 | F1, F2 | F1: confirm the parent (see open questions); run a 3-step whisper-small LoRA probe before committing (UNMEASURED today). A large-v3 LoRA fits (4.05 GiB reserved at batch 2, measured) but is claimed only with its own B2-matched experiment. Train with fp32 master weights and bf16 autocast, LoRA adapters in fp32, the frozen base in bf16 or fp16, dtype passed explicitly. F2: run a 3-step fp32-master whisper-small probe (about 4.2–5.2 GiB, estimate); record large-v3 full fine-tuning as a measured hardware block naming the probed recipe. Follow the Whisper N-best rule and return raw lists. |
-| Member 5 | F3, R1 | F3: run the 3-step probe (fp32 master, frozen feature encoder, gradient checkpointing) before choosing a batch size; set `ctc_zero_infinity=True` or filter long labels; report the missing digits if the head is kept. R1: PyTorch Geometric works (full-batch, reverse edge types, no `pyg-lib` samplers). No validated N-best producer exists yet: the planned producers are Member 4's Whisper N-best (whisper-small parent) and Member 3's CTC export. Pick the producer early and freeze its validation and test candidate sets. |
+| Member 5 | F3, R1 | F3: run the 3-step probe (fp32 master, frozen feature encoder, gradient checkpointing) before choosing a batch size; set `ctc_zero_infinity=True` or filter long labels; report the missing digits if the head is kept. R1: PyTorch Geometric works (full-batch, reverse edge types, no `pyg-lib` samplers). No owner adapter has produced a validated N-best list yet (the smoke wrappers' lists validated on 20 clips after the export dedup, measured 2026-11-18): the planned producers are Member 4's Whisper N-best (whisper-small parent) and Member 3's CTC export. Pick the producer early and freeze its validation and test candidate sets. |
 
 ## Open questions
 

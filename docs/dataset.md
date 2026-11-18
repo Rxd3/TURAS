@@ -203,3 +203,33 @@ These need M6 approval with the split policy (D07); none changes split membershi
 | Pages built from another machine's audio | `python scripts/m1_audio_equivalence.py --artifact-root ../turas-artifacts <page.html>` |
 | Ingest exported decisions | `python scripts/m1_apply_reviews.py --artifact-root ../turas-artifacts <decisions.json> ...` (`--role adjudication` for the second reviewer) |
 | Freeze (refuses while validation/test rows are unreviewed) | `python scripts/m1_freeze_release.py --artifact-root ../turas-artifacts --status "frozen by M1 on <date>; M6 review: <PR>"`, then rerun the relational step |
+
+### Verification policy: sampled verification (M1 decision 2026-11-18, needs M6 approval, D08)
+
+M1 stops listening review after the 50-clip pilot. This **replaces** the rule
+above that every validation/test reference must be `verified` or
+`adjudicated` before freeze, and the matching item in M1's definition of done
+in `TEAM_TASKS.md`. M6 must approve it (D08) before the release is frozen.
+
+- **What the references are.** Validation/test references are the upstream
+  TBMM minutes (`reference_origin = upstream_human`), not verbatim transcripts.
+  The 50 pilot clips were checked by listening, and their status and
+  corrections are merged at freeze.
+- **The sample.** Drawn with seed 2026, one random clip from each of 25 random
+  test recordings (of 28), each of the 15 validation recordings, and 10 train
+  recordings; chosen before any model output existed. IDs:
+  `data/verification/turas-tr-econ-legis-v0.1-pilot-ids.txt`.
+- **Measured reference quality.** 0/50 rejected (95% Wilson CI 0–7.1%);
+  16/50 needed a correction (32%, CI 20.8–45.8%). Upstream minutes vs
+  verified text: WER 2.43% over 1,561 words (20 S, 9 D, 9 I). Most differences
+  are spoken words the minutes omit.
+- **Consequence for results.** Every WER/CER on the full test set includes
+  reference noise of about this size. It is the same for all systems, but
+  absolute WERs are overstated by roughly 2–3 points, and differences between
+  systems smaller than that are not reliable. Reports state this.
+- **Required reporting (M6).** Report full-test metrics on the frozen test
+  (3.0 h, minutes references), plus the same metrics on the 25 verified test
+  clips as a reference-quality check, labelled as a small sample.
+- **Freeze.** `scripts/m1_freeze_release.py --sampled-verification` records
+  this policy and the verified/unreviewed counts in the split manifest.
+  Without the flag the script still refuses unreviewed validation/test rows.

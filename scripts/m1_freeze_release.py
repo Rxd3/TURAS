@@ -4,7 +4,8 @@
         --status "frozen by M1 on 2026-11-2X; M6 review: <PR link>"
 
 Refuses to run unless every validation and test row is verified, adjudicated
-or rejected (``--draft-dir`` writes a trial freeze elsewhere instead).
+or rejected, or ``--sampled-verification`` is given (the documented
+sampled-verification policy). ``--draft-dir`` writes a trial freeze elsewhere.
 Then, in one step:
 
 - merges the resolved review status into the references (corrections become
@@ -46,6 +47,9 @@ def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--artifact-root", required=True, type=Path)
     ap.add_argument("--status", required=True, help="status text written into the manifests")
+    ap.add_argument("--sampled-verification", action="store_true",
+                    help="freeze with unreviewed validation/test rows under the sampled-verification "
+                         "policy (docs/dataset.md, needs M6 approval D08); recorded in the manifest")
     ap.add_argument("--draft-dir", type=Path,
                     help="trial run: allow unreviewed rows and write everything under this directory")
     args = ap.parse_args()
@@ -61,7 +65,7 @@ def main() -> int:
 
     open_rows = [r["utterance_id"] for r in kept if r["split"] in ("validation", "test")
                  and r["verification_status"] not in ("verified", "adjudicated")]
-    if open_rows and not args.draft_dir:
+    if open_rows and not (args.draft_dir or args.sampled_verification):
         print(f"{len(open_rows)} validation/test rows are not verified or adjudicated yet; "
               f"first: {open_rows[:5]}. Use --draft-dir for a trial freeze.", file=sys.stderr)
         return 1
@@ -101,6 +105,10 @@ def main() -> int:
         "exclusion_ledger_sha256": ledger_sha,
         "verification": {
             "policy": RV.POLICY_VERSION,
+            "scope": ("sampled: validation/test references are upstream minutes; only the listed "
+                      "sample was verified by listening (docs/dataset.md, D08)")
+                     if args.sampled_verification else "complete: every validation/test row verified or adjudicated",
+            "unreviewed_validation_test_rows": len(open_rows),
             "review_records_sha256": R.sha256_file(rec_path) if rec_path.exists() else None,
             "review_records": len(records),
             "reviewer_ids": len({r["reviewer_id"] for r in records}),

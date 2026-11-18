@@ -83,3 +83,7 @@
 - Decision needed: full verification of 1,074 validation/test clips is
   ≈39 h at the measured pace; options are a seeded, recording-stratified
   verified subset or more reviewers. No reject-driven shrinking is needed.
+- Decision (M1, 2026-11-18): stop listening review at the 50-clip pilot
+  (sampled verification); documented in `docs/dataset.md`, sent to M6 for
+  approval (D08). Freeze script gained `--sampled-verification`; trial run:
+  40 validation/test clips verified (13 corrected), 1,034 unreviewed, 0 rejected.

@@ -65,3 +65,11 @@ recordings, seed 2026) is reviewed first. Its accept/correct/reject rates
 decide whether full verification of validation (2 h) and test (3 h) is
 feasible before the deadline, or whether test must shrink. Pilot results are
 reported in `data/verification/turas-tr-econ-legis-v0.1-audit.md`.
+
+## Policy change after the pilot (2026-11-18, pending M6 approval)
+
+M1 decided to stop after the 50-clip pilot (sampled verification) instead
+of reviewing all validation and test clips. The rules above still define how
+the pilot clips were judged. The decision, the measured reference quality and
+its consequences are in
+[docs/dataset.md](../../docs/dataset.md#verification-policy-sampled-verification-m1-decision-2026-11-18-needs-m6-approval-d08).

@@ -5,7 +5,7 @@ Branch: `feat/m1-data-relational-schema`.
 Ownership/tasks/review routing: [TEAM_TASKS.md](../TEAM_TASKS.md).
 
 **Status (2026-11-18): release v0.1 rebuilt locally and fully tooled;
-lexicon frozen; waiting for validation/test listening verification, then freeze.**
+lexicon frozen; pilot review done (sampled verification, pending M6 approval), then freeze.**
 
 ## Actual contributions
 
@@ -76,6 +76,13 @@ root in the pilot page's export format (re-run adds 0 records).
 
 Checks run: `pytest tests/test_data_*.py` — 51 passed; trial freeze on real
 artifacts (split files identical) and on a synthetic copy (reject/correct paths).
+
+### 2026-11-18 — pilot listening review
+
+- Listened to and judged the 50 pilot clips myself (`rev_m1`): 34 accept,
+  16 correct, 0 reject; measured 2.43% WER between the minutes and the speech.
+- Decided on sampled verification (pending M6 approval D08) and documented
+  its consequences for reported metrics.
 
 ## Experiments and artifacts
 

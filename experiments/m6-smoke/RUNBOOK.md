@@ -9,31 +9,41 @@ browsers with video, other Python sessions).
 
 ## 1. Get the branch
 
-If `C:\Users\benda\Downloads\nlp\TURAS` does not exist yet:
+First set the three paths that every later command uses. If you open a new PowerShell
+window, run these three lines again before going on:
 
 ```powershell
-git clone https://github.com/Rxd3/TURAS C:\Users\benda\Downloads\nlp\TURAS
-git -C C:\Users\benda\Downloads\nlp\TURAS switch feat/m6-smoke-tests
+$repo = "$env:USERPROFILE\Downloads\nlp\TURAS"
+$py = "$env:USERPROFILE\Downloads\nlp\project3-asr\.venv\Scripts\python.exe"
+$smoke = "$repo\experiments\m6-smoke\smoke.py"
+```
+
+If the repository folder does not exist yet (`Test-Path $repo` prints `False`):
+
+```powershell
+git clone https://github.com/Rxd3/TURAS $repo
+git -C $repo switch feat/m6-smoke-tests
 ```
 
 If it already exists:
 
 ```powershell
-git -C C:\Users\benda\Downloads\nlp\TURAS fetch origin
-git -C C:\Users\benda\Downloads\nlp\TURAS switch feat/m6-smoke-tests
-git -C C:\Users\benda\Downloads\nlp\TURAS pull --ff-only
+git -C $repo fetch origin
+git -C $repo switch feat/m6-smoke-tests
+git -C $repo pull --ff-only
 ```
 
-Check: `git -C C:\Users\benda\Downloads\nlp\TURAS status` says `On branch feat/m6-smoke-tests`.
+Check: `git -C $repo status` says `On branch feat/m6-smoke-tests`.
 
 ## 2. Install the checker package into the existing environment
 
 ```powershell
-C:\Users\benda\Downloads\nlp\project3-asr\.venv\Scripts\python.exe -m pip install --no-deps -e C:\Users\benda\Downloads\nlp\TURAS
-C:\Users\benda\Downloads\nlp\project3-asr\.venv\Scripts\python.exe -c "import turkish_asr_rdl, torch, transformers, peft, pyarrow, huggingface_hub; print(turkish_asr_rdl.__file__, torch.cuda.is_available())"
+& $py -m pip install --no-deps -e $repo
+& $py -c "import turkish_asr_rdl, torch, transformers, peft, pyarrow, huggingface_hub; print(turkish_asr_rdl.__file__, torch.cuda.is_available())"
 ```
 
-Check: the second command prints a path under `C:\Users\benda\Downloads\nlp\TURAS\src` and `True`.
+Check: the second command prints a path that ends in `Downloads\nlp\TURAS\src\turkish_asr_rdl\__init__.py`
+and `True`.
 If it prints anything else, stop and send back its output.
 
 ## 3. Run the smoke tests, one model at a time
@@ -47,29 +57,29 @@ command. The first command also downloads one 77 MB train shard and writes the c
 Inference:
 
 ```powershell
-C:\Users\benda\Downloads\nlp\project3-asr\.venv\Scripts\python.exe C:\Users\benda\Downloads\nlp\TURAS\experiments\m6-smoke\smoke.py --model whisper-small --artifacts C:\turas-artifacts --clips 20
-C:\Users\benda\Downloads\nlp\project3-asr\.venv\Scripts\python.exe C:\Users\benda\Downloads\nlp\TURAS\experiments\m6-smoke\smoke.py --model whisper-large-v3 --artifacts C:\turas-artifacts --clips 20
-C:\Users\benda\Downloads\nlp\project3-asr\.venv\Scripts\python.exe C:\Users\benda\Downloads\nlp\TURAS\experiments\m6-smoke\smoke.py --model qwen3-asr-1.7b --artifacts C:\turas-artifacts --clips 20
-C:\Users\benda\Downloads\nlp\project3-asr\.venv\Scripts\python.exe C:\Users\benda\Downloads\nlp\TURAS\experiments\m6-smoke\smoke.py --model qwen3-asr-0.6b --artifacts C:\turas-artifacts --clips 20
-C:\Users\benda\Downloads\nlp\project3-asr\.venv\Scripts\python.exe C:\Users\benda\Downloads\nlp\TURAS\experiments\m6-smoke\smoke.py --model xlsr-tr-cv7 --artifacts C:\turas-artifacts --clips 20
-C:\Users\benda\Downloads\nlp\project3-asr\.venv\Scripts\python.exe C:\Users\benda\Downloads\nlp\TURAS\experiments\m6-smoke\smoke.py --model xlsr-tr-cv8 --artifacts C:\turas-artifacts --clips 20
+& $py $smoke --model whisper-small --artifacts C:\turas-artifacts --clips 20
+& $py $smoke --model whisper-large-v3 --artifacts C:\turas-artifacts --clips 20
+& $py $smoke --model qwen3-asr-1.7b --artifacts C:\turas-artifacts --clips 20
+& $py $smoke --model qwen3-asr-0.6b --artifacts C:\turas-artifacts --clips 20
+& $py $smoke --model xlsr-tr-cv7 --artifacts C:\turas-artifacts --clips 20
+& $py $smoke --model xlsr-tr-cv8 --artifacts C:\turas-artifacts --clips 20
 ```
 
 Training memory (3 optimizer steps each; `train-whisper-large-v3-full` is expected to run
 out of memory, and that still counts as `ok`):
 
 ```powershell
-C:\Users\benda\Downloads\nlp\project3-asr\.venv\Scripts\python.exe C:\Users\benda\Downloads\nlp\TURAS\experiments\m6-smoke\smoke.py --model train-whisper-small-full --artifacts C:\turas-artifacts --clips 20
-C:\Users\benda\Downloads\nlp\project3-asr\.venv\Scripts\python.exe C:\Users\benda\Downloads\nlp\TURAS\experiments\m6-smoke\smoke.py --model train-whisper-large-v3-lora --artifacts C:\turas-artifacts --clips 20
-C:\Users\benda\Downloads\nlp\project3-asr\.venv\Scripts\python.exe C:\Users\benda\Downloads\nlp\TURAS\experiments\m6-smoke\smoke.py --model train-whisper-large-v3-full --artifacts C:\turas-artifacts --clips 20
+& $py $smoke --model train-whisper-small-full --artifacts C:\turas-artifacts --clips 20
+& $py $smoke --model train-whisper-large-v3-lora --artifacts C:\turas-artifacts --clips 20
+& $py $smoke --model train-whisper-large-v3-full --artifacts C:\turas-artifacts --clips 20
 ```
 
 PyTorch Geometric, last. Install it first and copy the `Successfully installed ...` line
 that pip prints at the end; you will send it back:
 
 ```powershell
-C:\Users\benda\Downloads\nlp\project3-asr\.venv\Scripts\python.exe -m pip install torch_geometric==2.8.1
-C:\Users\benda\Downloads\nlp\project3-asr\.venv\Scripts\python.exe C:\Users\benda\Downloads\nlp\TURAS\experiments\m6-smoke\smoke.py --model pyg-hetero --artifacts C:\turas-artifacts --clips 20
+& $py -m pip install torch_geometric==2.8.1
+& $py $smoke --model pyg-hetero --artifacts C:\turas-artifacts --clips 20
 ```
 
 `pyg-hetero` says FAILED only when the fp32 check fails; if only bf16 fails, it says ok and the
@@ -79,7 +89,7 @@ aiohttp's own dependencies). Write the names without their version numbers, sepa
 spaces, in place of `<names>`:
 
 ```powershell
-C:\Users\benda\Downloads\nlp\project3-asr\.venv\Scripts\python.exe -m pip uninstall -y <names>
+& $py -m pip uninstall -y <names>
 ```
 
 If `pyg-hetero` says ok, leave `torch_geometric` installed.
@@ -87,7 +97,7 @@ If `pyg-hetero` says ok, leave `torch_geometric` installed.
 ## 4. Write the report
 
 ```powershell
-C:\Users\benda\Downloads\nlp\project3-asr\.venv\Scripts\python.exe C:\Users\benda\Downloads\nlp\TURAS\experiments\m6-smoke\smoke.py --summarize C:\turas-artifacts
+& $py $smoke --summarize C:\turas-artifacts
 ```
 
 It prints `wrote C:\turas-artifacts\smoke\REPORT.md`.
@@ -110,13 +120,11 @@ laptop.
 ## Re-run after the dedup fix
 
 The export now removes duplicate N-best candidates, so only the four beam-search models run
-again. First update the branch with the "If it already exists" commands in step 1. Each
+again. First run the three path lines and the "If it already exists" commands in step 1. Each
 command overwrites that model's JSON file; the other six result files stay and appear in the
 new report. Send back the report and the four JSON files as in step 5.
 
 ```powershell
-$py = "$env:USERPROFILE\Downloads\nlp\project3-asr\.venv\Scripts\python.exe"
-$smoke = "$env:USERPROFILE\Downloads\nlp\TURAS\experiments\m6-smoke\smoke.py"
 & $py $smoke --model whisper-small --artifacts C:\turas-artifacts --clips 20
 & $py $smoke --model whisper-large-v3 --artifacts C:\turas-artifacts --clips 20
 & $py $smoke --model qwen3-asr-1.7b --artifacts C:\turas-artifacts --clips 20

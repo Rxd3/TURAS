@@ -299,10 +299,10 @@ def test_main_rejects_bad_arguments(smoke, argv):
 
 
 def test_run_facts_take_repeats_and_batch_size_from_the_run(smoke, tmp_path):
-    audio_dir, warmup, timed = _prepared(smoke, tmp_path)
+    audio_dir, warmup, timed = _prepared(smoke, tmp_path, count=5)
     adapter = FakeAdapter()
-    run = smoke.run_timed(adapter, timed, warmup * 2, audio_root=audio_dir, run_id=adapter.system_id, repeats=2,
+    run = smoke.run_timed(adapter, timed, warmup * 2, audio_root=audio_dir, run_id=adapter.system_id, repeats=3,
                           batch_size=2, **NO_DEVICE)
     facts = smoke._run_facts(adapter, run, warmup * 2, timed, {})
-    assert (facts["repeats"], facts["batch_size"]) == (2, 2)
-    assert facts["timed_audio_s"] == pytest.approx(2.0)
+    assert (facts["repeats"], facts["batch_size"]) == (3, 2)
+    assert facts["timed_audio_s"] == pytest.approx(5.0)

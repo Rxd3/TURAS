@@ -46,13 +46,22 @@ def _failure_note(record: Mapping[str, Any] | None) -> str:
     return record.get("unreadable") or record.get("error") or record.get("first_error") or ""
 
 
+def _kept_part(nbest: Mapping[str, Any]) -> str:
+    """Kept-candidate counts; result files written before the export deduplicated have none."""
+    if "actual_n_mean" not in nbest:
+        return ""
+    return (f"actual_n mean {_number(nbest.get('actual_n_mean'), 2)}, min {nbest.get('actual_n_min')}, "
+            f"{nbest.get('rows_with_dedup_map')}/{nbest.get('rows')} rows with dedup_map, ")
+
+
 def _nbest_cell(nbest: Mapping[str, Any] | None) -> str:
     if not nbest or not nbest.get("requested_n"):
         return "none"
     verdict = "valid" if nbest.get("validate_nbest_ok") else f"invalid ({nbest.get('validation_errors')} errors)"
     finite = "scores finite" if nbest.get("acoustic_log_scores_finite") else "scores NOT all finite"
     return (f"{nbest.get('min_candidates')}-{nbest.get('max_candidates')} of {nbest['requested_n']}, "
-            f"{nbest.get('utterances_all_distinct')}/{nbest.get('rows')} distinct, {verdict}, {finite}")
+            f"{_kept_part(nbest)}{nbest.get('utterances_all_distinct')}/{nbest.get('rows')} distinct, "
+            f"{verdict}, {finite}")
 
 
 def _inference_notes(record: Mapping[str, Any]) -> str:

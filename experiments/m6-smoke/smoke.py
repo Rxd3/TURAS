@@ -10,7 +10,6 @@ feasibility sample: accuracy is never computed.
 from __future__ import annotations
 
 import argparse
-import hashlib
 import io
 import json
 import math
@@ -108,10 +107,6 @@ def select_clips(rows: Iterable[Mapping[str, Any]], count: int) -> tuple[tuple[C
     raise ValueError(f"the shard has only {len(clips)} usable clips, {count} are needed")
 
 
-def _sha256_json(value: Any) -> str:
-    return hashlib.sha256(json.dumps(value, sort_keys=True, separators=(",", ":")).encode("utf-8")).hexdigest()
-
-
 def write_clips(clips: Sequence[Clip], audio_dir: Path) -> list[dict[str, Any]]:
     """Write each clip as 16 kHz FLAC; return its inference-input rows, sharing one manifest hash."""
     folder = Path(audio_dir)
@@ -122,7 +117,7 @@ def write_clips(clips: Sequence[Clip], audio_dir: Path) -> list[dict[str, Any]]:
         sf.write(folder / name, np.clip(clip.samples, -1.0, 1.0), TARGET_SAMPLE_RATE_HZ, format="FLAC",
                  subtype="PCM_16")
         written.append((clip, name, sha256_file(folder / name)))
-    manifest_sha = _sha256_json([[clip.segment_id, sha] for clip, _, sha in written])
+    manifest_sha = smoke_common.sha256_json([[clip.segment_id, sha] for clip, _, sha in written])
     return [
         {"schema_version": SCHEMA_VERSION, "dataset_release": DATASET_RELEASE, "split_manifest_sha256": manifest_sha,
          "utterance_id": clip.segment_id, "audio_uri": name, "audio_sha256": sha,
@@ -186,10 +181,21 @@ def nbest_facts(rows: Sequence[Mapping[str, Any]], requested_n: int) -> dict[str
     return {
         "requested_n": requested_n, "rows": len(rows),
         "min_candidates": min(counts, default=0), "max_candidates": max(counts, default=0),
+        **_kept_counts(rows),
         "utterances_all_distinct": sum(1 for d in duplicates if d == 0), "duplicate_texts": sum(duplicates),
         "validate_nbest_ok": report.ok, "validation_errors": len(report.errors),
         "first_errors": list(report.errors[:3]),
         **_score_range([c.get("acoustic_log_score") for row in rows for c in row["candidates"]]),
+    }
+
+
+def _kept_counts(rows: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
+    """Mean and minimum actual_n over every row (an error row counts as 0) and the rows that carry a dedup_map."""
+    kept = [n for n in (row.get("actual_n") for row in rows) if isinstance(n, int) and not isinstance(n, bool)]
+    return {
+        "actual_n_mean": sum(kept) / len(kept) if kept else None,
+        "actual_n_min": min(kept, default=None),
+        "rows_with_dedup_map": sum(1 for row in rows if "dedup_map" in row),
     }
 
 
@@ -216,7 +222,8 @@ def _run_facts(adapter: Any, run: Any, warmup: Sequence[InferenceInput], timed: 
     return {
         "kind": "inference", "ok": statuses["error"] == 0, "config": dict(adapter.config),
         "clips": {"warmup": len(warmup), "timed": len(timed)},
-        "timed_audio_s": sum(r.audio_duration_s for r in timed_records), "repeats": 1, "batch_size": 1,
+        "timed_audio_s": sum(r.audio_duration_s for r in timed_records if r.repeat == 1),
+        "repeats": max(r.repeat for r in timed_records), "batch_size": timed_records[0].batch_size,
         "load_s": run.cold_load_s, **memory,
         "end_to_end_rtf": run.end_to_end_rtf, "core_model_rtf": run.core_model_rtf,
         "sync_method": timed_records[0].sync_method, "thermal_flags": run.thermal_flags,
@@ -245,7 +252,7 @@ def measure_inference(adapter: Any, warmup: Sequence[InferenceInput], timed: Seq
     vram.reset()
     run = run_timed(adapter, timed, warmup, audio_root=audio_dir, run_id=adapter.system_id, repeats=1,
                     batch_size=1, **dict(timing or {}))
-    facts = _run_facts(adapter, run, warmup, timed, vram.peak())
+    facts = _run_facts(adapter, run, warmup, timed, vram.peak())  # before extra_facts, which may allocate more
     try:
         later = _output_facts(adapter, run, timed, audio_dir, run_dir, command)
     except Exception as exc:  # recorded with its traceback; the measured numbers above are kept

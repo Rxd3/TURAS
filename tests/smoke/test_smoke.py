@@ -12,12 +12,14 @@ import pytest
 import soundfile as sf
 
 from turkish_asr_rdl.decoding.interface import Candidate, Hypothesis, InferenceInput
+from turkish_asr_rdl.decoding.memory import NoVram
 from turkish_asr_rdl.schemas.jsonl import sha256_file
 from turkish_asr_rdl.schemas.predictions import validate_inference_inputs
 
 SMOKE_DIR = Path(__file__).resolve().parents[2] / "experiments" / "m6-smoke"
 REPO_ROOT = SMOKE_DIR.parents[1]
 NO_GPU = {"ok": False, "error": "SYNTHETIC no gpu"}
+NO_DEVICE = {"probe": lambda: NO_GPU, "memory": NoVram()}
 
 
 def tone(rate: int, seconds: float, channels: int = 1, amplitude: float = 0.5) -> np.ndarray:
@@ -172,6 +174,13 @@ def test_write_clips_rows_pass_the_inference_allowlist(smoke, tmp_path):
     assert np.max(np.abs(loud.samples)) == pytest.approx(1.5, abs=1e-3)
 
 
+def test_write_clips_hashes_the_manifest_as_canonical_json(smoke, common, tmp_path):
+    clips = (smoke.Clip("syn_\u00e7", tone(16000, 0.5), "SYNTHETIC"), smoke.Clip("syn_b", tone(16000, 0.5), "SYN"))
+    rows = smoke.write_clips(clips, tmp_path / "audio")
+    pairs = [[row["utterance_id"], row["audio_sha256"]] for row in rows]
+    assert rows[0]["split_manifest_sha256"] == common.sha256_json(pairs) == rows[1]["split_manifest_sha256"]
+
+
 def test_load_clips_prepares_once_then_reuses(smoke, tmp_path):
     calls = []
 
@@ -202,7 +211,7 @@ def test_measure_inference_with_a_fake_adapter(smoke, tmp_path):
     vram = FakeVram()
     record = smoke.measure_inference(FakeAdapter(vram=vram), warmup, timed, audio_dir=audio_dir,
                                      run_dir=tmp_path / "run", vram=vram, command="SYNTHETIC",
-                                     timing={"probe": lambda: NO_GPU})
+                                     timing=NO_DEVICE)
     assert record["ok"] is True and record["kind"] == "inference"
     assert record["statuses"] == {"ok": 2, "empty": 0, "error": 0}
     assert record["nbest"]["validate_nbest_ok"] is True and record["nbest"]["rows"] == 2
@@ -221,7 +230,7 @@ def test_measure_inference_marks_error_rows_as_failed(smoke, tmp_path):
     audio_dir, warmup, timed = _prepared(smoke, tmp_path)
     adapter = FakeAdapter(fail_ids={timed[0].utterance_id})
     record = smoke.measure_inference(adapter, warmup, timed, audio_dir=audio_dir, run_dir=tmp_path / "run",
-                                     vram=FakeVram(), command="SYNTHETIC", timing={"probe": lambda: NO_GPU})
+                                     vram=FakeVram(), command="SYNTHETIC", timing=NO_DEVICE)
     assert record["ok"] is False and record["statuses"]["error"] == 1
     assert "SYNTHETIC decode failure" in record["first_error"]
 
@@ -233,7 +242,7 @@ def test_measure_inference_keeps_the_numbers_when_a_later_step_fails(smoke, tmp_
 
     audio_dir, warmup, timed = _prepared(smoke, tmp_path)
     record = smoke.measure_inference(LateFailure(), warmup, timed, audio_dir=audio_dir, run_dir=tmp_path / "run",
-                                     vram=FakeVram(), command="SYNTHETIC", timing={"probe": lambda: NO_GPU})
+                                     vram=FakeVram(), command="SYNTHETIC", timing=NO_DEVICE)
     assert record["ok"] is False and record["error"] == "RuntimeError: SYNTHETIC extra facts failure"
     assert "Traceback" in record["traceback"]
     assert record["end_to_end_rtf"] > 0 and record["peak_vram_gib"] == 1.5 and record["statuses"]["ok"] == 2
@@ -287,3 +296,13 @@ def test_main_rejects_bad_arguments(smoke, argv):
     with pytest.raises(SystemExit) as caught:
         smoke.main(argv)
     assert caught.value.code == 2
+
+
+def test_run_facts_take_repeats_and_batch_size_from_the_run(smoke, tmp_path):
+    audio_dir, warmup, timed = _prepared(smoke, tmp_path)
+    adapter = FakeAdapter()
+    run = smoke.run_timed(adapter, timed, warmup * 2, audio_root=audio_dir, run_id=adapter.system_id, repeats=2,
+                          batch_size=2, **NO_DEVICE)
+    facts = smoke._run_facts(adapter, run, warmup * 2, timed, {})
+    assert (facts["repeats"], facts["batch_size"]) == (2, 2)
+    assert facts["timed_audio_s"] == pytest.approx(2.0)

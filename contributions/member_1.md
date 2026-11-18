@@ -21,7 +21,7 @@ pending; not frozen.**
   `configs/datasets/turas-domain-lexicon-v0.1.json`.
 - Implemented `src/turkish_asr_rdl/data/` (`screening`, `selection`, `release`,
   `relational`, `worldspeech`) and the thin scripts
-  `scripts/m1_build_release.py`, `scripts/m1_build_relational.py`,
+  `scripts/m1_build_release.py`, `scripts/m1_build_relational.py`, `scripts/m1_apply_reviews.py`,
   `scripts/m1_review_kit.py`.
 - Proposed release `turas-tr-econ-legis-v0.1`: 20 h train / 2 h validation /
   3 h test (5,450 utterances, 172 recordings), recording-grouped, temporal 2026
@@ -31,7 +31,7 @@ pending; not frozen.**
 - Wrote the listening verification guide
   [`turas-verbatim-v0.1`](../data/verification/turas-verbatim-v0.1.md) and a
   self-contained review page generator for the 50-clip pilot.
-- Relational CSV tables per [RDL contract](../docs/contracts/rdl.md): static
+- Relational CSV tables (train 31,640 relationships, evaluator-only validation/test) per [RDL contract](../docs/contracts/rdl.md): static
   lexicon tables in `data/relational/turas-tr-econ-legis-v0.1/`; per-split
   automatic evidence tables in the artifact root, with train-only access for
   graph training.
@@ -42,7 +42,7 @@ against the pinned revision with leakage report all zero.
 
 ## Experiments and artifacts
 
-No model runs. Data build artifacts and hashes: see
+No model runs. Full audio build done 2026-11-18: 5,450 FLAC files (1.9 GB, 16 kHz mono), 200 sampled hashes re-verified, max duration drift 0.0001 s. Hashes: see
 `data/splits/turas-tr-econ-legis-v0.1/split_manifest.json` and
 `data/manifests/turas-tr-econ-legis-v0.1.json`.
 

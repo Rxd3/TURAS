@@ -23,7 +23,7 @@
       "file": "train.txt",
       "sha256": "3758fae04956ef65464b9c15821527535bd40b4d00438885d7fbffdaf33bda1e",
       "utterances": 4376,
-      "duration_s": 72008.398,
+      "duration_s": 72008.405,
       "recordings": 129,
       "session_date_min": "2017-01-10",
       "session_date_max": "2025-12-23",
@@ -45,7 +45,7 @@
       "file": "test.txt",
       "sha256": "35c6ed9f206c5b4a609e05eff641e1d8317c04c3d4a6f62627fc309b824d122f",
       "utterances": 636,
-      "duration_s": 10814.486,
+      "duration_s": 10814.485,
       "recordings": 28,
       "session_date_min": "2026-01-06",
       "session_date_max": "2026-04-22",
@@ -72,7 +72,7 @@
     "upstream_test_in_train_recording": 1069
   },
   "speaker_identity": "unknown for every row; speaker-disjointness is NOT claimed",
-  "references_sha256": "627b9a1f99541e2ca1da8b85b02c40d25862b0be7ea3a6c4d0850709da8bbe92",
+  "references_sha256": "f0b182afa032c2716794caac5f85ef2bfddf5a611b2ac5bc11b97cd7030b21dc",
   "exclusion_ledger_sha256": "6077dc6f804fff838f253eddf1bd4ebd91c2228f4ab41d916103511c6068c0c1",
-  "audio_written": false
+  "audio_written": true
 }

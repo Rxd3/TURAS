@@ -1,10 +1,10 @@
 {
   "dataset_release": "turas-tr-econ-legis-v0.1",
-  "split_manifest_sha256": "106fed16d2ae6a5746e8c6d8d1383f7aa257e8bb63ef856827c0c241b52de75e",
+  "split_manifest_sha256": "d5bf8b12691cf4ecd284d167176b5523c751e519b391e2299a3ade7929720260",
   "inference_exports_sha256": {
-    "train": "7ecb5f5e93ead95850f327926476a2c53cf7a65efa87b30e2d522dee2c0fb0a5",
-    "validation": "f4d9b52cad03176fd92c2ac543cca3111e5335a1ad95d2eb7edd64cac9150986",
-    "test": "afe2f8112efe844af03906187aaf28cadca8d3460786e9e4d55eb0eac1879e5f"
+    "train": "32531c74d3401b2b8c9698fd95300cac7661c2be45a3816b506e7370a340f733",
+    "validation": "463fa9271903fd5e5a5ed65ff1e29f8ffd4d0afdbef6dc3b461a5c21c33f3aca",
+    "test": "d716a3838409e403256ce05c9da947b432c981471076110e58f25ff217bd536f"
   },
   "topic_hours": {
     "train": {
@@ -35,5 +35,5 @@
       "T_TRADE": 1.404
     }
   },
-  "audio_bytes_total": null
+  "audio_bytes_total": 1983862884
 }

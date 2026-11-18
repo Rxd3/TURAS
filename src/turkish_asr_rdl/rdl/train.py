@@ -3,6 +3,8 @@ from __future__ import annotations
 
 import argparse
 import json
+import uuid
+from datetime import datetime, timezone
 from pathlib import Path
 
 from turkish_asr_rdl.training.acoustic import sha256_file, write_json
@@ -77,6 +79,8 @@ def train(config, output: Path):
     save_file({key: value.detach().cpu().contiguous() for key, value in model.state_dict().items()}, str(output / "model.safetensors"))
     files = {p.name: sha256_file(p) for p in sorted(output.iterdir()) if p.is_file()}
     write_json(output / "artifact-manifest.json", {
+        "schema_version": "0.1", "run_id": "rdl-" + uuid.uuid4().hex,
+        "created_at_utc": datetime.now(timezone.utc).isoformat(),
         "status": "trained_internal_holdout_only" if config["validation_fraction"] else "trained_train_split",
         "dataset_release": config["dataset_release"],
         "split_manifest_sha256": config["split_manifest_sha256"], "files": files,

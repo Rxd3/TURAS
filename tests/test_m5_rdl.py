@@ -109,6 +109,8 @@ def test_heterogeneous_model_learns_real_parameters_and_scores_without_gold(tabl
     evaluation = evaluate_relations(model)
     assert 0 <= evaluation["average_precision"] <= 1
     assert 0 < evaluation["mrr"] <= 1
+    with pytest.raises(ValueError, match="relation query"):
+        model.score_edges(model.encode(), [("entity", 0, "unknown_relation", "entity", 1)])
     linker = {"aliases": [{"tokens": ["fixturea"], "entity_id": "a"}, {"tokens": ["fixtureb"], "entity_id": "b"}],
               "entity_topics": {"a": "topic", "b": "topic"}}
     score, coverage = score_hypothesis("fixturea fixtureb", model, linker, quantity_extractor=lambda text: [])

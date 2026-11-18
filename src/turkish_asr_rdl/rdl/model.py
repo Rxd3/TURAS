@@ -57,6 +57,11 @@ class HeterogeneousRelationModel(nn.Module):
         return score / math.sqrt(self.dim)
 
     def score_edges(self, states, edges):
+        for ht, h, relation, tt, t in edges:
+            spec = self.snapshot.relations.get(relation)
+            if (spec is None or tuple(spec[:2]) != (ht, tt) or
+                    not 0 <= h < len(states[ht]) or not 0 <= t < len(states[tt])):
+                raise ValueError("unknown, mistyped or out-of-range relation query")
         output = self.decoder.new_zeros((len(edges),))
         for relation in self.relation_ids:
             selected = [(i, e) for i, e in enumerate(edges) if e[2] == relation]

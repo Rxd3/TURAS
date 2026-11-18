@@ -9,6 +9,8 @@ import hashlib
 import json
 import random
 import subprocess
+import uuid
+from datetime import datetime, timezone
 from pathlib import Path
 
 INFERENCE_FIELDS = frozenset({
@@ -197,6 +199,7 @@ def fit(model, rows: list[dict], collate, *, epochs: int, accumulation: int,
 
 def run_training(config: dict, output: Path, build_model, build_collator) -> dict:
     """Validate every external input before model loading or checkpoint creation."""
+    started_at = datetime.now(timezone.utc).isoformat()
     report = preflight(config)
     if report["blockers"]:
         raise ValueError("training blocked: " + "; ".join(report["blockers"]))
@@ -228,7 +231,8 @@ def run_training(config: dict, output: Path, build_model, build_collator) -> dic
     import sys
     environment = {d.metadata["Name"]: d.version for d in importlib.metadata.distributions() if d.metadata["Name"]}
     write_json(output / "environment.json", {"python": sys.version, "packages": environment})
-    manifest = {"status": "running", "dataset_release": config["dataset_release"],
+    manifest = {"schema_version": "0.1", "run_id": "acoustic-" + uuid.uuid4().hex,
+                "started_at_utc": started_at, "status": "running", "dataset_release": config["dataset_release"],
                 "split_manifest_sha256": config["split_manifest_sha256"], "model": config["model"],
                 "training_mode": config["mode"], "code_commit": code_commit,
                 "dirty_diff_sha256": hashlib.sha256(dirty.encode()).hexdigest(), "torch": torch.__version__,
@@ -257,8 +261,10 @@ def run_training(config: dict, output: Path, build_model, build_collator) -> dic
         manifest["status"] = "training_completed_selection_pending"
     except Exception as exc:
         manifest.update(status="failed", error_type=type(exc).__name__)
+        manifest["ended_at_utc"] = datetime.now(timezone.utc).isoformat()
         write_json(output / "run.json", manifest)
         raise
+    manifest["ended_at_utc"] = datetime.now(timezone.utc).isoformat()
     write_json(output / "run.json", manifest)
     return manifest
 

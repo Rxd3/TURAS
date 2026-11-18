@@ -7,6 +7,7 @@ import json
 from pathlib import Path
 import time
 import uuid
+from datetime import datetime, timezone
 
 from turkish_asr_rdl.decoding.rescoring import rescore
 from turkish_asr_rdl.training.acoustic import read_jsonl, sha256_file, write_json
@@ -101,7 +102,12 @@ def run(config, output: Path, *, quantity_extractor=None):
                       "candidates": updated, "selected_candidate_id": selected}
             stream.write(json.dumps(result, ensure_ascii=False, allow_nan=False) + "\n")
     seconds = time.perf_counter() - started
-    sidecar = {"status": "completed", "run_id": run_id, "utterance_count": len(rows),
+    import platform
+    sidecar = {"schema_version": "0.1", "status": "completed", "run_id": run_id,
+               "created_at_utc": datetime.now(timezone.utc).isoformat(),
+               "runtime": {"python": platform.python_version(), "torch": torch.__version__,
+                           "platform": platform.platform(), "device": "cpu"},
+               "utterance_count": len(rows),
                "seconds": seconds, "cold_graph_load_seconds": cold_seconds,
                "scope": "offline N-best read, CPU RDL/fusion and JSONL write; excludes acoustic generation/audio decoding",
                "end_to_end_asr_rtf": None, "source_nbest_sha256": inputs["nbest_sha256"],

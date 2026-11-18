@@ -74,3 +74,12 @@
   real artifacts with no reviews it reproduces the split files exactly and
   refuses to freeze (1,074 validation/test rows unreviewed).
 - Source registry now carries the contract's rights/terms columns.
+
+## 2026-11-18 — pilot listening results
+
+- Pilot ingested: 34 accept / 16 correct / 0 reject (test 15/10/0,
+  validation 12/3/0, train 7/3/0). Upstream minutes vs verified text: 2.43%
+  WER over 1,561 words. Re-ingesting the same export added 0 records.
+- Decision needed: full verification of 1,074 validation/test clips is
+  ≈39 h at the measured pace; options are a seeded, recording-stratified
+  verified subset or more reviewers. No reject-driven shrinking is needed.

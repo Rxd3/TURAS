@@ -1,15 +1,17 @@
-# Smoke results for Members 2–5 (2026-11-17)
+# Smoke results for Members 2–5 (2026-11-17, re-run 2026-11-18)
 
-Member 6 ran the smoke kit on the M6 RTX 5070 Ti laptop on 2026-11-17, with one
-follow-up check on 2026-11-18. This page is evidence from that one run, not a
-specification: it says what was measured and what each model owner should do
-next. Track labels follow the [README](../README.md#scope): F1 is Whisper LoRA,
-F2 is Whisper full fine-tuning (both Member 4), F3 is XLS-R CTC fine-tuning
-(Member 5).
+Member 6 ran the smoke kit on the M6 RTX 5070 Ti laptop on 2026-11-17. On
+2026-11-18 a follow-up check looked at the duplicate candidates, the four beam
+systems were re-run with the shared-export dedup (smoke kit at `dfc1bee`), and
+a timing slowdown in that re-run was diagnosed. This page is evidence from
+these runs, not a specification: it says what was measured and what each model
+owner should do next. Track labels follow the [README](../README.md#scope): F1
+is Whisper LoRA, F2 is Whisper full fine-tuning (both Member 4), F3 is XLS-R
+CTC fine-tuning (Member 5).
 
 Every result number carries one of three labels:
 
-- **measured**: read from the smoke run's output.
+- **measured**: read from a smoke run's output.
 - **estimate**: arithmetic on measured numbers; nothing was run to check it.
 - **UNMEASURED**: not run at all.
 
@@ -28,6 +30,8 @@ versions, model limits) describe what was run and carry no label.
   Thermal flags: 0 (measured). The first two timed clips come from one
   recording (`tr_28_3_1`); the run output does not say how many recordings
   the 20 clips span, so treat them as a narrow sample.
+- Re-runs on 2026-11-18: the same 20 timed clips and the same software, with
+  the smoke kit at `dfc1bee`.
 - No references were used: accuracy is UNMEASURED.
 - These runs used Member 6's smoke wrappers, not the owners' adapters. Each
   owner's B1–B4 adapter needs its own check once it exists.
@@ -45,6 +49,8 @@ Pinned models (Hugging Face commit SHAs):
 
 ## Inference
 
+The table below is the 2026-11-17 run with the smoke kit at `793ff9c`.
+
 | System | Informs | Precision | Decoding | Peak VRAM GiB | Peak reserved GiB | End-to-end RTF | Core RTF | N-best as exported | Label |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | whisper-small | B1 | float16 | beam 10, 10 returned | 1.37 | 1.94 | 0.049 | 0.049 | invalid, duplicate text only (24 errors); 8/20 lists all distinct | measured |
@@ -55,12 +61,26 @@ Pinned models (Hugging Face commit SHAs):
 | xlsr-tr-cv8 | B4 | float32 | greedy, 1 returned | 1.62 | 2.77 | 0.006 | 0.005 | valid (1-best only) | measured |
 
 Every system returned 20 `ok` results, 0 `empty` and 0 `error`, and every
-acoustic log score was finite (measured). Whether the beam lists validate once
-the shared export deduplicates them is UNMEASURED.
+acoustic log score was finite (measured).
+
+After the shared export deduplicated them, all four beam systems' N-best lists
+validated with 0 errors (measured, 2026-11-18):
+
+| System | `actual_n` mean | `actual_n` min | Rows with `dedup_map` (of 20) | Validation |
+| --- | --- | --- | --- | --- |
+| whisper-small (beam 10) | 8.55 | 5 | 12 | valid, 0 errors |
+| whisper-large-v3 (beam 10) | 9.75 | 8 | 4 | valid, 0 errors |
+| qwen3-asr-1.7b (beam 5) | 3.85 | 2 | 12 | valid, 0 errors |
+| qwen3-asr-0.6b (beam 5) | 4.05 | 2 | 11 | valid, 0 errors |
+
+Both 2026-11-18 re-runs gave the same statistics, and peak VRAM matched
+2026-11-17 for all four systems (measured).
 
 **Do not rank models on these RTFs.** They mix beam 10 (Whisper), beam 5
 (Qwen3-ASR) and greedy decoding (XLS-R), cover 20 clips and come from one
-repeat. The official RTF comes from the re-run protocol in
+repeat. RTFs also shift between sessions: see
+[Timing varies between sessions](#timing-varies-between-sessions). The
+official RTF comes from the re-run protocol in
 [evaluation](evaluation.md#real-time-factor-and-latency). Batch > 1 inference
 and the 3-repeat timing protocol are UNMEASURED.
 
@@ -77,6 +97,41 @@ error. After every probe, compare `torch.cuda.max_memory_reserved()` against
 about 10.77 GiB. How much the fallback slows a run, and the effect of the
 driver's fallback policy, are UNMEASURED. A teammate on Windows can believe a
 configuration fits when it does not.
+
+### Timing varies between sessions
+
+The 2026-11-18 re-runs showed that the same code on the same laptop can time
+very differently.
+
+- Another GPU-heavy application running at the same time made beam decoding
+  3–8x slower (measured). whisper-small went from 0.049 to about 0.29, with
+  the GPU at 100% utilisation drawing only about 33 W (measured): it was busy
+  with the other application's work. Closing that application removed the
+  slowdown (measured).
+- The smoke-kit change from `793ff9c` to `dfc1bee` did not change speed. On a
+  free GPU, four interleaved whisper-small runs gave 0.0660 and 0.0665 with
+  the old code and 0.0675 and 0.0659 with the new code (measured).
+- Within one session, repeats agreed within 2.5% (measured). Across sessions,
+  the same decoding work ran 1.2–1.4x slower on 2026-11-18 than on 2026-11-17
+  (measured ratios). For whisper-small, the old `793ff9c` code itself gave
+  0.066 against 0.049, and a 2026-11-18 run's output text matched the
+  2026-11-17 run on all 20 clips (measured). The cause is unexplained. The
+  2026-11-17 machine state was not recorded, and background programs were
+  active on 2026-11-18.
+- A run with a GPU monitor polling every 0.5 s, and part of the other
+  application still on the GPU, was about 14% slower than the four runs
+  without them (estimate, one run).
+- 2026-11-18 RTFs: whisper-small 0.066–0.070 over five runs on a free GPU
+  (measured); qwen3-asr-0.6b 0.109 (measured), with an OS update using CPU
+  just before that run. whisper-large-v3 0.209 and qwen3-asr-1.7b 0.118
+  (measured) ran while another program's processes held the GPU and total CPU
+  load was 100%, so treat those two as possibly contended.
+
+Rule for everyone: compare RTFs only within one timing session. The official
+timing runs every system back to back in one session, records the machine
+state (GPU processes, power source and plan, CPU load) and uses 3 repeats. No
+other GPU application is open, cloud-drive sync is paused and no OS update is
+installing.
 
 ## Training probes
 
@@ -143,7 +198,8 @@ training memory, B5, and every fp32-master recipe.
 - Run each system in its own process, and never make that call in a process
   that later does timed runs. On whisper-large-v3 it hit a CUDA OOM (100
   sequences) that left a sticky CUDA error (measured); it ran after the main
-  run, so the main beam-10 run was not affected.
+  run, so the main beam-10 run was not affected. The same OOM happened again
+  on 2026-11-18, again after the main run, which it did not affect (measured).
 - The core path skips Whisper's own wrapper, so the adapter must supply and
   record the forced prompt (SOT, `<|tr|>`, transcribe, notimestamps), strip it
   from `token_ids` and `token_count`, and keep `max_new_tokens` plus the prompt
@@ -155,9 +211,10 @@ training memory, B5, and every fp32-master recipe.
 
 ## Duplicate candidates
 
-Each of the four beam systems' N-best artifacts failed validation, only for
-duplicate raw text. Lists with at least one duplicate: whisper-small 12/20,
-whisper-large-v3 4/20, Qwen3-ASR-1.7B 12/20, Qwen3-ASR-0.6B 11/20 (measured).
+On 2026-11-17, each of the four beam systems' N-best artifacts failed
+validation, only for duplicate raw text. Lists with at least one duplicate:
+whisper-small 12/20, whisper-large-v3 4/20, Qwen3-ASR-1.7B 12/20,
+Qwen3-ASR-0.6B 11/20 (measured).
 Duplicates are not always adjacent: in whisper-small `tr_28_3_1_seg00204`,
 c01 = c04 and c02 = c05.
 
@@ -180,10 +237,11 @@ What this changes (N-best contract 0.2, proposed by M6;
   hypothesis (the Whisper trap above), and the export turns that result into an
   error row.
 
-Expected distinct candidates per utterance after deduplication, on these 20
-clips (estimate): whisper-large-v3 about 9.75 of 10, whisper-small about 8.55
-of 10, Qwen3-ASR-1.7B about 3.85 of 5, Qwen3-ASR-0.6B about 4.05 of 5. The beam
-widths differ. Usefulness for R1 (oracle WER) is UNMEASURED.
+Mean distinct candidates per utterance after deduplication, on these 20 clips
+(measured in the 2026-11-18 re-run, the same values as estimated from the
+2026-11-17 run): whisper-large-v3 9.75 of 10, whisper-small 8.55 of 10,
+Qwen3-ASR-1.7B 3.85 of 5, Qwen3-ASR-0.6B 4.05 of 5. The beam widths differ.
+Usefulness for R1 (oracle WER) is UNMEASURED.
 
 Qwen3-ASR: the pinned environment generates finite-scored beam-5 candidate
 lists from the `-hf` checkpoints through `AutoModelForMultimodalLM` and
@@ -241,6 +299,10 @@ state the CER space policy and give a per-system count of hypotheses where
 (estimate); the affected count is UNMEASURED.
 
 ## Actions per member
+
+Everyone times only in the shared timing session (see
+[Timing varies between sessions](#timing-varies-between-sessions)) and does
+not quote an RTF measured in another session.
 
 | Member | Tracks | Next actions |
 | --- | --- | --- |

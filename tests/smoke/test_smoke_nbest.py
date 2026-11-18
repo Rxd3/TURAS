@@ -36,6 +36,7 @@ def test_nbest_facts_report_an_invalid_row(smoke):
     facts = smoke.nbest_facts(broken, 3)
     assert facts["validate_nbest_ok"] is False and facts["validation_errors"] >= 1
     assert 1 <= len(facts["first_errors"]) <= 3 and "actual_n" in facts["first_errors"][0]
+    assert facts["actual_n_mean"] == 5.0 and facts["actual_n_min"] == 5
 
 
 def test_nbest_facts_pass_distinct_lists(smoke):

@@ -5,8 +5,8 @@ Member 6 ran the smoke kit on the M6 RTX 5070 Ti laptop on 2026-11-17. On
 systems were re-run with the shared-export dedup (smoke kit at `dfc1bee`), and
 a timing slowdown in that re-run, caused by another GPU-heavy application
 running at the same time, was diagnosed. After that application was closed, a
-second four-model re-run at `dfc1bee` (called the clean re-run below) repeated
-all four beam systems. This page is evidence from
+second four-model re-run at `dfc1bee` (called the second re-run below)
+repeated all four beam systems. This page is evidence from
 these runs, not a specification: it says what was measured and what each model
 owner should do next. Track labels follow the [README](../README.md#scope): F1
 is Whisper LoRA, F2 is Whisper full fine-tuning (both Member 4), F3 is XLS-R
@@ -35,7 +35,7 @@ versions, model limits) describe what was run and carry no label.
   the 20 clips span, so treat them as a narrow sample.
 - Re-runs on 2026-11-18: the same 20 timed clips (287.58 s of audio,
   measured), the smoke kit at `dfc1bee`, and `793ff9c` for the old-code
-  comparison runs. Library versions were not re-recorded.
+  comparison runs. The re-run reports do not restate library versions.
 - No references were used: accuracy is UNMEASURED.
 - These runs used Member 6's smoke wrappers, not the owners' adapters. Each
   owner's B1–B4 adapter needs its own check once it exists.
@@ -121,7 +121,7 @@ very differently.
   and 0.0659 with the new code (measured), new over old about 1.007
   (estimate). The other systems were not A/B tested.
 - The four interleaved whisper-small runs agreed within 2.5% (estimate, from
-  measured RTFs); a fifth whisper-small run, in the clean four-model re-run,
+  measured RTFs); a fifth whisper-small run, in the second four-model re-run,
   gave 0.0697 (measured). Across sessions, the same decoding work ran 1.2–1.4x
   slower on 2026-11-18 than on 2026-11-17 (estimate, from measured RTFs). For
   whisper-small, the old `793ff9c` code itself gave 0.066 against 0.049, and
@@ -134,9 +134,10 @@ very differently.
   application was still listed on the GPU in that run and in the four runs
   without the monitor.
 - 2026-11-18 RTFs: whisper-small 0.066–0.070 over the five runs with no other
-  GPU workload running and no monitor (the four interleaved runs and the clean
-  re-run's one; measured). From the clean four-model re-run: qwen3-asr-0.6b
-  0.109 (measured), with an OS update using CPU just before that run.
+  GPU workload running and no monitor (the four interleaved runs and the
+  second re-run's one; measured). From the second four-model re-run:
+  qwen3-asr-0.6b 0.109 (measured), with an OS update using CPU just before
+  that run.
   whisper-large-v3 0.209 (measured)
   ran while about 25 processes of unknown origin held GPU compute contexts and
   total CPU load was 100% (both measured, in the snapshot before the run).

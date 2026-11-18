@@ -28,6 +28,29 @@ from turkish_asr_rdl.data.screening import Lexicon  # noqa: E402
 from turkish_asr_rdl.data.selection import leakage_report, screen, select  # noqa: E402
 
 
+def _build_info() -> dict:
+    """Code commit and the library versions that determine the FLAC bytes (audio hashes)."""
+    import platform
+    import subprocess
+
+    import numpy
+    import pyarrow
+    import soundfile
+    import soxr
+
+    try:
+        commit = subprocess.run(["git", "rev-parse", "HEAD"], cwd=REPO, capture_output=True,
+                                text=True, check=True).stdout.strip()
+        dirty = bool(subprocess.run(["git", "status", "--porcelain", "--", "src", "scripts", "configs"],
+                                    cwd=REPO, capture_output=True, text=True, check=True).stdout.strip())
+    except (OSError, subprocess.CalledProcessError):
+        commit, dirty = None, None
+    return {"code_commit": commit, "code_dirty": dirty, "python": platform.python_version(),
+            "libsndfile": soundfile.__libsndfile_version__, "soundfile": soundfile.__version__,
+            "soxr": soxr.__version__, "numpy": numpy.__version__, "pandas": pd.__version__,
+            "pyarrow": pyarrow.__version__}
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--config", default=str(REPO / "configs/datasets/turas-tr-econ-legis-v0.1.json"))
@@ -63,16 +86,21 @@ def main() -> int:
     ledger_sha = R.write_jsonl(root / "exclusion_ledger.jsonl",
                                ledger.sort_values("segment_id").to_dict("records"))
 
-    if args.skip_audio:
-        chosen = chosen.assign(audio_uri="", audio_sha256="", sample_rate_hz=16000, channels=1,
-                               duration_s=chosen["duration"])
-    else:
-        read = W.shard_audio_reader(rev)
-        chosen = R.write_audio(chosen, root, W.prefetching(read, R.shard_requests(chosen)))
-        drift = (chosen["duration_s"] - chosen["duration"]).abs()
-        print(f"max |measured - upstream duration| = {drift.max():.4f} s")
-
     split_dir = REPO / "data/splits" / rid
+    if args.skip_audio:
+        # Selection check only: write the ID lists (compare them with `git status`)
+        # and stop. References, inference exports and manifests need measured audio
+        # and are never overwritten with placeholder hashes.
+        info = R.write_split_files(chosen.assign(duration_s=chosen["duration"]), split_dir)
+        print(json.dumps({k: v["utterances"] for k, v in info.items()}))
+        print("--skip-audio: split files written; references/manifests left untouched")
+        return 0
+
+    read = W.shard_audio_reader(rev)
+    chosen = R.write_audio(chosen, root, W.prefetching(read, R.shard_requests(chosen)))
+    drift = (chosen["duration_s"] - chosen["duration"]).abs()
+    print(f"max |measured - upstream duration| = {drift.max():.4f} s")
+
     split_info = R.write_split_files(chosen, split_dir)
     sources = (chosen.groupby(["source_id", "source_url", "session_date"]).size()
                .rename("selected_utterances").reset_index().sort_values("source_id"))
@@ -98,7 +126,16 @@ def main() -> int:
         "speaker_identity": "unknown for every row; speaker-disjointness is NOT claimed",
         "references_sha256": ref_sha,
         "exclusion_ledger_sha256": ledger_sha,
-        "audio_written": not args.skip_audio,
+        "audio_written": True,
+        "policy": {
+            "upstream_split": "upstream test rows never enter TURAS train (quarantined); validation/test may "
+                              "contain them because upstream test shares every recording with upstream train",
+            "duplicates": "identical screening-normalized text anywhere in tr_tr -> all copies excluded; "
+                          "no audio near-duplicate audit (one recording = one source_url = one session date)",
+            "max_upstream_cer": cfg["filters"]["max_upstream_cer"],
+            "target_hours": {s: cfg["splits"][s]["target_hours"] for s in R.SPLITS},
+        },
+        "build": _build_info(),
     }
     sm_path = split_dir / "split_manifest.json"
     sm_path.write_text(json.dumps(split_manifest, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
@@ -111,7 +148,7 @@ def main() -> int:
         "split_manifest_sha256": sm_sha,
         "inference_exports_sha256": inf,
         "topic_hours": R.topic_hours(chosen),
-        "audio_bytes_total": int(sum((root / u).stat().st_size for u in chosen.audio_uri)) if not args.skip_audio else None,
+        "audio_bytes_total": int(sum((root / u).stat().st_size for u in chosen.audio_uri)),
     }
     (REPO / "data/manifests").mkdir(parents=True, exist_ok=True)
     (REPO / "data/manifests" / f"{rid}.json").write_text(

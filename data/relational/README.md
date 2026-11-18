@@ -29,3 +29,23 @@ decimal-string values), `entity -related_to:co_mentioned_in_utterance-> entity`
 annotation. Quantifier IDs are shared value keys
 (`q__amount__TRY__5000000000`), so M5 must build the training graph from
 `train/` only and treat validation/test quantifier nodes as unseen.
+
+### Corrections after code review (2026-11-18, not yet regenerated)
+
+The counts and per-split hashes above come from the first build. Two extractor
+bugs were fixed afterwards in `src/turkish_asr_rdl/data/relational.py`. The
+per-split tables are regenerated at release freeze, when the references are
+rebuilt anyway; until then the table above describes the old output.
+
+- Amount parsing: compound amounts were cut to their last part
+  (`5 milyon 300 bin lira` gave 300000, now 5300000), a dot decimal before a
+  scale word was misread (`1.5 milyar` gave 5e9, now 1.5e9), and `yüzde 3.5`
+  and a trailing `3%` were missed or truncated. Covered by
+  `tests/test_data_relational.py`.
+- Co-mention relationship IDs now include the split (`c__<split>__A__B`), so
+  train, validation and test primary keys can no longer collide if M5 loads
+  the split tables together. Quantifier IDs stay shared value keys on purpose
+  (a hypothesis amount must be able to link to a train value node); their
+  `provenance_id` and `access_split` still come from the split's own table.
+- `annotation_status` for co-mentions is `auto_extracted:count=<n>`: the
+  contract defines no count column, so the evidence count is carried there.

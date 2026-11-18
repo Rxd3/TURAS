@@ -58,3 +58,22 @@ def test_static_tables_foreign_keys(tmp_path):
     for r in _read(tmp_path / "relationships_static.csv"):
         assert r["head_id"] in ents and r["tail_id"] in topics
     assert {r["entity_id"] for r in _read(tmp_path / "entity_aliases.csv")} == ents
+
+
+@pytest.mark.parametrize("text,expected", [
+    ("5 milyon 300 bin lira", ("amount", "5300000", "TRY")),
+    ("5 bin 500 lira", ("amount", "5500", "TRY")),
+    ("1.5 milyar lira", ("amount", "1500000000", "TRY")),
+    ("2,5 milyar TL", ("amount", "2500000000", "TRY")),
+    ("1.250,50 TL", ("amount", "1250.5", "TRY")),
+    ("12.345.678 lira", ("amount", "12345678", "TRY")),
+    ("yüzde 3.5", ("percentage", "3.5", "percent")),
+    ("enflasyon 3% oldu", ("percentage", "3", "percent")),
+    ("faiz %50,5", ("percentage", "50.5", "percent")),
+])
+def test_compound_and_decimal_quantities(text, expected):
+    assert [(q["quantifier_type"], q["numeric_value"], q["unit"]) for q in extract_quantities(text)] == [expected]
+
+
+def test_bare_scale_word_gets_no_value():
+    assert extract_quantities("bin lira verdi") == []

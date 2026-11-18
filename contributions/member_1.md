@@ -40,6 +40,27 @@ Checks run: `pytest tests/test_data_screening.py tests/test_data_selection.py
 tests/test_data_relational.py` (offline, synthetic fixtures); full release build
 against the pinned revision with leakage report all zero.
 
+### 2026-11-18 — local verification, lexicon freeze, review fixes
+
+- Re-verified the bundle locally (hashes, split disjointness, sorting) and
+  pushed the branch.
+- Froze the domain lexicon by hash for terminology metrics:
+  `configs/datasets/turas-domain-lexicon-v0.1.freeze.json`.
+- Added the release card `data/metadata/turas-tr-econ-legis-v0.1.json`.
+- Rewrote listening-review ingestion (`src/turkish_asr_rdl/data/review.py`,
+  `scripts/m1_apply_reviews.py`): strict validation, idempotent re-import,
+  status resolution with adjudication, cumulative aggregate audit.
+- Fixed amount/percentage parsing and cross-split key collisions in the
+  relational extractor; made `--skip-audio` non-destructive; build records
+  commit and library versions; review page escaping and state keying.
+- Documented split-policy deviations and errata in `docs/dataset.md`.
+- Reviewed M6's contract 0.2 proposals (comments sent separately; M6 files
+  not edited).
+
+Checks run: `pytest tests/test_data_*.py` — 49 passed (offline, synthetic
+fixtures); end-to-end run of `m1_apply_reviews.py` on a synthetic artifact
+root in the pilot page's export format (re-run adds 0 records).
+
 ## Experiments and artifacts
 
 No model runs. Full audio build done 2026-11-18: 5,450 FLAC files (1.9 GB, 16 kHz mono), 200 sampled hashes re-verified, max duration drift 0.0001 s. Hashes: see
@@ -57,4 +78,5 @@ relational tables; consumer hash acknowledgments after freeze.
 - Pilot listening review (50 clips), then full validation/test verification.
 - Freeze the release with M6 after verification; regenerate references with
   review records.
-- Freeze the lexicon for terminology metrics (M6 deadline 2026-11-19).
+- Lexicon frozen by hash 2026-11-18; waiting for M6 acknowledgment.
+- Regenerate per-split relational tables at freeze (extractor fixed).

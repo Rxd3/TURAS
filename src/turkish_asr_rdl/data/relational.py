@@ -33,16 +33,38 @@ ORIGIN = {"train": "train_annotation", "validation": "validation_annotation", "t
 PROV_LEXICON = "prov_lexicon"
 
 _SCALE = {"bin": Decimal(10) ** 3, "milyon": Decimal(10) ** 6, "milyar": Decimal(10) ** 9, "trilyon": Decimal(10) ** 12}
-_NUM = r"(\d{1,3}(?:\.\d{3})+|\d+)(?:,(\d+))?"
-_AMOUNT = re.compile(_NUM + r"\s*(bin|milyon|milyar|trilyon)?\s+(türk lirası|lira\w*|tl|dolar\w*|avro\w*|euro\w*)")
-_PERCENT = re.compile(r"(?:yüzde\s*" + _NUM + r"|%\s?" + _NUM + ")")
+# A Turkish written number: dot thousands groups with optional comma decimals
+# (1.250,50), or plain digits with an optional comma or dot decimal (42,5; 1.5).
+# Dot + exactly three digits is always read as a thousands group (1.500 = 1500).
+_N = r"(?:\d{1,3}(?:\.\d{3})+(?:,\d+)?|\d+(?:[.,]\d+)?)(?!\d)"
+_SC = r"(?:bin|milyon|milyar|trilyon)"
+_CUR = r"(türk lirası|lira\w*|tl|dolar\w*|avro\w*|euro\w*)"
+# Compound amounts: "5 milyon 300 bin lira" = 5,300,000. Every part needs digits;
+# a bare scale word ("bin lira") is not given a value.
+_AMOUNT = re.compile(r"(?<![\d.,])((?:" + _N + r"\s*" + _SC + r"\s+)*" + _N + r"(?:\s*" + _SC + r")?)\s+" + _CUR)
+_PART = re.compile("(" + _N + r")(?:\s*(" + _SC + "))?")
+_PERCENT = re.compile(r"(?:yüzde\s*(" + _N + r")|%\s?(" + _N + r")|(?<![\d.,])(" + _N + r")\s?%(?!\s?\d))")
 
 
-def _decimal(int_part: str, frac: str | None) -> Decimal | None:
+def _decimal(num: str) -> Decimal | None:
+    if re.fullmatch(r"\d{1,3}(?:\.\d{3})+(?:,\d+)?", num):
+        num = num.replace(".", "").replace(",", ".")
+    else:
+        num = num.replace(",", ".")
     try:
-        return Decimal(int_part.replace(".", "") + ("." + frac if frac else ""))
+        return Decimal(num)
     except InvalidOperation:
         return None
+
+
+def _amount_value(span: str) -> Decimal | None:
+    total = Decimal(0)
+    for m in _PART.finditer(span):
+        v = _decimal(m.group(1))
+        if v is None:
+            return None
+        total += v * (_SCALE[m.group(2)] if m.group(2) else 1)
+    return total
 
 
 def _unit(word: str) -> str:
@@ -58,16 +80,13 @@ def extract_quantities(text: str) -> list[dict]:
     low = screening_lower(text)
     out = []
     for m in _AMOUNT.finditer(low):
-        v = _decimal(m.group(1), m.group(2))
+        v = _amount_value(m.group(1))
         if v is None:
             continue
-        if m.group(3):
-            v *= _SCALE[m.group(3)]
         out.append({"surface_form": m.group(0), "quantifier_type": "amount",
-                    "numeric_value": format(v.normalize(), "f"), "unit": _unit(m.group(4))})
+                    "numeric_value": format(v.normalize(), "f"), "unit": _unit(m.group(2))})
     for m in _PERCENT.finditer(low):
-        ip, fr = (m.group(1), m.group(2)) if m.group(1) else (m.group(3), m.group(4))
-        v = _decimal(ip, fr)
+        v = _decimal(m.group(1) or m.group(2) or m.group(3))
         if v is not None:
             out.append({"surface_form": m.group(0), "quantifier_type": "percentage",
                         "numeric_value": format(v.normalize(), "f"), "unit": "percent"})
@@ -146,7 +165,7 @@ def write_split_tables(refs: pd.DataFrame, split: str, lexicon: Lexicon, release
             co[(a, b)] += 1
             co_evidence.setdefault((a, b), uid)
     for (a, b), n in sorted(co.items()):
-        rels.append([f"c__{a}__{b}", "entity", a, "rel_co_mentioned", "entity", b, prov,
+        rels.append([f"c__{split}__{a}__{b}", "entity", a, "rel_co_mentioned", "entity", b, prov,
                      co_evidence[(a, b)], f"auto_extracted:count={n}", split])
     _write(out_dir / "utterances.csv",
            ["utterance_id", "dataset_release", "split", "leakage_group_id", "provenance_id"], utts)

@@ -2,7 +2,8 @@
 
 Audit date: 2026-11-18. Auditor: Member 1. Method: dataset card plus a full
 read of every non-audio column of every `tr_tr` shard at the pinned revision
-(`scripts/m1_build_release.py`, cached metadata hash in the split manifest).
+(`scripts/m1_build_release.py`; the metadata is cached in the artifact root,
+not hashed in the split manifest).
 Numbers below are **measured** on that metadata unless marked otherwise.
 
 ## Identity, access and rights
@@ -34,7 +35,7 @@ committed. Rights record ID used in manifests: `rights_worldspeech_tr_tr_tbmm`.
 
 Measured audio: OGG Opus, **24 kHz, 2 channels** (stereo), decoded duration
 matches `duration`. TURAS converts to 16 kHz mono FLAC (channel mean, soxr HQ)
-as required by data contract 0.2.
+as proposed in M6's data contract 0.2 (pending M1 review; contract in force is 0.1).
 
 ## Size and coverage
 

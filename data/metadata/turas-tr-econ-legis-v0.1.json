@@ -1,0 +1,68 @@
+{
+  "dataset_release": "turas-tr-econ-legis-v0.1",
+  "status": "proposed by M1; not frozen until validation/test listening verification and M6 review",
+  "card_written": "2026-11-18",
+  "description": "Turkish Grand National Assembly (TBMM) plenary speech about the economy, public finance, tax, wages/pensions, banking, trade and legislation, selected from WorldSpeech tr_tr with a versioned domain lexicon and split by recording.",
+  "upstream": {
+    "dataset": "disco-eth/WorldSpeech",
+    "config": "tr_tr",
+    "revision": "b76b85395039f50332fbc421f7c098ee2f2653d7",
+    "paper": "arXiv:2605.09167",
+    "rows": 239654,
+    "hours": 1007.7,
+    "recordings": 197
+  },
+  "rights": {
+    "rights_record_id": "rights_worldspeech_tr_tr_tbmm",
+    "licence": "CC BY-NC 4.0 (WorldSpeech); source terms: TBMM parliamentary proceedings, https://www.tbmm.gov.tr/",
+    "attribution": "WorldSpeech (disco-eth) and the Grand National Assembly of Turkey (TBMM)",
+    "allowed_use": "non-commercial course research",
+    "sharing": "audio, reference text and the exclusion ledger stay outside the public Git repository; only opaque IDs, hashes, counts and source URLs are committed",
+    "team_approval": "pending (decisions D02/D16)"
+  },
+  "audit": "data/metadata/worldspeech-tr_tr-source-audit.md",
+  "source_registry": "data/metadata/turas-tr-econ-legis-v0.1-source-registry.csv",
+  "configuration": {
+    "release_config": "configs/datasets/turas-tr-econ-legis-v0.1.json",
+    "release_config_sha256": "f80536392118d96ed32bb03b6486c7ef771a3d83b8b2b1543e38ff777f2a49d1",
+    "lexicon": "configs/datasets/turas-domain-lexicon-v0.1.json",
+    "lexicon_sha256": "8ef903fe74135897a9d3781966c5e484c0711a6679d72346efb1ec89eff6df94",
+    "lexicon_freeze_record": "configs/datasets/turas-domain-lexicon-v0.1.freeze.json",
+    "erratum": "release_config audio.resampler says 'soxr VHQ'; the code that wrote the audio (src/turkish_asr_rdl/data/release.py) uses soxr quality 'HQ', and the audio is HQ. The config text is corrected at freeze, when the manifests are regenerated anyway."
+  },
+  "audio": {
+    "format": "FLAC PCM_16",
+    "sample_rate_hz": 16000,
+    "channels": 1,
+    "conversion": "decode OGG Opus 24 kHz stereo, float32 channel mean, soxr HQ resample to 16 kHz",
+    "files": 5450,
+    "bytes_total": 1983862884
+  },
+  "splits": {
+    "manifest": "data/splits/turas-tr-econ-legis-v0.1/split_manifest.json",
+    "manifest_sha256": "d5bf8b12691cf4ecd284d167176b5523c751e519b391e2299a3ade7929720260",
+    "group_key": "source_url (one recording = one session date)",
+    "train": {"utterances": 4376, "hours": 20.0, "recordings": 129, "session_dates": "2017-01-10..2025-12-23"},
+    "validation": {"utterances": 438, "hours": 2.0, "recordings": 15, "session_dates": "2025-10-01..2025-12-24"},
+    "test": {"utterances": 636, "hours": 3.0, "recordings": 28, "session_dates": "2026-01-06..2026-04-22"},
+    "leakage_checks": "all zero; see split manifest"
+  },
+  "references": {
+    "origin": "upstream_human (TBMM stenographic minutes as aligned by WorldSpeech)",
+    "annotation_policy": "data/verification/turas-verbatim-v0.1.md",
+    "verification_status": {
+      "train": "unreviewed (labelled as such in training runs)",
+      "validation": "unreviewed; listening verification required before freeze",
+      "test": "unreviewed; listening verification required before freeze"
+    },
+    "verification_audit": "data/verification/turas-tr-econ-legis-v0.1-audit.md"
+  },
+  "relational": "data/relational/README.md",
+  "speakers": "unknown for every row; speaker-disjointness is not claimed",
+  "limitations": [
+    "References are edited minutes, not verbatim transcripts, until listening review.",
+    "The upstream CER <= 0.25 alignment filter favours segments an upstream ASR system handled well.",
+    "Topic labels and relational facts are automatic lexicon matches (lexicon-screening-unverified).",
+    "Pre-2026 audio and minutes are public, so pretraining contamination of baselines cannot be excluded for train/validation; test uses only 2026 sessions."
+  ]
+}

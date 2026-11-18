@@ -20,3 +20,33 @@
 - Release v0.1 proposed: 20 h train / 2 h validation / 3 h test (5,450 clips).
 - Next: pilot listening review of 50 clips; then full validation/test review
   or a smaller verified test if the pilot reject rate is high.
+
+## 2026-11-18 (later) — branch applied locally, review, lexicon freeze
+
+- Applied the cloud bundle on a fresh clone of `Rxd3/TURAS`; pushed
+  `feat/m1-data-relational-schema` (`2e67e8d`). Tests: 22 passed. Every
+  committed hash re-computed and equal to the manifests; split files sorted,
+  LF, disjoint (0 shared IDs); pilot = 25 test / 15 validation / 10 train.
+- Lexicon `turas-domain-lexicon-v0.1` frozen by hash (`8ef903fe…`) for M6's
+  terminology metric, without editing the file: its hash is already in the
+  split manifest and drives selection. Matcher checks run:
+  `TL'ye → tl` matches, `tlye` (tr-normalized-v1 form) does not, so the
+  metric must match on raw text. Recorded limitations: `dolarak`→dolar,
+  `madde` (substance), `liranın` blocked by the `liran` exclusion,
+  `borçlanma` → BANK_BORC.
+- Independent code review of the M1 package and scripts. Fixed:
+  review ingestion (no dedup, weak validation, no status mapping or
+  adjudication), amount parsing (compound amounts and dot decimals gave wrong
+  values), co-mention key collisions across splits, `--skip-audio`
+  overwriting references and manifests with empty hashes, review page
+  escaping and stale saved decisions. Build now records code commit and
+  library versions. Tests: 49 passed (22 before).
+- Documented (not changed): 18/23 upstream-test rows in validation/test,
+  613/636 test rows are upstream-train (no WorldSpeech-trained checkpoints
+  allowed), exact-text-only duplicate audit, resampler erratum (config VHQ vs
+  code HQ).
+- Reviewed M6's data/predictions/normalization 0.2 proposals (read only):
+  approve, with a clarification on the audio root and the raw-text term
+  matching note. Comments handed to M1 to send.
+- Not done yet: pilot listening decisions (none received), full
+  validation/test review, freeze build, consumer acknowledgments.

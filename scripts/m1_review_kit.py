@@ -80,13 +80,14 @@ try { state = JSON.parse(localStorage.getItem(KEY) || "{}"); } catch (e) {}
 function save(){ try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} prog(); }
 function prog(){ const n = Object.values(state).filter(s => s.decision).length;
   document.getElementById("prog").textContent = n + " / " + ITEMS.length + " decided"; }
-function esc(s){ const d = document.createElement("div"); d.textContent = s; return d.innerHTML; }
+function esc(s){ const d = document.createElement("div"); d.textContent = s; return d.innerHTML.replace(/"/g, "&quot;"); }
 const list = document.getElementById("list");
 ITEMS.forEach((it, i) => {
-  const s = state[it.utterance_id] || (state[it.utterance_id] = {text: it.reference_text, issues: []});
+  const sk = it.utterance_id + "|" + it.audio_sha256;  // saved work never carries over to rebuilt audio
+  const s = state[sk] || (state[sk] = {text: it.reference_text, issues: []});
   const c = document.createElement("div"); c.className = "card"; c.id = "c" + i;
-  c.innerHTML = `<div class="meta"><b>#${i + 1}</b><span>${it.split}</span><span>${it.session_date}</span>
-    <span>${it.utterance_id}</span><a href="${it.src}" target="_blank" rel="noopener">source video at ${it.t}s</a></div>
+  c.innerHTML = `<div class="meta"><b>#${i + 1}</b><span>${esc(it.split)}</span><span>${esc(it.session_date)}</span>
+    <span>${esc(it.utterance_id)}</span><a href="${esc(it.src)}" target="_blank" rel="noopener">source video at ${esc(String(it.t))}s</a></div>
     <audio controls preload="none" src="data:audio/flac;base64,${it.audio}"></audio>
     <div class="meta">Upstream reference (edit only when choosing correct):</div>
     <textarea>${esc(s.text)}</textarea>
@@ -104,7 +105,7 @@ ITEMS.forEach((it, i) => {
 prog();
 function exportJson(){
   const rev = document.getElementById("rev").value.trim() || "rev_unknown";
-  const out = ITEMS.map(it => { const s = state[it.utterance_id];
+  const out = ITEMS.map(it => { const s = state[it.utterance_id + "|" + it.audio_sha256];
     return {utterance_id: it.utterance_id, audio_sha256: it.audio_sha256, reviewer_id: rev,
       review_utc: s.ts || null, annotation_policy_version: "turas-verbatim-v0.1", decision: s.decision || null,
       corrected_text: s.decision === "correct" ? s.text : null, text_changed: s.text !== it.reference_text,

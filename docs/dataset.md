@@ -142,3 +142,44 @@ FLAC), `<release>.references.jsonl` (full data-contract rows),
 - Topic labels and relational facts are automatic lexicon matches.
 - Unknown speakers; public YouTube/minutes origin means pretraining
   contamination cannot be excluded for pre-2026 data.
+
+### Decisions, deviations and errata (M1 review, 2026-11-18)
+
+These need M6 approval with the split policy (D07); none changes split membership.
+
+- **Upstream-test rows in validation/test (deviation).** The scaffold rule above
+  says to keep upstream test records out of training *and validation*.
+  Validation holds 18 upstream-test rows and test holds 23. They are kept: upstream
+  test shares every one of its 188 recordings with upstream train, so the
+  upstream label marks no held-out boundary. The TURAS boundary is the
+  recording. The rule that matters is kept: no upstream-test row is in TURAS train.
+- **Contamination through WorldSpeech-trained checkpoints.** 613 of the 636 test
+  rows (and most validation rows) are upstream *train* rows. Any checkpoint
+  fine-tuned on WorldSpeech `tr_tr` train has therefore seen TURAS test audio
+  and text. No baseline or parent checkpoint may be trained on WorldSpeech.
+  M2–M5 state each checkpoint's training data and release date.
+- **Lexicon frozen by hash.** `turas-domain-lexicon-v0.1` is frozen as sha256
+  `8ef903fe…` ([freeze record](../configs/datasets/turas-domain-lexicon-v0.1.freeze.json)).
+  The file stays byte-identical, so its inner `status` text still says
+  "proposed". Known matcher limitations are listed in the record.
+- **Erratum, resampler.** The release config says `soxr VHQ`; the audio was
+  written with soxr `HQ` (`release.py`). The config text is corrected at
+  freeze, when the manifests are regenerated anyway.
+- **Duplicate audit scope.** Only exact duplicates of screening-normalized text
+  were audited and removed. No audio near-duplicate audit was done.
+  `duplicate_cluster_id` is a singleton placeholder (equal to `utterance_id`),
+  not the result of a clustering.
+- **Rebuild reproducibility.** The split ID files must come out byte-identical
+  on any machine. FLAC bytes depend on libsndfile/soxr versions, so audio
+  hashes, the references hash, the split manifest hash and the inference
+  export hashes can differ between machines. The build now records the code
+  commit and library versions in `split_manifest.json`. The hashes that count
+  are those of the freeze build, acknowledged by consumers.
+- **Relational extractor fixes.** Amount parsing and co-mention IDs were
+  corrected after the first build ([details](../data/relational/README.md)).
+  Per-split relational tables are regenerated at freeze.
+- **Review tooling.** `scripts/m1_apply_reviews.py` now refuses invalid
+  decisions (all or nothing), ignores re-imports of the same export, resolves
+  status per the guide (`verified`/`local_human`/`in_review`/`adjudicated`/`rejected`;
+  `--role adjudication` for the second reviewer), and rewrites a cumulative
+  audit.

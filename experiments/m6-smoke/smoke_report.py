@@ -11,8 +11,10 @@ INTRO = (
     "timed clips, each at most 30 s. This is a feasibility check: accuracy is not measured. Each model "
     "ran alone in its own process, batch 1, one timed repeat. Inference peak VRAM is "
     "`torch.cuda.max_memory_allocated` over the timed repeat: the timing harness resets the peak counters when "
-    "the repeat starts, so model load and warm-up peaks are not in it (the loaded weights are). Training "
-    "and PyG peaks run from just before the model load to the end of the probe."
+    "the repeat starts, so model load and warm-up peaks are not in it (the loaded weights are). An inference "
+    "row whose N-best cell has no actual_n counts comes from an older result file, whose peak runs from just "
+    "before the model load to the end of the timed run. Training and PyG peaks run from just before the model "
+    "load to the end of the probe."
 )
 
 

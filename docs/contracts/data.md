@@ -1,4 +1,4 @@
-# Dataset, provenance, IDs and split contract — 0.1
+# Dataset, provenance, IDs and split contract — 0.2 (proposed by M6, pending review by M1)
 
 ## Serialization and release boundary
 
@@ -6,7 +6,17 @@ UTF-8 JSONL contains one object per utterance, no comments/NaN/Infinity. File by
 are SHA-256 hashed as stored. Each manifest declares `schema_version: "0.1"`.
 Full curated manifests contain protected references; inference exports use the
 strict field allowlist in [predictions](predictions.md). Access separation is
-required, even if a reference manifest is stored outside Git.
+required, even if a reference manifest is stored outside Git. Manifests keep
+`schema_version: "0.1"`; contract 0.2 changes no field.
+
+## Release audio storage
+
+Release audio is stored as 16 kHz mono FLAC files under one artifact root kept
+outside Git. `audio_uri` is the file's path relative to that root: non-empty,
+with `/` as the only separator, no leading `/`, no drive letter, no backslash,
+and no `..` that leads outside the root. Readers refuse any other form, so every
+system reads the same files the same way. `audio_sha256` hashes the stored FLAC
+bytes, and the measured `sample_rate_hz` and `channels` are 16000 and 1.
 
 ## Curated utterance manifest
 
@@ -20,7 +30,7 @@ required, even if a reference manifest is stored outside Git.
 | `upstream_dataset`, `upstream_config`, `upstream_revision`, `upstream_split` | strings | Exact origin, `tr_tr`, immutable revision, original split |
 | `source_url`, `source_recording_key` | strings | Canonical source location and original recording identity |
 | `start_ms`, `end_ms` | integers | Nonnegative original recording offsets, end > start |
-| `audio_uri` | string | Portable relative path or access-controlled artifact URI; no embedded credentials |
+| `audio_uri` | string | Portable relative path under the release audio root, `/` separators; no embedded credentials |
 | `audio_sha256` | string | 64 lowercase hex characters for exact stored audio bytes |
 | `sample_rate_hz`, `channels` | positive integers | Measured decoded properties |
 | `duration_s` | positive number | Measured decoded duration; boundary discrepancy audit required |
@@ -82,3 +92,11 @@ model, tuning on test, or post-hoc deletion of hard examples. Reference files
 have separate access control; inference ID/audio exports must match the frozen
 ID set without reference text, review corrections, or gold domain annotations.
 M1/M6 approve a release only after documented overlap/duplicate checks pass.
+
+## Version history
+
+- 0.1 (2026-11-17): initial contract. `audio_uri` could also be an
+  access-controlled artifact URI, and the audio format was not fixed.
+- 0.2 (proposed by M6 on 2026-11-17, pending review by M1;
+  [D20](../decisions.md)): release audio is 16 kHz mono FLAC under an artifact
+  root, and `audio_uri` is a relative path with `/` separators.

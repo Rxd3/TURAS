@@ -12,7 +12,8 @@ metric results or member-completion claims are included.
 
 ## GitHub setup
 
-Target: [Rxd3/project3-turkish-asr-rdl](https://github.com/Rxd3/project3-turkish-asr-rdl),
+Target at initialization: `Rxd3/project3-turkish-asr-rdl` (now
+[Rxd3/TURAS](https://github.com/Rxd3/TURAS); see the current state below),
 private visibility, `main` default. Git credential authentication confirmed the
 account `Rxd3` before initialization. GitHub CLI was unavailable; GitHub REST API
 and Git use the existing credential manager without recording credentials.
@@ -27,6 +28,13 @@ to protect `main` returned `404 Branch not found` because the remote had no comm
 Protection must be retried after the first push; that response is not evidence of
 a plan limitation. Final push, CI and server-protection outcomes are reported in
 the initialization handoff. Written policies do not establish enforcement.
+
+## Current repository state (checked 2026-11-17)
+
+The repository is [Rxd3/TURAS](https://github.com/Rxd3/TURAS), renamed from
+`Rxd3/project3-turkish-asr-rdl`; the old URL redirects to it. It is public, and
+`main` is protected, so the protection retry described above has succeeded.
+The text above records the state at initialization.
 
 ## Validation and setup outcomes
 

@@ -33,8 +33,10 @@ Do not enter invented transcripts, metrics, checkpoint paths or completed work.
 
 ## Reviews and handoffs
 
-No reviews or handoffs recorded. Add PR review links, reviewed contract versions,
-consumer acknowledgments and accepted artifact hashes when they occur.
+No independent reviews or consumer acknowledgments are recorded. The verified
+private handoff is ready for owner delivery. [M5 PR #4](https://github.com/Rxd3/TURAS/pull/4)
+and [integration PR #5](https://github.com/Rxd3/TURAS/pull/5) are ready for review.
+Add actual approvals, reproduction and accepted bundle hashes when they occur.
 
 ## Remaining work
 

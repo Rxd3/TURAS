@@ -103,7 +103,10 @@ in the reproduction guide.
 M4/M5 implementation, measured experiments, final working comparisons and a
 verified handoff are complete for the owner-approved single-seed protocol.
 Required non-author review/reproduction and actual consumer acknowledgment are
-still pending. The PR stack is #3 (M4), #4 (M5), #5 (integration); protected
+still pending. The PR stack is [#3](https://github.com/Rxd3/TURAS/pull/3) (M4),
+[#4](https://github.com/Rxd3/TURAS/pull/4) (M5),
+[#5](https://github.com/Rxd3/TURAS/pull/5) (integration); all three were marked
+ready for independent review after the completion evidence was pushed. Protected
 `main` is not automatically merged. Reviewers should inspect the negative RDL
 result and dataset limitations as carefully as the acoustic improvements.
 

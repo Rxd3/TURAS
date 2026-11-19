@@ -35,8 +35,10 @@ training or selected checkpoints; the dated record carries hashes/resources.
 
 ## Reviews and handoffs
 
-No reviews or handoffs recorded. Add PR review links, reviewed contract versions,
-consumer acknowledgments and accepted artifact hashes when they occur.
+No independent reviews or consumer acknowledgments are recorded. The verified
+private handoff is ready for owner delivery. [M4 PR #3](https://github.com/Rxd3/TURAS/pull/3)
+and [integration PR #5](https://github.com/Rxd3/TURAS/pull/5) are ready for review.
+Add actual approvals, reproduction and accepted bundle hashes when they occur.
 
 ## Remaining work
 

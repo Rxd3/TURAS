@@ -26,6 +26,12 @@ status is `artifacts/owner-m45/queue-status.json`. Add actual run IDs, release/m
 validation-selection evidence, outcome/limitations and corresponding baseline.
 Do not enter invented transcripts, metrics, checkpoint paths or completed work.
 
+Confirmed 2026-11-19 09:10 UTC: the pinned parent produced valid outputs for all
+438 validation clips, and owner-assisted LoRA run
+`acoustic-bbc267859abb4a769e44e1bd7877ae61` completed 20 optimizer steps on 320
+real train clips. Full Whisper is queued. This records startup, not completed
+training or selected checkpoints; the dated record carries hashes/resources.
+
 ## Reviews and handoffs
 
 No reviews or handoffs recorded. Add PR review links, reviewed contract versions,

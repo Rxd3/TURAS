@@ -1,0 +1,14 @@
+# Direct dependencies of the ASR project. windows-cu130.txt is compiled from this
+# file; the exact command is in its header.
+#
+# torch and torchcodec carry the +cu130 tag so pip takes the CUDA 13.0 builds from
+# the PyTorch index and never a CPU-only build from PyPI.
+torch==2.14.1+cu130
+torchcodec==0.17.0+cu130  # decodes the datasets Audio feature; needs a shared FFmpeg build (see docs/reproducibility.md)
+transformers
+datasets[audio]
+accelerate
+peft
+jiwer
+soundfile
+librosa

@@ -1,18 +1,23 @@
 # Member 4: Whisper adaptation implementation
 
-Current integration status: owner decisions are approved and M1/M6 interfaces
-are integrated on `feat/m4-m5-integration`. CUDA and synthetic resource checks
-pass. See [owner decisions](../docs/owner_decisions.md) and
-[readiness](../docs/m45_readiness.md); the earlier handoff below is retained as history.
+Current measured status: seed-17 LoRA and full Whisper training, validation-only
+checkpoint selection, all 636 frozen test predictions, genuine scored N-best,
+terminology, paired intervals and repeated timing are complete. LoRA epoch 3
+has normalized test WER 12.368%; full epoch 2 has 10.371%, against the identical
+unchanged parent's 24.512%. The actual CUDA runs establish hardware feasibility.
+The selected models/processors and outputs are in the verified private handoff.
+See [completion](../docs/m45_completion.md), [final report](../results/final/M4_M5_FINAL_REPORT.md)
+and [owner decisions](../docs/owner_decisions.md). Independent peer review and
+consumer ACK remain separate and are not claimed.
 
-After the M1 private handoff, real data/target audits passed and the pinned parent
-validation-inference run was launched. The queue then runs three-epoch LoRA and
-full budgets. [The dated execution record](../docs/m45_execution_2026-11-19.md)
-and local `artifacts/owner-m45/queue-status.json` carry current evidence; none of
-the initial implementation's "no runs" wording asserts the later job state.
+## Historical implementation-only handoff
 
-Updated 2026-11-19. Code and offline synthetic tests are being delivered; no
-pretrained weight was downloaded and no corpus training/evaluation has run.
+The sections below record the initial pre-training review stage. Statements
+about proposed parents, CPU development or missing runs describe that stage,
+not the completed experiment above.
+
+At the initial 2026-11-19 handoff, code and offline synthetic tests were delivered
+before pretrained-weight downloads and corpus training/evaluation.
 
 ## Parent and planned comparison
 
@@ -103,7 +108,7 @@ status. M5 must use token_count with the same EOS convention. The low-level expo
 function is implemented; integration into M6's JSONL/timing harness is a subsequent
 owner-reviewed handoff, not a delivered CLI or completed baseline evaluation.
 
-## Hardware feasibility still required
+## Historical hardware gate (now completed by real CUDA execution)
 
 Read-only inspection found RTX 5070, 12,227 MiB VRAM, approximately 16 GB RAM.
 This is inventory, not an observed training memory/time result. Before a corpus

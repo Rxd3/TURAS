@@ -211,6 +211,7 @@ M5 candidate/score consumption; M6 evaluation/timing/provenance; hardware access
 - [x] Full experiment has separate measured training and validation evidence.
 - [x] Real N-best scores can be traced to model outputs; no repeated one-best padding.
 - [x] Actual candidate consumption, strict shared evaluation, independent JiWER checks and artifact round-trip verification pass locally.
+- [x] Delivered checkpoints execute from a fresh restore of the archived source/model bundle; consumer acceptance is executable via [delivery acceptance](docs/m45_delivery_acceptance.md).
 - [ ] Independent M5/M6 consumer acceptance and required PR reviews are recorded.
 
 **Handoff/review:** protocol/config PR reviewed by M2+M6; N-best contract/export PR
@@ -262,6 +263,7 @@ CTC adaptation and graph interface work can be separate focused PRs.
 - [x] Training graph/features exclude held-out reference evidence and equivalent reverse edges.
 - [x] Real model-derived candidates preserve IDs/scores; all fusion weights use validation only.
 - [x] Local shared evaluation validates all fixed-candidate controls, relation coverage and joint end-to-end cost; LM is explicitly disabled. Primary learned RDL has no downstream gain.
+- [x] Restored CTC/graph artifacts execute offline; all fifteen restored controls and three online/cached comparisons pass [delivery acceptance](docs/m45_delivery_acceptance.md).
 - [ ] M6 independently reviews/reproduces the comparisons and acknowledges the artifacts.
 
 **Handoff/review:** CTC PRs require M3+M6, schema/graph-access PRs M1+M6, and

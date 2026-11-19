@@ -42,6 +42,14 @@ Add actual approvals, reproduction and accepted bundle hashes when they occur.
 
 ## Remaining work
 
+Final technical closeout also restores the shipped archive into a fresh source
+checkout and executes the actual delivered models. The recorded
+[acceptance result](../results/final/m45_restored_delivery_acceptance.json) uses
+validation audio only, verifies all shipped bytes and imports, and includes
+online/cached RDL parity. It is owner-assisted verification, not another person's
+approval. The component PR was synchronized with current `main`; its 54 tests
+pass. See [consumer procedure](../docs/m45_delivery_acceptance.md).
+
 Owner-assisted seed-17 LoRA/full training and all six validation epochs are now
 complete; best working checkpoints are LoRA epoch 3 and full epoch 2, selected
 on the explicitly recovered-minutes validation reference version. Real scored

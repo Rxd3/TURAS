@@ -40,6 +40,14 @@ Add actual approvals, reproduction and accepted bundle hashes when they occur.
 
 ## Remaining work
 
+Final technical closeout restores shipped CTC/graph artifacts into a fresh source
+checkout and executes all fifteen controls plus native/joint model paths on
+validation audio. The [acceptance result](../results/final/m45_restored_delivery_acceptance.json)
+verifies 226 files and all 21 model/control jobs, with joint/cached transcript
+parity. It is owner-assisted verification, not human consumer sign-off. The
+component PR was synchronized with M4/current `main`; its 68 tests pass.
+See [consumer procedure](../docs/m45_delivery_acceptance.md).
+
 Owner-assisted seed-17 vocabulary-extended CTC training and all three acoustic
 validation epochs are complete; working selection is epoch 3. The primary graph,
 three fusion grids and both retrained relation-removal variants/six extra grids

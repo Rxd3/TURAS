@@ -92,6 +92,11 @@ deterministic score audit is not permission to tune on it.
 
 ## Review boundary
 
+For an executable fresh-source restore and delivered-checkpoint check, use
+[delivery acceptance](m45_delivery_acceptance.md). That command runs the restored
+models on validation audio without gold; it is distinct from reproducing the
+complete benchmark in a newly installed environment or recording a peer review.
+
 The private handoff's `artifact-index.json` enumerates every delivered file hash;
 `handoff.json` supplies the archive hash. Predictions contain no gold reference
 field. Aggregate public reports contain no transcript bodies. Another member

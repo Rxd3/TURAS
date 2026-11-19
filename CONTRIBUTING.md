@@ -43,9 +43,12 @@ independent code review: do not attribute the owner's decision to another member
 fabricate an ACK, or mark baseline/training evidence complete. PR review continues
 to assess correctness and integration; this delegation does not itself merge PRs.
 
-The CI builds/installs this dependency-free scaffold, imports the packages and
-runs the unit tests on Python 3.11 and 3.13. It is **not** an ASR, training,
-evaluation, or reproducibility test suite.
+Packaging CI builds/installs the package and checks imports, environment logic
+and offline unit behavior on Python 3.11 and 3.13. The adaptation workflow also
+exercises tiny/random-model training, decoding, score, leakage and checkpoint
+behavior on CPU. These tests do not download benchmark data/weights or establish
+corpus accuracy. Real training, held-out evaluation and restored-delivery checks
+have their own [recorded evidence](docs/m45_completion.md).
 
 For documentation-only PRs, check relative links, terminology, contract
 consistency, and `git diff --check`. For implementation PRs, add reproducible

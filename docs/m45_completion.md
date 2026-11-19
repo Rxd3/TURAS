@@ -98,6 +98,16 @@ private paths or make a separately recorded relocation; never edit the frozen
 protocol silently. The protocol's byte-preservation correction is documented
 in the reproduction guide.
 
+## Executable restored-delivery acceptance
+
+The subsequent closeout synchronizes the M4/M5 PR stack with current `main`,
+resolves merge conflicts and adds a consumer-run [delivery acceptance command](m45_delivery_acceptance.md).
+It verifies actual restored checkpoint execution from the archived source in a
+fresh checkout, all fifteen cached controls and joint/cached transcript parity,
+using validation audio and train warm-ups only. It reuses the pinned runtime;
+no clean-environment or independent human-review claim is made. The original
+archive, final test results and frozen runtime remain unchanged.
+
 ## Review and remaining project work
 
 M4/M5 implementation, measured experiments, final working comparisons and a

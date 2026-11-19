@@ -1,20 +1,22 @@
 # Member 5: CTC adaptation, heterogeneous RDL and rescoring
 
-Current integration status: owner decisions are approved and M1/M6 interfaces
-are integrated on `feat/m4-m5-integration`. CUDA and synthetic resource checks
-pass. See [owner decisions](../docs/owner_decisions.md) and
-[readiness](../docs/m45_readiness.md); the earlier handoff below is retained as history.
+Current measured status: seed-17 CTC adaptation, train-only graph training,
+corrected-linker validation/selection, all 636 frozen test predictions, fifteen
+candidate controls, terminology/relation coverage and repeated joint timing are
+complete. CTC epoch 3 has normalized test WER 25.150%, versus its unchanged
+CV7 parent's 37.152%; the explicit 38-to-52-token vocabulary extension is part
+of this contribution. The primary learned graph does not improve original
+one-best on any adapted ASR model. The private handoff includes selected CTC,
+three learned/ablated graphs and an explicitly untrained random control.
+See [completion](../docs/m45_completion.md), [final report](../results/final/M4_M5_FINAL_REPORT.md)
+and [internal relation result](../results/rdl/m45_seed17_internal.json).
+Independent peer review and consumer ACK remain separate and are not claimed.
 
-The real seed-17 RDL run now completed 20 epochs on M1 train tables; see
-[the measured internal relation result](../results/rdl/m45_seed17_internal.json).
-Actual CTC target auditing required a separately labeled 38-to-52-character
-vocabulary extension under D33; the original strict-head profile stays blocked.
-[The dated execution record](../docs/m45_execution_2026-11-19.md) distinguishes
-this work from pending acoustic validation and downstream rescoring comparisons.
+## Historical implementation-only handoff
 
-Updated 2026-11-19. This is an implementation/review handoff, not an experiment
-report. Training bundles are not ready locally, no pretrained weights were
-downloaded, and no corpus model, prediction bundle or benchmark metric exists.
+The sections below record the original pre-training review stage. Proposed
+budgets, CPU-only development and missing-input/run statements describe that
+stage; the measured completion above supersedes those pending-work lists.
 
 ## Delivered components
 

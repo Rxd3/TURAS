@@ -37,7 +37,12 @@ def main():
         refmember=member('.references.test.jsonl')
         sums=tar.extractfile(member('/SHA256SUMS')).read().decode('utf-8')
         checks={line.split(maxsplit=1)[1].lstrip('*').removeprefix('./'):line.split(maxsplit=1)[0] for line in sums.splitlines()}
-        reference_sha=checks[refmember.name.removeprefix('./')]
+        # M1's sums are relative to the archive root; accept either explicit
+        # root-relative or fully rooted names, without touching transcript data.
+        refname=refmember.name.removeprefix('./')
+        candidates=[checks[k] for k in [refname,refname.split('/',1)[-1]] if k in checks]
+        if len(set(candidates))!=1:raise ValueError('missing or conflicting reference checksum metadata')
+        reference_sha=candidates[0]
         if tar.extractfile(member('/split_manifest.json')).read()!=(split/'split_manifest.json').read_bytes():raise ValueError('archive manifest mismatch')
         if tar.extractfile(member('/test.txt')).read()!=(split/'test.txt').read_bytes():raise ValueError('archive IDs mismatch')
         group_member=member('/relational/test/utterances.csv')

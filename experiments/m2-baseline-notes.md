@@ -129,9 +129,10 @@ TURAS audio clips are 10–20 s (from Member 1 source audit), comfortably within
 
 ### For Member 6 (Integration, Evaluation & QA)
 - **B3 Candidate Selection:** Evaluate 1.7B vs 0.6B once validation accuracy can be measured, trading
-  off compute/latency against task accuracy.
-- **Decoding Freeze:** Review and freeze beam widths across all baselines before the standardized timing session.
-- **Joint Score Convention:** Formally confirm and approve `smoke-qwen3-asr-joint-token-logprob-sum-v1` under N-best contract 0.2 (using generation transition scores through EOS rather than a separate forward pass) for the official B3 run (currently pending).
+  off compute/latency against task accuracy. Both candidates remain strictly unselected (`candidate_status: "unselected-candidate"`).
+- **B3 Checkpoint Eligibility:** Resolve pretraining contamination / timeline audit independently: confirm whether `-hf` weights (June 2026) are bitwise/tensor identical to the original January 28, 2026 release, or obtain an upstream conversion citation before official use.
+- **B3 Scoring Convention Approval:** Formally confirm and approve `smoke-qwen3-asr-joint-token-logprob-sum-v1` under N-best contract 0.2 (using generation transition scores through EOS rather than a separate teacher-forced forward pass) for the official B3 run (currently pending team sign-off).
+- **Decoding Freeze:** Review and freeze beam widths across all baselines on the validation set before the standardized timing session (B1 and F1/F2 aligned on provisional 5 vs 10; N=10 is not final).
 - **CER Policy on Edge Whitespace:** Review evaluation handling for Whisper's emitted leading space under `raw-v1`.
 - **Timing Protocol:** Ensure timing executes back-to-back with 3 repeats on the 30-minute frozen subset
   with background GPU processes closed.
@@ -140,20 +141,30 @@ TURAS audio clips are 10–20 s (from Member 1 source audit), comfortably within
 
 This checklist organizes the remaining execution steps for Member 2 across four sequential phases, strictly respecting shared contracts, model boundaries, and handoff protocols.
 
-### Phase 1: Offline Adapter and Exporter Tests (No Weights / No Data Downloads)
-- [ ] **Contract Compliance in Adapter:**
-  - Verify that adapter input handling strictly follows [docs/contracts/predictions.md](../docs/contracts/predictions.md) (allowing only `utterance_id`, `audio_uri`, `audio_sha256`, `duration_s`, `sample_rate_hz`, `channels`, and `language`; zero access to reference text).
-  - Validate adapter wiring against pinned configurations in `configs/baselines/` without downloading weights.
-- [ ] **Whisper Decoding & Scoring Tests (B1 & B2):**
-  - Verify that the adapter uses core `GenerationMixin.generate` with forced prefix tokens `["<|startoftranscript|>", "<|tr|>", "<|transcribe|>", "<|notimestamps|>"]`.
-  - Check that prompt tokens are excluded from returned token IDs and token counts.
-  - Check that hypotheses preserve decoded text exactly as emitted, including leading whitespace under `raw-v1`.
-  - Verify that `acoustic_log_score` is computed via teacher-forced log-probabilities on generated tokens and kept separate from framework `decoder_sequence_score`.
-  - Ensure that if `decoder_sequence_score` is unavailable, it is preserved honestly as `null` with explanation in `score_details`.
-  - Verify raw candidate output format and integration with shared export deduplication (`export_nbest_records`).
-- [ ] **Qwen Decoding & Scoring Tests (B3):**
-  - Verify that candidate sequence scores are labeled strictly as `joint_speech_language_beam_score` under convention `qwen3-asr-joint-sequence-score-v1` (no synthetic separation of acoustic-only scores).
-  - Keep checkpoint selection between Candidate 1 (1.7B) and Candidate 2 (0.6B) pending.
+### Phase 1: Offline Adapter, Smoke Runner, and Batch Exporter Implementation
+- [x] **Contract Compliance in Adapter:**
+  - Verified that adapter input handling strictly follows [docs/contracts/predictions.md](../docs/contracts/predictions.md) (allowing only `utterance_id`, `audio_uri`, `audio_sha256`, `duration_s`, `sample_rate_hz`, `channels`, and `language`; zero access to reference text).
+  - Validated adapter wiring against pinned configurations in `configs/baselines/` without downloading weights.
+- [x] **Whisper Decoding & Scoring Tests (B1 & B2):**
+  - Verified that the adapter uses core `GenerationMixin.generate` with forced prefix tokens `["<|startoftranscript|>", "<|tr|>", "<|transcribe|>", "<|notimestamps|>"]`.
+  - Checked that prompt tokens are excluded from returned token IDs and token counts.
+  - Checked that hypotheses preserve decoded text exactly as emitted, including leading whitespace under `raw-v1`.
+  - Verified that `acoustic_log_score` is computed via teacher-forced log-probabilities on generated tokens and kept separate from framework `decoder_sequence_score`.
+  - Ensured that if `decoder_sequence_score` is unavailable, it is preserved honestly as `null` with explanation in `score_details`.
+  - Verified raw candidate output format and integration with shared export deduplication (`export_nbest_records`).
+- [x] **Qwen Decoding & Scoring Tests (B3):**
+  - Verified that candidate sequence scores are labeled strictly as `speech_llm_joint_token_log_prob_sum` under convention `smoke-qwen3-asr-joint-token-logprob-sum-v1` computed via generation transition scores through EOS.
+  - Kept checkpoint selection between Candidate 1 (1.7B) and Candidate 2 (0.6B) pending.
+- [x] **Whisper Rank-1 Smoke Runner (`scripts/smoke_check_whisper_rank1.py`):**
+  - Maintained `--synthetic` mode for deterministic zero-dependency tests.
+  - Added real-audio mode supporting individual clips (`--audio`) and reference-free manifests (`--manifest`).
+  - Enforced local-only file paths, verified checkpoint byte SHA-256 before model loading, and suppressed decoded transcripts by default (`--show-transcripts` required).
+- [x] **Baseline Batch Inference & Exporter (`src/turkish_asr_rdl/baselines/runner.py` & `scripts/run_baseline_batch.py`):**
+  - Accepts baseline JSON config, local checkpoint directory/file, reference-free input manifest, and output directory outside the repository.
+  - Verifies checkpoint inventory and SHA-256 before loading (rejects remote URLs, missing files, corrupt hashes, and unindexed shards).
+  - Parses reference-free manifest strictly enforcing allowlist (rejects any manifest containing `reference_text` or `gold`).
+  - Preserves utterance order, utterance IDs, and per-clip error captures without dropping items.
+  - Exports schema-validated `predictions.jsonl`, `nbest.jsonl`, and `manifest.json`.
 
 ### Phase 2: Authorized Smoke Runs (Real Weights on Local Pinned Runtime)
 - [ ] **Environment Verification:** Execute all runs inside the pinned Windows environment (`$env:LOCALAPPDATA\TURAS\venv-313\Scripts\python.exe`, lock `requirements/windows-cu130.txt` at `bf4e0bf1319aa573f90f73e3cf8ec0a29a197608`).
@@ -194,3 +205,148 @@ This checklist organizes the remaining execution steps for Member 2 across four 
   - Deliver prediction bundles, N-best artifacts, and run manifests to M6.
   - Leave official evaluation (raw and normalized WER/CER, Turkish I / apostrophe normalization under `tr-normalized-v1`, domain terminology metrics, and standardized timing evaluation) to Member 6.
   - Record handoff acknowledgment and artifact hashes in [contributions/member_2.md](member_2.md).
+
+## Workflow Execution Guide & Handoff Sequence
+
+All commands run under PowerShell with the pinned Python 3.13 virtual environment:
+`$PYTHON = "$env:LOCALAPPDATA\TURAS\venv-313\Scripts\python.exe"`
+
+### Execution Order & Handoff Protocol
+
+Execution of pretrained baseline workflows must proceed in three strict sequential stages:
+1. **Stage 1 (First Real Run): B1/B2 Smoke Check on Approved Local Clips & Verified Weights:**
+   Before any batch inference on dataset splits, execute `scripts/smoke_check_whisper_rank1.py` on authorized local audio clips once model weights are downloaded to local storage and their byte SHA-256 digests are verified. This confirms exact rank-1 parity between the shared N-best decoder and Whisper's standard `generate(num_return_sequences=1)` path at identical beam widths.
+2. **Stage 2: Validation Evaluation & Parameter Freeze:**
+   Execute batch decoding on the official reference-free validation split (`val_reference_free.jsonl`) to evaluate candidate decoding parameters. Coordinate with Member 4 to evaluate provisional beam/N settings (5 vs 10) so the common parent B1 and fine-tuned models F1/F2 share identical decoding settings. **Neither N=10 nor N=5 is final** until frozen on the validation set (`status: "frozen-baseline-protocol"`). Both Qwen candidates remain strictly unselected.
+3. **Stage 3: Official Test Export Using Frozen Settings:**
+   Execute `scripts/run_baseline_batch.py` on the verified reference-free test split manifest using the frozen decoding settings and verified weights. Delivers validated `predictions.jsonl`, `nbest.jsonl`, and `manifest.json` outside the repository for Member 6's benchmark evaluation.
+
+### 1. Whisper Rank-1 Smoke Check (`scripts/smoke_check_whisper_rank1.py`)
+
+#### A. Synthetic Offline Mode
+Verifies parity on synthetic Whisper weights without downloading pretrained checkpoints:
+```powershell
+& "$env:LOCALAPPDATA\TURAS\venv-313\Scripts\python.exe" scripts/smoke_check_whisper_rank1.py `
+  --synthetic `
+  --shared-decoder-path "path/to/turas_shared_export" `
+  --beam-width 2 `
+  --max-new-tokens 10
+```
+
+#### B. Real-Audio Mode (B1 Whisper-small or B2 Whisper-large-v3)
+First real execution step on local audio clips with verified local checkpoint weights:
+```powershell
+# For B1 Whisper-small on explicit local clip paths:
+& "$env:LOCALAPPDATA\TURAS\venv-313\Scripts\python.exe" scripts/smoke_check_whisper_rank1.py `
+  --config configs/baselines/whisper_small.json `
+  --checkpoint "C:\turas_weights\whisper_small" `
+  --audio "C:\turas_data\clip1.flac" "C:\turas_data\clip2.flac" `
+  --device "cpu"
+
+# For B2 Whisper-large-v3 using an input manifest:
+& "$env:LOCALAPPDATA\TURAS\venv-313\Scripts\python.exe" scripts/smoke_check_whisper_rank1.py `
+  --config configs/baselines/whisper_large_v3.json `
+  --checkpoint "C:\turas_weights\whisper_large_v3" `
+  --manifest "C:\turas_data\smoke_manifest.jsonl" `
+  --audio-root "C:\turas_data\audio" `
+  --device "cuda"
+```
+
+Expected output format:
+```text
+=== Whisper Rank-1 Real-Audio Smoke Check ===
+Clip clip-01: MATCH | Text Match: True | Tokens Match: True
+Clip clip-02: MATCH | Text Match: True | Tokens Match: True
+
+=== Smoke Check Summary ===
+Total clips: 2
+Matches:     2
+Mismatches:  0
+Errors:      0
+Verdict:     PASSED
+```
+*Note:* Decoded transcripts are hidden by default to prevent accidental transcript leakage; pass `--show-transcripts` to inspect verbatim hypotheses.
+
+### 2. Batch Inference & Shared Exporter (`scripts/run_baseline_batch.py`)
+
+Executes batch decoding across reference-free manifests and generates schema-valid artifacts outside the repository.
+*Important:* The `--requested-n` values in the commands below (e.g. 10 or 5) are provisional defaults for testing; the final values used for official test export must be frozen during validation in coordination with Member 4 and Member 6. Both Qwen candidates remain strictly unselected (`candidate_status: "unselected-candidate"`).
+
+#### A. B1 Whisper-small Batch Run (Validation / Test with Frozen N)
+```powershell
+# Example batch run with provisional requested-n (10 or 5, to be frozen on validation):
+& "$env:LOCALAPPDATA\TURAS\venv-313\Scripts\python.exe" scripts/run_baseline_batch.py `
+  --config configs/baselines/whisper_small.json `
+  --checkpoint "C:\turas_weights\whisper_small" `
+  --manifest "C:\turas_data\val_reference_free.jsonl" `
+  --output-dir "C:\turas_runs\b1_whisper_small_val01" `
+  --audio-root "C:\turas_data\audio" `
+  --device "cuda" `
+  --requested-n 10 `
+  --split "validation"
+```
+
+#### B. B2 Whisper-large-v3 Batch Run (Validation / Test with Frozen N)
+```powershell
+& "$env:LOCALAPPDATA\TURAS\venv-313\Scripts\python.exe" scripts/run_baseline_batch.py `
+  --config configs/baselines/whisper_large_v3.json `
+  --checkpoint "C:\turas_weights\whisper_large_v3" `
+  --manifest "C:\turas_data\val_reference_free.jsonl" `
+  --output-dir "C:\turas_runs\b2_whisper_large_v3_val01" `
+  --audio-root "C:\turas_data\audio" `
+  --device "cuda" `
+  --requested-n 10 `
+  --split "validation"
+```
+
+#### C. B3 Qwen3-ASR Batch Run (Unselected Candidate 1: 1.7B-hf)
+*Note:* Candidate 1 and Candidate 2 both remain unselected. Running B3 officially requires both candidate selection and resolution of checkpoint eligibility and scoring approval.
+```powershell
+& "$env:LOCALAPPDATA\TURAS\venv-313\Scripts\python.exe" scripts/run_baseline_batch.py `
+  --config configs/baselines/qwen3_asr_1_7b.json `
+  --checkpoint "C:\turas_weights\qwen3_asr_1_7b" `
+  --manifest "C:\turas_data\val_reference_free.jsonl" `
+  --output-dir "C:\turas_runs\b3_qwen_1_7b_val01" `
+  --audio-root "C:\turas_data\audio" `
+  --device "cuda" `
+  --requested-n 5 `
+  --split "validation"
+```
+
+Expected output files in `--output-dir`:
+1. `predictions.jsonl`: Top-1 predictions adhering to `schemas/predictions.py`.
+2. `nbest.jsonl`: Full beam candidate lists adhering to `schemas/nbest.py`.
+3. `manifest.json`: Full experiment run manifest adhering to `schemas/report.py`.
+
+Summary printed upon completion:
+```text
+=== TURAS Baseline Batch Export Summary ===
+Run ID:             baseline-whisper-small-test-20261119-152000
+System ID:          baseline-whisper-small
+Total utterances:   100
+  OK:               100
+  Empty:            0
+  Error:            0
+Predictions:        C:\turas_runs\b1_whisper_small_run01\predictions.jsonl
+  SHA-256:          <64-hex>
+N-best:             C:\turas_runs\b1_whisper_small_run01\nbest.jsonl
+  SHA-256:          <64-hex>
+Run Manifest:       C:\turas_runs\b1_whisper_small_run01\manifest.json
+  SHA-256:          <64-hex>
+Validation OK:      True
+```
+
+### 3. Verified Test Evidence (63 Tests)
+
+All 63 Member 2 tests pass under `$env:LOCALAPPDATA\TURAS\venv-313\Scripts\python.exe`:
+- **Default Offline Suite (no shared decoder checkout):**
+  `Ran 63 tests — OK (41 passed, 22 skipped)`
+- **Opt-in Integration Suite (with provisional shared decoder at revision `b6afa13063f7fa90bb1bc190c67b4529e40e91a5`):**
+  `Ran 63 tests in 9.043s — OK (63 passed, 0 failures, 0 errors, 0 skipped)`
+
+Breakdown by test module:
+1. `tests/test_m2_baseline_configs.py` (6 tests): JSON parsing, revision match, unselected status for both Qwen candidates, unset dataset bindings, model/processor IDs, and decoding parameter internal consistency.
+2. `tests/test_m2_whisper_adapter.py` (22 tests): B1/B2 config binding, 16 kHz check, sampling/decoding override rejections, SHA-256 validation, prompt token exclusion, empty/error handling, and shared decoder integration (provisional `b6afa13`).
+3. `tests/test_m2_qwen_adapter.py` (20 tests): Candidate 1 & 2 config binding, 16 kHz check, transition scoring prompt/padding exclusion, EOS inclusion, and shared decoder integration (provisional `b6afa13`).
+4. `tests/test_m2_whisper_rank1.py` (7 tests): Deterministic exact match, mismatch, whitespace preservation, missing candidate, prompt token stripping, decode failure, and real-framework synthetic rank-1 integration.
+5. `tests/test_m2_batch_runner.py` (8 tests): Checkpoint verification (success, mismatch, missing, remote, unresolved shards), reference-bearing manifest rejection in reader and batch runner, end-to-end Whisper export, end-to-end Qwen export, per-clip error preservation, and real-audio smoke runner.

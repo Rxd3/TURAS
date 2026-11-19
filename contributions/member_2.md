@@ -4,9 +4,29 @@ Name: unassigned. GitHub username: unassigned.
 Branch convention: `feat/m2-seq2seq-speech-llm-baselines` (focused topic suffixes allowed).
 Ownership/tasks/review routing: [TEAM_TASKS.md](../TEAM_TASKS.md).
 
-**Status: in progress (baseline adapters implemented and verified offline; awaiting dataset release and validation freeze).** Checkpoint 2 baseline adapters (B1, B2, B3) implemented and tested offline; no pretrained models executed on dataset splits.
+**Status: in progress (baseline adapters, smoke runner, and batch exporter workflow fully implemented and verified offline; awaiting official dataset release, split manifests, and validation beam freeze).** Checkpoint 2 baseline adapters (B1, B2, B3), smoke runners, and batch exporters implemented and tested offline; no pretrained models executed on dataset splits.
 
 ## Actual contributions
+
+### 2026-11-19: Real-audio Whisper rank-1 smoke runner and baseline batch inference/export workflow
+
+- **Scope:** Implementation of the real-audio verification path in `scripts/smoke_check_whisper_rank1.py`, creation of the reusable baseline batch runner and exporter workflow (`src/turkish_asr_rdl/baselines/runner.py` & `scripts/run_baseline_batch.py`), and end-to-end integration test coverage (`tests/test_m2_batch_runner.py`).
+- **Owned paths:** `scripts/smoke_check_whisper_rank1.py`, `scripts/run_baseline_batch.py`, `src/turkish_asr_rdl/baselines/runner.py`, `tests/test_m2_batch_runner.py`, `experiments/m2-baseline-notes.md`, `contributions/member_2.md`.
+- **Smoke Runner Capabilities (`scripts/smoke_check_whisper_rank1.py`):**
+  1. Maintained existing `--synthetic` mode for deterministic offline testing.
+  2. Implemented real-audio path accepting baseline config (`--config`), local checkpoint directory/file (`--checkpoint`), and explicit audio clips (`--audio`) or reference-free manifests (`--manifest`).
+  3. Validates checkpoint bytes against pinned SHA-256 prior to model loading and strictly enforces local filesystem paths (refusing remote URLs).
+  4. Runs exact parity comparison between shared N-best decoder rank 1 and Whisper's standard `generate(num_return_sequences=1)` path with identical beam width and Turkish decoding parameters.
+  5. Suppresses transcripts by default to prevent transcript leaks; reports per-clip match/mismatch/error status and summary statistics.
+- **Batch Runner & Exporter Capabilities (`src/turkish_asr_rdl/baselines/runner.py` & `scripts/run_baseline_batch.py`):**
+  1. Supports B1 (`openai/whisper-small`), B2 (`openai/whisper-large-v3`), and both unselected B3 candidates (`Qwen/Qwen3-ASR-1.7B-hf` / `0.6B-hf`).
+  2. Checks checkpoint inventory and SHA-256 before model instantiation; rejects remote URIs, missing files, corrupt hashes, and unindexed shards.
+  3. Enforces reference-free input manifest allowlist; strictly rejects any manifest containing reference transcripts (`reference_text` or `gold`).
+  4. Preserves batch order, utterance IDs, and captures per-clip errors with `status='error'` without dropping items.
+  5. Produces schema-compliant `predictions.jsonl`, `nbest.jsonl`, and `manifest.json` outside the repository using shared exporter utilities and verifies them using shared validators.
+- **Test Evidence (63 tests total):**
+  - Default offline suite: 63 tests run, 41 passed, 22 skipped cleanly (all tests requiring external checkout of shared decoding package skip safely).
+  - Full opt-in integration suite: 63 tests run in 9.043s, 63 passed, 0 failures, 0 errors, 0 skipped against provisional shared revision `b6afa13063f7fa90bb1bc190c67b4529e40e91a5`.
 
 ### 2026-11-19: Qwen3-ASR baseline adapter implementation and scoring trace verification
 
@@ -62,14 +82,23 @@ Ownership/tasks/review routing: [TEAM_TASKS.md](../TEAM_TASKS.md).
 
 - No pretrained baseline inference runs or benchmark evaluations completed.
 - Pinned configuration audit and decoding protocols documented in `experiments/m2-baseline-notes.md`.
+- Reusable baseline adapters implemented for B1, B2, and B3 in `src/turkish_asr_rdl/baselines/`.
+- Reusable rank-1 smoke runner implemented in `scripts/smoke_check_whisper_rank1.py`.
+- Reusable baseline batch inference and shared export workflow implemented in `src/turkish_asr_rdl/baselines/runner.py` and `scripts/run_baseline_batch.py`.
+- Full integration and unit test coverage in `tests/test_m2_*.py` (63 tests).
 
 ## Reviews and handoffs
 
-- Baseline configuration checks and model audit documented for M4 and M6 review.
-- Awaiting team resolution on shared interfaces before adapter implementation.
+- PR #6 updated with Whisper and Qwen adapters, review fixes, and comprehensive unit tests.
+- Reusable runners and exporter workflows tested locally with temporary fixtures and mock loaders; ready for execution as soon as official dataset manifests and approved checkpoints arrive.
+- **Handoff Sequence:** The first real run is B1/B2 rank-1 smoke check on approved local clips and verified weights, followed by validation decoding and parameter freeze (provisional beam/N 5 vs 10; N=10 is not final), followed by official test export using the frozen setting. Both Qwen candidates remain strictly unselected.
 
 ## Remaining work & Unresolved prerequisites
 
-Implementation of the B1 Whisper-small baseline adapter and its production test suite is blocked by the following unresolved prerequisites:
-1. **Recorded agreement covering Member 2’s prediction and decoding contract:** Decisions D23 and D24 recorded on `feat/m4-m5-integration` at `b6afa13063f7fa90bb1bc190c67b4529e40e91a5` remain provisional integration proposals. A formal team-recorded agreement covering Member 2’s prediction and decoding interface (signed off with M4 and M6) is not yet recorded on `main` or this branch.
-2. **Real shared modules on the current branch:** The current branch (`feat/m2-seq2seq-speech-llm-baselines`) contains only empty package stubs (`src/turkish_asr_rdl/decoding/__init__.py`, `schemas/__init__.py`, `utils/__init__.py`). The real shared modules (`turkish_asr_rdl.decoding.whisper`, `turkish_asr_rdl.decoding.interface`, `turkish_asr_rdl.decoding.export`, schemas, etc.) exist only on integration branch `feat/m4-m5-integration` and have not yet landed on `main` or been merged into this branch.
+Executing actual pretrained baseline inference runs and handing off official prediction bundles to Member 6 is blocked by the following unresolved prerequisites:
+1. **Approval of PR #6 Review (Owner: Member 6):** Review clearance on PR #6 at `cec98c1` (or merging shared decoding integration into `main`).
+2. **Official Dataset Release & Split Manifests (Owners: Member 1 & Member 6):** Release of official `dataset_release` name and `split_manifest_sha256` for the test and validation splits to bind into baseline configs and input manifests.
+3. **Local Weight Checkpoint Downloads & SHA-256 Verification (Owner: Member 2 / Runner Operator):** Local download of safetensors files to destination outside repository and verification of the 64-character lowercase hex SHA-256 artifact hashes.
+4. **Validation Beam / N Alignment (Owners: Member 2 & Member 4):** Final joint agreement on frozen `num_beams` and `requested_n` (matching B1 with F1/F2 on validation set; provisional 5 vs 10, neither is final) before freezing decoding settings.
+5. **B3 Checkpoint Eligibility Verification (Owners: Member 6 & Member 2):** Resolve timeline and pretraining contamination audit for `-hf` checkpoints (confirming whether June 2026 weights are tensor-identical to January 28, 2026 release or obtaining conversion statement) before official B3 execution. Both candidates remain strictly unselected.
+6. **B3 Scoring Convention Approval (Owners: Member 6 & Member 2):** Team review and formal sign-off confirming `smoke-qwen3-asr-joint-token-logprob-sum-v1` transition score convention (computed via generation step scores through EOS) for the official B3 baseline.

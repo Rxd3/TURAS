@@ -4,8 +4,9 @@ Name: unassigned. GitHub username: unassigned.
 Branch convention: `feat/m5-ctc-rdl-rescoring` (focused topic suffixes allowed).
 Ownership/tasks/review routing: [TEAM_TASKS.md](../TEAM_TASKS.md).
 
-**Status (2026-11-19): agent-assisted implementation prepared at the user's
-request; review and corpus experiments remain pending.** No human identity or
+**Status (2026-11-19): owner-assisted implementation, seed-17 CTC/graph training
+and corrected-linker working validation completed; frozen final benchmark running;
+independent review pending.** No human identity or
 individual authorship is inferred from this workstream assignment.
 
 ## Actual contributions

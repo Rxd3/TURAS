@@ -4,8 +4,8 @@ Name: unassigned. GitHub username: unassigned.
 Branch convention: `feat/m4-whisper-finetuning` (focused topic suffixes allowed).
 Ownership/tasks/review routing: [TEAM_TASKS.md](../TEAM_TASKS.md).
 
-**Status (2026-11-19): agent-assisted implementation prepared at the user's
-request; review and corpus training remain pending.** No personal identity or
+**Status (2026-11-19): owner-assisted implementation, seed-17 corpus training and
+working validation completed; frozen final benchmark running; independent review pending.** No personal identity or
 individual human authorship is inferred from this workstream assignment.
 
 ## Actual contributions

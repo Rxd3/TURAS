@@ -6,18 +6,25 @@ Learning (RDL).
 
 **Status on this feature branch: owner-directed M1/M4/M5/M6 integration.** Guarded
 Whisper LoRA/full and CTC training, scored N-best extraction, heterogeneous graph
-learning and relational rescoring are implemented with offline tests. Approved
-training bundles and genuine baseline/validation evidence are still needed.
+learning and relational rescoring are implemented with offline tests. Seed-17
+LoRA, full Whisper and vocabulary-extended CTC training have completed, together
+with matched parent validation, checkpoint selection and corrected-linker RDL
+ablations. The frozen final benchmark is running; no final test result is claimed
+until its report is published.
 Technical choices are approved in [the owner decision record](docs/owner_decisions.md).
-Local CUDA execution and synthetic resource probes pass; no corpus training,
-benchmark predictions or ASR results have been
-produced. See [Member 4 notes](experiments/m4-whisper-notes.md) and
+See the actual [working validation](docs/m45_validation_complete.md),
+[independent numerical/linker audit](docs/m45_result_audit.md) and
+[frozen final protocol](configs/evaluation/m45_final_protocol.json).
+See [Member 4 notes](experiments/m4-whisper-notes.md) and
 [Member 5 notes](experiments/m5-ctc-rdl-notes.md).
 
-Use [the Member 1 handoff request](docs/member1-handoff-request.md) for missing
-private inputs. The [readiness record](docs/m45_readiness.md) lists what is verified
-here and how to stage the bundles; [GPU resource evidence](docs/m45_gpu_profile.md)
-is explicitly synthetic, not a benchmark result.
+Private audio/train inputs have been hash verified. Validation uses the explicitly
+versioned recovered upstream minutes, which omit M1's private corrections. The
+working benchmark is not a fully listening-verified verbatim or proven
+speaker-disjoint release, and independent M6 approval is not asserted. The
+[readiness record](docs/m45_readiness.md) preserves earlier handoff history;
+[GPU probes](docs/m45_gpu_profile.md) are synthetic, while the dated run reports
+contain real corpus evidence.
 
 The five baseline tracks below are the original project roster. The professor's
 later requirements also call for a GMM-HMM track and explicit HuBERT/transducer
@@ -30,15 +37,15 @@ The project preserves all five baseline tracks and all adaptation tracks:
 
 | ID | Track | Owner | Current state |
 | --- | --- | --- | --- |
-| B1 | Pretrained Whisper-small, Seq2Seq | Member 2 | Planned |
+| B1 | Pretrained Whisper-small, Seq2Seq | Member 2 | Pinned matched parent evaluated on working validation; final benchmark running |
 | B2 | Pretrained Whisper-large-v3, Seq2Seq | Member 2 | Planned |
 | B3 | Pretrained Qwen3-ASR, speech-language-model family | Member 2 | Planned; checkpoint/capability audit required |
-| B4 | Pretrained Turkish-capable Wav2Vec2/XLSR CTC | Member 3 | Planned; ASR checkpoint/head selection required |
+| B4 | Pretrained Turkish-capable Wav2Vec2/XLSR CTC | Member 3 | Pinned Turkish CV7 parent evaluated on working validation; final benchmark running |
 | B5 | Alternative neural BiLSTM-CTC, trained from scratch | Member 3 | Working architecture choice; not implemented |
-| F1 | Whisper LoRA fine-tuning | Member 4 | Code and offline tests; no corpus training |
-| F2 | Whisper full fine-tuning where hardware permits | Member 4 | Code and offline tests; resource feasibility pending |
-| F3 | Wav2Vec2/XLSR CTC fine-tuning | Member 5 | Code and offline tests; corpus training pending |
-| R1 | Trainable heterogeneous graph relation scorer and N-best rescoring | Member 5 | Code and offline tests; real graph/ASR experiments pending |
+| F1 | Whisper LoRA fine-tuning | Member 4 | Three epochs completed; selected epoch 3 on declared working validation |
+| F2 | Whisper full fine-tuning where hardware permits | Member 4 | Three epochs completed; selected epoch 2 on declared working validation |
+| F3 | Wav2Vec2/XLSR CTC fine-tuning | Member 5 | Three epochs completed with explicit vocabulary extension; selected epoch 3 |
+| R1 | Trainable heterogeneous graph relation scorer and N-best rescoring | Member 5 | Learned model and retrained ablations completed; corrected-linker validation has no gain over original one-best; frozen test pending |
 
 The dataset contribution is a **curated Turkish legislative/financial speech
 benchmark**. [WorldSpeech](https://huggingface.co/datasets/disco-eth/WorldSpeech),
@@ -61,7 +68,8 @@ and CER, domain terminology metrics, RTF, latency, and controlled ablations.
    and [working decisions](docs/decisions.md) before implementation.
 4. Start the assigned `feat/m<N>-...` branch after identity/ownership assignment.
 
-Python 3.11+ is the packaging target; ML compatibility is not yet verified.
+Python 3.11+ is the packaging target. Actual Windows execution used Python 3.13.14
+and the [pinned CUDA runtime](requirements/owner-m45-windows-cu130.txt).
 An optional packaging-only setup is:
 
 ```text
@@ -72,9 +80,9 @@ python -m pip install --no-deps -e .
 Use the environment's Python after activating it (`.\.venv\Scripts\Activate.ps1`
 in PowerShell or `source .venv/bin/activate` in bash). Build isolation may install
 the lightweight setuptools backend. No runtime dependencies or command-line
-entry points are declared. Importing `turkish_asr_rdl` only checks the empty
-package layout; it does not recognize speech. Do not download data or models as
-part of repository initialization.
+entry points are required for a packaging-only check. Training and inference
+require the separate pinned runtime and private inputs. Importing the package
+does not automatically load models, download data or recognize speech.
 
 ## Repository map
 
@@ -86,9 +94,9 @@ part of repository initialization.
 | `data/` | Future metadata, manifests, split definitions, verification and relational schema documentation |
 | `scripts/` | Lightweight entry points, training/rescoring and M6 environment checks |
 | `experiments/` | Preregistered comparison and ablation protocol; future notes |
-| `results/` | Future benchmark outputs and reports; no results |
+| `results/` | Actual training, graph, working validation and audit summaries; final reports when completed |
 | `tests/` | Offline synthetic-fixture and random-model tests; no benchmark data |
-| `contributions/` | Six individual, initially empty contribution records |
+| `contributions/` | Individual contribution records and owner-assisted integration evidence |
 | `presentation/` | Evidence requirements for the future final presentation |
 | `.github/` | PR template and CI (packaging checks and unit tests) |
 

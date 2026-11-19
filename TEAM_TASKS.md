@@ -1,7 +1,7 @@
 # Six-member project board
 
-**Status (2026-11-17): scaffold initialized; every implementation/release task
-below is pending.** Names and GitHub usernames are unassigned. Members add their
+**Status: initialized 2026-11-17; M4/M5 implementation and working validation
+completed by 2026-11-19, with the frozen final benchmark running.** Names and GitHub usernames are unassigned. Members add their
 own identities to contribution records after assignment; reference-repository
 identities must not be reused by assumption. A checked task must cite a reviewed
 PR, commit, or real artifact/run evidence. Specifications alone do not complete
@@ -240,7 +240,7 @@ curation and M3 owns unmodified CTC baseline/export infrastructure.
 - [x] Train/validate relation scoring and report genuine internal training-group holdout metrics.
 - [x] Implement reference-free hypothesis linking and acoustic/RDL rescoring; LM is explicitly disabled in the primary comparison.
 - [x] Complete D37 corrected-linker validation and relation-removal ablations on fixed acoustic candidates.
-- [ ] Freeze the final test systems/fusion configurations and their reference versions.
+- [x] Freeze the final test systems/fusion configurations and their reference versions; protocol commit `4639b5e`, before test gold access.
 - [ ] Complete terminology/relation coverage, end-to-end timing and final matched test/report handoff with CTC/RDL artifacts.
 
 **Exact expected deliverables:** reviewed CTC, graph and rescoring configs;

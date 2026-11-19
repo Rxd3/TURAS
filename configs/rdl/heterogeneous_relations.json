@@ -18,7 +18,9 @@
       "train/quantifiers.csv": "4b882af77bac12097edca1f16cf0f98274c49a3b4c186e58cc59e6540af42968",
       "train/relationships.csv": "a19749be0cfd45cda191d488cb4695755dc98d892ac003021476a015a56b4c50",
       "train/utterances.csv": "9dbb86b6bd56e884aac8402c2bc452eff6ca636fa6fc20f2ad1dde0d21175fc0"
-    }
+    },
+    "lexicon_path": "configs/datasets/turas-domain-lexicon-v0.1.json",
+    "lexicon_sha256": "8ef903fe74135897a9d3781966c5e484c0711a6679d72346efb1ec89eff6df94"
   },
   "seed": 17,
   "validation_fraction": 0.2,

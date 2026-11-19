@@ -11,15 +11,33 @@ def words(text: str):
     return re.findall(r"\w+", normalize(text, TR_NORMALIZED_V1))
 
 
-def linker_from_tables(entities: list[dict], aliases: list[dict]):
+def linker_from_tables(entities: list[dict], aliases: list[dict], *, frozen_lexicon=None, lexicon_sha256=None):
     entity_topics = {r["entity_id"]: r["topic_id"] for r in entities if "topic_id" in r}
     # M1 entities.csv has no topic_id; entity/topic pairs come from the static
     # belongs_to relationships and are supplied by the training command below.
+    if frozen_lexicon is not None:
+        from turkish_asr_rdl.data.screening import Lexicon
+        if not isinstance(lexicon_sha256, str) or not re.fullmatch(r'[a-f0-9]{64}', lexicon_sha256):
+            raise ValueError('a frozen lexicon source checksum is required')
+        Lexicon(frozen_lexicon)  # Validate the frozen syntax before serialization.
+        expected = {(t['term_id'], alias) for t in frozen_lexicon['terms'] for alias in t['aliases']}
+        actual = {(r['entity_id'], r['alias_text']) for r in aliases}
+        if actual != expected or {r['entity_id'] for r in entities} != {t['term_id'] for t in frozen_lexicon['terms']}:
+            raise ValueError('relational aliases/entities differ from the frozen lexicon')
+        return {'policy': 'm1-frozen-lexicon-v1', 'lexicon': frozen_lexicon,
+                'lexicon_source_sha256': lexicon_sha256, 'entity_topics': entity_topics,
+                'normalization': 'frozen M1 screening_tokens on raw hypothesis; prefix/exclusion/longest-span rules preserved'}
+    if any('*' in r['alias_text'] for r in aliases):
+        raise ValueError('wildcard aliases require the frozen lexicon, including its exclusion rules')
     return {"aliases": [{"tokens": words(r["alias_text"]), "entity_id": r["entity_id"]} for r in aliases],
             "entity_topics": entity_topics, "normalization": "shared tr-normalized-v1 plus alphanumeric token matching"}
 
 
 def link_entities(text: str, linker: dict):
+    if linker.get('policy') == 'm1-frozen-lexicon-v1':
+        from turkish_asr_rdl.data.screening import Lexicon, screening_tokens
+        return sorted({m.term_id for m in Lexicon(linker['lexicon']).match(screening_tokens(text))})
+    # Existing bundles retain their legacy exact-token policy for reproducibility.
     tokens = words(text)
     aliases = sorted(linker["aliases"], key=lambda r: (-len(r["tokens"]), r["entity_id"]))
     entities = set()

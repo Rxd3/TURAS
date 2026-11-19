@@ -8,6 +8,12 @@ enum values, duplicates and split access must be validated before graph building
 
 ## Proposed normalized tables
 
+Owner correction D37: hypothesis entity linking for new graph bundles follows
+the hash-frozen M1 lexicon's raw-text matcher, including `*` suffix rules and
+exclusions. WER/CER retain the shared evaluation normalizer. Linker policy/hash
+are part of the graph artifact; legacy exact-token bundles remain versioned and
+must not be silently relabeled as corrected-linker results.
+
 | Table | Primary key | Required columns in addition to key |
 | --- | --- | --- |
 | `provenance.csv` | `provenance_id` | `source_uri`, `source_revision`, `content_sha256`, `rights_record_id`, `origin_kind`, `available_at_utc`, `allowed_split`, `review_status` |

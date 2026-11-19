@@ -4,6 +4,12 @@
 validation, primary RDL grids and two relation-removal ablation queues completed.
 This does not assert a completed final benchmark or independent teammate review.
 
+**Audit update:** acoustic WER/CER passed an independent JiWER cross-check.
+The audit found that the legacy RDL linker discarded frozen alias wildcards.
+The RDL tables below describe that historical linker version; owner decision
+D37 requires a versioned prefix/exclusion-aware linker and fresh RDL grids before
+final RDL conclusions. Acoustic checkpoints and their reported scores are unaffected.
+
 All figures below use the same 438 frozen validation clips and
 `owner-recovered-validation-minutes-v1` reference version: upstream edited
 parliamentary text, marked unreviewed, without M1's private corrections. See

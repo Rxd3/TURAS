@@ -51,17 +51,24 @@ def train(config, output: Path):
     from safetensors.torch import save_file
     from turkish_asr_rdl.rdl.model import HeterogeneousRelationModel, evaluate_relations, train_relation_model
     from turkish_asr_rdl.rdl.scoring import linker_from_tables
-    torch.manual_seed(config["seed"])
-    model = HeterogeneousRelationModel(snapshot, **config["model"])
-    history = train_relation_model(model, seed=config["seed"], **config["training"])
-    evaluation = evaluate_relations(model)
     hashes = inputs["tables_sha256"]
     static = Path(inputs["static_dir"])
     aliases = read_table(static / "entity_aliases.csv", hashes["static/entity_aliases.csv"])
     entities = read_table(static / "entities.csv", hashes["static/entities.csv"])
-    linker = linker_from_tables(entities, aliases)
+    lexicon = None
+    if inputs.get('lexicon_path'):
+        lexicon_path = Path(inputs['lexicon_path'])
+        if sha256_file(lexicon_path) != inputs.get('lexicon_sha256'):
+            raise ValueError('frozen lexicon hash mismatch')
+        lexicon = json.loads(lexicon_path.read_text(encoding='utf-8'))
+    linker = linker_from_tables(entities, aliases, frozen_lexicon=lexicon,
+                                lexicon_sha256=inputs.get('lexicon_sha256'))
     relations = read_table(static / "relationships_static.csv", hashes["static/relationships_static.csv"])
     linker["entity_topics"] = {r["head_id"]: r["tail_id"] for r in relations if r["relation_type_id"] == "rel_belongs_to"}
+    torch.manual_seed(config["seed"])
+    model = HeterogeneousRelationModel(snapshot, **config["model"])
+    history = train_relation_model(model, seed=config["seed"], **config["training"])
+    evaluation = evaluate_relations(model)
     output.mkdir(parents=True, exist_ok=False)
     write_json(output / "snapshot.json", snapshot.to_dict())
     write_json(output / "resolved-config.json", config)

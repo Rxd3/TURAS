@@ -191,6 +191,7 @@ class BaselineBatchRunnerTests(unittest.TestCase):
         ckpt_dir.mkdir(parents=True, exist_ok=True)
         file_path = ckpt_dir / filename
         file_path.write_bytes(content)
+        (ckpt_dir / "config.json").write_text("{}", encoding="utf-8")
         sha = hashlib.sha256(content).hexdigest().lower()
         return ckpt_dir, sha
 

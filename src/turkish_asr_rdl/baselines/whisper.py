@@ -24,6 +24,15 @@ PINNED_WHISPER_REVISIONS: dict[str, str] = {
     "openai/whisper-large-v3": "06f233fe06e710322aca913c1bc4249a0d71fce1",
 }
 
+PINNED_WHISPER_LFS_OIDS: dict[str, str] = {
+    "openai/whisper-small": "1d7734884874f1a1513ed9aa760a4f8e97aaa02fd6d93a3a85d27b2ae9ca596b",
+    "openai/whisper-large-v3": "a8e94b85976e5864ba3e9525c7e6c83b2a1eca42d4b797a0c7c24d778e40fd95",
+}
+
+ALLOWED_WHISPER_PRECISIONS: frozenset[str] = frozenset(
+    {"bfloat16", "bf16", "float16", "fp16", "float32", "fp32"}
+)
+
 DEFAULT_PROMPT_TOKENS: list[str] = [
     "<|startoftranscript|>",
     "<|tr|>",
@@ -89,6 +98,33 @@ def connect_shared_decoding(shared_path: str | Path | None = None) -> bool:
         return False
 
 
+def _verify_shared_schema(candidate_cls: Any, hypothesis_cls: Any) -> None:
+    """Verify shared interface classes have all required fields per integration contract."""
+    import dataclasses
+
+    if dataclasses.is_dataclass(candidate_cls):
+        cand_fields = {f.name for f in dataclasses.fields(candidate_cls)}
+    else:
+        cand_fields = set(getattr(candidate_cls, "__annotations__", {}).keys())
+    missing_cand = {"lm_log_score", "rdl_log_score", "combined_score"} - cand_fields
+    if missing_cand:
+        raise ImportError(
+            f"Shared Candidate schema missing required fields: {sorted(missing_cand)}. "
+            f"Requires full integration interface from revision b6afa13."
+        )
+
+    if dataclasses.is_dataclass(hypothesis_cls):
+        hyp_fields = {f.name for f in dataclasses.fields(hypothesis_cls)}
+    else:
+        hyp_fields = set(getattr(hypothesis_cls, "__annotations__", {}).keys())
+    missing_hyp = {"selected_candidate_id"} - hyp_fields
+    if missing_hyp:
+        raise ImportError(
+            f"Shared Hypothesis schema missing required fields: {sorted(missing_hyp)}. "
+            f"Requires full integration interface from revision b6afa13."
+        )
+
+
 def get_shared_interface(shared_path: str | Path | None = None):
     """Obtain shared interface classes and helper from integration revision b6afa13.
 
@@ -99,6 +135,7 @@ def get_shared_interface(shared_path: str | Path | None = None):
     try:
         from turkish_asr_rdl.decoding.interface import AsrAdapter, AudioItem, Candidate, Hypothesis, check_adapter
         from turkish_asr_rdl.decoding.whisper import whisper_nbest
+        _verify_shared_schema(Candidate, Hypothesis)
         return AudioItem, Candidate, Hypothesis, AsrAdapter, check_adapter, whisper_nbest
     except ImportError:
         pass
@@ -110,6 +147,7 @@ def get_shared_interface(shared_path: str | Path | None = None):
         )
     from turkish_asr_rdl.decoding.interface import AsrAdapter, AudioItem, Candidate, Hypothesis, check_adapter
     from turkish_asr_rdl.decoding.whisper import whisper_nbest
+    _verify_shared_schema(Candidate, Hypothesis)
     return AudioItem, Candidate, Hypothesis, AsrAdapter, check_adapter, whisper_nbest
 
 
@@ -123,6 +161,7 @@ class WhisperBaselineAdapter:
         device: str | None = None,
         precision: str | None = None,
         requested_n: int | None = None,
+        checkpoint_path: str | Path | None = None,
         model_artifact_sha256: str | None = None,
         model_loader: Callable[..., Any] | None = None,
         processor_loader: Callable[..., Any] | None = None,
@@ -145,13 +184,18 @@ class WhisperBaselineAdapter:
         if not self.model_revision:
             raise ValueError("config['model']['revision'] is required")
 
-        if self.model_id in PINNED_WHISPER_REVISIONS:
-            expected_rev = PINNED_WHISPER_REVISIONS[self.model_id]
-            if self.model_revision != expected_rev:
-                raise ValueError(
-                    f"Model revision mismatch for {self.model_id}: "
-                    f"expected {expected_rev}, got {self.model_revision}"
-                )
+        if self.model_id not in PINNED_WHISPER_REVISIONS:
+            raise ValueError(
+                f"Unsupported Whisper model ID: {self.model_id!r}. "
+                f"Supported pinned models: {sorted(PINNED_WHISPER_REVISIONS.keys())}"
+            )
+
+        expected_rev = PINNED_WHISPER_REVISIONS[self.model_id]
+        if self.model_revision != expected_rev:
+            raise ValueError(
+                f"Model revision mismatch for {self.model_id}: "
+                f"expected {expected_rev}, got {self.model_revision}"
+            )
 
         self.processor_id: str = str(proc_cfg.get("id", ""))
         self.processor_revision: str = str(proc_cfg.get("revision", ""))
@@ -169,10 +213,18 @@ class WhisperBaselineAdapter:
             raise ValueError(f"Whisper requires 16000 Hz audio, got {self.sampling_rate_hz}")
 
         self.device: str = device or str(model_cfg.get("device", "cuda"))
-        self.precision: str = precision or str(model_cfg.get("precision", "float16"))
+        self.precision: str = precision or str(model_cfg.get("precision", "bfloat16"))
+        if self.precision not in ALLOWED_WHISPER_PRECISIONS:
+            raise ValueError(
+                f"Unsupported precision: {self.precision!r}. "
+                f"Allowed precisions: {sorted(ALLOWED_WHISPER_PRECISIONS)}"
+            )
+
+        # Checkpoint path
+        self.checkpoint_path: Path | None = Path(checkpoint_path).resolve() if checkpoint_path else None
 
         # Requested N and beam width handling
-        cfg_req_n = dec_cfg.get("requested_n", 10)
+        cfg_req_n = dec_cfg.get("requested_n", 5)
         cfg_num_beams = dec_cfg.get("num_beams")
         if cfg_num_beams is not None and cfg_req_n is not None and cfg_num_beams != cfg_req_n:
             raise ValueError(
@@ -209,6 +261,11 @@ class WhisperBaselineAdapter:
 
         self.max_new_tokens: int = int(dec_cfg.get("max_new_tokens", 440))
         self.forced_prefix_tokens: list[str] = list(dec_cfg.get("forced_prefix_tokens", DEFAULT_PROMPT_TOKENS))
+        if self.forced_prefix_tokens != DEFAULT_PROMPT_TOKENS:
+            raise ValueError(
+                f"forced_prefix_tokens must match helper prompt tokens {DEFAULT_PROMPT_TOKENS}, "
+                f"got {self.forced_prefix_tokens}"
+            )
 
         length_penalty = dec_cfg.get("length_penalty", 1.0)
         if length_penalty != 1.0:
@@ -228,9 +285,21 @@ class WhisperBaselineAdapter:
         self.score_convention_id: str | None = nbest_cfg.get(
             "score_convention_id", "whisper-original-logits-generated-plus-eos-v1"
         )
+        if self.score_convention_id != "whisper-original-logits-generated-plus-eos-v1":
+            raise ValueError(
+                f"score_convention_id must be 'whisper-original-logits-generated-plus-eos-v1', "
+                f"got {self.score_convention_id!r}"
+            )
+
         self.acoustic_score_kind: str = str(
             nbest_cfg.get("acoustic_score_kind", "seq2seq_token_log_prob_sum")
         )
+        if self.acoustic_score_kind != "seq2seq_token_log_prob_sum":
+            raise ValueError(
+                f"acoustic_score_kind must be 'seq2seq_token_log_prob_sum', "
+                f"got {self.acoustic_score_kind!r}"
+            )
+
         self.deduplication_policy: str = str(
             nbest_cfg.get(
                 "deduplication_policy",
@@ -247,6 +316,13 @@ class WhisperBaselineAdapter:
                 f"Got: {weight_sha!r}"
             )
         self.model_artifact_sha256: str = weight_sha
+
+        expected_oid = PINNED_WHISPER_LFS_OIDS.get(self.model_id)
+        if model_loader is None and expected_oid and self.model_artifact_sha256.lower() != expected_oid.lower():
+            raise ValueError(
+                f"model_artifact_sha256 {self.model_artifact_sha256} does not match pinned LFS OID "
+                f"{expected_oid} for {self.model_id}"
+            )
 
         # Strict JSON-serializable config mapping satisfying check_adapter
         self.config: Mapping[str, Any] = {
@@ -267,7 +343,7 @@ class WhisperBaselineAdapter:
             },
             "audio": {
                 "sampling_rate_hz": self.sampling_rate_hz,
-                "clip_duration_constraint": "10-20 s clips from TURAS (M1 source audit); fits within Whisper 30 s window, no chunking needed",
+                "clip_duration_constraint": "10-20 s clips from TURAS (M1 source audit: data/metadata/worldspeech-tr_tr-source-audit.md:52); fits within Whisper 30 s window (480,000 samples), no chunking needed",
             },
             "decoding": {
                 "algorithm": "beam",
@@ -292,8 +368,15 @@ class WhisperBaselineAdapter:
             },
         }
 
+        # Include decoding config, precision, score convention, and acoustic score kind in hash
+        hash_payload = {
+            **self.config["decoding"],
+            "precision": self.precision,
+            "score_convention_id": self.score_convention_id,
+            "acoustic_score_kind": self.acoustic_score_kind,
+        }
         self.decoder_config_sha256: str = hashlib.sha256(
-            json.dumps(self.config["decoding"], sort_keys=True).encode("utf-8")
+            json.dumps(hash_payload, sort_keys=True).encode("utf-8")
         ).hexdigest()
 
         self.model: Any = None
@@ -314,8 +397,8 @@ class WhisperBaselineAdapter:
     def load(self) -> None:
         """Load weights and processor into memory.
 
-        Uses injected loaders if provided (for offline testing), otherwise loads from
-        Hugging Face Hub with the exact pinned revisions.
+        Uses injected loaders if provided (for offline testing), otherwise resolves
+        the verified local snapshot bytes and loads model/processor with local_files_only=True.
         """
         if self._model_loader is not None and self._processor_loader is not None:
             self.model = self._model_loader()
@@ -336,18 +419,70 @@ class WhisperBaselineAdapter:
             "float32": torch.float32,
             "fp32": torch.float32,
         }
-        torch_dtype = dtype_map.get(self.precision, torch.float32)
+        torch_dtype = dtype_map.get(self.precision, torch.bfloat16)
+
+        # Resolve exact local snapshot path and verify weight integrity
+        weight_filename = self.config["model"].get("weight_file", "model.safetensors")
+        if self.checkpoint_path is not None:
+            ckpt_p = Path(self.checkpoint_path).resolve()
+            if ckpt_p.is_file():
+                weight_file = ckpt_p
+                snapshot_dir = ckpt_p.parent
+            else:
+                snapshot_dir = ckpt_p
+                weight_file = snapshot_dir / weight_filename
+            if not weight_file.exists():
+                raise FileNotFoundError(f"Weight file not found in checkpoint: {weight_file}")
+            if not (snapshot_dir / "config.json").exists():
+                raise ValueError(f"Incomplete snapshot directory {snapshot_dir}: missing config.json")
+        else:
+            try:
+                from huggingface_hub import hf_hub_download
+                resolved = Path(
+                    hf_hub_download(
+                        repo_id=self.model_id,
+                        filename=weight_filename,
+                        revision=self.model_revision,
+                        local_files_only=True,
+                    )
+                ).resolve()
+            except Exception as exc:
+                raise FileNotFoundError(
+                    f"Direct loading from Hugging Face cache failed for {self.model_id} (revision {self.model_revision}) "
+                    f"with local_files_only=True: {exc}"
+                ) from exc
+            weight_file = resolved
+            snapshot_dir = resolved.parent
+            if not (snapshot_dir / "config.json").exists():
+                raise ValueError(f"Incomplete snapshot directory {snapshot_dir}: missing config.json")
+
+        actual_sha = hashlib.sha256(weight_file.read_bytes()).hexdigest()
+        if actual_sha.lower() != self.model_artifact_sha256.lower():
+            raise ValueError(
+                f"Weight SHA-256 mismatch for {weight_file.name}: "
+                f"expected {self.model_artifact_sha256}, got {actual_sha}"
+            )
+        pinned_oid = PINNED_WHISPER_LFS_OIDS.get(self.model_id)
+        if pinned_oid and actual_sha.lower() != pinned_oid.lower():
+            raise ValueError(
+                f"Weight LFS OID mismatch for {self.model_id}: "
+                f"expected {pinned_oid}, got {actual_sha}"
+            )
 
         self.processor = WhisperProcessor.from_pretrained(
-            self.processor_id,
-            revision=self.processor_revision,
+            str(snapshot_dir),
+            local_files_only=True,
         )
         self.model = WhisperForConditionalGeneration.from_pretrained(
-            self.model_id,
-            revision=self.model_revision,
+            str(snapshot_dir),
             torch_dtype=torch_dtype,
             use_safetensors=True,
+            local_files_only=True,
         )
+        if not isinstance(self.model, WhisperForConditionalGeneration):
+            raise TypeError(
+                f"Loaded model is of type {type(self.model).__name__}, expected WhisperForConditionalGeneration"
+            )
         self.model.to(self.device).eval()
 
     def transcribe(self, batch: Sequence[Any]) -> list[Any]:
@@ -376,6 +511,7 @@ class WhisperBaselineAdapter:
                         status="empty",
                         text="",
                         candidates=(),
+                        selected_candidate_id=None,
                     )
                 )
                 continue
@@ -389,6 +525,25 @@ class WhisperBaselineAdapter:
                         candidates=(),
                         error_code="InvalidAudio",
                         error_message="Audio samples must be a 1D numpy array of finite floats",
+                        selected_candidate_id=None,
+                    )
+                )
+                continue
+
+            if len(samples) > 480000:
+                results.append(
+                    Hypothesis(
+                        utterance_id=utt_id,
+                        status="error",
+                        text=None,
+                        candidates=(),
+                        error_code="AudioTooLong",
+                        error_message=(
+                            f"Audio duration exceeds 30 s limit (480,000 samples at 16 kHz): "
+                            f"got {len(samples)} samples. Expected 10-20 s clips per M1 audit "
+                            f"(data/metadata/worldspeech-tr_tr-source-audit.md:52)."
+                        ),
+                        selected_candidate_id=None,
                     )
                 )
                 continue
@@ -424,6 +579,7 @@ class WhisperBaselineAdapter:
                         candidates=(),
                         error_code=type(exc).__name__,
                         error_message=f"Feature extraction failed: {exc}",
+                        selected_candidate_id=None,
                     )
                 )
                 continue
@@ -445,6 +601,7 @@ class WhisperBaselineAdapter:
                             status="empty",
                             text="",
                             candidates=(),
+                            selected_candidate_id=None,
                         )
                     )
                     continue
@@ -489,6 +646,7 @@ class WhisperBaselineAdapter:
                         candidates=(),
                         error_code=type(exc).__name__,
                         error_message=f"Decoding failed: {exc}",
+                        selected_candidate_id=None,
                     )
                 )
 

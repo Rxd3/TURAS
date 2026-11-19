@@ -204,10 +204,12 @@ def verify_checkpoint_inventory(
     if not check_path.exists():
         raise CheckpointValidationError(f"Checkpoint path does not exist: {check_path}")
 
-    # Resolve target weight file
+    # Resolve target weight file and snapshot directory
     if check_path.is_file():
         weight_file = check_path
+        snapshot_dir = check_path.parent
     else:
+        snapshot_dir = check_path
         # Check if sharded weights exist without single weight file
         index_file = check_path / f"{expected_weight_file}.index.json"
         target_file = check_path / expected_weight_file
@@ -222,6 +224,11 @@ def verify_checkpoint_inventory(
                 f"Expected weight file {expected_weight_file!r} not found under checkpoint directory {check_path}"
             )
         weight_file = target_file
+
+    if not (snapshot_dir / "config.json").exists():
+        raise CheckpointValidationError(
+            f"Checkpoint directory {snapshot_dir} is incomplete: missing config.json"
+        )
 
     # Compute and verify SHA-256
     actual_sha = compute_file_sha256(weight_file)
@@ -404,6 +411,7 @@ def run_baseline_batch(
             cfg_data,
             device=device,
             requested_n=requested_n,
+            checkpoint_path=checkpoint_path,
             model_artifact_sha256=weight_sha,
             model_loader=model_loader,
             processor_loader=processor_loader,
@@ -416,6 +424,7 @@ def run_baseline_batch(
             cfg_data,
             device=device,
             requested_n=requested_n,
+            checkpoint_path=checkpoint_path,
             model_artifact_sha256=weight_sha,
             model_loader=model_loader,
             processor_loader=processor_loader,
@@ -537,6 +546,7 @@ def run_baseline_batch(
     timing_info = {
         "elapsed_seconds": round(elapsed_s, 4),
         "total_utterances": len(inputs),
+        "note": "batch wall time, not RTF (official RTF measured by M6 on 5070 Ti)",
     }
 
     manifest_obj = run_manifest(

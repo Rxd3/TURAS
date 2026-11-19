@@ -210,10 +210,16 @@ def run_real_audio_smoke_check(
         ckpt_dir = Path(checkpoint_path).resolve()
         if ckpt_dir.is_file():
             ckpt_dir = ckpt_dir.parent
+        if not (ckpt_dir / "config.json").exists():
+            raise CheckpointValidationError(f"Incomplete snapshot directory {ckpt_dir}: missing config.json")
 
-        processor = WhisperProcessor.from_pretrained(str(ckpt_dir))
-        torch_dtype = torch.float16 if target_device.startswith("cuda") else torch.float32
-        model = WhisperForConditionalGeneration.from_pretrained(str(ckpt_dir), torch_dtype=torch_dtype)
+        processor = WhisperProcessor.from_pretrained(str(ckpt_dir), local_files_only=True)
+        torch_dtype = torch.bfloat16 if str(cfg.get("model", {}).get("precision")) in ("bfloat16", "bf16") else (
+            torch.float16 if target_device.startswith("cuda") else torch.float32
+        )
+        model = WhisperForConditionalGeneration.from_pretrained(
+            str(ckpt_dir), torch_dtype=torch_dtype, use_safetensors=True, local_files_only=True
+        )
         model = model.to(target_device).eval()
 
     # 5. Collect audio clips to compare
@@ -257,6 +263,13 @@ def run_real_audio_smoke_check(
                 samples = audio_loader(clip_path)
             else:
                 samples = load_audio_clip(clip_path)
+
+            if len(samples) > 480000:
+                raise ValueError(
+                    f"Audio clip {uid} exceeds 30 s limit (480,000 samples at 16 kHz): "
+                    f"got {len(samples)} samples. Expected 10-20 s clips per M1 audit "
+                    f"(data/metadata/worldspeech-tr_tr-source-audit.md:52)."
+                )
 
             features = processor(
                 samples,

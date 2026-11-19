@@ -267,6 +267,31 @@ class RealFrameworkSyntheticRank1Check(unittest.TestCase):
         self.assertIn(result.status, ("match", "mismatch", "missing_rank1", "error"))
         self.assertIsInstance(result.text_exact_match, bool)
         self.assertIsInstance(result.tokens_exact_match, bool)
+
+        # Direct verification of candidate score against independent teacher-forced sum
+        raw_cands, _ = whisper_nbest(
+            model,
+            processor,
+            input_features,
+            requested_n=2,
+            max_new_tokens=10,
+            deduplicate=False,
+        )
+        self.assertGreater(len(raw_cands), 0)
+        prompt_tokens = [50258, 50359, 50363, 50365]
+        for c in raw_cands:
+            full_tokens = torch.tensor([prompt_tokens + list(c["token_ids"])])
+            with torch.no_grad():
+                logits = model(input_features=input_features, decoder_input_ids=full_tokens).logits
+            log_probs = torch.nn.functional.log_softmax(logits, dim=-1)
+            p_len = len(prompt_tokens)
+            tf_scores = [log_probs[0, p_len - 1 + i, tok].item() for i, tok in enumerate(c["token_ids"])]
+            tf_sum = sum(tf_scores)
+            diff = abs(c["acoustic_log_score"] - tf_sum)
+            self.assertLess(diff, 1e-3, f"Whisper acoustic_log_score diff {diff} exceeds 1e-3")
+            if c.get("decoder_sequence_score") is not None:
+                self.assertNotEqual(c["decoder_sequence_score"], c["acoustic_log_score"])
+
         # Record outcome in test assertions
         print(f"\n[Real Framework Synthetic Rank-1 Check Outcome] Status: {result.status} | Text Match: {result.text_exact_match} | Tokens Match: {result.tokens_exact_match}")
         print(f"  Single result text: {result.single_text!r} | Tokens: {result.single_token_ids}")

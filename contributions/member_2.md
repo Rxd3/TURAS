@@ -1,12 +1,37 @@
 # Member 2 — Seq2Seq and Speech-LLM Baselines
 
-Name: unassigned. GitHub username: unassigned.
+Name: Omar. GitHub username: Devinci101.
 Branch convention: `feat/m2-seq2seq-speech-llm-baselines` (focused topic suffixes allowed).
 Ownership/tasks/review routing: [TEAM_TASKS.md](../TEAM_TASKS.md).
 
-**Status: in progress (baseline adapters, smoke runner, and batch exporter workflow fully implemented and verified offline; awaiting official dataset release, split manifests, and validation beam freeze).** Checkpoint 2 baseline adapters (B1, B2, B3), smoke runners, and batch exporters implemented and tested offline; no pretrained models executed on dataset splits.
+**Status: in progress (baseline adapters, smoke runner, batch exporter workflow, and M6 round-two review fixes implemented and verified offline; awaiting official dataset release, split manifests, and B3 candidate selection).** Checkpoint 2 baseline adapters (B1, B2, B3), smoke runners, batch exporters, and decoding contracts implemented and verified offline (75 tests passing); no pretrained models executed on dataset splits.
 
 ## Actual contributions
+
+### 2026-11-19: Response to Member 6 round-two review on PR #6 (commit 54ec128)
+
+- **Scope:** Implementation of fixes from Member 6's round-two review on PR #6 ([review 5979396403](https://github.com/Rxd3/TURAS/pull/6#pullrequestreview-5979396403)), covering verified local snapshot loading, B1/B2 decoding alignment with M4's PR #5 protocol, formal B3 score convention approval (`qwen3-asr-generation-logprob-sum-v1`), real decode-path testing with tiny random-init models, strict input length limits, shared interface validation, and packaging updates.
+- **Owned paths:** `configs/baselines/whisper_small.json`, `configs/baselines/whisper_large_v3.json`, `configs/baselines/qwen3_asr_1_7b.json`, `configs/baselines/qwen3_asr_0_6b.json`, `src/turkish_asr_rdl/baselines/whisper.py`, `src/turkish_asr_rdl/baselines/qwen.py`, `src/turkish_asr_rdl/baselines/runner.py`, `scripts/smoke_check_whisper_rank1.py`, `pyproject.toml`, `experiments/m2-baseline-notes.md`, `contributions/member_2.md`, and all `tests/test_m2_*.py`.
+- **Key fixes and verified implementations:**
+  1. *Exact Local Snapshot Loading:* Verified snapshot loading in `WhisperBaselineAdapter`, `QwenBaselineAdapter`, `runner.py`, and `smoke_check_whisper_rank1.py`. When `--checkpoint` / `checkpoint_path` is provided, loads strictly from that verified path with `local_files_only=True` without Hub or cache fallback. For Hub cache resolution, resolves exact local snapshot with `local_files_only=True`, enforces pinned LFS OIDs (`PINNED_WHISPER_LFS_OIDS`, `PINNED_QWEN_LFS_OIDS`), verifies `config.json` presence, and checks model architecture type. Decoupled production LFS verification from injected mock unit testing. Dedicated adapter-level unit tests verify that explicit local checkpoints deliver the identical directory to model and processor loaders with `local_files_only=True`, that hash mismatches fail before loaders run, and that explicit paths never call the Hub.
+  2. *B1/B2 Decoding Alignment with M4:* Matched B1 decoding parameters with M4's frozen B1/F1/F2 protocol from PR #5 (`configs/evaluation/m45_final_protocol.json`, commit `4639b5e`): `bfloat16` precision, `num_beams: 5`, `requested_n: 5`, `num_return_sequences: 5`. Configured B2 identically to maintain parity. Added `generation_config_file: "generation_config.json"` with null hash.
+  3. *Qwen Scoring Convention Formalization:* Renamed B3 scoring convention to `qwen3-asr-generation-logprob-sum-v1`, formally approved by Member 6. Documented numerical equivalence: in exact fp32 arithmetic, generation transition log-prob sum matches teacher-forced forward pass log-prob sum within <= 0.00016 nats; in bf16, precision drift across 40–50 tokens is up to ~0.16 nats on 0.6B and ~0.11 nats on 1.7B across 5 clips (as measured by M6). Maintained `decoder_sequence_score` strictly separate from token log-prob sum. Added `chat_template.jinja` and `generation_config.json` metadata with null hashes.
+  4. *Input Length Validation:* Implemented explicit clip length guards returning `status="error"`, `error_code="AudioTooLong"`: Whisper rejects clips > 480,000 samples (30 s limit); Qwen rejects clips > 19,200,000 samples (20 min = 1,200 s limit, citing arXiv:2601.21337 Section 2.1). Cited M1 source audit (`data/metadata/worldspeech-tr_tr-source-audit.md:52`) for 10–20 s clip duration expectations.
+  5. *Decoder Guardrails & Raw Decoding:* Removed silent Qwen processor/decode fallbacks: strictly raises `AttributeError` on missing `apply_transcription_request` or `decode`, and `ValueError` on missing `input_ids`. Computes `includes_eos` from `kept_tokens[-1] in self._stop_ids` and raises `ValueError` on empty kept tokens. Preserved verbatim raw tokenizer decode (`skip_special_tokens=True`) without strip or repetition removal.
+  6. *Shared Interface Validation:* `get_shared_interface()` enforces that `Candidate` contains `lm_log_score`, `rdl_log_score`, `combined_score` and `Hypothesis` contains `selected_candidate_id`, raising `ImportError` early if the contract is incomplete. Decoder config hash includes precision, score convention, and acoustic score kind. Runner wall time clearly annotated as "batch wall time, not RTF" (official RTF measured by M6 on RTX 5070 Ti).
+  7. *Real Decode-Path Testing:* Added tiny random-init in-memory `Qwen3ASRForConditionalGeneration` test (fp32, 2 beams, zero downloads) exercising `_decode_nbest_native`, verifying `acoustic_log_score` matches an independent teacher-forced log-prob sum within `< 1e-3`. Updated synthetic Whisper tests to independently recompute teacher-forced sums and verify `diff < 1e-3` while ensuring `decoder_sequence_score != acoustic_log_score`.
+  8. *Packaging & Documentation:* Declared `numpy>=1.26.0` in `pyproject.toml` dependencies. Updated Whisper training data to 4,333 h Turkish ASR and 2,241 h translation (Figure 11, Appendix E).
+- **Test Evidence (75 tests total across 5 suites):**
+  - Offline suite (without external checkout of shared decoder): 75 tests run, 51 passed, 24 skipped cleanly.
+  - Opt-in integration suite (with shared decoder from `b6afa13063f7fa90bb1bc190c67b4529e40e91a5`): 75 tests run, 75 passed, 0 failures, 0 errors, 0 skipped in ~11.8s.
+  - Test suite breakdown: `tests/test_m2_baseline_configs.py` (6 passed), `tests/test_m2_whisper_rank1.py` (7 passed), `tests/test_m2_whisper_adapter.py` (25 passed), `tests/test_m2_qwen_adapter.py` (29 passed), `tests/test_m2_batch_runner.py` (8 passed).
+  - Test coverage context: At PR #6 commit `54ec128`, M6 measured 73% total Member 2 coverage (runner 81%, whisper 70%, qwen 61%; 22 Qwen tests, 33 Whisper/config tests, 8 runner tests). The new decode-path, error guardrail, and explicit checkpoint loading isolation tests further expand coverage to 75 tests.
+  - Pretrained smoke runs on real hardware attributed to Member 6 on NVIDIA GeForce RTX 5070 Ti; all Member 2 tests remain strictly local, mock, synthetic, or tiny in-memory.
+- **Commit References:**
+  - `c3d96d5`: `test(m2): add Whisper rank-1 check and config tests`
+  - `cec98c1`: `feat(m2): add Whisper and Qwen baseline adapters`
+  - `54ec128`: `feat(m2): add baseline smoke and batch runners`
+  - `f58b190`: `Merge remote-tracking branch 'origin/main' into feat/m2-seq2seq-speech-llm-baselines`
 
 ### 2026-11-19: Real-audio Whisper rank-1 smoke runner and baseline batch inference/export workflow
 
@@ -85,20 +110,20 @@ Ownership/tasks/review routing: [TEAM_TASKS.md](../TEAM_TASKS.md).
 - Reusable baseline adapters implemented for B1, B2, and B3 in `src/turkish_asr_rdl/baselines/`.
 - Reusable rank-1 smoke runner implemented in `scripts/smoke_check_whisper_rank1.py`.
 - Reusable baseline batch inference and shared export workflow implemented in `src/turkish_asr_rdl/baselines/runner.py` and `scripts/run_baseline_batch.py`.
-- Full integration and unit test coverage in `tests/test_m2_*.py` (63 tests).
+- Full integration and unit test coverage in `tests/test_m2_*.py` (75 tests).
 
 ## Reviews and handoffs
 
-- PR #6 updated with Whisper and Qwen adapters, review fixes, and comprehensive unit tests.
-- Reusable runners and exporter workflows tested locally with temporary fixtures and mock loaders; ready for execution as soon as official dataset manifests and approved checkpoints arrive.
-- **Handoff Sequence:** The first real run is B1/B2 rank-1 smoke check on approved local clips and verified weights, followed by validation decoding and parameter freeze (provisional beam/N 5 vs 10; N=10 is not final), followed by official test export using the frozen setting. Both Qwen candidates remain strictly unselected.
+- PR #6 updated with Whisper and Qwen adapters, baseline runners, exporter workflows, and Member 6 round-two review fixes.
+- Reusable runners and exporter workflows tested locally with temporary fixtures, synthetic inputs, and mock loaders; ready for execution as soon as official dataset manifests and approved checkpoints arrive.
+- **Handoff Sequence:** The first real run is B1/B2 rank-1 smoke check on approved local clips and verified weights, followed by validation decoding and parameter freeze (B1 and B2 aligned to beam 5, requested_n 5 following M4's PR #5 protocol; B3 beam search selection deferred to validation), followed by official test export using the frozen setting. Both Qwen candidates remain strictly unselected.
 
 ## Remaining work & Unresolved prerequisites
 
 Executing actual pretrained baseline inference runs and handing off official prediction bundles to Member 6 is blocked by the following unresolved prerequisites:
-1. **Approval of PR #6 Review (Owner: Member 6):** Review clearance on PR #6 at `cec98c1` (or merging shared decoding integration into `main`).
+1. **Approval of PR #6 Review (Owner: Member 6):** Review clearance on PR #6 at `54ec128` / subsequent update (or merging shared decoding integration into `main`).
 2. **Official Dataset Release & Split Manifests (Owners: Member 1 & Member 6):** Release of official `dataset_release` name and `split_manifest_sha256` for the test and validation splits to bind into baseline configs and input manifests.
-3. **Local Weight Checkpoint Downloads & SHA-256 Verification (Owner: Member 2 / Runner Operator):** Local download of safetensors files to destination outside repository and verification of the 64-character lowercase hex SHA-256 artifact hashes.
-4. **Validation Beam / N Alignment (Owners: Member 2 & Member 4):** Final joint agreement on frozen `num_beams` and `requested_n` (matching B1 with F1/F2 on validation set; provisional 5 vs 10, neither is final) before freezing decoding settings.
+3. **Local Weight Checkpoint Downloads & SHA-256 Verification (Owner: Member 2 / Runner Operator):** Local download of safetensors files to destination outside repository and verification of the 64-character lowercase hex SHA-256 artifact hashes and pinned LFS OIDs.
+4. **Validation Beam / N Confirmation (Owners: Member 2 & Member 4):** Validation run confirmation of the matched beam 5 / requested_n 5 protocol on validation set before freezing settings for official test runs; selection of B3 beam width.
 5. **B3 Checkpoint Eligibility Verification (Owners: Member 6 & Member 2):** Resolve timeline and pretraining contamination audit for `-hf` checkpoints (confirming whether June 2026 weights are tensor-identical to January 28, 2026 release or obtaining conversion statement) before official B3 execution. Both candidates remain strictly unselected.
-6. **B3 Scoring Convention Approval (Owners: Member 6 & Member 2):** Team review and formal sign-off confirming `smoke-qwen3-asr-joint-token-logprob-sum-v1` transition score convention (computed via generation step scores through EOS) for the official B3 baseline.
+6. **B3 Scoring Convention Status (RESOLVED):** Transition score convention `qwen3-asr-generation-logprob-sum-v1` (computed via generation step transition log-prob scores through EOS) formally approved by Member 6 for B3. Numerical equivalence and bf16 precision drift documented.

@@ -31,9 +31,40 @@ PINNED_QWEN_LFS_OIDS: dict[str, str] = {
     "Qwen/Qwen3-ASR-0.6B-hf": "d3f212dd20abecd315d830bc54ae3865e56ebfc3276484e57b771288ba27fd35",
 }
 
-DEFAULT_SCORE_CONVENTION = "smoke-qwen3-asr-joint-token-logprob-sum-v1"
+ALLOWED_QWEN_PRECISIONS: frozenset[str] = frozenset(
+    {"bfloat16", "bf16", "float16", "fp16", "float32", "fp32"}
+)
+
+DEFAULT_SCORE_CONVENTION = "qwen3-asr-generation-logprob-sum-v1"
 DEFAULT_ACOUSTIC_KIND = "speech_llm_joint_token_log_prob_sum"
 DEFAULT_DEDUP_POLICY = "exact raw-text match; first (lowest-rank) occurrence kept; removed IDs listed in dedup_map"
+
+
+def _verify_shared_schema(candidate_cls: Any, hypothesis_cls: Any) -> None:
+    """Verify shared interface classes have all required fields per integration contract."""
+    import dataclasses
+
+    if dataclasses.is_dataclass(candidate_cls):
+        cand_fields = {f.name for f in dataclasses.fields(candidate_cls)}
+    else:
+        cand_fields = set(getattr(candidate_cls, "__annotations__", {}).keys())
+    missing_cand = {"lm_log_score", "rdl_log_score", "combined_score"} - cand_fields
+    if missing_cand:
+        raise ImportError(
+            f"Shared Candidate schema missing required fields: {sorted(missing_cand)}. "
+            f"Requires full integration interface from revision b6afa13."
+        )
+
+    if dataclasses.is_dataclass(hypothesis_cls):
+        hyp_fields = {f.name for f in dataclasses.fields(hypothesis_cls)}
+    else:
+        hyp_fields = set(getattr(hypothesis_cls, "__annotations__", {}).keys())
+    missing_hyp = {"selected_candidate_id"} - hyp_fields
+    if missing_hyp:
+        raise ImportError(
+            f"Shared Hypothesis schema missing required fields: {sorted(missing_hyp)}. "
+            f"Requires full integration interface from revision b6afa13."
+        )
 
 
 def connect_shared_decoding(shared_path: str | Path | None = None) -> bool:
@@ -100,6 +131,7 @@ def get_shared_interface(shared_path: str | Path | None = None):
     """
     try:
         from turkish_asr_rdl.decoding.interface import AsrAdapter, AudioItem, Candidate, Hypothesis, check_adapter
+        _verify_shared_schema(Candidate, Hypothesis)
         return AudioItem, Candidate, Hypothesis, AsrAdapter, check_adapter
     except ImportError:
         pass
@@ -110,6 +142,7 @@ def get_shared_interface(shared_path: str | Path | None = None):
             "is not available. Set TURAS_SHARED_DECODER_PATH to the isolated export directory or pass shared_path."
         )
     from turkish_asr_rdl.decoding.interface import AsrAdapter, AudioItem, Candidate, Hypothesis, check_adapter
+    _verify_shared_schema(Candidate, Hypothesis)
     return AudioItem, Candidate, Hypothesis, AsrAdapter, check_adapter
 
 
@@ -128,10 +161,11 @@ def compute_joint_log_probs_from_step_scores(
 
     Excludes prompt tokens (which are not part of generation step_scores) and padding tokens
     (occurring after stop_ids / EOS). Includes the stop token (EOS) according to the shared convention.
+    Raises ValueError on empty kept tokens.
     """
     kept_tokens = cut_at_stop(generated_tokens, stop_ids)
     if not kept_tokens:
-        return 0.0, ()
+        raise ValueError("Empty kept tokens encountered during Qwen joint score computation")
     score = float(sum(step_scores[:len(kept_tokens)]))
     return score, kept_tokens
 
@@ -146,6 +180,7 @@ class QwenBaselineAdapter:
         device: str | None = None,
         precision: str | None = None,
         requested_n: int | None = None,
+        checkpoint_path: str | Path | None = None,
         model_artifact_sha256: str | None = None,
         model_loader: Callable[..., Any] | None = None,
         processor_loader: Callable[..., Any] | None = None,
@@ -178,7 +213,7 @@ class QwenBaselineAdapter:
         else:
             raise ValueError(
                 f"Unknown or unpinned model ID {self.model_id!r}; "
-                f"expected one of {list(PINNED_QWEN_REVISIONS.keys())}"
+                f"expected one of {sorted(PINNED_QWEN_REVISIONS.keys())}"
             )
 
         self.processor_id: str = str(proc_cfg.get("id", ""))
@@ -198,6 +233,14 @@ class QwenBaselineAdapter:
 
         self.device: str = device or str(model_cfg.get("device", "cuda"))
         self.precision: str = precision or str(model_cfg.get("precision", "bfloat16"))
+        if self.precision not in ALLOWED_QWEN_PRECISIONS:
+            raise ValueError(
+                f"Unsupported precision: {self.precision!r}. "
+                f"Allowed precisions: {sorted(ALLOWED_QWEN_PRECISIONS)}"
+            )
+
+        # Checkpoint path
+        self.checkpoint_path: Path | None = Path(checkpoint_path).resolve() if checkpoint_path else None
 
         # Requested N and beam width handling
         cfg_req_n = dec_cfg.get("requested_n", 5)
@@ -248,9 +291,19 @@ class QwenBaselineAdapter:
         self.score_convention_id: str | None = nbest_cfg.get(
             "score_convention_id", DEFAULT_SCORE_CONVENTION
         )
+        if self.score_convention_id != DEFAULT_SCORE_CONVENTION:
+            raise ValueError(
+                f"score_convention_id must be {DEFAULT_SCORE_CONVENTION!r}, got {self.score_convention_id!r}"
+            )
+
         self.acoustic_score_kind: str = str(
             nbest_cfg.get("acoustic_score_kind", DEFAULT_ACOUSTIC_KIND)
         )
+        if self.acoustic_score_kind != DEFAULT_ACOUSTIC_KIND:
+            raise ValueError(
+                f"acoustic_score_kind must be {DEFAULT_ACOUSTIC_KIND!r}, got {self.acoustic_score_kind!r}"
+            )
+
         self.deduplication_policy: str = str(
             nbest_cfg.get("deduplication_policy", DEFAULT_DEDUP_POLICY)
         )
@@ -264,6 +317,13 @@ class QwenBaselineAdapter:
                 f"Got: {weight_sha!r}"
             )
         self.model_artifact_sha256: str = weight_sha
+
+        expected_oid = PINNED_QWEN_LFS_OIDS.get(self.model_id)
+        if model_loader is None and expected_oid and self.model_artifact_sha256.lower() != expected_oid.lower():
+            raise ValueError(
+                f"model_artifact_sha256 {self.model_artifact_sha256} does not match pinned LFS OID "
+                f"{expected_oid} for {self.model_id}"
+            )
 
         # Strict JSON-serializable config mapping satisfying check_adapter
         self.config: Mapping[str, Any] = {
@@ -284,7 +344,7 @@ class QwenBaselineAdapter:
             },
             "audio": {
                 "sampling_rate_hz": self.sampling_rate_hz,
-                "clip_duration_constraint": "10-20 s clips from TURAS (M1 source audit); within Qwen3-ASR input limit",
+                "clip_duration_constraint": "10-20 s clips from TURAS (M1 source audit: data/metadata/worldspeech-tr_tr-source-audit.md:52); Qwen3-ASR accepts up to 20 minutes (1,200 s per arXiv:2601.21337 Section 2.1)",
             },
             "decoding": {
                 "algorithm": "beam",
@@ -309,8 +369,15 @@ class QwenBaselineAdapter:
             },
         }
 
+        # Include decoding config, precision, score convention, and acoustic score kind in hash
+        hash_payload = {
+            **self.config["decoding"],
+            "precision": self.precision,
+            "score_convention_id": self.score_convention_id,
+            "acoustic_score_kind": self.acoustic_score_kind,
+        }
         self.decoder_config_sha256: str = hashlib.sha256(
-            json.dumps(self.config["decoding"], sort_keys=True).encode("utf-8")
+            json.dumps(hash_payload, sort_keys=True).encode("utf-8")
         ).hexdigest()
 
         self.model: Any = None
@@ -332,8 +399,8 @@ class QwenBaselineAdapter:
     def load(self) -> None:
         """Load weights and processor into memory.
 
-        Uses injected loaders if provided (for offline testing), otherwise loads from
-        Hugging Face Hub with the exact pinned revisions.
+        Uses injected loaders if provided (for offline testing), otherwise resolves
+        the verified local snapshot bytes and loads model/processor with local_files_only=True.
         """
         if self._model_loader is not None and self._processor_loader is not None:
             self.model = self._model_loader()
@@ -364,15 +431,67 @@ class QwenBaselineAdapter:
         }
         torch_dtype = dtype_map.get(self.precision, torch.bfloat16)
 
+        # Resolve exact local snapshot path and verify weight integrity
+        weight_filename = self.config["model"].get("weight_file", "model.safetensors")
+        if self.checkpoint_path is not None:
+            ckpt_p = Path(self.checkpoint_path).resolve()
+            if ckpt_p.is_file():
+                weight_file = ckpt_p
+                snapshot_dir = ckpt_p.parent
+            else:
+                snapshot_dir = ckpt_p
+                weight_file = snapshot_dir / weight_filename
+            if not weight_file.exists():
+                raise FileNotFoundError(f"Weight file not found in checkpoint: {weight_file}")
+            if not (snapshot_dir / "config.json").exists():
+                raise ValueError(f"Incomplete snapshot directory {snapshot_dir}: missing config.json")
+        else:
+            try:
+                from huggingface_hub import hf_hub_download
+                resolved = Path(
+                    hf_hub_download(
+                        repo_id=self.model_id,
+                        filename=weight_filename,
+                        revision=self.model_revision,
+                        local_files_only=True,
+                    )
+                ).resolve()
+            except Exception as exc:
+                raise FileNotFoundError(
+                    f"Direct loading from Hugging Face cache failed for {self.model_id} (revision {self.model_revision}) "
+                    f"with local_files_only=True: {exc}"
+                ) from exc
+            weight_file = resolved
+            snapshot_dir = resolved.parent
+            if not (snapshot_dir / "config.json").exists():
+                raise ValueError(f"Incomplete snapshot directory {snapshot_dir}: missing config.json")
+
+        actual_sha = hashlib.sha256(weight_file.read_bytes()).hexdigest()
+        if actual_sha.lower() != self.model_artifact_sha256.lower():
+            raise ValueError(
+                f"Weight SHA-256 mismatch for {weight_file.name}: "
+                f"expected {self.model_artifact_sha256}, got {actual_sha}"
+            )
+        pinned_oid = PINNED_QWEN_LFS_OIDS.get(self.model_id)
+        if pinned_oid and actual_sha.lower() != pinned_oid.lower():
+            raise ValueError(
+                f"Weight LFS OID mismatch for {self.model_id}: "
+                f"expected {pinned_oid}, got {actual_sha}"
+            )
+
         self.processor = AutoProcessor.from_pretrained(
-            self.processor_id,
-            revision=self.processor_revision,
+            str(snapshot_dir),
+            local_files_only=True,
         )
         self.model = AutoModelForMultimodalLM.from_pretrained(
-            self.model_id,
-            revision=self.model_revision,
+            str(snapshot_dir),
             torch_dtype=torch_dtype,
+            local_files_only=True,
         )
+        if not hasattr(self.model, "generate"):
+            raise TypeError(
+                f"Loaded model of type {type(self.model).__name__} does not have required generate method"
+            )
         self.model.to(self.device).eval()
 
         eos = getattr(self.model, "generation_config", None)
@@ -428,21 +547,33 @@ class QwenBaselineAdapter:
                 )
                 continue
 
-            # Process audio inputs via configured transcription request
+            if len(samples) > 19200000:
+                results.append(
+                    Hypothesis(
+                        utterance_id=utt_id,
+                        status="error",
+                        text=None,
+                        candidates=(),
+                        error_code="AudioTooLong",
+                        error_message=(
+                            f"Audio duration exceeds 20-minute (1,200 s) Qwen3-ASR input limit "
+                            f"(arXiv:2601.21337 Section 2.1): got {len(samples)} samples at 16 kHz."
+                        ),
+                        selected_candidate_id=None,
+                    )
+                )
+                continue
+
+            # Process audio inputs via configured transcription request (strict: no silent fallbacks)
             try:
-                if hasattr(self.processor, "apply_transcription_request"):
-                    inputs = self.processor.apply_transcription_request(
-                        audio=[samples],
-                        language=self.language,
+                if not hasattr(self.processor, "apply_transcription_request"):
+                    raise AttributeError(
+                        f"Processor {self.processor_id} missing required apply_transcription_request method"
                     )
-                elif callable(self.processor):
-                    inputs = self.processor(
-                        audio=[samples],
-                        sampling_rate=self.sampling_rate_hz,
-                        return_tensors="pt",
-                    )
-                else:
-                    raise AttributeError("processor has neither apply_transcription_request nor __call__")
+                inputs = self.processor.apply_transcription_request(
+                    audio=[samples],
+                    language=self.language,
+                )
 
                 # Move inputs to target device and dtype if applicable
                 if hasattr(inputs, "to"):
@@ -544,7 +675,12 @@ class QwenBaselineAdapter:
         import transformers
 
         prompt_input_ids = inputs.get("input_ids")
-        prompt_length = prompt_input_ids.shape[1] if prompt_input_ids is not None else 0
+        if prompt_input_ids is None:
+            raise ValueError("inputs dictionary must contain 'input_ids' for native decoding")
+        prompt_length = prompt_input_ids.shape[1] if hasattr(prompt_input_ids, "shape") else len(prompt_input_ids)
+
+        if not hasattr(self.processor, "decode"):
+            raise AttributeError(f"Processor {self.processor_id} missing required decode method")
 
         with torch.inference_mode():
             out = self.model.generate(
@@ -579,19 +715,15 @@ class QwenBaselineAdapter:
                 steps, gen_tokens, self._stop_ids
             )
 
-            # Decode text verbatim
-            if hasattr(self.processor, "decode"):
-                text = self.processor.decode(list(kept_tokens), skip_special_tokens=True)
-            elif hasattr(self.processor, "batch_decode"):
-                text = self.processor.batch_decode([list(kept_tokens)], skip_special_tokens=True)[0]
-            else:
-                text = ""
+            # Verbatim raw decode with tokenizer (no strip, no repetition fix)
+            text = self.processor.decode(list(kept_tokens), skip_special_tokens=True)
 
+            includes_eos = bool(kept_tokens and kept_tokens[-1] in self._stop_ids)
             score_details: dict[str, Any] = {
-                "score_source": "transformers compute_transition_scores, summed over generated tokens through end-of-turn",
+                "score_source": "generation-time step log-probs; equals the teacher-forced sum in exact arithmetic; bf16 drift up to ~0.16 nats measured on 5 clips",
                 "joint": "speech-LLM score; no separate acoustic-only component exists",
                 "log_base": "e",
-                "includes_eos": True,
+                "includes_eos": includes_eos,
                 "prompt_excluded": f"chat prompt with forced language {self.language}",
                 "nbest_algorithm": "beam",
                 "num_beams": self.requested_n,

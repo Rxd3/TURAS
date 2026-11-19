@@ -16,6 +16,10 @@
     "tokenizer_file_sha256": null,
     "processor_file": "processor_config.json",
     "processor_file_sha256": null,
+    "chat_template_file": "chat_template.jinja",
+    "chat_template_file_sha256": null,
+    "generation_config_file": "generation_config.json",
+    "generation_config_file_sha256": null,
     "precision": "bfloat16",
     "device": "cuda"
   },
@@ -26,7 +30,7 @@
   },
   "audio": {
     "sampling_rate_hz": 16000,
-    "clip_duration_constraint": "10-20 s clips from TURAS (M1 source audit); within Qwen3-ASR input limit"
+    "clip_duration_constraint": "10-20 s clips from TURAS (M1 source audit: data/metadata/worldspeech-tr_tr-source-audit.md:52); well within Qwen3-ASR 20-minute (1,200 s) input limit (arXiv:2601.21337)"
   },
   "inputs": {
     "inference": null,
@@ -52,11 +56,11 @@
     "num_return_sequences": 5
   },
   "nbest": {
-    "score_convention_id": "smoke-qwen3-asr-joint-token-logprob-sum-v1",
+    "score_convention_id": "qwen3-asr-generation-logprob-sum-v1",
     "acoustic_score_kind": "speech_llm_joint_token_log_prob_sum",
     "library_beam_score_target": "decoder_sequence_score",
     "implementation_path": "native transformers AutoModelForMultimodalLM; qwen-asr package forbidden",
     "deduplication_policy": "exact raw-text match; first (lowest-rank) occurrence kept; removed IDs listed in dedup_map"
   },
-  "reviews_required": "M6 review of candidate trade-off against 1.7B (validation WER/CER and M6 timing session RTF; both fit in VRAM) and joint score convention; dataset binding pending approved release"
+  "reviews_required": "M6 review of candidate trade-off against 1.7B (validation WER/CER and M6 timing session RTF; both fit in VRAM); dataset binding pending approved release"
 }

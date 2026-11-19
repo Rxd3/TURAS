@@ -17,11 +17,14 @@ Tests cover:
 from __future__ import annotations
 
 import copy
+import hashlib
 import json
 import os
 import sys
+import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import MagicMock, patch
 
 import numpy as np
 
@@ -31,6 +34,7 @@ if str(SRC_PATH) not in sys.path:
     sys.path.insert(0, str(SRC_PATH))
 
 from turkish_asr_rdl.baselines.whisper import (
+    PINNED_WHISPER_LFS_OIDS,
     PINNED_WHISPER_REVISIONS,
     WhisperBaselineAdapter,
     connect_shared_decoding,
@@ -64,7 +68,7 @@ class WhisperBaselineAdapterConfigTests(unittest.TestCase):
             "973afd24965f72e36ca33b3055d56a652f456b4d",
         )
         self.assertEqual(adapter.sampling_rate_hz, 16000)
-        self.assertEqual(adapter.requested_n, 10)
+        self.assertEqual(adapter.requested_n, 5)
         self.assertEqual(
             adapter.score_convention_id,
             "whisper-original-logits-generated-plus-eos-v1",
@@ -91,7 +95,7 @@ class WhisperBaselineAdapterConfigTests(unittest.TestCase):
             "06f233fe06e710322aca913c1bc4249a0d71fce1",
         )
         self.assertEqual(adapter.sampling_rate_hz, 16000)
-        self.assertEqual(adapter.requested_n, 10)
+        self.assertEqual(adapter.requested_n, 5)
         self.assertEqual(
             adapter.score_convention_id,
             "whisper-original-logits-generated-plus-eos-v1",
@@ -135,10 +139,15 @@ class WhisperBaselineAdapterConfigTests(unittest.TestCase):
             WhisperBaselineAdapter(bad_cfg)
         self.assertIn("model_artifact_sha256", str(ctx.exception))
 
-        # Explicit fixture parameter works cleanly
-        explicit_sha = "0" * 64
-        adapter = WhisperBaselineAdapter(bad_cfg, model_artifact_sha256=explicit_sha)
-        self.assertEqual(adapter.model_artifact_sha256, explicit_sha)
+        # Explicit fixture parameter matching pinned LFS OID works cleanly
+        pinned_sha = "1d7734884874f1a1513ed9aa760a4f8e97aaa02fd6d93a3a85d27b2ae9ca596b"
+        adapter = WhisperBaselineAdapter(bad_cfg, model_artifact_sha256=pinned_sha)
+        self.assertEqual(adapter.model_artifact_sha256, pinned_sha)
+
+        # Mismatched LFS OID raises ValueError
+        with self.assertRaises(ValueError) as ctx:
+            WhisperBaselineAdapter(bad_cfg, model_artifact_sha256="0" * 64)
+        self.assertIn("does not match pinned LFS OID", str(ctx.exception))
 
     def test_configurable_requested_n_for_m2_and_m4(self):
         """Adapter supports requested_n=10 (M2 default) and requested_n=5 (M4 contract)."""
@@ -210,6 +219,85 @@ class WhisperBaselineAdapterConfigTests(unittest.TestCase):
         adapter.load()
         self.assertIs(adapter.model, dummy_model)
         self.assertIs(adapter.processor, dummy_processor)
+
+    def test_explicit_checkpoint_loading_and_hub_isolation(self):
+        """Valid explicit local checkpoint makes both model and processor loaders receive the same local snapshot directory with local_files_only=True and never calls Hub."""
+        try:
+            import torch
+            import transformers
+        except ImportError:
+            self.skipTest("PyTorch and Transformers are required for loader tests")
+
+        with tempfile.TemporaryDirectory() as td:
+            tdp = Path(td).resolve()
+            (tdp / "config.json").write_text("{}")
+            (tdp / "model.safetensors").write_bytes(b"dummy")
+
+            adapter = WhisperBaselineAdapter(self.b1_config, checkpoint_path=tdp, device="cpu")
+            pinned_oid = PINNED_WHISPER_LFS_OIDS[adapter.model_id]
+
+            with (
+                patch("hashlib.sha256") as mock_sha,
+                patch("transformers.WhisperProcessor.from_pretrained") as mock_proc,
+                patch("transformers.WhisperForConditionalGeneration.from_pretrained") as mock_model,
+                patch("huggingface_hub.hf_hub_download") as mock_hub,
+            ):
+                mock_sha.return_value.hexdigest.return_value = pinned_oid
+                mock_inst = MagicMock()
+                from transformers import WhisperForConditionalGeneration
+                mock_inst.__class__ = WhisperForConditionalGeneration
+                mock_model.return_value = mock_inst
+                mock_inst.to.return_value.eval.return_value = mock_inst
+
+                adapter.load()
+
+                mock_proc.assert_called_once_with(str(tdp), local_files_only=True)
+                mock_model.assert_called_once()
+                model_dir, model_kwargs = mock_model.call_args
+                self.assertEqual(model_dir[0], str(tdp))
+                self.assertTrue(model_kwargs.get("local_files_only"))
+                mock_hub.assert_not_called()
+
+    def test_explicit_checkpoint_hash_mismatch_fails_before_loaders(self):
+        """Weight hash mismatch fails before model or processor loaders run and never calls Hub."""
+        try:
+            import torch
+            import transformers
+        except ImportError:
+            self.skipTest("PyTorch and Transformers are required for loader tests")
+
+        with tempfile.TemporaryDirectory() as td:
+            tdp = Path(td).resolve()
+            (tdp / "config.json").write_text("{}")
+            (tdp / "model.safetensors").write_bytes(b"dummy")
+
+            adapter = WhisperBaselineAdapter(self.b1_config, checkpoint_path=tdp, device="cpu")
+
+            with (
+                patch("hashlib.sha256") as mock_sha,
+                patch("transformers.WhisperProcessor.from_pretrained") as mock_proc,
+                patch("transformers.WhisperForConditionalGeneration.from_pretrained") as mock_model,
+                patch("huggingface_hub.hf_hub_download") as mock_hub,
+            ):
+                mock_sha.return_value.hexdigest.return_value = "0" * 64
+                with self.assertRaises(ValueError) as ctx:
+                    adapter.load()
+                self.assertIn("Weight SHA-256 mismatch", str(ctx.exception))
+                mock_proc.assert_not_called()
+                mock_model.assert_not_called()
+                mock_hub.assert_not_called()
+
+    def test_explicit_checkpoint_missing_config_fails_without_hub(self):
+        """Explicit checkpoint missing config.json fails before loaders and never calls Hub."""
+        with tempfile.TemporaryDirectory() as td:
+            tdp = Path(td).resolve()
+            (tdp / "model.safetensors").write_bytes(b"dummy")
+            adapter = WhisperBaselineAdapter(self.b1_config, checkpoint_path=tdp, device="cpu")
+            with patch("huggingface_hub.hf_hub_download") as mock_hub:
+                with self.assertRaises(ValueError) as ctx:
+                    adapter.load()
+                self.assertIn("missing config.json", str(ctx.exception))
+                mock_hub.assert_not_called()
 
 
 class SharedDecoderIntegrationTests(unittest.TestCase):
@@ -406,6 +494,23 @@ class SharedDecoderIntegrationTests(unittest.TestCase):
         self.assertIsNone(hypotheses[3].text)
         self.assertEqual(hypotheses[3].error_code, "RuntimeError")
         self.assertIn("Synthetic decoder failure", hypotheses[3].error_message)
+
+    def test_audio_longer_than_30s_returns_audiotoolong(self):
+        """Audio clips exceeding 30 s (480,000 samples at 16 kHz) return status='error' with AudioTooLong."""
+        adapter = WhisperBaselineAdapter(
+            self.b1_config,
+            model_loader=lambda: object(),
+            processor_loader=lambda: object(),
+            shared_path=self.shared_path,
+        )
+        adapter.load()
+        dummy_item = type("DummyItem", (), {"utterance_id": "long-01", "samples": np.ones(480001, dtype=np.float32)})()
+        results = adapter.transcribe([dummy_item])
+        self.assertEqual(len(results), 1)
+        self.assertEqual(results[0].status, "error")
+        self.assertEqual(results[0].error_code, "AudioTooLong")
+        self.assertIn("480,000 samples", results[0].error_message)
+        self.assertIn("data/metadata/worldspeech-tr_tr-source-audit.md:52", results[0].error_message)
 
     def test_verbatim_raw_whitespace_preservation(self):
         """Decoded text is preserved verbatim including emitted leading whitespace without stripping."""
@@ -716,9 +821,12 @@ class SharedDecoderIntegrationTests(unittest.TestCase):
                 return " ".join(words) if words else ""
 
         class LocalFeatureExtractor:
+            def __init__(self):
+                self.saved_features = torch.randn(1, 80, 3000)
+
             def __call__(self, samples, sampling_rate, return_tensors):
                 class Tensors:
-                    input_features = torch.randn(1, 80, 3000)
+                    input_features = self.saved_features
                 return Tensors()
 
         class LocalProcessor:
@@ -768,8 +876,26 @@ class SharedDecoderIntegrationTests(unittest.TestCase):
         self.assertEqual(len(hyp.candidates), 2)
         self.assertEqual(hyp.candidates[0].rank, 1)
         self.assertEqual(hyp.candidates[1].rank, 2)
-        self.assertTrue(np.isfinite(hyp.candidates[0].acoustic_log_score))
-        self.assertEqual(hyp.candidates[0].acoustic_score_kind, "seq2seq_token_log_prob_sum")
+
+        prompt_tokens = [50258, 50359, 50363, 50365]
+        for c in hyp.candidates:
+            self.assertTrue(np.isfinite(c.acoustic_log_score))
+            self.assertEqual(c.acoustic_score_kind, "seq2seq_token_log_prob_sum")
+            # Independent teacher-forced score recompute
+            full_tokens = torch.tensor([prompt_tokens + list(c.token_ids)])
+            with torch.no_grad():
+                logits = model(
+                    input_features=processor.feature_extractor.saved_features,
+                    decoder_input_ids=full_tokens,
+                ).logits
+            log_probs = torch.nn.functional.log_softmax(logits, dim=-1)
+            p_len = len(prompt_tokens)
+            tf_scores = [log_probs[0, p_len - 1 + i, tok].item() for i, tok in enumerate(c.token_ids)]
+            tf_sum = sum(tf_scores)
+            diff = abs(c.acoustic_log_score - tf_sum)
+            self.assertLess(diff, 1e-3, f"Whisper acoustic_log_score diff {diff} exceeds 1e-3")
+            if c.decoder_sequence_score is not None:
+                self.assertNotEqual(c.decoder_sequence_score, c.acoustic_log_score)
 
 
 if __name__ == "__main__":

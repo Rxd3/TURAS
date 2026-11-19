@@ -30,14 +30,14 @@ EXPECTED_AUDIT_IDENTITIES = {
     "B1": {
         "model_id": "openai/whisper-small",
         "revision": "973afd24965f72e36ca33b3055d56a652f456b4d",
-        "precision": "float16",
+        "precision": "bfloat16",
         "acoustic_score_kind": "seq2seq_token_log_prob_sum",
         "score_convention_id": "whisper-original-logits-generated-plus-eos-v1",
     },
     "B2": {
         "model_id": "openai/whisper-large-v3",
         "revision": "06f233fe06e710322aca913c1bc4249a0d71fce1",
-        "precision": "float16",
+        "precision": "bfloat16",
         "acoustic_score_kind": "seq2seq_token_log_prob_sum",
         "score_convention_id": "whisper-original-logits-generated-plus-eos-v1",
     },
@@ -46,14 +46,14 @@ EXPECTED_AUDIT_IDENTITIES = {
         "revision": "bcd2b5b7f32b480ab5790554cfa8347f246a14f3",
         "precision": "bfloat16",
         "acoustic_score_kind": "speech_llm_joint_token_log_prob_sum",
-        "score_convention_id": "smoke-qwen3-asr-joint-token-logprob-sum-v1",
+        "score_convention_id": "qwen3-asr-generation-logprob-sum-v1",
     },
     "B3_candidate_2": {
         "model_id": "Qwen/Qwen3-ASR-0.6B-hf",
         "revision": "7f1569a48a89f3e3f4dc3a5c9d28bddd903bc76c",
         "precision": "bfloat16",
         "acoustic_score_kind": "speech_llm_joint_token_log_prob_sum",
-        "score_convention_id": "smoke-qwen3-asr-joint-token-logprob-sum-v1",
+        "score_convention_id": "qwen3-asr-generation-logprob-sum-v1",
     },
 }
 

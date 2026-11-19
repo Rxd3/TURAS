@@ -19,12 +19,15 @@ Tests cover:
 from __future__ import annotations
 
 import copy
+import hashlib
 import json
 import math
 import os
 import sys
+import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import MagicMock, patch
 
 import numpy as np
 
@@ -70,6 +73,13 @@ class QwenDeterministicScoringTests(unittest.TestCase):
         score, kept = compute_joint_log_probs_from_step_scores(step_scores, gen_tokens, stop_ids)
         self.assertEqual(kept, (101, 102, 99))
         self.assertAlmostEqual(score, -4.5, places=5)
+
+    def test_compute_joint_empty_tokens_raises(self):
+        """Empty kept tokens raise ValueError during speech-LLM joint score computation."""
+        stop_ids = frozenset({99})
+        with self.assertRaises(ValueError) as ctx:
+            compute_joint_log_probs_from_step_scores([-1.5], [], stop_ids)
+        self.assertIn("Empty kept tokens", str(ctx.exception))
 
     def test_deterministic_scoring_via_compute_transition_scores_greedy(self):
         """Deterministic test exercising the exact adapter path for greedy generation scoring.
@@ -357,10 +367,39 @@ class QwenBaselineAdapterConfigTests(unittest.TestCase):
             QwenBaselineAdapter(bad_cfg)
         self.assertIn("model_artifact_sha256", str(ctx.exception))
 
-        # Explicit fixture parameter works cleanly
-        explicit_sha = "e" * 64
-        adapter = QwenBaselineAdapter(bad_cfg, model_artifact_sha256=explicit_sha)
-        self.assertEqual(adapter.model_artifact_sha256, explicit_sha)
+        # Explicit fixture parameter matching pinned LFS OID works cleanly
+        pinned_oid = PINNED_QWEN_LFS_OIDS["Qwen/Qwen3-ASR-1.7B-hf"]
+        adapter = QwenBaselineAdapter(bad_cfg, model_artifact_sha256=pinned_oid)
+        self.assertEqual(adapter.model_artifact_sha256, pinned_oid)
+
+        # Mismatched LFS OID raises ValueError
+        with self.assertRaises(ValueError) as ctx:
+            QwenBaselineAdapter(bad_cfg, model_artifact_sha256="0" * 64)
+        self.assertIn("does not match pinned LFS OID", str(ctx.exception))
+
+    def test_decode_nbest_native_missing_input_ids_raises(self):
+        """Missing input_ids in inputs raises ValueError."""
+        adapter = QwenBaselineAdapter(
+            self.c2_config,
+            model_loader=lambda: object(),
+            processor_loader=lambda: type("Proc", (), {"decode": lambda *a, **k: ""})(),
+        )
+        adapter.load()
+        with self.assertRaises(ValueError) as ctx:
+            adapter._decode_nbest_native({"other_tensors": []})
+        self.assertIn("input_ids", str(ctx.exception))
+
+    def test_decode_nbest_native_missing_decode_raises(self):
+        """Processor missing decode method raises AttributeError."""
+        adapter = QwenBaselineAdapter(
+            self.c2_config,
+            model_loader=lambda: object(),
+            processor_loader=lambda: object(),
+        )
+        adapter.load()
+        with self.assertRaises(AttributeError) as ctx:
+            adapter._decode_nbest_native({"input_ids": [1, 2, 3]})
+        self.assertIn("decode", str(ctx.exception))
 
     def test_mock_loaders_execution(self):
         """Injected model and processor loaders are invoked without real downloads."""
@@ -374,6 +413,83 @@ class QwenBaselineAdapterConfigTests(unittest.TestCase):
         adapter.load()
         self.assertIs(adapter.model, dummy_model)
         self.assertIs(adapter.processor, dummy_processor)
+
+    def test_explicit_checkpoint_loading_and_hub_isolation(self):
+        """Valid explicit local checkpoint makes both model and processor loaders receive the same local snapshot directory with local_files_only=True and never calls Hub."""
+        try:
+            import torch
+            import transformers
+        except ImportError:
+            self.skipTest("PyTorch and Transformers are required for loader tests")
+
+        with tempfile.TemporaryDirectory() as td:
+            tdp = Path(td).resolve()
+            (tdp / "config.json").write_text("{}")
+            (tdp / "model.safetensors").write_bytes(b"dummy")
+
+            adapter = QwenBaselineAdapter(self.c1_config, checkpoint_path=tdp, device="cpu")
+            pinned_oid = PINNED_QWEN_LFS_OIDS[adapter.model_id]
+
+            with (
+                patch("hashlib.sha256") as mock_sha,
+                patch("transformers.AutoProcessor.from_pretrained") as mock_proc,
+                patch("transformers.AutoModelForMultimodalLM.from_pretrained") as mock_model,
+                patch("huggingface_hub.hf_hub_download") as mock_hub,
+            ):
+                mock_sha.return_value.hexdigest.return_value = pinned_oid
+                mock_inst = MagicMock()
+                mock_model.return_value = mock_inst
+                mock_inst.to.return_value.eval.return_value = mock_inst
+
+                adapter.load()
+
+                mock_proc.assert_called_once_with(str(tdp), local_files_only=True)
+                mock_model.assert_called_once()
+                model_dir, model_kwargs = mock_model.call_args
+                self.assertEqual(model_dir[0], str(tdp))
+                self.assertTrue(model_kwargs.get("local_files_only"))
+                mock_hub.assert_not_called()
+
+    def test_explicit_checkpoint_hash_mismatch_fails_before_loaders(self):
+        """Weight hash mismatch fails before model or processor loaders run and never calls Hub."""
+        try:
+            import torch
+            import transformers
+        except ImportError:
+            self.skipTest("PyTorch and Transformers are required for loader tests")
+
+        with tempfile.TemporaryDirectory() as td:
+            tdp = Path(td).resolve()
+            (tdp / "config.json").write_text("{}")
+            (tdp / "model.safetensors").write_bytes(b"dummy")
+
+            adapter = QwenBaselineAdapter(self.c1_config, checkpoint_path=tdp, device="cpu")
+
+            with (
+                patch("hashlib.sha256") as mock_sha,
+                patch("transformers.AutoProcessor.from_pretrained") as mock_proc,
+                patch("transformers.AutoModelForMultimodalLM.from_pretrained") as mock_model,
+                patch("huggingface_hub.hf_hub_download") as mock_hub,
+            ):
+                mock_sha.return_value.hexdigest.return_value = "0" * 64
+                with self.assertRaises(ValueError) as ctx:
+                    adapter.load()
+                self.assertIn("Weight SHA-256 mismatch", str(ctx.exception))
+                mock_proc.assert_not_called()
+                mock_model.assert_not_called()
+                mock_hub.assert_not_called()
+
+    def test_explicit_checkpoint_missing_config_fails_without_hub(self):
+        """Explicit checkpoint missing config.json fails before loaders and never calls Hub."""
+        with tempfile.TemporaryDirectory() as td:
+            tdp = Path(td).resolve()
+            (tdp / "model.safetensors").write_bytes(b"dummy")
+            adapter = QwenBaselineAdapter(self.c1_config, checkpoint_path=tdp, device="cpu")
+            with patch("huggingface_hub.hf_hub_download") as mock_hub:
+                with self.assertRaises(ValueError) as ctx:
+                    adapter.load()
+                self.assertIn("missing config.json", str(ctx.exception))
+                mock_hub.assert_not_called()
 
 
 class QwenSharedDecoderIntegrationTests(unittest.TestCase):
@@ -799,6 +915,113 @@ class QwenSharedDecoderIntegrationTests(unittest.TestCase):
         report = self.validate_predictions(prediction_rows, expected_ids=u_ids)
         self.assertTrue(report.ok, f"Validation failed with errors: {report.errors}")
         self.assertEqual(len(report.errors), 0)
+
+    def test_audio_longer_than_20min_returns_audiotoolong(self):
+        """Audio clips exceeding 20 min (19,200,000 samples at 16 kHz) return status='error' with AudioTooLong."""
+        adapter = QwenBaselineAdapter(
+            self.c2_config,
+            model_loader=lambda: object(),
+            processor_loader=lambda: object(),
+            shared_path=self.shared_path,
+        )
+        adapter.load()
+        dummy_item = type("DummyItem", (), {"utterance_id": "qwen-long-01", "samples": np.ones(19200001, dtype=np.float32)})()
+        results = adapter.transcribe([dummy_item])
+        self.assertEqual(len(results), 1)
+        self.assertEqual(results[0].status, "error")
+        self.assertEqual(results[0].error_code, "AudioTooLong")
+        self.assertIn("20-minute", results[0].error_message)
+        self.assertIn("arXiv:2601.21337", results[0].error_message)
+
+
+class QwenTinyModelDecodeTests(unittest.TestCase):
+    """End-to-end decode path test exercising _decode_nbest_native on a tiny in-memory Qwen3-ASR model."""
+
+    def test_tiny_random_init_qwen3_asr_decode_matches_teacher_forced_sum(self):
+        """Tiny random-init model in fp32 with 2 beams runs _decode_nbest_native.
+
+        Verifies:
+        1. _decode_nbest_native runs without error on native Qwen3-ASR model architecture.
+        2. acoustic_log_score matches an independent teacher-forced sum within 1e-3 tolerance.
+        3. score_source explicitly documents equivalence to teacher-forced sum in exact arithmetic.
+        4. includes_eos is derived from actual termination on stop token.
+        """
+        try:
+            import torch
+            import torch.nn.functional as F
+            from transformers import (
+                Qwen3ASRConfig,
+                Qwen3ASREncoderConfig,
+                Qwen3ASRForConditionalGeneration,
+                Qwen3Config,
+            )
+        except ImportError:
+            self.skipTest("PyTorch and Transformers Qwen3-ASR required")
+
+        torch.manual_seed(42)
+        text_config = Qwen3Config(
+            vocab_size=100,
+            hidden_size=64,
+            intermediate_size=128,
+            num_hidden_layers=2,
+            num_attention_heads=4,
+            num_key_value_heads=2,
+            head_dim=16,
+            bos_token_id=1,
+            eos_token_id=2,
+            pad_token_id=0,
+        )
+        audio_config = Qwen3ASREncoderConfig(
+            hidden_size=64,
+            intermediate_size=128,
+            num_hidden_layers=2,
+            num_attention_heads=4,
+            num_key_value_heads=2,
+            head_dim=16,
+        )
+        config = Qwen3ASRConfig(text_config=text_config, audio_config=audio_config)
+        model = Qwen3ASRForConditionalGeneration(config).eval()
+
+        class DummyProcessor:
+            def __init__(self):
+                self.tokenizer = type("Tok", (), {"eos_token_id": 2})()
+
+            def decode(self, tokens, skip_special_tokens=True):
+                return " ".join(str(t) for t in tokens)
+
+        processor = DummyProcessor()
+        c2_path = REPO_ROOT / "configs" / "baselines" / "qwen3_asr_0_6b.json"
+        with c2_path.open("r", encoding="utf-8") as f:
+            c2_cfg = json.load(f)
+
+        adapter = QwenBaselineAdapter(
+            c2_cfg,
+            requested_n=2,
+            precision="float32",
+            model_loader=lambda: model,
+            processor_loader=lambda: processor,
+        )
+        adapter.load()
+
+        prompt_ids = torch.tensor([[10, 20, 30]])
+        inputs = {"input_ids": prompt_ids}
+
+        candidates = adapter._decode_nbest_native(inputs)
+        self.assertEqual(len(candidates), 2)
+
+        for c in candidates:
+            kept = c["token_ids"]
+            full_seq = torch.tensor([list(prompt_ids[0]) + list(kept)])
+            with torch.no_grad():
+                logits = model(input_ids=full_seq).logits
+            log_probs = F.log_softmax(logits[0], dim=-1)
+            p_len = prompt_ids.shape[1]
+            tf_scores = [log_probs[p_len - 1 + i, tok].item() for i, tok in enumerate(kept)]
+            tf_sum = sum(tf_scores)
+            diff = abs(c["acoustic_log_score"] - tf_sum)
+            self.assertLess(diff, 1e-3, f"Acoustic score diff {diff} exceeds 1e-3")
+            self.assertIn("equals the teacher-forced sum in exact arithmetic", c["score_details"]["score_source"])
+            self.assertEqual(c["score_details"]["includes_eos"], bool(kept and kept[-1] in adapter._stop_ids))
 
 
 if __name__ == "__main__":

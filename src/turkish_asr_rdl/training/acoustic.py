@@ -140,7 +140,10 @@ def preflight(config: dict) -> dict:
 
 
 def validate_baseline(config: dict) -> None:
-    report = json.loads(Path(config["inputs"]["baseline_report"]).read_text(encoding="utf-8"))
+    path = Path(config["inputs"]["baseline_report"])
+    if config["inputs"].get("baseline_report_sha256") and sha256_file(path) != config["inputs"]["baseline_report_sha256"]:
+        raise ValueError("baseline report hash mismatch")
+    report = json.loads(path.read_text(encoding="utf-8"))
     expected = config["model"]
     if (report.get("status") != "completed" or report.get("training_mode") != "pretrained"
             or report.get("split") != "validation"
@@ -148,10 +151,19 @@ def validate_baseline(config: dict) -> None:
             or report.get("dataset_release") != config["dataset_release"]
             or report.get("split_manifest_sha256") != config["split_manifest_sha256"]):
         raise ValueError("baseline validation evidence is incompatible with the proposed adaptation")
+    if report.get("scope") == "validation_inference_only":
+        if not config.get("allow_fixed_budget_with_pending_validation_metrics", False):
+            raise ValueError("pending baseline metrics require the explicit D32 fixed-budget protocol")
+        if not {"predictions.jsonl", "nbest.jsonl", "manifest.json"}.issubset(report.get("files", {})):
+            raise ValueError("baseline evidence lacks actual inference artifacts")
+        for name, digest in report["files"].items():
+            member = (path.parent / name).resolve()
+            if not member.is_relative_to(path.parent.resolve()) or sha256_file(member) != digest:
+                raise ValueError("baseline artifact path/hash mismatch")
 
 
 def fit(model, rows: list[dict], collate, *, epochs: int, accumulation: int,
-        learning_rate: float, seed: int, device: str, precision: str, on_epoch):
+        learning_rate: float, seed: int, device: str, precision: str, on_epoch, on_progress=None):
     """Batch-one AdamW training; correctly scales the final partial accumulation."""
     import torch
     if not rows or epochs < 1 or accumulation < 1 or learning_rate <= 0:
@@ -190,6 +202,10 @@ def fit(model, rows: list[dict], collate, *, epochs: int, accumulation: int,
             torch.nn.utils.clip_grad_norm_(parameters, 1.0, error_if_nonfinite=True)
             optimizer.step()
             steps += 1
+            if on_progress is not None and (steps == 1 or steps % 10 == 0 or start + len(group) == len(order)):
+                on_progress({"epoch": epoch, "optimizer_steps": steps,
+                             "utterances_seen": start + len(group), "utterances_per_epoch": len(order),
+                             "mean_train_loss_so_far": total_loss / (start + len(group))})
         facts = {"epoch": epoch, "train_loss": total_loss / len(rows), "optimizer_steps": steps}
         on_epoch(epoch, facts)
         history.append(facts)
@@ -251,12 +267,18 @@ def run_training(config: dict, output: Path, build_model, build_collator) -> dic
                 "training_mode": config["mode"], "config_sha256": manifest["config_sha256"],
                 "dataset_release": config["dataset_release"],
                 "split_manifest_sha256": config["split_manifest_sha256"]}
+        if "vocabulary_extension" in config:
+            item["vocabulary_extension"] = config["vocabulary_extension"]
         write_json(path / "checkpoint-manifest.json", item)
         manifest["checkpoints"].append(item)
         write_json(output / "run.json", manifest)
 
+    def progress(facts):
+        write_json(output / "progress.json", {**facts, "updated_at_utc": datetime.now(timezone.utc).isoformat()})
+        print(json.dumps({"event": "training_progress", **facts}), flush=True)
+
     try:
-        manifest["history"] = fit(model, rows, collate, on_epoch=checkpoint, **config["training"])
+        manifest["history"] = fit(model, rows, collate, on_epoch=checkpoint, on_progress=progress, **config["training"])
         manifest["status"] = "training_completed_selection_pending"
     except Exception as exc:
         manifest.update(status="failed", error_type=type(exc).__name__)

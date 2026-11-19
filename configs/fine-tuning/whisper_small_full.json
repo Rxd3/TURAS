@@ -41,5 +41,6 @@
     "record": "docs/owner_decisions.md",
     "scope": "experimental protocol; no claim of peer review, measured feasibility or completed baselines"
   },
-  "baseline_evidence_required": true
+  "baseline_evidence_required": true,
+  "allow_fixed_budget_with_pending_validation_metrics": true
 }

@@ -53,3 +53,14 @@ def test_test_references_cannot_be_staged_as_training(tmp_path):
         stage(path, output)
     report = json.loads((output / ".turas-stage-audit.json").read_text())
     assert report["status"] == "failed_validation"
+
+
+def test_published_extensionless_checksum_inventory_is_allowed(tmp_path):
+    row = dict(utterance_id="fixture-id", split="train", dataset_release="fixture-only", reference_text="synthetic fixture")
+    path = archive_file(tmp_path, "release/references.train.jsonl", json.dumps(row) + "\n")
+    with tarfile.open(path, "a") as archive:
+        member = tarfile.TarInfo("release/SHA256SUMS")
+        content = b"synthetic fixture checksum inventory\n"
+        member.size = len(content)
+        archive.addfile(member, io.BytesIO(content))
+    assert stage(path, tmp_path / "staged")["payload_files"] == 2

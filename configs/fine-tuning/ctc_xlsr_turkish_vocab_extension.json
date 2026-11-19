@@ -1,0 +1,67 @@
+{
+  "schema_version": "0.1",
+  "dataset_release": "turas-tr-econ-legis-v0.1",
+  "split_manifest_sha256": "a8fff65b99fcf11d9452685e438e250207032ecfe11152741562147126d095b8",
+  "model": {
+    "id": "mpoyraz/wav2vec2-xls-r-300m-cv7-turkish",
+    "revision": "708639f50559d7970f462e13ec64d3f059ca89f6",
+    "weight_file": "pytorch_model.bin",
+    "weight_sha256": "008d69c82bf45c82ec5485e550abc86ddabefe75080f22e1ebfdc1699889d82e"
+  },
+  "inputs": {
+    "inference": null,
+    "references": null,
+    "audio_root": null,
+    "split_manifest": "data/splits/turas-tr-econ-legis-v0.1/split_manifest.json",
+    "train_ids": "data/splits/turas-tr-econ-legis-v0.1/train.txt",
+    "baseline_report": null,
+    "references_sha256": null,
+    "inference_sha256": null
+  },
+  "mode": "ctc_vocab_extension",
+  "training": {
+    "epochs": 3,
+    "accumulation": 16,
+    "learning_rate": 1e-05,
+    "seed": 17,
+    "device": "cuda",
+    "precision": "bf16"
+  },
+  "selection": "M6 validation reports; lowest normalized WER; raw WER then earlier epoch break ties; test remains unopened",
+  "nbest": {
+    "requested_n": 5,
+    "beam_size": 10,
+    "score_convention_id": "ctc-exact-alignment-marginalized-v1"
+  },
+  "status": "owner-approved separate vocabulary-extension experiment; needs verified inputs and actual baseline inference",
+  "protocol_approved": true,
+  "approval": {
+    "authority": "project owner via explicit delegation",
+    "date": "2026-11-19",
+    "record": "docs/owner_decisions.md",
+    "scope": "experimental protocol; no claim of peer review, measured feasibility or completed baselines"
+  },
+  "baseline_evidence_required": true,
+  "target_policy": "shared tr-normalized-v1; strict OOV audit before weight download; no invented numeral readings",
+  "vocabulary_extension": {
+    "characters": [
+      "+",
+      "0",
+      "1",
+      "2",
+      "3",
+      "4",
+      "5",
+      "6",
+      "7",
+      "8",
+      "9",
+      "â",
+      "î",
+      "û"
+    ],
+    "source": "train-only character audit; docs/owner_decisions.md D33",
+    "preserve_parent_ids_and_rows": true
+  },
+  "allow_fixed_budget_with_pending_validation_metrics": true
+}

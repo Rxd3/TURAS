@@ -24,6 +24,8 @@ Existing draft PRs and main-branch protection remain separate from these choices
 | D29 | Baseline evidence is a scientific prerequisite, not an approval vote | Local code can run/check the pinned unmodified parents once audio arrives. Never set a completed baseline flag without real outputs. Initial baseline comparisons use validation; final test scoring waits for the common freeze |
 | D30 | Integrate M1/M6 branches locally while preserving original commits; test the combined pipeline before main changes | Integration branch is separate; no teammate's independent review/ACK is invented and no draft PR is automatically merged |
 | D31 | Use the verified local Windows CUDA13.0/PyTorch2.14.1 build for M4/M5 execution; retain exact installed package versions | [Runtime lock](../requirements/owner-m45-windows-cu130.txt) and [measured synthetic probes](m45_gpu_profile.md); these do not replace real-data validation |
+| D32 | Preserve genuine unmodified-parent predictions for all 438 validation clips before acoustic optimization; permit the fixed three-epoch budget while validation references are unavailable | This clarifies D29: `status=completed, scope=validation_inference_only` means inference completed, with `metrics_status=pending_validation_references`. It does not assert a completed accuracy evaluation. Use the identical decoder for later adapted comparisons; archive every epoch and postpone checkpoint/fusion selection and all test inference |
+| D33 | Add a separate `ctc_vocab_extension` contribution because the real train-only audit found OOVs in 3,232/4,376 references | Append the 14 audited characters `+0123456789âîû`, preserving every existing token ID, blank ID, output weight/bias row and the pretrained encoder. Initialize only new rows from the parent's initializer distribution. Keep digits and written references, retain all clips, derive the vocabulary from train only, and save the extended processor with each checkpoint. The original strict-head profile remains blocked; compare this clearly labeled extension against the unmodified parent, with normalization unchanged |
 
 The graph prototype uses hidden size64, two layers, dropout.1, LR1e-3 and20
 epochs, with an internal 20% **training-group** relation holdout. These are an
@@ -48,6 +50,16 @@ The owner may run the shared evaluator locally on a **separately provided
 validation-only reference file**. That does not authorize training code to read
 it. No final-test reference is needed now. Until validation references or genuine
 M6 validation reports arrive, checkpoint/fusion selection remains pending.
+
+M1's supplied Drive links on 2026-11-19 include inference/audio and train gold,
+but no validation-only gold. D32 permits fixed-budget optimization only after
+actual matching parent validation inference is archived. Training still reads
+train gold only; a pending-metrics report never substitutes for checkpoint
+selection or the final baseline-versus-contribution comparison. D33 changes
+output-head size explicitly, so results must not be labeled unchanged-head CTC.
+The tokenizer and CTC-head contract is documented in the official
+[Transformers tokenizer documentation](https://huggingface.co/docs/transformers/main_classes/tokenizer)
+and [Wav2Vec2 documentation](https://huggingface.co/docs/transformers/model_doc/wav2vec2).
 
 ## Things approval cannot replace
 

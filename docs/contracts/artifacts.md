@@ -9,7 +9,7 @@ in this scaffold. Small run indexes may link to real bundles after review.
 
 Required: schema version, system ID, model family, immutable upstream repository
 and revision, license/usage provenance, exact parent checkpoint hash, actual
-training mode (`pretrained`, `scratch`, `lora`, `full`, `ctc_finetune`, `rdl`),
+training mode (`pretrained`, `scratch`, `lora`, `full`, `ctc_finetune`, `ctc_vocab_extension`, `rdl`),
 code commit/dirty state, runtime/dependency lock hash, tokenizer/vocabulary hash,
 feature extractor/processor hash, audio sample-rate/channel policy, language/task
 settings, expected input/output contracts, decoding compatibility, weight file

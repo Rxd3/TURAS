@@ -99,6 +99,43 @@ def test_baseline_gate_requires_actual_matching_validation_evidence(tmp_path):
         validate_baseline(config)
 
 
+def test_pending_metrics_need_explicit_protocol_and_real_hashed_outputs(tmp_path):
+    from turkish_asr_rdl.training.acoustic import validate_baseline
+    path = tmp_path / "baseline-evidence.json"
+    config = {"model": {"id": "fixture-only", "revision": "a" * 40},
+              "dataset_release": "fixture-only", "split_manifest_sha256": "b" * 64,
+              "inputs": {"baseline_report": str(path)}}
+    report = {"status": "completed", "scope": "validation_inference_only", "training_mode": "pretrained",
+              "split": "validation", "model_id": "fixture-only", "revision": "a" * 40,
+              "dataset_release": "fixture-only", "split_manifest_sha256": "b" * 64, "files": {}}
+    path.write_text(json.dumps(report))
+    with pytest.raises(ValueError, match="explicit D32"):
+        validate_baseline(config)
+    config["allow_fixed_budget_with_pending_validation_metrics"] = True
+    with pytest.raises(ValueError, match="actual inference artifacts"):
+        validate_baseline(config)
+    for name in ["predictions.jsonl", "nbest.jsonl", "manifest.json"]:
+        artifact = tmp_path / name
+        artifact.write_text("synthetic artifact for integrity test")
+        report["files"][name] = sha256_file(artifact)
+    path.write_text(json.dumps(report))
+    validate_baseline(config)
+    (tmp_path / "predictions.jsonl").write_text("changed")
+    with pytest.raises(ValueError, match="artifact path/hash"):
+        validate_baseline(config)
+
+
+def test_pretrained_adapter_shares_the_adapted_decoder_and_requires_pins():
+    from turkish_asr_rdl.decoding.adapted import AdaptedAsrAdapter, PretrainedAsrAdapter
+    parent = dict(id="fixture-only", revision="a" * 40, weight_file="model.safetensors", weight_sha256="b" * 64)
+    adapter = PretrainedAsrAdapter(parent, family="whisper", system_id="fixture-only", device="cpu", precision="fp32")
+    assert adapter.nbest.__func__ is AdaptedAsrAdapter.nbest
+    assert adapter.transcribe.__func__ is AdaptedAsrAdapter.transcribe
+    assert adapter.model_artifact_sha256 == parent["weight_sha256"]
+    with pytest.raises(ValueError, match="pinned"):
+        PretrainedAsrAdapter({**parent, "revision": "main"}, family="whisper", system_id="fixture-only")
+
+
 def tiny_whisper():
     torch = pytest.importorskip("torch")
     transformers = pytest.importorskip("transformers")

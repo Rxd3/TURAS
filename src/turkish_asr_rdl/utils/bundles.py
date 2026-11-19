@@ -39,7 +39,8 @@ def stage_bundle(archive: Path, destination: Path, *, expected_sha256: str, kind
             if target in names:
                 raise ValueError("duplicate archive path")
             names.add(target)
-            if member.isfile() and path.suffix.lower() not in {".flac", ".json", ".jsonl", ".txt", ".csv", ".md"}:
+            if (member.isfile() and path.name != "SHA256SUMS"
+                    and path.suffix.lower() not in {".flac", ".json", ".jsonl", ".txt", ".csv", ".md"}):
                 raise ValueError("unexpected executable/binary member in a data bundle")
             selected.append(member)
         required = sum(m.size for m in selected if m.isfile())

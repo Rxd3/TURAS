@@ -31,3 +31,20 @@ Private inference/audio and train-reference bundles; isolated validation data or
 genuine validation reports; actual baseline and training runs; validation selection,
 ablations and final test reporting. Independent code review remains distinct from
 the owner's project-decision approval; no draft PR is represented as merged.
+
+## Real-data handoff continuation, 2026-11-19
+
+Received both private bundles from M1. Verified archive/part/payload hashes,
+5,450 FLAC formats/durations/hashes, and frozen ID order. Kept test references
+closed. Ran the real train-only RDL model for 20 epochs and recorded internal
+weak-label relation metrics and artifact hashes in
+[the execution record](../docs/m45_execution_2026-11-19.md).
+
+Audited CTC targets: 3,232/4,376 train rows contain unsupported characters.
+Added a separately labeled vocabulary-extension protocol and tests preserving
+the old IDs/head rows, rather than deleting targets or fabricating readings.
+Added the pinned unmodified-parent adapter using the same decoding path as
+adapted models, baseline-inference preservation through M6's harness/validators,
+and durable optimizer progress. Recorded D32/D33 under the owner's delegated
+authority. Validation scoring, checkpoint/fusion selection and final test
+comparisons remain pending; independent review is not inferred.

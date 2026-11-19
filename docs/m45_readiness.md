@@ -4,6 +4,13 @@ Verified 2026-11-19. [Owner decisions](owner_decisions.md) supply experimental
 protocol approval. No new teammate vote is needed for those recorded choices.
 Independent code review and factual experimental evidence remain separate.
 
+**Update after the private handoff:** both bundles and all 5,450 audio files are
+now hash/format/ID checked; the real RDL seed-17 run has completed. See
+[the dated execution record](m45_execution_2026-11-19.md). Validation references
+remain missing. D32 allows fixed-budget acoustic runs after actual baseline
+inference, with scoring/selection pending; D33 documents the CTC vocabulary
+extension. Earlier readiness statements below describe the pre-handoff state.
+
 ## Verified here
 
 - Frozen split manifest bytes match `a8fff65b99fcf11d9452685e438e250207032ecfe11152741562147126d095b8`.
@@ -32,7 +39,7 @@ or attribute other members' source code to the owner:
 - `feat/m6-smoke-tests`: `dfc1beefd4a49109643bd9ba9b21502682e5bb59`
 - `feat/m6-docs`: `9f09a5f24e431fa83ce68b0c3933985e3af67cb2`
 
-## Still genuinely missing
+## Missing at the pre-handoff check (superseded above)
 
 1. The private inference/audio bundle.
 2. The private train-reference/train-relational bundle.

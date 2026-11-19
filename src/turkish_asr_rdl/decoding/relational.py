@@ -25,7 +25,7 @@ class RelationalAsrAdapter:
         self.dataset_release = dataset_release
         self.split_manifest_sha256 = split_manifest_sha256
         base_manifest = getattr(acoustic_adapter, "manifest", {})
-        if base_manifest.get("training_mode") in {"full", "lora", "ctc_finetune"}:
+        if base_manifest.get("training_mode") in {"full", "lora", "ctc_finetune", "ctc_vocab_extension"}:
             if (base_manifest.get("dataset_release") != dataset_release or
                     base_manifest.get("split_manifest_sha256") != split_manifest_sha256):
                 raise ValueError("adapted acoustic checkpoint uses a different release or split")

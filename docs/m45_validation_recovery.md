@@ -87,3 +87,21 @@ same N-best decoder and shared timing/export/validators as its parent baseline.
 It accepts only gold-free inference inputs, with three train warm-up clips and
 one initial validation timing pass. Final RTF comparisons need the shared full
 repeat protocol; no recognition score is inferred from timing or training loss.
+
+## Running checkpoint evaluation
+
+After recovery and both baseline score reports passed, the owner-directed local
+queue was launched at 14:40 Istanbul on 2026-11-19. It runs all nine saved epochs
+sequentially on the GPU, with a separate evaluator process reading the recovered
+references only after each prediction export. Source commit:
+`d8e37915b8908225e17d3f8facc3cf0ffac1e45b`. The first LoRA epoch is actively
+decoding; this is startup evidence, not completed checkpoint selection.
+
+Live state/logs: `artifacts/owner-m45/validation-recovery/validation-queue-status.json`
+and the per-epoch logs in that directory. On successful completion the queue
+writes `working-checkpoint-selection.json`, identifying the recovered reference
+manifest hash, all candidate metric reports and the working selected epoch for
+each model. It does not run the test set or freeze RDL fusion. Keep the computer
+awake while these validation jobs run. Offline suite: 1,088 passed, 1 skipped,
+2 subtests passed; the two new recovery tests check human-text provenance,
+unreviewed status, and identity/duration rejection without network access.

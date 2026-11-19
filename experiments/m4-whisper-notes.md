@@ -5,6 +5,12 @@ are integrated on `feat/m4-m5-integration`. CUDA and synthetic resource checks
 pass. See [owner decisions](../docs/owner_decisions.md) and
 [readiness](../docs/m45_readiness.md); the earlier handoff below is retained as history.
 
+After the M1 private handoff, real data/target audits passed and the pinned parent
+validation-inference run was launched. The queue then runs three-epoch LoRA and
+full budgets. [The dated execution record](../docs/m45_execution_2026-11-19.md)
+and local `artifacts/owner-m45/queue-status.json` carry current evidence; none of
+the initial implementation's "no runs" wording asserts the later job state.
+
 Updated 2026-11-19. Code and offline synthetic tests are being delivered; no
 pretrained weight was downloaded and no corpus training/evaluation has run.
 

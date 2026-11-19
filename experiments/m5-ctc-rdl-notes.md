@@ -5,6 +5,13 @@ are integrated on `feat/m4-m5-integration`. CUDA and synthetic resource checks
 pass. See [owner decisions](../docs/owner_decisions.md) and
 [readiness](../docs/m45_readiness.md); the earlier handoff below is retained as history.
 
+The real seed-17 RDL run now completed 20 epochs on M1 train tables; see
+[the measured internal relation result](../results/rdl/m45_seed17_internal.json).
+Actual CTC target auditing required a separately labeled 38-to-52-character
+vocabulary extension under D33; the original strict-head profile stays blocked.
+[The dated execution record](../docs/m45_execution_2026-11-19.md) distinguishes
+this work from pending acoustic validation and downstream rescoring comparisons.
+
 Updated 2026-11-19. This is an implementation/review handoff, not an experiment
 report. Training bundles are not ready locally, no pretrained weights were
 downloaded, and no corpus model, prediction bundle or benchmark metric exists.

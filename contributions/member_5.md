@@ -20,7 +20,13 @@ Commit/PR evidence is recorded in Git/GitHub at handoff; reviews are still pendi
 
 ## Experiments and artifacts
 
-No runs. Add actual run IDs, release/model/config hashes, artifact location/hash,
+The initial implementation had no runs. On 2026-11-19 the owner-assisted seed-17
+RDL run completed 20 epochs on M1's real train tables. Its internal weak-label
+relation metrics and artifact provenance are in
+[the actual run summary](../results/rdl/m45_seed17_internal.json) and
+[the dated M4/M5 record](../docs/m45_execution_2026-11-19.md). This is not a
+downstream ASR result or independent review. CTC adaptation and validation/fusion
+selection remain separate tasks. Add actual run IDs, release/model/config hashes, artifact location/hash,
 validation-selection evidence, outcome/limitations and corresponding baseline.
 Do not enter invented transcripts, metrics, checkpoint paths or completed work.
 

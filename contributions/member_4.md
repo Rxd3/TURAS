@@ -20,7 +20,9 @@ N-best requires M5. Commit and PR are recorded in Git/GitHub at handoff.
 
 ## Experiments and artifacts
 
-No runs. Add actual run IDs, release/model/config hashes, artifact location/hash,
+No runs in the initial implementation. Later owner-assisted execution is in
+[the dated M4/M5 record](../docs/m45_execution_2026-11-19.md); current local job
+status is `artifacts/owner-m45/queue-status.json`. Add actual run IDs, release/model/config hashes, artifact location/hash,
 validation-selection evidence, outcome/limitations and corresponding baseline.
 Do not enter invented transcripts, metrics, checkpoint paths or completed work.
 

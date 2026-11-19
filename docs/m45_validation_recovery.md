@@ -1,0 +1,89 @@
+# Owner-directed validation reference recovery
+
+Authority: [D35](owner_decisions.md), following the owner's instruction to make
+and document technical decisions instead of waiting for teammate agreement.
+This supplies a usable **working reference version**, not a claim of M6 approval.
+
+## Drive audit
+
+The linked Drive root and both subfolders were recursively listed: three folders,
+39 files (41 entries including the two subfolders). Their READMEs describe audio/
+inference, train-only references and test-only references. No validation-reference
+file or full M6 evaluator archive was accessible. The full M6 filename/hash in
+the handoff message is an inventory entry, not a delivered download.
+
+## What was recovered
+
+All **438 validation IDs across 15 recordings** were matched to actual upstream
+`human_transcript` values at WorldSpeech revision
+`b76b85395039f50332fbc421f7c098ee2f2653d7`. The recovery recomputed M1's stable
+IDs from source URL, segment ID and original start/end offsets. Existing FLAC
+hashes and durations were checked. Membership and audio were unchanged.
+
+The recovery reads identity columns first, then the human-text column only in
+shards containing target validation IDs. Only exact validation records are
+retained. It never requests the audio or `asr_transcript` columns, runs a model
+to make gold, or opens the local test-reference archive. Parquet column chunks
+can include unrelated source rows; none are retained as test references or
+supplied to a model. No additional model weights or corpus audio were downloaded.
+
+Version: `owner-recovered-validation-minutes-v1`. Private file:
+`data/private/turas-tr-econ-legis-v0.1/validation-recovered-minutes-v1/references.validation.jsonl`.
+SHA-256: `d0c8519ca6aed053f89786bc733541a70faee09cf8d8bdb6cc12065d97dbd958`.
+Its separate `reference-manifest.json` records source, identity/audio hashes,
+authority and limitations. Public source/hash/count/metric evidence is in
+[the recovered-reference report](../results/evaluation/recovered_validation_baselines.json).
+
+Every row is explicitly `unreviewed`, origin `upstream_human`. This is edited
+parliamentary text, not freshly verified verbatim speech. M1 reports three local
+validation corrections and 15 listening records; those private records were
+not available and no statuses/corrections/reviewer identities were invented.
+The recovery does not overwrite M1's frozen artifacts or reproduce their exact
+corrected reference bytes. Exact reproduction needs the original reference file
+or correction/review records. A new human listening review can instead establish
+a separately identified corrected version using the already available audio.
+
+## Working evaluation
+
+The owner-approved recovery removes the missing-reference technical block for
+preliminary validation and checkpoint selection. Use this same explicit reference
+version for every compared system; never mix its scores with M1-corrected scores.
+It is read by the evaluator only, never by acoustic/RDL training or ASR decoding.
+
+The saved unmodified-parent predictions both passed strict M6 joins and shared
+raw/normalized evaluation on all 438 clips:
+
+| Baseline | Raw WER | Normalized WER | Raw CER | Normalized CER |
+| --- | ---: | ---: | ---: | ---: |
+| Pinned Whisper-small | 37.08% | 25.13% | 13.00% | 10.46% |
+| Pinned Turkish CV7 XLS-R | 56.26% | 36.98% | 17.07% | 13.25% |
+
+These are **preliminary validation metrics against recovered minutes**, not
+human-verified-reference scores, final test results or proof of adaptation gains.
+Per-report files preserve raw edit counts, reference denominators, evaluator
+source hashes and prediction/reference hashes. The original baseline inference
+reports still truthfully record their earlier inference-only scope; scoring is
+new evidence in separate files.
+
+Next, score all nine saved acoustic epochs using reference-free inference and
+the same evaluator, then select by normalized WER, raw WER, earlier epoch. Store
+that choice as working selection against this reference version. RDL fusion,
+ablations and final test evaluation remain separate steps; no test execution is
+included in this recovery. The separate dataset-review issues remain disclosed.
+
+## Reuse
+
+`python -m turkish_asr_rdl.data.recover_validation --help` documents the recovery
+inputs. Use a fresh ignored output folder; source, ID, audio or coverage mismatch
+fails the run. No reshuffling or release rebuild is performed.
+
+`python scripts/m45_score_validation.py --help` exposes the shared scorer wrapper.
+It requires `--allow-unreviewed-minutes`, verifies the reference version/hash and
+frozen IDs, and records the limitation on every score report. This flag records
+the already authorized D35 policy; it does not request a new approval vote.
+
+`python scripts/m45_validation_adapted.py --help` runs a saved epoch through the
+same N-best decoder and shared timing/export/validators as its parent baseline.
+It accepts only gold-free inference inputs, with three train warm-up clips and
+one initial validation timing pass. Final RTF comparisons need the shared full
+repeat protocol; no recognition score is inferred from timing or training loss.

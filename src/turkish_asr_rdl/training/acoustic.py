@@ -9,6 +9,7 @@ import hashlib
 import json
 import random
 import subprocess
+import time
 import uuid
 from datetime import datetime, timezone
 from pathlib import Path
@@ -180,6 +181,9 @@ def fit(model, rows: list[dict], collate, *, epochs: int, accumulation: int,
     if not parameters:
         raise ValueError("model has no trainable parameters")
     optimizer = torch.optim.AdamW(parameters, lr=learning_rate)
+    if device == "cuda":
+        torch.cuda.reset_peak_memory_stats()
+    optimization_started = time.perf_counter()
     history = []
     rng = random.Random(seed)
     for epoch in range(1, epochs + 1):
@@ -203,9 +207,14 @@ def fit(model, rows: list[dict], collate, *, epochs: int, accumulation: int,
             optimizer.step()
             steps += 1
             if on_progress is not None and (steps == 1 or steps % 10 == 0 or start + len(group) == len(order)):
-                on_progress({"epoch": epoch, "optimizer_steps": steps,
-                             "utterances_seen": start + len(group), "utterances_per_epoch": len(order),
-                             "mean_train_loss_so_far": total_loss / (start + len(group))})
+                facts = {"epoch": epoch, "optimizer_steps": steps,
+                         "utterances_seen": start + len(group), "utterances_per_epoch": len(order),
+                         "mean_train_loss_so_far": total_loss / (start + len(group)),
+                         "elapsed_optimization_s": time.perf_counter() - optimization_started}
+                if device == "cuda":
+                    facts.update(peak_cuda_allocated_bytes=torch.cuda.max_memory_allocated(),
+                                 peak_cuda_reserved_bytes=torch.cuda.max_memory_reserved())
+                on_progress(facts)
         facts = {"epoch": epoch, "train_loss": total_loss / len(rows), "optimizer_steps": steps}
         on_epoch(epoch, facts)
         history.append(facts)
@@ -245,7 +254,13 @@ def run_training(config: dict, output: Path, build_model, build_collator) -> dic
     import importlib.metadata
     import sys
     environment = {d.metadata["Name"]: d.version for d in importlib.metadata.distributions() if d.metadata["Name"]}
-    write_json(output / "environment.json", {"python": sys.version, "packages": environment})
+    from turkish_asr_rdl.decoding.hardware import probe_gpu
+    write_json(output / "environment.json", {"python": sys.version, "packages": environment,
+        "cuda": torch.version.cuda, "gpu": probe_gpu() if config["training"]["device"] == "cuda" else None,
+        "torch_threads": torch.get_num_threads(),
+        "deterministic_algorithms": torch.are_deterministic_algorithms_enabled(),
+        "cudnn_deterministic": torch.backends.cudnn.deterministic,
+        "cudnn_benchmark": torch.backends.cudnn.benchmark})
     manifest = {"schema_version": "0.1", "run_id": "acoustic-" + uuid.uuid4().hex,
                 "started_at_utc": started_at, "status": "running", "dataset_release": config["dataset_release"],
                 "split_manifest_sha256": config["split_manifest_sha256"], "model": config["model"],
@@ -274,7 +289,9 @@ def run_training(config: dict, output: Path, build_model, build_collator) -> dic
         write_json(output / "run.json", manifest)
 
     def progress(facts):
-        write_json(output / "progress.json", {**facts, "updated_at_utc": datetime.now(timezone.utc).isoformat()})
+        pending = output / "progress.tmp"
+        write_json(pending, {**facts, "updated_at_utc": datetime.now(timezone.utc).isoformat()})
+        pending.replace(output / "progress.json")
         print(json.dumps({"event": "training_progress", **facts}), flush=True)
 
     try:

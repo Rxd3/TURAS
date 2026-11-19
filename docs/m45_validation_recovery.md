@@ -105,3 +105,39 @@ each model. It does not run the test set or freeze RDL fusion. Keep the computer
 awake while these validation jobs run. Offline suite: 1,088 passed, 1 skipped,
 2 subtests passed; the two new recovery tests check human-text provenance,
 unreviewed status, and identity/duration rejection without network access.
+
+## Whisper selection and RDL progress, 15:53 Istanbul
+
+All six Whisper epoch reports are complete. Within the three candidates per
+training mode, the working normalized-WER criterion selects LoRA epoch 3
+(12.45796%) and full-training epoch 2 (10.19356%). The unchanged Whisper parent
+is 25.12518%, on the same recovered validation reference version. CTC epochs 1
+and 2 are scored; epoch 3 is still running at this snapshot. The queue's final
+working selection artifact remains authoritative after all nine finish.
+
+The predeclared RDL grid (gamma 0, .1, .3, 1; LM disabled) now completed for both
+selected Whisper N-best artifacts, using the identical candidates within each
+grid. Every exported trial passed the shared validator and its output hash was
+rechecked. Both grids select gamma **0**, so the current graph supplies no
+measured Whisper recognition gain in this experiment. The original decoder's
+one-best also beats the original-log-score/length acoustic-rescoring control:
+
+| Selected Whisper | Original one-best normalized WER | Gamma 0 acoustic control | Gamma .1 | Gamma .3 | Gamma 1 |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| LoRA epoch 3 | 12.458% | 12.548% | 12.578% | 12.600% | 12.607% |
+| Full epoch 2 | 10.194% | 10.201% | 10.268% | 10.291% | 10.343% |
+
+The difference between original one-best and gamma 0 is acoustic reordering,
+not an RDL gain/loss. Compare positive gamma against its gamma-0 control when
+attributing the relational component. No statistical significance claim is made.
+See [the actual grid summary](../results/evaluation/whisper_rdl_validation_grid.json)
+for raw/normalized metrics, source hashes and changed-selection counts.
+
+A detached local continuation waits for successful completion of all acoustic
+validation jobs, verifies the CTC selection report, then runs that selected CTC
+checkpoint's same RDL grid. Live state is
+`artifacts/owner-m45/validation-recovery/ctc-rdl-continuation-status.json`.
+It stops on a failed prerequisite and performs no test evaluation. Controlled
+relation-removal ablations, final repeat timing and final-test reporting remain
+separate unfinished work. These are working recovered-minutes validation results,
+not final benchmark or human-verified-reference claims.

@@ -1,32 +1,58 @@
 {
   "schema_version": "0.1",
   "track_id": "B4",
-  "system_id": "baseline-wav2vec2-xlsr-turkish",
-  "candidate_status": "selected-candidate-cv8-with-cv7-comparison",
+  "system_id": "B4-xlsr-tr-cv7",
+  "candidate_status": "primary-cv7-matched-to-f3-with-cv8-secondary",
   "status": "proposed-baseline-protocol",
   "dataset_release": null,
   "split_manifest_sha256": null,
   "model": {
-    "id": "mpoyraz/wav2vec2-xls-r-300m-cv8-turkish",
-    "revision": "bdd0bb878d8bf59509611631e334eb073ba57773",
-    "comparison_candidate": {
-      "id": "mpoyraz/wav2vec2-xls-r-300m-cv7-turkish",
-      "revision": "708639f50559d7970f462e13ec64d3f059ca89f6"
-    },
+    "id": "mpoyraz/wav2vec2-xls-r-300m-cv7-turkish",
+    "revision": "708639f50559d7970f462e13ec64d3f059ca89f6",
+    "committed_at": "2022-03-23",
+    "license": "cc-by-4.0",
+    "attribution_required": true,
     "architecture": "Wav2Vec2ForCTC",
     "base_backbone": "facebook/wav2vec2-xls-r-300m",
     "weight_file": "pytorch_model.bin",
-    "weight_sha256": null,
-    "precision": "float32",
-    "device": "cuda"
+    "weight_bytes": 1262079473,
+    "weight_sha256": "008d69c82bf45c82ec5485e550abc86ddabefe75080f22e1ebfdc1699889d82e",
+    "weight_hash_source": "Hub LFS oid; bytes verified at download",
+    "safetensors_available": false,
+    "precision": "bfloat16",
+    "device": "cuda",
+    "secondary_diagnostic_precision": "float32"
+  },
+  "secondary_candidate": {
+    "system_id": "B4-xlsr-tr-cv8-secondary",
+    "id": "mpoyraz/wav2vec2-xls-r-300m-cv8-turkish",
+    "revision": "bdd0bb878d8bf59509611631e334eb073ba57773",
+    "committed_at": "2022-03-23",
+    "license": "apache-2.0",
+    "weight_file": "pytorch_model.bin",
+    "weight_bytes": 1262079473,
+    "weight_sha256": "dbd7a9f776a232c0dd4cbbee44025c8056246d83ad4de930b049e649e2fe402c",
+    "weight_hash_source": "Hub LFS oid; bytes verified at download",
+    "safetensors_available": false
   },
   "processor": {
     "construction": "explicit_Wav2Vec2CTCTokenizer_and_Wav2Vec2FeatureExtractor_no_lm",
-    "id": "mpoyraz/wav2vec2-xls-r-300m-cv8-turkish",
-    "revision": "bdd0bb878d8bf59509611631e334eb073ba57773",
-    "processor_sha256": null,
+    "upstream_lm_artifacts_ignored": "Repo ships language_model/ (KenLM) and preprocessor_config.json names Wav2Vec2ProcessorWithLM; explicit no-LM loading ignores KenLM.",
+    "id": "mpoyraz/wav2vec2-xls-r-300m-cv7-turkish",
+    "revision": "708639f50559d7970f462e13ec64d3f059ca89f6",
+    "vocab_json_sha256": null,
+    "tokenizer_config_sha256": null,
+    "preprocessor_config_sha256": null,
     "sample_rate_hz": 16000,
-    "channels": 1
+    "channels": 1,
+    "vocab_size": 38,
+    "blank_token": "<pad>",
+    "blank_token_id": 0,
+    "pad_token_id": 0,
+    "unk_token": "<unk>",
+    "unk_token_id": 3,
+    "word_delimiter_token": "|",
+    "word_delimiter_token_id": 4
   },
   "audio_constraints": {
     "expected_duration_sec_range": [10.0, 20.0],
@@ -34,21 +60,39 @@
   },
   "decoding_policy": {
     "language": "tr",
-    "primary_decode_mode": "greedy_ctc",
-    "num_return_sequences": 1,
+    "primary_decode_mode": "ctc_prefix_beam_search",
+    "shared_decoder_module": "turkish_asr_rdl.decoding.ctc",
+    "matched_protocol_ref": "configs/evaluation/m45_final_protocol.json",
+    "one_best_selection": "rank_1_from_prefix_beam_search",
+    "secondary_diagnostic_mode": "float32_greedy_ctc",
     "lm_rescoring": false,
     "strip_leading_trailing_whitespace_in_raw": false,
-    "planned_nbest_extension": {
-      "status": "unmeasured-not-yet-implemented",
-      "search": "numpy_prefix_beam_search",
-      "score_method": "negative_ctc_loss_reduction_none"
+    "numeral_or_diacritic_postprocessing": false,
+    "nbest": {
+      "requested_n": 5,
+      "beam_size": 10,
+      "score_convention_id": "ctc-exact-forward-logprob-v1",
+      "acoustic_score_kind": "exact_ctc_forward_sequence_log_prob",
+      "decoder_sequence_score": "exact_ctc_forward_sequence_log_prob_separated_from_beam_mass",
+      "dedup_policy": "shared_export_exact_raw_text_first_occurrence",
+      "ctc_loss_cross_check": {
+        "reduction": "none",
+        "zero_infinity": false,
+        "log_softmax_dtype": "float32",
+        "note": "Do not use model(labels=...).loss because upstream config.json sets ctc_loss_reduction='mean'."
+      }
     }
   },
   "known_limitations": [
-    "Checkpoint vocabulary contains no digit characters (0-9); numerals in references produce systematic substitution/deletion errors."
+    "38-token vocabulary cannot emit digits (0-9), '+', circumflex vowels ('â', 'î', 'û'), uppercase letters, or punctuation other than apostrophe (').",
+    "No numeral or diacritic post-processing is applied to B4 output.",
+    "M5 F3 extends the CTC head to 52 tokens (D33), so B4 -> F3 measures acoustic fine-tuning plus vocabulary extension together."
   ],
   "eligibility_audit": {
-    "worldspeech_exposed": false,
-    "rationale": "Pre-2026 Turkish XLS-R checkpoints trained on Common Voice (cv7/cv8); predates disco-eth/WorldSpeech (2026-04-28) and TURAS test sessions (2026-01-06 to 2026-04-22)."
+    "held_out_exposure": "none",
+    "cv7_training_sources": "Common Voice 7.0 Turkish + MediaSpeech on facebook/wav2vec2-xls-r-300m (self-supervised)",
+    "cv8_training_sources": "Common Voice 8.0 Turkish on facebook/wav2vec2-xls-r-300m (self-supervised)",
+    "checkpoint_commit_date": "2022-03-23",
+    "rationale": "Both checkpoints were committed on 2022-03-23, predating TURAS validation sessions (starting 2025-10-01) and test sessions (2026-01-06 to 2026-04-22), so neither held-out split can have been seen. Pre-2022 exposure of train audio through MediaSpeech or self-supervised pretraining cannot be excluded (train only)."
   }
 }

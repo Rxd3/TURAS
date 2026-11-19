@@ -1,4 +1,4 @@
-project3-turkish-asr-rdl/
+TURAS/
 |-- .github/
 |   |-- workflows/
 |   |   `-- packaging.yml
@@ -59,10 +59,15 @@ project3-turkish-asr-rdl/
 |   `-- PROTOCOL.md
 |-- presentation/
 |   `-- README.md
+|-- requirements/
+|   |-- dev.txt
+|   |-- requirements.in
+|   `-- windows-cu130.txt
 |-- results/
 |   `-- README.md
 |-- scripts/
-|   `-- README.md
+|   |-- README.md
+|   `-- check_env.py
 |-- src/
 |   `-- turkish_asr_rdl/
 |       |-- baselines/
@@ -84,10 +89,13 @@ project3-turkish-asr-rdl/
 |       |-- training/
 |       |   `-- __init__.py
 |       |-- utils/
-|       |   `-- __init__.py
+|       |   |-- __init__.py
+|       |   `-- env_check.py
 |       `-- __init__.py
 |-- tests/
-|   `-- README.md
+|   |-- README.md
+|   |-- test_check_env_script.py
+|   `-- test_env_check.py
 |-- .gitattributes
 |-- .gitignore
 |-- CONTRIBUTING.md

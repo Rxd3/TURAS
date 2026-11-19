@@ -36,9 +36,9 @@ to a member solely because its paths fall within that member's ownership.
 
 ## Current checks and future implementation checks
 
-The packaging CI builds/installs this dependency-free scaffold and imports the
-empty packages on Python 3.11 and 3.13. It is **not** an ASR, training, evaluation,
-or reproducibility test suite. No application tests exist yet.
+The CI builds/installs this dependency-free scaffold, imports the packages and
+runs the unit tests on Python 3.11 and 3.13. It is **not** an ASR, training,
+evaluation, or reproducibility test suite.
 
 For documentation-only PRs, check relative links, terminology, contract
 consistency, and `git diff --check`. For implementation PRs, add reproducible

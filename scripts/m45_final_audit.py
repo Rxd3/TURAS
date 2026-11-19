@@ -5,9 +5,11 @@ frozen benchmark/handoff to have completed before reading test references.
 """
 import argparse
 from collections import Counter
+import hashlib
 import json
 from pathlib import Path
 import subprocess
+import tarfile
 
 from turkish_asr_rdl.evaluation.normalize import normalize,word_tokens,RAW_V1,TR_NORMALIZED_V1
 from turkish_asr_rdl.training.acoustic import read_jsonl,sha256_file,write_json
@@ -51,8 +53,17 @@ def main():
         mode='cached_nbest_selection' if spec['kind']=='relational' else 'accuracy'
         full={r['utterance_id']:r for r in read_jsonl(entries[(spec['system_id'],mode)]/'predictions.jsonl')}
         timing=read_jsonl(entries[(spec['system_id'],'timing')]/'predictions.jsonl')
+        records=[r for r in read_jsonl(entries[(spec['system_id'],'timing')]/'timing.jsonl') if r['record_type']=='batch']
+        timed=[r for r in records if not r['warmup']]
+        expected_ids=Path(p['inputs']['timing_ids']).read_text().splitlines()
+        for repeat in range(1,p['timing']['repeats']+1):
+            actual_ids=[uid for r in timed if r['repeat']==repeat for uid in r['utterance_ids']]
+            if actual_ids!=expected_ids:raise ValueError('incomplete/reordered timing repeat')
+        if sum(r['warmup'] for r in records)!=3 or any(r['error_rows'] for r in records):
+            raise ValueError('timing warm-up/error audit failed')
         changed=sum((r['hypothesis_text'],r['status'])!=(full[r['utterance_id']]['hypothesis_text'],full[r['utterance_id']]['status']) for r in timing)
         timing_checks.append({'system_id':spec['system_id'],'timing_utterances':len(timing),'changed_first_repeat_transcripts':changed,
+            'complete_timed_repeats':p['timing']['repeats'],'timed_batches':len(timed),'warmup_batches':3,'all_repeat_error_rows':0,
             'scope':'first timed repeat versus full-test accuracy/cached selection; later-repeat hypotheses are not retained by the shared harness'})
     release=p['dataset_release'];private=Path('data/private')/release
     refpath=private/'evaluator-final/references.test.jsonl'
@@ -74,6 +85,16 @@ def main():
     delivered=json.loads((args.root/'handoff/artifact-index.json').read_text())
     for path,record in delivered['files'].items():
         if sha256_file(Path(path))!=record['sha256']:raise ValueError('handoff member hash mismatch')
+    with tarfile.open(handoff['archive']) as archive:
+        members={m.name:m for m in archive.getmembers() if m.isfile()}
+        if len(members)!=len(archive.getmembers()):raise ValueError('unexpected duplicate or non-file archive members')
+        for name in members:
+            if name.startswith('data/private/') or '/audio/' in name or name.endswith(('.flac','.wav','.mp3')) or 'references.test.jsonl' in name:
+                raise ValueError('private audio/reference body must not enter model handoff')
+        for name,record in delivered['files'].items():
+            if name not in members or members[name].size!=record['bytes']:raise ValueError('archive member inventory mismatch')
+            digest=hashlib.file_digest(archive.extractfile(members[name]),'sha256').hexdigest()
+            if digest!=record['sha256']:raise ValueError('archive member bytes differ from artifact index')
     result={'status':'supplementary_final_integrity_audit_complete','protocol_sha256':state['protocol_sha256'],
         'audit_code_sha256':sha256_file(Path(__file__)),'audit_code_commit':subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip(),
         'scope':'post-freeze descriptive integrity/overlap audit; no model selection or metric-policy changes',
@@ -82,6 +103,7 @@ def main():
             'utterance_ids':common('utterance_id'),'recording_groups':common('leakage_group_id'),'exact_audio_hashes':common('audio_sha256'),
             'sentence_checks':overlap,'speakers':'unknown; recording disjointness does not prove speaker disjointness'},
         'private_handoff':handoff,'delivered_files_verified':len(delivered['files']),
+        'archive_members_verified_against_index':len(delivered['files']),'archive_audio_or_test_reference_files':0,
         'test_reference_status_counts':dict(Counter(r.get('verification_status','missing') for r in refs))}
     args.output.parent.mkdir(parents=True,exist_ok=True);write_json(args.output,result)
     print(json.dumps({'status':result['status'],'runs':len(inventory),'candidate_conditions':len(candidate_checks),

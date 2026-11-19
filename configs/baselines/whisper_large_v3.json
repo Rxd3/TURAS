@@ -1,0 +1,52 @@
+{
+  "schema_version": "0.1",
+  "track_id": "B2",
+  "system_id": "baseline-whisper-large-v3",
+  "status": "proposed-baseline-protocol",
+  "dataset_release": null,
+  "split_manifest_sha256": null,
+  "model": {
+    "id": "openai/whisper-large-v3",
+    "revision": "06f233fe06e710322aca913c1bc4249a0d71fce1",
+    "weight_file": "model.safetensors",
+    "weight_sha256": null,
+    "precision": "float16",
+    "device": "cuda"
+  },
+  "processor": {
+    "id": "openai/whisper-large-v3",
+    "revision": "06f233fe06e710322aca913c1bc4249a0d71fce1",
+    "sampling_rate_hz": 16000
+  },
+  "inputs": {
+    "inference": null,
+    "audio_root": null,
+    "split_manifest": null,
+    "test_ids": null,
+    "validation_ids": null
+  },
+  "decoding": {
+    "status": "proposed",
+    "algorithm": "beam",
+    "num_beams": 10,
+    "requested_n": 10,
+    "max_new_tokens": 440,
+    "language": "tr",
+    "task": "transcribe",
+    "do_sample": false,
+    "temperature": 0.0,
+    "forced_prefix_tokens": [
+      "<|startoftranscript|>",
+      "<|tr|>",
+      "<|transcribe|>",
+      "<|notimestamps|>"
+    ]
+  },
+  "nbest": {
+    "score_convention_id": "whisper-original-logits-generated-plus-eos-v1",
+    "acoustic_score_kind": "seq2seq_token_log_prob_sum",
+    "implementation_path": "core GenerationMixin.generate; bypass WhisperForConditionalGeneration",
+    "deduplication_policy": "shared-export-dedup-v0.2"
+  },
+  "reviews_required": "M6 review of VRAM headroom (~6.5 GiB reserved) and decoding freeze; dataset binding pending approved release"
+}

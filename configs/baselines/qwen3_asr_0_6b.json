@@ -1,0 +1,46 @@
+{
+  "schema_version": "0.1",
+  "track_id": "B3-candidate-2",
+  "system_id": "baseline-qwen3-asr-0.6b",
+  "candidate_status": "unselected-candidate",
+  "status": "proposed-baseline-protocol",
+  "dataset_release": null,
+  "split_manifest_sha256": null,
+  "model": {
+    "id": "Qwen/Qwen3-ASR-0.6B-hf",
+    "revision": "7f1569a48a89f3e3f4dc3a5c9d28bddd903bc76c",
+    "weight_file": "model.safetensors",
+    "weight_sha256": null,
+    "precision": "bfloat16",
+    "device": "cuda"
+  },
+  "processor": {
+    "id": "Qwen/Qwen3-ASR-0.6B-hf",
+    "revision": "7f1569a48a89f3e3f4dc3a5c9d28bddd903bc76c",
+    "sampling_rate_hz": 16000
+  },
+  "inputs": {
+    "inference": null,
+    "audio_root": null,
+    "split_manifest": null,
+    "test_ids": null,
+    "validation_ids": null
+  },
+  "decoding": {
+    "status": "proposed",
+    "algorithm": "beam",
+    "num_beams": 5,
+    "requested_n": 5,
+    "max_new_tokens": 440,
+    "language": "tr",
+    "do_sample": false,
+    "temperature": 0.0
+  },
+  "nbest": {
+    "score_convention_id": "qwen3-asr-joint-sequence-score-v1",
+    "acoustic_score_kind": "joint_speech_language_beam_score",
+    "implementation_path": "native transformers AutoModelForMultimodalLM; qwen-asr package forbidden",
+    "deduplication_policy": "shared-export-dedup-v0.2"
+  },
+  "reviews_required": "M6 review of candidate trade-off against 1.7B (accuracy unmeasured in smoke test; 2.22 GiB peak VRAM, 0.090 RTF) and joint score convention; dataset binding pending approved release"
+}

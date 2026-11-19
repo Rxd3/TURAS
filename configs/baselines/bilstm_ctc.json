@@ -1,0 +1,65 @@
+{
+  "schema_version": "0.1",
+  "track_id": "B5",
+  "system_id": "baseline-bilstm-ctc",
+  "status": "proposed-baseline-protocol-pending-3step-probe",
+  "dataset_release": null,
+  "split_manifest_sha256": null,
+  "model": {
+    "architecture": "BiLSTM-CTC",
+    "pretrained_weights": false,
+    "input_features": {
+      "type": "log_mel_spectrogram",
+      "sample_rate_hz": 16000,
+      "n_mels": 80,
+      "win_length_ms": 25.0,
+      "hop_length_ms": 10.0,
+      "cmvn": "per_utterance"
+    },
+    "provisional_encoder": {
+      "conv_subsampling": "2x_strided_conv2d",
+      "rnn_type": "LSTM",
+      "bidirectional": true,
+      "num_layers": 4,
+      "hidden_size": 320,
+      "dropout": 0.2,
+      "size_lock_policy": "confirm_after_3step_memory_and_1epoch_probe_on_training_hardware"
+    },
+    "ctc_head": {
+      "vocab_source": "frozen_train_split_characters_only",
+      "blank_id": 0,
+      "unk_id": 1,
+      "space_id": 2
+    },
+    "precision": "float32",
+    "device": "cuda"
+  },
+  "training_protocol": {
+    "seed": 42,
+    "optimizer": "AdamW",
+    "learning_rate": 0.001,
+    "weight_decay": 0.0001,
+    "lr_scheduler": "ReduceLROnPlateau",
+    "batch_size": 16,
+    "max_epochs": 40,
+    "early_stopping_metric": "validation_norm_cer",
+    "early_stopping_patience": 6,
+    "gradient_clip_norm": 5.0,
+    "compute_budget_policy": "3-step memory probe and 1-epoch timing recorded on allocated training hardware before locking final model dimensions."
+  },
+  "audio_constraints": {
+    "expected_duration_sec_range": [10.0, 20.0],
+    "chunking": "none"
+  },
+  "decoding_policy": {
+    "language": "tr",
+    "primary_decode_mode": "greedy_ctc",
+    "num_return_sequences": 1,
+    "lm_rescoring": false,
+    "strip_leading_trailing_whitespace_in_raw": false
+  },
+  "eligibility_audit": {
+    "worldspeech_exposed": false,
+    "rationale": "Trained from random initialization exclusively on the frozen TURAS train split; character vocabulary derived strictly from train transcripts."
+  }
+}

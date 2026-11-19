@@ -4,13 +4,14 @@
 project on domain-specific Turkish ASR, acoustic fine-tuning, and Relational Deep
 Learning (RDL).
 
-**Status on this feature branch: Members 4/5 implementation in progress.** Guarded
-Whisper LoRA/full and CTC training, scored N-best extraction, heterogeneous graph
-learning and relational rescoring are implemented with offline tests. Approved
-training bundles, baseline handoffs, owner review and CUDA profiling are still
-needed. No corpus training, benchmark predictions or ASR results have been
-produced. See [Member 4 notes](experiments/m4-whisper-notes.md) and
-[Member 5 notes](experiments/m5-ctc-rdl-notes.md).
+**This is the Member 5 component branch of the completed M4/M5 integration
+stack.** It includes its Member 4 dependency, guarded CTC training, heterogeneous
+graph learning, scored candidate extraction/rescoring and offline tests. Actual
+training, selected checkpoints, frozen test results and
+the verified private handoff are documented in
+[integration PR #5](https://github.com/Rxd3/TURAS/pull/5). The table below describes
+this component branch's contents; the integration branch carries final project
+status and measured evidence. Independent review remains pending.
 
 The five baseline tracks below are the original project roster. The professor's
 later requirements also call for a GMM-HMM track and explicit HuBERT/transducer
@@ -28,10 +29,10 @@ The project preserves all five baseline tracks and all adaptation tracks:
 | B3 | Pretrained Qwen3-ASR, speech-language-model family | Member 2 | Planned; checkpoint/capability audit required |
 | B4 | Pretrained Turkish-capable Wav2Vec2/XLSR CTC | Member 3 | Planned; ASR checkpoint/head selection required |
 | B5 | Alternative neural BiLSTM-CTC, trained from scratch | Member 3 | Working architecture choice; not implemented |
-| F1 | Whisper LoRA fine-tuning | Member 4 | Code and offline tests; no corpus training |
-| F2 | Whisper full fine-tuning where hardware permits | Member 4 | Code and offline tests; resource feasibility pending |
-| F3 | Wav2Vec2/XLSR CTC fine-tuning | Member 5 | Code and offline tests; corpus training pending |
-| R1 | Trainable heterogeneous graph relation scorer and N-best rescoring | Member 5 | Code and offline tests; real graph/ASR experiments pending |
+| F1 | Whisper LoRA fine-tuning | Member 4 | Code and offline tests here; completed experiments in integration PR #5 |
+| F2 | Whisper full fine-tuning where hardware permits | Member 4 | Code and offline tests here; completed experiments in integration PR #5 |
+| F3 | Wav2Vec2/XLSR CTC fine-tuning | Member 5 | Code and offline tests here; completed experiments in integration PR #5 |
+| R1 | Trainable heterogeneous graph relation scorer and N-best rescoring | Member 5 | Code and offline tests here; corrected-linker results and controls in integration PR #5 |
 
 The dataset contribution is a **curated Turkish legislative/financial speech
 benchmark**. [WorldSpeech](https://huggingface.co/datasets/disco-eth/WorldSpeech),
@@ -76,15 +77,15 @@ part of repository initialization.
 | `configs/` | Separate dataset, baseline, fine-tuning, RDL, decoding, evaluation settings areas |
 | `docs/` | Architecture, working decisions, data/evaluation policies, contracts, reproducibility |
 | `data/` | Future metadata, manifests, split definitions, verification and relational schema documentation |
-| `scripts/` | Lightweight entry points, including Member 4 training |
+| `scripts/` | Lightweight entry points, Member 4 training and M6 environment checks |
 | `experiments/` | Preregistered comparison and ablation protocol; future notes |
 | `results/` | Future benchmark outputs and reports; no results |
-| `tests/` | Offline synthetic-fixture and random-model tests; no benchmark data |
+| `tests/` | Offline synthetic-fixture, random-model and environment checks; no benchmark data |
 | `contributions/` | Six individual, initially empty contribution records |
 | `presentation/` | Evidence requirements for the future final presentation |
-| `.github/` | PR template and packaging-only CI |
+| `.github/` | PR template and CI (packaging checks and unit tests) |
 
-Repository: [Rxd3/project3-turkish-asr-rdl](https://github.com/Rxd3/project3-turkish-asr-rdl).
+Repository: [Rxd3/TURAS](https://github.com/Rxd3/TURAS).
 Architecture references are [NALTRA](https://github.com/Rxd3/NALTRA) and
 [RECAP](https://github.com/Rxd3/RECAP); see the inspected revisions and adaptation
 boundaries in [reference review](docs/reference_review.md). No unrelated

@@ -1,0 +1,143 @@
+{
+  "schema_version": "0.1",
+  "recorded_at_utc": "2026-11-19T19:38:38.195731+00:00",
+  "status": "engineering_complete_independent_review_pending",
+  "engineering_deliverables_complete": true,
+  "formal_non_author_approval_recorded": false,
+  "consumer_human_acknowledgment_recorded": false,
+  "review_rule": {
+    "required_approvals": 1,
+    "source": "GitHub main branch protection"
+  },
+  "source_commit": "3b568b2467e113dbc800ff64caf74ddbf107c956",
+  "source_bundle": {
+    "path": "artifacts/owner-m45/finalization/delivery/TURAS-M4-M5-final-source-v2.bundle",
+    "bytes": 790469,
+    "sha256": "ebce107dea1e811f2ee6de4345fd60d9057c86d506ea1e5af6cb701bf7ae6794"
+  },
+  "original_model_archive": {
+    "path": "artifacts/owner-m45/final/handoff/TURAS-M4-M5-private-handoff.tar",
+    "bytes": 2424330240,
+    "sha256": "3bbaf65cd8ac45b4dceab6e1401748392e0bf3dd0039d395d1e092719740a91d"
+  },
+  "frozen_protocol_sha256": "288aebd71d8a3574e13d436748d4161bc258a487e65066f1c3508bc8e835bec1",
+  "original_frozen_code_and_test_reports_byte_identical": true,
+  "tests": {
+    "m4_component_passed": 54,
+    "m5_component_passed": 68,
+    "integration_passed": 1095,
+    "integration_skipped": 1,
+    "subtests_passed": 2
+  },
+  "restored_acceptance_report": {
+    "path": "results/final/m45_restored_delivery_acceptance.json",
+    "sha256": "19bcdcad64be7e362659e1c2f50040e027b86df5d203942fe74ec8af4bb0c8a0",
+    "files_verified": 226,
+    "model_control_checks_passed": 21
+  },
+  "decoder_provenance_correction": {
+    "path": "results/final/m45_decoding_provenance_correction.json",
+    "sha256": "223a27a0b333e07828225977c3cc6e9e061043263090eb1a590dc2606e6f76be",
+    "whisper_beams": 5,
+    "ctc_prefix_width": 10,
+    "requested_n": 5
+  },
+  "pull_requests": [
+    {
+      "number": 3,
+      "checks": [
+        {
+          "name": "Package (Python 3.13)",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/Rxd3/TURAS/actions/runs/44598677311/job/135823827201"
+        },
+        {
+          "name": "Package (Python 3.11)",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/Rxd3/TURAS/actions/runs/44598677311/job/135823827134"
+        },
+        {
+          "name": "Tests (Python 3.11)",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/Rxd3/TURAS/actions/runs/44598677311/job/135823827048"
+        },
+        {
+          "name": "Tests (Python 3.13)",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/Rxd3/TURAS/actions/runs/44598677311/job/135823826777"
+        },
+        {
+          "name": "offline",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/Rxd3/TURAS/actions/runs/44598677120/job/135823825324"
+        },
+        {
+          "name": "offline",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/Rxd3/TURAS/actions/runs/44598667251/job/135823789699"
+        }
+      ],
+      "reviews": [],
+      "head": "0d05c0a3068495307ce86d90ae6a81f90bd8e864",
+      "mergeable": true,
+      "mergeable_state": "blocked"
+    },
+    {
+      "number": 4,
+      "checks": [
+        {
+          "name": "offline",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/Rxd3/TURAS/actions/runs/44598677953/job/135823829301"
+        },
+        {
+          "name": "offline",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/Rxd3/TURAS/actions/runs/44598677146/job/135823826023"
+        },
+        {
+          "name": "offline",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/Rxd3/TURAS/actions/runs/44598668010/job/135823791648"
+        }
+      ],
+      "reviews": [],
+      "head": "00d00bea4fc61530e4fc18925310cf48c36d267d",
+      "mergeable": true,
+      "mergeable_state": "clean"
+    },
+    {
+      "number": 5,
+      "checks": [
+        {
+          "name": "offline",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/Rxd3/TURAS/actions/runs/44600048638/job/135828647334"
+        },
+        {
+          "name": "offline",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/Rxd3/TURAS/actions/runs/44600032999/job/135828593847"
+        }
+      ],
+      "reviews": [],
+      "head": "3b568b2467e113dbc800ff64caf74ddbf107c956",
+      "mergeable": true,
+      "mergeable_state": "clean"
+    }
+  ],
+  "main_merged": false,
+  "further_training_required_for_approved_protocol": false,
+  "scope": "Owner-authorized single-seed working benchmark; dataset verification and course-wide baseline work remain separate."
+}

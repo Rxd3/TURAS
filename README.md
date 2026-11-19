@@ -16,6 +16,11 @@ for vocabulary-extended CTC. Primary learned RDL does not beat original one-best
 on any adapted model. See the [final report](results/final/M4_M5_FINAL_REPORT.md)
 and [completion/handoff record](docs/m45_completion.md). Independent review is
 still pending; this does not complete other members' baseline tracks.
+
+The [technical closeout](results/final/m45_technical_closeout.json) records
+conflict-free PR heads, passing CI, restored-checkpoint acceptance and the final
+source supplement. The [decoder erratum](docs/m45_decoding_erratum.md) confirms
+actual Whisper beam 5 and CTC prefix width 10; frozen outputs/metrics are unchanged.
 Technical choices are approved in [the owner decision record](docs/owner_decisions.md).
 See the actual [working validation](docs/m45_validation_complete.md),
 [independent numerical/linker audit](docs/m45_result_audit.md) and

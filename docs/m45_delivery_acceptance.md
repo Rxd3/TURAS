@@ -42,7 +42,7 @@ Failures are preserved; use a new output path rather than overwriting an attempt
 
 The recorded result is
 [`m45_restored_delivery_acceptance.json`](../results/final/m45_restored_delivery_acceptance.json).
-The technical closeout manifest links that result, synchronized branch heads,
+The [technical closeout manifest](../results/final/m45_technical_closeout.json) links that result, synchronized branch heads,
 test/CI evidence and the supplemental final source bundle. The original model
 archive and test metrics remain byte-identical. The source supplement supplies
 current documentation and this acceptance command.

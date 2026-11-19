@@ -5,6 +5,10 @@ benchmark. This page provides an executable consumer check. Actual non-author
 PR approval and human artifact acknowledgment remain separate records; the
 automated check does not create either one.
 
+Effective decoding in the frozen model runs is Whisper beam 5 and CTC prefix
+width 10, both requesting N=5. See the [provenance erratum](m45_decoding_erratum.md)
+for the generic configuration field and the audit of all 28 exported runs.
+
 ## Restore and exercise the delivery
 
 Use current integration source, the pinned Windows runtime, the original private

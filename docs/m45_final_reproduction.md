@@ -18,7 +18,10 @@ All critical Python files and timing/group metadata already matched Git bytes.
 
 The actual machine has an AMD Ryzen 5 7500F (6 cores, 12 threads), 16,765,120,512
 bytes of RAM and one NVIDIA RTX 5070. Inference uses four OMP/MKL threads,
-CUDA/bfloat16, batch one, requested N=5, beam 10 and maximum 440 new tokens.
+CUDA/bfloat16, batch one, requested N=5 and maximum 440 new tokens. Actual
+Whisper width is 5 beams; CTC prefix width is 10. The frozen generic
+`beam_size=10` field applies to CTC only; see the
+[source/export provenance correction](m45_decoding_erratum.md).
 Python 3.13.14, torch 2.14.1+cu130 and the installed packages are pinned in
 `requirements/owner-m45-windows-cu130.txt`. CPU/GPU, driver, framework, CUDA,
 synchronization and thermal samples are recorded by each timing run as well.

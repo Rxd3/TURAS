@@ -42,7 +42,8 @@ The [full report](../results/final/M4_M5_FINAL_REPORT.md),
 raw/normalized WER and CER with edit counts, exact canonical term supports/P/R/F1,
 automatic quantity diagnostics, relation/N-best coverage, verified-subset scores,
 RTF/latency/memory and all paired intervals. Timing includes scored N-best
-generation with requested N=5 and beam 10. It is not a greedy or streaming speed
+generation with requested N=5, Whisper beam 5 and CTC prefix width 10; see the
+[effective-width erratum](m45_decoding_erratum.md). It is not a greedy or streaming speed
 benchmark. CTC-parent repeat RTF varies from 0.1123 to 0.1503; retain that
 dispersion and do not claim a CTC speed advantage from the means alone.
 

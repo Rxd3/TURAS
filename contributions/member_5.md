@@ -37,7 +37,14 @@ consumer acknowledgments and accepted artifact hashes when they occur.
 
 ## Remaining work
 
-Receive train/inference bundles, obtain M1/M3/M4/M6 review, agree CTC label/number
-policy, integrate M1 extraction and M6 harness, profile compatible CUDA execution,
-run real training/validation/ablations and deliver hashed outputs to M6. No corpus
-training, baseline, downstream gain or test result is claimed.
+Owner-assisted seed-17 vocabulary-extended CTC training and all three acoustic
+validation epochs are complete; working selection is epoch 3. The primary graph,
+three fusion grids and both retrained relation-removal variants/six extra grids
+also completed. Results use the separately identified recovered-minutes reference
+version. Primary RDL has no WER improvement over original one-best; the CTC
+diagnostic variants change one word error, with no established significance.
+See the [completion record](../docs/m45_validation_complete.md) and
+[actual RDL/ablation report](../results/evaluation/m45_rdl_and_ablation_summary.json).
+Remaining: terminology metrics, repeated end-to-end timing, final test/reporting
+after protocol freeze, additional planned seeds, and independently acknowledged
+artifact/review handoff. No test or peer-review completion is claimed.

@@ -39,7 +39,12 @@ consumer acknowledgments and accepted artifact hashes when they occur.
 
 ## Remaining work
 
-Receive the approved inference/audio and train-reference bundles; agree the B1
-baseline and protocol with M2/M6; profile an appropriate CUDA environment; run
-actual LoRA/full experiments where feasible; integrate exports with M6; hand
-real N-best bundles to M5. No training-completion item is checked by this PR.
+Owner-assisted seed-17 LoRA/full training and all six validation epochs are now
+complete; best working checkpoints are LoRA epoch 3 and full epoch 2, selected
+on the explicitly recovered-minutes validation reference version. Real scored
+N-best was consumed in M5's fusion grids. See the
+[completed working validation record](../docs/m45_validation_complete.md) and
+[selection inventory](../results/evaluation/m45_working_checkpoint_selection.json).
+Remaining: terminology metrics, final repeated timing/test reporting after
+protocol freeze, additional planned seeds, and independently acknowledged
+artifact/review handoff. Final test and peer-review completion are not claimed.

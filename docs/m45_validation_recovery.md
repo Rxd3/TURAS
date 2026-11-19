@@ -156,3 +156,8 @@ not a claim that these specific variants were preregistered before those results
 Keep all trial outcomes and identify single-seed/reference-quality limitations.
 Do not tune on test. Local ablation status will be in
 `artifacts/owner-m45/validation-recovery/relation-ablations/status.json`.
+
+**Completion update:** all nine acoustic evaluations, three primary fusion grids,
+and six relation-removal grids completed. See the
+[working validation completion record](m45_validation_complete.md) for checkpoint
+choices, actual outcomes, private artifact paths and unfinished final benchmarking.

@@ -73,7 +73,7 @@ def prediction_row(
         **_identity(hyp, inp, ctx),
         "status": hyp.status,
         "hypothesis_text": hyp.text,
-        "selected_candidate_id": None,
+        "selected_candidate_id": _selected_candidate_id(hyp, nbest_artifact_sha256 is not None),
         "nbest_artifact_sha256": nbest_artifact_sha256,
         "model_artifact_sha256": ctx.model_artifact_sha256,
         "decoder_config_sha256": ctx.decoder_config_sha256,
@@ -90,9 +90,9 @@ def _error_object(hyp: Hypothesis) -> dict[str, Any] | None:
 def _candidate_row(candidate: Candidate) -> dict[str, Any]:
     scores = {
         "decoder_sequence_score": candidate.decoder_sequence_score,
-        "lm_log_score": None,
-        "rdl_log_score": None,
-        "combined_score": None,
+        "lm_log_score": candidate.lm_log_score,
+        "rdl_log_score": candidate.rdl_log_score,
+        "combined_score": candidate.combined_score,
     }
     if not isinstance(candidate.score_details, Mapping):
         raise ValueError(f"candidate {candidate.candidate_id!r}: score_details must be an object")
@@ -153,6 +153,24 @@ def _candidate_rows(hyp: Hypothesis) -> tuple[list[dict[str, Any]], dict[str, st
     return [_candidate_row(c) for c in kept], dedup_map
 
 
+def _selected_candidate_id(hyp: Hypothesis, has_nbest: bool) -> str | None:
+    """The rescored pick: one candidate written to the N-best artifact whose text is the hypothesis text."""
+    selected = hyp.selected_candidate_id
+    if selected is None:
+        return None
+    if not isinstance(selected, str) or hyp.status == "error":
+        raise ValueError(f"selected_candidate_id {selected!r} must be a string naming a candidate "
+                         "of a non-error result")
+    if not has_nbest:
+        raise ValueError(f"selected_candidate_id {selected!r} needs an N-best artifact; this run writes none")
+    kept, _ = _candidate_rows(hyp)
+    matches = [row for row in kept if row["candidate_id"] == selected]
+    if len(matches) != 1 or matches[0]["text"] != hyp.text:
+        raise ValueError(f"selected_candidate_id {selected!r} must name one candidate kept after deduplication "
+                         "whose text is the hypothesis text")
+    return selected
+
+
 def _candidate_fields(hyp: Hypothesis) -> dict[str, Any]:
     """The kept candidate rows, plus dedup_map only when a candidate was removed."""
     rows, dedup_map = _candidate_rows(hyp)
@@ -177,7 +195,12 @@ def nbest_row(
 
 def adapter_result_fields(hyp: Hypothesis, requested_n: int) -> dict[str, Any]:
     """Every value the prediction row, and the N-best row when requested_n > 0, takes from one result."""
-    fields = {"status": hyp.status, "hypothesis_text": hyp.text, "error": _error_object(hyp)}
+    fields = {
+        "status": hyp.status,
+        "hypothesis_text": hyp.text,
+        "selected_candidate_id": _selected_candidate_id(hyp, requested_n > 0),
+        "error": _error_object(hyp),
+    }
     return {**fields, **_candidate_fields(hyp)} if requested_n > 0 else fields
 
 

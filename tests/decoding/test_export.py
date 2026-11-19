@@ -147,13 +147,25 @@ def test_nbest_row_refuses_candidates_that_are_not_a_tuple_or_list(make_input, r
         nbest_row(hyp, make_input("utt_a"), run_context, 5, "conv")
 
 
+RESULT_KEYS = ("status", "hypothesis_text", "selected_candidate_id", "error")
+
+
 def test_adapter_result_fields_are_the_values_the_rows_take_from_the_result(make_input, run_context):
-    hyp = scored_hyp()
-    pred = prediction_row(hyp, make_input("utt_a"), run_context, "t1", None)
+    hyp = dataclasses.replace(scored_hyp(), selected_candidate_id="c1")
+    pred = prediction_row(hyp, make_input("utt_a"), run_context, "t1", "c" * 64)
     nbest = nbest_row(hyp, make_input("utt_a"), run_context, 5, "conv")
-    expected = {key: pred[key] for key in ("status", "hypothesis_text", "error")}
-    assert adapter_result_fields(hyp, 5) == {**expected, "candidates": nbest["candidates"]}
-    assert adapter_result_fields(hyp, 0) == expected
+    fields = adapter_result_fields(hyp, 5)
+    assert fields == {**{key: pred[key] for key in RESULT_KEYS}, "candidates": nbest["candidates"]}
+    assert fields["selected_candidate_id"] == pred["selected_candidate_id"] == "c1"
+    plain = prediction_row(scored_hyp(), make_input("utt_a"), run_context, "t1", None)
+    assert adapter_result_fields(scored_hyp(), 0) == {key: plain[key] for key in RESULT_KEYS}
+
+
+def test_adapter_result_fields_refuse_a_selection_the_rows_cannot_hold():
+    with pytest.raises(ValueError, match="selected_candidate_id 'c9' must name one candidate"):
+        adapter_result_fields(dataclasses.replace(scored_hyp(), selected_candidate_id="c9"), 5)
+    with pytest.raises(ValueError, match="selected_candidate_id 'c1' needs an N-best artifact"):
+        adapter_result_fields(dataclasses.replace(scored_hyp(), selected_candidate_id="c1"), 0)
 
 
 def test_error_hypothesis_nbest_row_has_no_candidates(make_input, run_context):
@@ -273,7 +285,7 @@ def test_adapter_result_fields_hold_the_deduplicated_candidates_and_map(make_inp
     hyp = hyp_of(cand("c01", 1, "SYNTHETIC a"), cand("c02", 2, "SYNTHETIC a"), cand("c03", 3, "SYNTHETIC b"))
     row = nbest_row(hyp, make_input("utt_a"), run_context, 3, "conv")
     fields = adapter_result_fields(hyp, 3)
-    assert list(fields) == ["status", "hypothesis_text", "error", "candidates", "dedup_map"]
+    assert list(fields) == ["status", "hypothesis_text", "selected_candidate_id", "error", "candidates", "dedup_map"]
     assert fields["candidates"] == row["candidates"] and fields["dedup_map"] == row["dedup_map"] == {"c02": "c01"}
 
 
@@ -312,3 +324,88 @@ def test_two_removed_candidates_with_one_id_are_refused(make_input, run_context,
                  cand("c09", 3, first), cand("c09", 4, second))
     with pytest.raises(ValueError, match=r"^removed duplicate candidate_id 'c09' appears more than once$"):
         nbest_row(hyp, make_input("utt_a"), run_context, 4, "conv")
+
+
+def test_candidate_and_hypothesis_end_with_the_rescoring_fields():
+    candidate = dataclasses.fields(Candidate)
+    names = ("score_details", "lm_log_score", "rdl_log_score", "combined_score")
+    assert tuple(f.name for f in candidate[-4:]) == names
+    assert [f.default for f in candidate[-3:]] == [None, None, None]
+    assert (dataclasses.fields(Hypothesis)[-1].name, dataclasses.fields(Hypothesis)[-1].default) == (
+        "selected_candidate_id", None)
+
+
+def test_nbest_row_carries_each_rescoring_score_into_its_own_key(make_input, run_context):
+    hyp = hyp_of(cand("c01", 1, "SYNTHETIC a", lm_log_score=-3.5, rdl_log_score=-0.25, combined_score=-1.75),
+                 cand("c02", 2, "SYNTHETIC b", combined_score=-2.0),
+                 cand("c03", 3, "SYNTHETIC c", rdl_log_score=-0.5,
+                      score_details={"null_reasons": {"lm_log_score": "SYNTHETIC LM disabled"}}))
+    row = nbest_row(hyp, make_input("utt_a"), run_context, 3, "conv")
+    first, second, third = row["candidates"]
+    assert (first["lm_log_score"], first["rdl_log_score"], first["combined_score"]) == (-3.5, -0.25, -1.75)
+    assert first["score_details"]["null_reasons"] == {"decoder_sequence_score": NOT_PRODUCED}
+    assert (second["lm_log_score"], second["rdl_log_score"], second["combined_score"]) == (None, None, -2.0)
+    assert second["score_details"]["null_reasons"] == {
+        "decoder_sequence_score": NOT_PRODUCED, "lm_log_score": NOT_PRODUCED, "rdl_log_score": NOT_PRODUCED}
+    assert third["score_details"]["null_reasons"] == {
+        "decoder_sequence_score": NOT_PRODUCED, "lm_log_score": "SYNTHETIC LM disabled",
+        "combined_score": NOT_PRODUCED}
+    assert validate_nbest([row]).ok
+
+
+def test_prediction_row_records_the_selected_candidate(make_input, run_context):
+    hyp = dataclasses.replace(scored_hyp(), text="SYNTHETIC iki", selected_candidate_id="c2")
+    row = prediction_row(hyp, make_input("utt_a"), run_context, "t1", "c" * 64)
+    assert row["selected_candidate_id"] == "c2" and validate_predictions([row]).ok
+    unset = prediction_row(scored_hyp(), make_input("utt_a"), run_context, "t1", "c" * 64)
+    assert unset["selected_candidate_id"] is None
+
+
+def removed_duplicate() -> Hypothesis:
+    candidates = (cand("c01", 1, "SYNTHETIC a"), cand("c02", 2, "SYNTHETIC a"))
+    return Hypothesis("utt_a", "ok", "SYNTHETIC a", candidates, selected_candidate_id="c02")
+
+
+def error_naming_a_candidate() -> Hypothesis:
+    return Hypothesis("utt_a", "error", None, scored_hyp().candidates, error_code="adapter_exception",
+                      error_message="SYNTHETIC failure", selected_candidate_id="c1")
+
+
+BAD_SELECTIONS = {
+    "unknown_id": (lambda: dataclasses.replace(scored_hyp(), selected_candidate_id="c9"), "c" * 64),
+    "removed_duplicate": (removed_duplicate, "c" * 64),
+    "text_differs": (lambda: dataclasses.replace(scored_hyp(), selected_candidate_id="c2"), "c" * 64),
+    "no_nbest_artifact": (
+        lambda: dataclasses.replace(scored_hyp(), text="SYNTHETIC iki", selected_candidate_id="c2"), None),
+    "non_string_id": (
+        lambda: Hypothesis("utt_a", "ok", "SYNTHETIC a", (cand("1", 1, "SYNTHETIC a"),), selected_candidate_id=1),
+        "c" * 64),
+    "error_status": (error_naming_a_candidate, "c" * 64),
+    "int_id_on_a_candidate": (
+        lambda: Hypothesis("utt_a", "ok", "SYNTHETIC a", (cand(1, 1, "SYNTHETIC a"),), selected_candidate_id=1),
+        "c" * 64),
+    "true_id_on_a_candidate": (
+        lambda: Hypothesis("utt_a", "ok", "SYNTHETIC a", (cand(True, 1, "SYNTHETIC a"),),
+                           selected_candidate_id=True),
+        "c" * 64),
+    "error_status_with_the_candidate_text": (
+        lambda: dataclasses.replace(error_naming_a_candidate(), text="SYNTHETIC bir"), "c" * 64),
+    "error_status_with_no_text_on_either": (
+        lambda: dataclasses.replace(error_naming_a_candidate(), candidates=(cand("c1", 1, None),)), "c" * 64),
+    "id_on_two_kept_candidates": (
+        lambda: Hypothesis("utt_a", "ok", "SYNTHETIC a", (cand("c01", 1, "SYNTHETIC a"), cand("c01", 2, "SYNTHETIC b")),
+                           selected_candidate_id="c01"),
+        "c" * 64),
+}
+
+
+@pytest.mark.parametrize("build,nbest_sha", BAD_SELECTIONS.values(), ids=BAD_SELECTIONS.keys())
+def test_prediction_row_refuses_a_selection_that_is_not_a_kept_candidate(make_input, run_context, build, nbest_sha):
+    with pytest.raises(ValueError, match="selected_candidate_id"):
+        prediction_row(build(), make_input("utt_a"), run_context, "t1", nbest_sha)
+
+
+@pytest.mark.parametrize("build,nbest_sha", BAD_SELECTIONS.values(), ids=BAD_SELECTIONS.keys())
+def test_adapter_result_fields_refuse_a_selection_that_is_not_a_kept_candidate(build, nbest_sha):
+    with pytest.raises(ValueError, match="selected_candidate_id"):
+        adapter_result_fields(build(), 5 if nbest_sha else 0)

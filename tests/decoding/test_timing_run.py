@@ -8,9 +8,11 @@ from collections import Counter
 import pytest
 
 import turkish_asr_rdl.decoding.timing as timing_module
-from turkish_asr_rdl.decoding.interface import Hypothesis
+from turkish_asr_rdl.decoding.interface import Candidate, Hypothesis
 from turkish_asr_rdl.decoding.timing import run_timed, write_run_outputs
 from turkish_asr_rdl.schemas.jsonl import read_jsonl
+from turkish_asr_rdl.schemas.nbest import validate_nbest
+from turkish_asr_rdl.schemas.predictions import validate_predictions
 
 SPILL = "RTF invalid: peak reserved VRAM exceeded free VRAM before load (suspected sysmem fallback)"
 
@@ -220,3 +222,56 @@ def test_manifest_environment_names_torch_cuda_and_transformers(timed_run, monke
     environment = manifest_of(out)["environment"]
     versions = (environment["torch"], environment["cuda"], environment["transformers"])
     assert versions == ("2.9.0+cu128", "12.8", "5.23.0")
+
+
+class ResultAdapter(ConfigAdapter):
+    """Returns the SYNTHETIC result the test gives for each timed utterance and a plain one for warm-up."""
+
+    def __init__(self, results, requested_n):
+        super().__init__(requested_n=requested_n, score_convention_id="nbest-synthetic-v1" if requested_n else None)
+        self.results = results
+
+    def transcribe(self, batch):
+        plain = super().transcribe(batch)
+        return [self.results.get(h.utterance_id, h) for h in plain]
+
+
+def rescored(uid, selected, text):
+    candidates = (
+        Candidate("c1", 1, "SYNTHETIC bir", (5, 6), -1.0, "kind",
+                  lm_log_score=-3.5, rdl_log_score=-0.25, combined_score=-1.75),
+        Candidate("c2", 2, "SYNTHETIC iki", (5, 7), -2.5, "kind",
+                  lm_log_score=-0.5, rdl_log_score=-0.125, combined_score=-0.75),
+    )
+    return Hypothesis(uid, "ok", text, candidates, selected_candidate_id=selected)
+
+
+@pytest.mark.parametrize("requested_n,bad_text,good", [
+    (5, "SYNTHETIC bir", ("c2", "SYNTHETIC iki")),
+    (0, "SYNTHETIC iki", (None, "SYNTHETIC bir")),
+], ids=["text_differs", "no_nbest_written"])
+def test_a_selection_the_outputs_cannot_hold_becomes_an_error_row(timed_run, requested_n, bad_text, good):
+    results = {"utt_a": rescored("utt_a", "c2", bad_text), "utt_b": rescored("utt_b", *good)}
+    run, out = timed_run(ResultAdapter(results, requested_n), FakeMeter([], (1.0, 1.0)))
+    bad, kept = run.hypotheses
+    assert (bad.status, bad.error_code, bad.text) == ("error", "adapter_output_invalid", None)
+    assert "selected_candidate_id 'c2'" in bad.error_message
+    assert kept.status == "ok"
+    predictions = read_jsonl(out / "predictions.jsonl")
+    assert [row["selected_candidate_id"] for row in predictions] == [None, good[0]]
+    assert validate_predictions(predictions, expected_ids=list(TIMED)).ok
+    assert (out / "nbest.jsonl").exists() == (requested_n > 0)
+    if requested_n:
+        assert validate_nbest(read_jsonl(out / "nbest.jsonl"), expected_ids=list(TIMED)).ok
+
+
+def test_a_selected_candidate_and_its_scores_reach_both_files(timed_run):
+    results = {uid: rescored(uid, "c2", "SYNTHETIC iki") for uid in TIMED}
+    _, out = timed_run(ResultAdapter(results, 5), FakeMeter([], (1.0, 1.0)))
+    predictions, nbest = read_jsonl(out / "predictions.jsonl"), read_jsonl(out / "nbest.jsonl")
+    assert [row["selected_candidate_id"] for row in predictions] == ["c2", "c2"]
+    scores = [[(c["candidate_id"], c["lm_log_score"], c["rdl_log_score"], c["combined_score"])
+               for c in row["candidates"]] for row in nbest]
+    assert scores == [[("c1", -3.5, -0.25, -1.75), ("c2", -0.5, -0.125, -0.75)]] * len(TIMED)
+    assert validate_predictions(predictions, expected_ids=list(TIMED)).ok
+    assert validate_nbest(nbest, expected_ids=list(TIMED)).ok

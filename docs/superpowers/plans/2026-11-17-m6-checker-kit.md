@@ -223,8 +223,8 @@ def test_directory_is_friendly(tmp_path): ...
 - Produces (`interface.py`):
   - `@dataclass(frozen=True) class InferenceInput` with the ten `INFERENCE_INPUT_FIELDS`, plus `@classmethod from_row(cls, row: Mapping[str, Any]) -> InferenceInput` that raises `ValueError` listing `validate_inference_inputs` errors
   - `@dataclass(frozen=True) class AudioItem: utterance_id: str; samples: np.ndarray`
-  - `@dataclass(frozen=True) class Candidate: candidate_id: str; rank: int; text: str; token_ids: tuple[int, ...]; acoustic_log_score: float; acoustic_score_kind: str; decoder_sequence_score: float | None = None; score_details: Mapping[str, Any] = field(default_factory=dict)`
-  - `@dataclass(frozen=True) class Hypothesis: utterance_id: str; status: str; text: str | None; candidates: tuple[Candidate, ...] = (); error_code: str | None = None; error_message: str | None = None`
+  - `@dataclass(frozen=True) class Candidate: candidate_id: str; rank: int; text: str; token_ids: tuple[int, ...]; acoustic_log_score: float; acoustic_score_kind: str; decoder_sequence_score: float | None = None; score_details: Mapping[str, Any] = field(default_factory=dict); lm_log_score: float | None = None; rdl_log_score: float | None = None; combined_score: float | None = None`
+  - `@dataclass(frozen=True) class Hypothesis: utterance_id: str; status: str; text: str | None; candidates: tuple[Candidate, ...] = (); error_code: str | None = None; error_message: str | None = None; selected_candidate_id: str | None = None`
   - `class AsrAdapter(Protocol)`: attributes `system_id: str`, `model_artifact_sha256: str`, `decoder_config_sha256: str`, `requested_n: int` (0 means no N-best), `score_convention_id: str | None`, `config: Mapping[str, Any]`; methods `load(self) -> None`, `transcribe(self, batch: Sequence[AudioItem]) -> list[Hypothesis]`
 - Produces (`export.py`):
   - `@dataclass(frozen=True) class RunContext: run_id: str; system_id: str; dataset_release: str; split: str; split_manifest_sha256: str; model_artifact_sha256: str; decoder_config_sha256: str; normalization_version: str = "tr-normalized-v1"`

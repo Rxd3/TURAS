@@ -3,7 +3,7 @@
 Owner adoption for M4/M5 integration: 2026-11-19; see [D24](owner_decisions.md).
 This records project approval, not independent peer-review sign-off.
 
-M6 owns the shared offline evaluator; it is not implemented. All five baselines,
+M6 owns the shared offline evaluator, now integrated on the M4/M5 branch. All baselines,
 fine-tuned systems and RDL conditions must be reported on the same frozen test
 IDs and reference release. A missing or incompatible prediction bundle blocks
 comparison; never silently score its successful subset.
@@ -59,9 +59,13 @@ into three tokens.
 M1/M6 freeze a versioned domain lexicon with canonical IDs, approved aliases,
 topic/entity/quantity categories and provenance before test evaluation. Train-only
 and audited independent external sources may build inference vocabulary; held-out
-reference annotations remain evaluator-only. Match normalized longest token spans,
-left-to-right without overlap; break equal-length alias ties by canonical ID.
-Freeze ambiguity rules before evaluation.
+reference annotations remain evaluator-only. For the M4/M5 final protocol, owner
+decision D38 freezes `canonical-occurrence-m1-v1`: apply M1's existing raw-text
+`screening_tokens` and lexicon matcher, longest spans left-to-right without
+overlap, canonical-ID ties, prefix aliases and exclusions. This amends the earlier
+normalized-span proposal because normalization can erase apostrophe boundaries
+needed by frozen aliases. WER/CER normalization remains unchanged. The frozen
+lexicon hash and ambiguity rules are recorded in the final protocol.
 
 Report exact canonical term precision, recall and F1 from occurrence-count
 multisets per utterance (TP = minimum reference/predicted count per canonical

@@ -29,6 +29,9 @@ Existing draft PRs and main-branch protection remain separate from these choices
 | D35 | Owner-authorized recovery of a separate preliminary validation-minutes reference version from pinned WorldSpeech human text | Use exactly the 438 frozen validation IDs and existing audio hashes, with immutable upstream revision `b76b85395039f50332fbc421f7c098ee2f2653d7`. Keep the recovery private and separately hashed as `owner-recovered-validation-minutes-v1`; never overwrite or represent it as M1's exact corrected reference bundle. Mark every recovered row `unreviewed`, retain the actual `human_transcript` unchanged, and never use `asr_transcript` or predictions as gold. M1's three private validation corrections and listening records cannot be reconstructed from owner approval. Preliminary scoring may use this explicitly identified reference version consistently for all systems; final benchmark claims must state its source/quality and resolve the separate release review. No test inference or training on recovered validation text is authorized by this recovery |
 | D36 | The completion study may be reported as single-seed, consistent with the adopted M6 deadline policy | Seed 17 has actual evidence; seeds 42/2026 remain optional follow-up robustness runs, not an invented requirement that blocks the current report. No multi-seed average or robustness claim is permitted |
 | D37 | Correct the RDL hypothesis linker to honor M1's frozen alias syntax | The audit found that the legacy linker discarded `*`, losing suffix matches and exclusion semantics. New versioned graph bundles reuse the same learned weights/snapshots but embed the hash-verified frozen lexicon and use M1's existing raw-text matcher. Preserve old artifacts/legacy behavior and rerun all affected validation grids. Acoustic checkpoints and their WER/CER are unaffected. Never treat legacy-linker RDL outcomes as corrected-linker evidence |
+| D38 | Freeze canonical terminology metrics as `canonical-occurrence-m1-v1` | Use the frozen M1 lexicon on raw strings via `screening_tokens` and its existing longest nonoverlapping matcher, including prefixes, exclusions and canonical-ID ties. The ASR WER/CER normalizer is unchanged. Count per-utterance canonical occurrence TP/FP/FN, micro rates, reference-supported macro rates, topic/entity support, unsupported-term false positives and term-containing WER. Report automatic exact digit-based amount/percentage value-and-unit matching separately; it is not human quantity annotation |
+| D39 | Finish the working M4/M5 benchmark using the already hashed M1 evaluator-only test archive | Owner instruction to finish supplies project authorization; it does not resolve independent M6 release review. Freeze the full protocol and every output-producing code hash before test gold access. Use the 636 frozen test IDs without training or selecting on their references. Preserve edited-minutes, pilot-verification, unknown-speaker, recovered-validation and single-seed limitations. Open test transcripts only after all accuracy/control/timing outputs are complete and hash verified |
+| D40 | Freeze five native systems, fifteen fixed-candidate controls and eight serial timing conditions | Compare both unchanged parents and three validation-selected adapted checkpoints. For each adapted model, report gamma-zero acoustic reordering, learned full graph, separately trained no-quantity and no-co-mention graphs, and an explicitly untrained random-parameter graph. The secondary RDL-enabled condition uses the best positive full-graph validation gamma; all its graph controls use the same gamma. Original decoder one-best remains primary. No LM. Timing is batch one, three repeats on the same seed-2026 recording-balanced >=30-minute test subset, three train warm-ups, serial systems in seeded order with 30-second cooldowns. Cached-selection timings never count as headline ASR RTF |
 
 The graph prototype uses hidden size64, two layers, dropout.1, LR1e-3 and20
 epochs, with an internal 20% **training-group** relation holdout. These are an
@@ -79,6 +82,16 @@ and [Wav2Vec2 documentation](https://huggingface.co/docs/transformers/model_doc/
 No completed experiment or test metric is created by this decision. Record a
 dated amendment and evidence for changed parents, labels, data, graph access,
 normalization or score semantics; do not change frozen artifacts in place.
+
+### Final-evaluation amendment (2026-11-19, D38-D40)
+
+D35 recovery and the completed validation audit now provide explicit checkpoint
+selection evidence. D39 supersedes the earlier wait for a missing original
+validation-only bundle for this **working** completion study. It does not claim
+the recovered text includes M1's private corrections or that M6 approved the
+release. Source reference hashes and actual reported verification counts must
+accompany the final report. All conditions are frozen together; do not pick a new
+winner, tune gamma, fix reference wording or stop based on test accuracy.
 
 ## What teammates should use
 

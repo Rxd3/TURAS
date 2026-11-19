@@ -1,5 +1,10 @@
 # Owner-directed validation reference recovery
 
+Latest results: [audited working completion](m45_validation_complete.md) and
+[numerical/linker audit](m45_result_audit.md). Later RDL correctness auditing
+replaced the historical exact-token linker described in the progress sections
+below with a frozen-prefix-aware version, followed by 36 fresh trials.
+
 Authority: [D35](owner_decisions.md), following the owner's instruction to make
 and document technical decisions instead of waiting for teammate agreement.
 This supplies a usable **working reference version**, not a claim of M6 approval.

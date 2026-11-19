@@ -46,5 +46,5 @@ N-best was consumed in M5's fusion grids. See the
 [completed working validation record](../docs/m45_validation_complete.md) and
 [selection inventory](../results/evaluation/m45_working_checkpoint_selection.json).
 Remaining: terminology metrics, final repeated timing/test reporting after
-protocol freeze, additional planned seeds, and independently acknowledged
+protocol freeze, optional additional-seed robustness work, and independently acknowledged
 artifact/review handoff. Final test and peer-review completion are not claimed.

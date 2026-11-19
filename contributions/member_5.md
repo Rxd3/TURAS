@@ -41,10 +41,13 @@ Owner-assisted seed-17 vocabulary-extended CTC training and all three acoustic
 validation epochs are complete; working selection is epoch 3. The primary graph,
 three fusion grids and both retrained relation-removal variants/six extra grids
 also completed. Results use the separately identified recovered-minutes reference
-version. Primary RDL has no WER improvement over original one-best; the CTC
-diagnostic variants change one word error, with no established significance.
+version. Audit D37 corrected a frozen-alias suffix-linking defect and repeated
+all 36 primary/ablation trials with versioned linkers and unchanged learned weights.
+The corrected primary and diagnostic systems do not improve original one-best
+WER. The earlier one-word CTC result is legacy-linker history, not a corrected
+result. See the [numerical/linker audit](../docs/m45_result_audit.md).
 See the [completion record](../docs/m45_validation_complete.md) and
 [actual RDL/ablation report](../results/evaluation/m45_rdl_and_ablation_summary.json).
 Remaining: terminology metrics, repeated end-to-end timing, final test/reporting
-after protocol freeze, additional planned seeds, and independently acknowledged
+after protocol freeze, optional additional-seed robustness work, and independently acknowledged
 artifact/review handoff. No test or peer-review completion is claimed.

@@ -5,7 +5,8 @@ Branch convention: `feat/m4-whisper-finetuning` (focused topic suffixes allowed)
 Ownership/tasks/review routing: [TEAM_TASKS.md](../TEAM_TASKS.md).
 
 **Status (2026-11-19): owner-assisted implementation, seed-17 corpus training and
-working validation completed; frozen final benchmark running; independent review pending.** No personal identity or
+working validation, frozen final test/timing and private handoff completed;
+independent review pending.** No personal identity or
 individual human authorship is inferred from this workstream assignment.
 
 ## Actual contributions
@@ -45,6 +46,12 @@ on the explicitly recovered-minutes validation reference version. Real scored
 N-best was consumed in M5's fusion grids. See the
 [completed working validation record](../docs/m45_validation_complete.md) and
 [selection inventory](../results/evaluation/m45_working_checkpoint_selection.json).
-Remaining: terminology metrics, final repeated timing/test reporting after
-protocol freeze, optional additional-seed robustness work, and independently acknowledged
-artifact/review handoff. Final test and peer-review completion are not claimed.
+Final working evaluation is now complete: LoRA normalized test WER 12.368%, full
+10.371%, unchanged parent 24.512%; all 636 IDs, raw/normalized CER/WER,
+terminology, 2,000-replicate paired intervals and three-repeat timing are in the
+[final report](../results/final/M4_M5_FINAL_REPORT.md). Actual N-best was consumed
+in all fixed-candidate studies; all main scores independently match JiWER.
+The private model/run bundle is built and byte verified; see
+[handoff and limitations](../docs/m45_completion.md). Remaining: required
+independent PR review/reproduction and actual consumer ACK. Optional extra seeds
+are follow-up robustness work, not a completed experiment or a deadline blocker.

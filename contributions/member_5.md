@@ -5,7 +5,7 @@ Branch convention: `feat/m5-ctc-rdl-rescoring` (focused topic suffixes allowed).
 Ownership/tasks/review routing: [TEAM_TASKS.md](../TEAM_TASKS.md).
 
 **Status (2026-11-19): owner-assisted implementation, seed-17 CTC/graph training
-and corrected-linker working validation completed; frozen final benchmark running;
+and corrected-linker validation, frozen final test/timing and private handoff completed;
 independent review pending.** No human identity or
 individual authorship is inferred from this workstream assignment.
 
@@ -49,6 +49,14 @@ WER. The earlier one-word CTC result is legacy-linker history, not a corrected
 result. See the [numerical/linker audit](../docs/m45_result_audit.md).
 See the [completion record](../docs/m45_validation_complete.md) and
 [actual RDL/ablation report](../results/evaluation/m45_rdl_and_ablation_summary.json).
-Remaining: terminology metrics, repeated end-to-end timing, final test/reporting
-after protocol freeze, optional additional-seed robustness work, and independently acknowledged
-artifact/review handoff. No test or peer-review completion is claimed.
+Final working evaluation is complete: extended CTC normalized test WER 25.150%
+versus 37.152% for its unchanged parent, with vocabulary extension explicitly
+attributed. All fifteen fixed-candidate controls, terminology/quantity diagnostics,
+relation coverage and joint repeated timing are in the
+[final report](../results/final/M4_M5_FINAL_REPORT.md). Primary learned RDL does
+not beat original one-best on any of the three adapted models; small diagnostic
+ablation differences are not a new test-selected primary system. The selected
+CTC and learned/ablated/control graph bundles are included in the verified
+private handoff. See [completion and limitations](../docs/m45_completion.md).
+Remaining: required independent review/reproduction and actual consumer ACK;
+optional future model/seed changes are separate experiments.

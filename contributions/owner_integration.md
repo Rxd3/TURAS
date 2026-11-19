@@ -48,3 +48,12 @@ adapted models, baseline-inference preservation through M6's harness/validators,
 and durable optimizer progress. Recorded D32/D33 under the owner's delegated
 authority. Validation scoring, checkpoint/fusion selection and final test
 comparisons remain pending; independent review is not inferred.
+
+## Final working benchmark completion (2026-11-19)
+
+The later owner-authorized M4/M5 training, recovered-minutes validation, frozen
+636-clip test comparison, all fixed-candidate controls, repeated serial timing
+and verified private handoff are complete. See the [completion record](../docs/m45_completion.md)
+and its final report/audit links. Earlier queue/input/selection-pending notes
+above are dated history, superseded by that evidence. Independent reviews,
+consumer ACK and M6 dataset approval are not inferred.

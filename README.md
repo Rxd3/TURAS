@@ -9,8 +9,13 @@ Whisper LoRA/full and CTC training, scored N-best extraction, heterogeneous grap
 learning and relational rescoring are implemented with offline tests. Seed-17
 LoRA, full Whisper and vocabulary-extended CTC training have completed, together
 with matched parent validation, checkpoint selection and corrected-linker RDL
-ablations. The frozen final benchmark is running; no final test result is claimed
-until its report is published.
+ablations. The frozen final working benchmark and private model/run handoff are
+complete. On 636 test clips, normalized WER is 24.512% for the Whisper parent,
+12.368% for LoRA, 10.371% for full tuning, 37.152% for the CTC parent and 25.150%
+for vocabulary-extended CTC. Primary learned RDL does not beat original one-best
+on any adapted model. See the [final report](results/final/M4_M5_FINAL_REPORT.md)
+and [completion/handoff record](docs/m45_completion.md). Independent review is
+still pending; this does not complete other members' baseline tracks.
 Technical choices are approved in [the owner decision record](docs/owner_decisions.md).
 See the actual [working validation](docs/m45_validation_complete.md),
 [independent numerical/linker audit](docs/m45_result_audit.md) and
@@ -37,15 +42,15 @@ The project preserves all five baseline tracks and all adaptation tracks:
 
 | ID | Track | Owner | Current state |
 | --- | --- | --- | --- |
-| B1 | Pretrained Whisper-small, Seq2Seq | Member 2 | Pinned matched parent evaluated on working validation; final benchmark running |
+| B1 | Pretrained Whisper-small, Seq2Seq | Member 2 | Owner-run pinned parent validation/test and repeated timing complete; peer review pending |
 | B2 | Pretrained Whisper-large-v3, Seq2Seq | Member 2 | Planned |
 | B3 | Pretrained Qwen3-ASR, speech-language-model family | Member 2 | Planned; checkpoint/capability audit required |
-| B4 | Pretrained Turkish-capable Wav2Vec2/XLSR CTC | Member 3 | Pinned Turkish CV7 parent evaluated on working validation; final benchmark running |
+| B4 | Pretrained Turkish-capable Wav2Vec2/XLSR CTC | Member 3 | Owner-run pinned Turkish CV7 parent validation/test and repeated timing complete; peer review pending |
 | B5 | Alternative neural BiLSTM-CTC, trained from scratch | Member 3 | Working architecture choice; not implemented |
-| F1 | Whisper LoRA fine-tuning | Member 4 | Three epochs completed; selected epoch 3 on declared working validation |
-| F2 | Whisper full fine-tuning where hardware permits | Member 4 | Three epochs completed; selected epoch 2 on declared working validation |
-| F3 | Wav2Vec2/XLSR CTC fine-tuning | Member 5 | Three epochs completed with explicit vocabulary extension; selected epoch 3 |
-| R1 | Trainable heterogeneous graph relation scorer and N-best rescoring | Member 5 | Learned model and retrained ablations completed; corrected-linker validation has no gain over original one-best; frozen test pending |
+| F1 | Whisper LoRA fine-tuning | Member 4 | Selected epoch 3; final working test, terminology, repeated timing and private handoff complete |
+| F2 | Whisper full fine-tuning where hardware permits | Member 4 | Selected epoch 2; final working test, terminology, repeated timing and private handoff complete |
+| F3 | Wav2Vec2/XLSR CTC fine-tuning | Member 5 | Vocabulary extension declared; selected epoch 3; final working evaluation and private handoff complete |
+| R1 | Trainable heterogeneous graph relation scorer and N-best rescoring | Member 5 | Learned graph, retrained ablations, random control and final working test/timing complete; primary learned RDL has no gain over original one-best |
 
 The dataset contribution is a **curated Turkish legislative/financial speech
 benchmark**. [WorldSpeech](https://huggingface.co/datasets/disco-eth/WorldSpeech),

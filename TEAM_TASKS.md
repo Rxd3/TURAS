@@ -1,7 +1,8 @@
 # Six-member project board
 
 **Status: initialized 2026-11-17; M4/M5 implementation and working validation
-completed by 2026-11-19, with the frozen final benchmark running.** Names and GitHub usernames are unassigned. Members add their
+completed by 2026-11-19, including the frozen final working benchmark and verified
+private handoff; independent reviews remain pending.** Names and GitHub usernames are unassigned. Members add their
 own identities to contribution records after assignment; reference-repository
 identities must not be reused by assumption. A checked task must cite a reviewed
 PR, commit, or real artifact/run evidence. Specifications alone do not complete
@@ -192,7 +193,7 @@ contract, future `experiments/m4-whisper-notes.md`, component scripts/tests.
 - [x] Save compatible adapter/full bundles with parent/release/tokenizer hashes and verify loading.
 - [x] Produce genuine scored Whisper N-best and consume it in M5's working rescoring experiments.
 - [x] Compare unchanged, LoRA and full systems with the shared M6 evaluator on validation.
-- [ ] Complete terminology metrics, final repeated timing/test comparisons, and final private artifact/report handoff.
+- [x] Complete terminology metrics, final repeated timing/test comparisons, and a verified private artifact/report bundle ready for owner delivery; see [final evidence](docs/m45_completion.md). No consumer ACK is inferred.
 
 **Exact expected deliverables:** reviewed Whisper LoRA and full experiment configs;
 actual training/N-best code and meaningful offline score/compatibility tests;
@@ -209,16 +210,17 @@ M5 candidate/score consumption; M6 evaluation/timing/provenance; hardware access
 - [x] LoRA training/selection has actual evidence and adapters load only against the exact base.
 - [x] Full experiment has separate measured training and validation evidence.
 - [x] Real N-best scores can be traced to model outputs; no repeated one-best padding.
-- [ ] M5 accepts candidates and M6 verifies matched baseline/adaptation comparisons and artifacts.
+- [x] Actual candidate consumption, strict shared evaluation, independent JiWER checks and artifact round-trip verification pass locally.
+- [ ] Independent M5/M6 consumer acceptance and required PR reviews are recorded.
 
 **Handoff/review:** protocol/config PR reviewed by M2+M6; N-best contract/export PR
 by M5+M6; trained-artifact report by M2+M6. Record actual evidence and hardware
 blocks in [member_4.md](contributions/member_4.md).
 
-**Specific next task:** finish terminology metrics and the final three-repeat
-timing condition, freeze the final protocol, then run the held-out comparison
-and complete reproducible private artifact/report handoff. See the actual
-[working validation](docs/m45_validation_complete.md) and [audit](docs/m45_result_audit.md).
+**Specific next task:** have the required non-author reviewers inspect the
+[completed final report](results/final/M4_M5_FINAL_REPORT.md), reproduce the
+appropriate run level, and record actual checkpoint/bundle acceptance. No more
+training is required for this single-seed protocol. See [handoff](docs/m45_completion.md).
 
 ## Member 5 — CTC Fine-Tuning and RDL
 
@@ -241,7 +243,7 @@ curation and M3 owns unmodified CTC baseline/export infrastructure.
 - [x] Implement reference-free hypothesis linking and acoustic/RDL rescoring; LM is explicitly disabled in the primary comparison.
 - [x] Complete D37 corrected-linker validation and relation-removal ablations on fixed acoustic candidates.
 - [x] Freeze the final test systems/fusion configurations and their reference versions; protocol commit `4639b5e`, before test gold access.
-- [ ] Complete terminology/relation coverage, end-to-end timing and final matched test/report handoff with CTC/RDL artifacts.
+- [x] Complete terminology/relation coverage, end-to-end timing and final matched test/report bundle with verified CTC/RDL artifacts ready for delivery; no consumer ACK is inferred.
 
 **Exact expected deliverables:** reviewed CTC, graph and rescoring configs;
 actual training/graph/linker/rescorer code plus meaningful leakage/score tests;
@@ -259,16 +261,18 @@ CTC adaptation and graph interface work can be separate focused PRs.
 - [x] Required RDL component learns parameters; a lookup table alone cannot satisfy it.
 - [x] Training graph/features exclude held-out reference evidence and equivalent reverse edges.
 - [x] Real model-derived candidates preserve IDs/scores; all fusion weights use validation only.
-- [ ] M6 validates acoustic-only/LM/RDL ablations on the same candidates, with relation coverage and end-to-end cost.
+- [x] Local shared evaluation validates all fixed-candidate controls, relation coverage and joint end-to-end cost; LM is explicitly disabled. Primary learned RDL has no downstream gain.
+- [ ] M6 independently reviews/reproduces the comparisons and acknowledges the artifacts.
 
 **Handoff/review:** CTC PRs require M3+M6, schema/graph-access PRs M1+M6, and
 rescoring/export PRs M4 (candidate consumer/producer compatibility) plus M6.
 Record code, runs and limitations in [member_5.md](contributions/member_5.md).
 
-**Specific next task:** complete the corrected-linker audit and final fusion
-record, then terminology/relation coverage, repeated joint timing and final
-matched test/report handoff. A positive RDL WER gain is not claimed as a done
-condition; the measured outcome and limitations must be reported accurately.
+**Specific next task:** obtain independent review/reproduction of the CTC,
+train-only graph and final fixed-candidate study; record genuine artifact
+acceptance. The [completed study](docs/m45_completion.md) reports the negative
+primary RDL outcome. Optional future changes need a new protocol/holdout and are
+not prerequisites for this completed single-seed experiment.
 
 ## Member 6 — Integration, Evaluation, and QA
 

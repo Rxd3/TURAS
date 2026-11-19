@@ -17,6 +17,41 @@ from turkish_asr_rdl.schemas.predictions import validate_predictions
 from turkish_asr_rdl.training.acoustic import read_jsonl, sha256_file, write_json
 
 
+def finalize_outputs(config, output, files, ids, inference):
+    """Check saved inference before deriving evidence, including post-run recovery."""
+    manifest = json.loads((output / 'manifest.json').read_text(encoding='utf-8'))
+    if manifest['outputs'] != {name: digest for name, digest in files.items() if name != 'manifest.json'}:
+        raise ValueError('baseline output inventory differs from its inference manifest')
+    for name, digest in files.items():
+        member = (output / name).resolve()
+        if not member.is_relative_to(output.resolve()) or sha256_file(member) != digest:
+            raise ValueError('baseline output hash mismatch')
+    predictions = read_jsonl(output / 'predictions.jsonl')
+    nbest = read_jsonl(output / 'nbest.jsonl')
+    for report in (validate_predictions(predictions, ids), validate_nbest(nbest, ids)):
+        if not report.ok:
+            raise ValueError('baseline export failed the shared contract: ' + '; '.join(report.errors[:5]))
+    if any(row['status'] == 'error' for row in predictions):
+        raise ValueError('baseline contains error rows; training gate remains closed')
+    for row in predictions + nbest:
+        if (row['split'] != 'validation' or row['dataset_release'] != config['dataset_release']
+                or row['split_manifest_sha256'] != config['split_manifest_sha256']
+                or row['model_artifact_sha256'] != config['model']['weight_sha256']):
+            raise ValueError('baseline row identity differs from the pinned experiment')
+    write_json(output / 'baseline-evidence.json', {
+        'status': 'completed', 'scope': 'validation_inference_only',
+        'metrics_status': 'pending_validation_references', 'training_mode': 'pretrained',
+        'split': 'validation', 'model_id': config['model']['id'], 'revision': config['model']['revision'],
+        'weight_sha256': config['model']['weight_sha256'], 'dataset_release': config['dataset_release'],
+        'split_manifest_sha256': config['split_manifest_sha256'], 'utterances': len(predictions),
+        'files': files, 'inference_sha256': sha256_file(inference),
+        'evidence_finalizer_source_sha256': sha256_file(Path(__file__)),
+        'limitations': ['No validation references read; WER/CER not measured',
+                        'One timed pass, not the final three-repeat RTF protocol',
+                        'Checkpoint and fusion selection remain pending validation scoring']})
+    print(json.dumps({'status': 'baseline_inference_completed_metrics_pending', 'utterances': len(predictions)}), flush=True)
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--config', type=Path, required=True)
@@ -60,24 +95,7 @@ def main():
     ctx = RunContext(run_id, adapter.system_id, config['dataset_release'], 'validation',
                      config['split_manifest_sha256'], adapter.model_artifact_sha256, adapter.decoder_config_sha256)
     files = write_run_outputs(args.output, run, timed, ctx, adapter, command='scripts/m45_validation_baseline.py')
-    predictions = read_jsonl(args.output / 'predictions.jsonl')
-    nbest = read_jsonl(args.output / 'nbest.jsonl')
-    for report in (validate_predictions(predictions, ids), validate_nbest(nbest, ids)):
-        if not report.ok:
-            raise ValueError('baseline export failed the shared contract: ' + '; '.join(report.errors[:5]))
-    if any(row['status'] == 'error' for row in predictions + nbest):
-        raise ValueError('baseline contains error rows; training gate remains closed')
-    write_json(args.output / 'baseline-evidence.json', {
-        'status': 'completed', 'scope': 'validation_inference_only',
-        'metrics_status': 'pending_validation_references', 'training_mode': 'pretrained',
-        'split': 'validation', 'model_id': config['model']['id'], 'revision': config['model']['revision'],
-        'weight_sha256': config['model']['weight_sha256'], 'dataset_release': config['dataset_release'],
-        'split_manifest_sha256': config['split_manifest_sha256'], 'utterances': len(predictions),
-        'files': files, 'inference_sha256': sha256_file(args.inference),
-        'limitations': ['No validation references read; WER/CER not measured',
-                        'One timed pass, not the final three-repeat RTF protocol',
-                        'Checkpoint and fusion selection remain pending validation scoring']})
-    print(json.dumps({'status': 'baseline_inference_completed_metrics_pending', 'utterances': len(predictions)}), flush=True)
+    finalize_outputs(config, args.output, files, ids, args.inference)
 
 
 if __name__ == '__main__':

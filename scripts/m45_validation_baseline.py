@@ -11,7 +11,7 @@ from pathlib import Path
 from turkish_asr_rdl.decoding.adapted import PretrainedAsrAdapter
 from turkish_asr_rdl.decoding.export import RunContext
 from turkish_asr_rdl.decoding.interface import InferenceInput
-from turkish_asr_rdl.decoding.timing import run_timed, write_run_outputs
+from turkish_asr_rdl.decoding.timing import MIN_WARMUP_BATCHES, run_timed, write_run_outputs
 from turkish_asr_rdl.schemas.nbest import validate_nbest
 from turkish_asr_rdl.schemas.predictions import validate_predictions
 from turkish_asr_rdl.training.acoustic import read_jsonl, sha256_file, write_json
@@ -39,8 +39,8 @@ def main():
     assert [r['utterance_id'] for r in rows] == ids
     timed = [InferenceInput.from_row(r) for r in rows]
     train_ids = set((split_root / 'train.txt').read_text(encoding='utf-8').splitlines())
-    warmup = [InferenceInput.from_row(r) for r in read_jsonl(args.warmup_inference)[:2]]
-    assert len(warmup) == 2 and all(r.utterance_id in train_ids for r in warmup)
+    warmup = [InferenceInput.from_row(r) for r in read_jsonl(args.warmup_inference)[:MIN_WARMUP_BATCHES]]
+    assert len(warmup) == MIN_WARMUP_BATCHES and all(r.utterance_id in train_ids for r in warmup)
     for row in timed + warmup:
         assert row.dataset_release == config['dataset_release'] and row.split_manifest_sha256 == config['split_manifest_sha256']
 

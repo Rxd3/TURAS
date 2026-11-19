@@ -379,6 +379,10 @@ class QwenBaselineAdapterConfigTests(unittest.TestCase):
 
     def test_decode_nbest_native_missing_input_ids_raises(self):
         """Missing input_ids in inputs raises ValueError."""
+        try:
+            import torch
+        except ImportError:
+            self.skipTest("PyTorch is required for native decoding test")
         adapter = QwenBaselineAdapter(
             self.c2_config,
             model_loader=lambda: object(),
@@ -391,6 +395,10 @@ class QwenBaselineAdapterConfigTests(unittest.TestCase):
 
     def test_decode_nbest_native_missing_decode_raises(self):
         """Processor missing decode method raises AttributeError."""
+        try:
+            import torch
+        except ImportError:
+            self.skipTest("PyTorch is required for native decoding test")
         adapter = QwenBaselineAdapter(
             self.c2_config,
             model_loader=lambda: object(),
@@ -485,11 +493,26 @@ class QwenBaselineAdapterConfigTests(unittest.TestCase):
             tdp = Path(td).resolve()
             (tdp / "model.safetensors").write_bytes(b"dummy")
             adapter = QwenBaselineAdapter(self.c1_config, checkpoint_path=tdp, device="cpu")
-            with patch("huggingface_hub.hf_hub_download") as mock_hub:
+            mock_hub = MagicMock()
+            mock_hub_mod = MagicMock(hf_hub_download=mock_hub)
+            mock_tf_mod = MagicMock()
+            mock_torch_mod = MagicMock()
+            with patch.dict(
+                sys.modules,
+                {
+                    "huggingface_hub": mock_hub_mod,
+                    "transformers": mock_tf_mod,
+                    "torch": mock_torch_mod,
+                },
+            ):
                 with self.assertRaises(ValueError) as ctx:
                     adapter.load()
                 self.assertIn("missing config.json", str(ctx.exception))
                 mock_hub.assert_not_called()
+                mock_tf_mod.AutoProcessor.from_pretrained.assert_not_called()
+                mock_tf_mod.AutoModelForMultimodalLM.from_pretrained.assert_not_called()
+                self.assertIsNone(adapter.model)
+                self.assertIsNone(adapter.processor)
 
 
 class QwenSharedDecoderIntegrationTests(unittest.TestCase):

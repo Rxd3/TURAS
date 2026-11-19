@@ -293,11 +293,26 @@ class WhisperBaselineAdapterConfigTests(unittest.TestCase):
             tdp = Path(td).resolve()
             (tdp / "model.safetensors").write_bytes(b"dummy")
             adapter = WhisperBaselineAdapter(self.b1_config, checkpoint_path=tdp, device="cpu")
-            with patch("huggingface_hub.hf_hub_download") as mock_hub:
+            mock_hub = MagicMock()
+            mock_hub_mod = MagicMock(hf_hub_download=mock_hub)
+            mock_tf_mod = MagicMock()
+            mock_torch_mod = MagicMock()
+            with patch.dict(
+                sys.modules,
+                {
+                    "huggingface_hub": mock_hub_mod,
+                    "transformers": mock_tf_mod,
+                    "torch": mock_torch_mod,
+                },
+            ):
                 with self.assertRaises(ValueError) as ctx:
                     adapter.load()
                 self.assertIn("missing config.json", str(ctx.exception))
                 mock_hub.assert_not_called()
+                mock_tf_mod.WhisperProcessor.from_pretrained.assert_not_called()
+                mock_tf_mod.WhisperForConditionalGeneration.from_pretrained.assert_not_called()
+                self.assertIsNone(adapter.model)
+                self.assertIsNone(adapter.processor)
 
 
 class SharedDecoderIntegrationTests(unittest.TestCase):

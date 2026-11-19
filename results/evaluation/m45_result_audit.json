@@ -176,7 +176,8 @@
         "group_bootstrap_95_percentile_interval_percentage_points": [
           -0.09340825832308844,
           0.07827716447171174
-        ]
+        ],
+        "linker_version": "legacy exact-token; this interval is not a corrected-linker result"
       }
     ]
   },
@@ -186,6 +187,17 @@
     "Recording disjointness checked; speaker disjointness remains unknown",
     "One training seed; group intervals exclude training-seed and annotation uncertainty",
     "Selected on the same validation set; intervals do not remove selection or multiple-comparison optimism",
-    "No final test scoring or new test-reference access performed"
-  ]
+    "No final test scoring or new test-reference access performed",
+    "Exact audio hashes do not rule out near-duplicate audio with different encoding"
+  ],
+  "rdl_linker_audit": {
+    "issue": "legacy exact-token linking discarded frozen suffix wildcards",
+    "authority": "D37",
+    "corrected_policy": "m1-frozen-lexicon-v1",
+    "acoustic_scores_affected": false,
+    "legacy_artifacts_preserved": true,
+    "corrected_grids_require_new_versioned_artifacts": true,
+    "corrected_grids_status": "completed; all 36 trial artifacts verified",
+    "corrected_results": "m45_corrected_linker_validation.json"
+  }
 }

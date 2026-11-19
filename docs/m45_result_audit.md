@@ -66,6 +66,30 @@ Regression tests cover inflection, exclusions, multiword aliases, apostrophes,
 provenance and legacy compatibility; the full suite passed 1,090 tests with one
 skip and two subtests (four existing Transformers deprecation warnings).
 
+## Corrected-linker rerun completed
+
+All three revised graph bundles passed safe-load/member checks, with learned
+weights and training snapshots byte-identical to their parents. All nine fusion
+grids / 36 trial artifacts completed and passed shared validators/hash checks.
+Their gamma-0 acoustic controls exactly reproduce the previous controls, confirming
+the acoustic candidate/scoring path was unchanged.
+
+Suffix-aware linking substantially increases known-entity coverage. For full
+Whisper's 2,050 deduplicated candidates, linked-entity counts rose from 3,360 to
+6,972, with all 2,050 candidates now linked. Only 30 of 438 utterances have
+different relational scores across their candidates, limiting this model's
+ability to change rankings. This is coverage evidence, not a measured term recall.
+
+Corrected full-graph best normalized WER: LoRA 12.548% (gamma 0), full Whisper
+10.201% (gamma 0), CTC 25.432% (gamma .1). None beats its original decoder's
+one-best. Neither corrected relation-removal variant beats original one-best
+either. The earlier legacy one-word CTC gain is not reproduced under corrected
+semantics and is retained only as historical evidence, with its matching CI.
+
+See [the corrected results and provenance](../results/evaluation/m45_corrected_linker_validation.json).
+The acoustic numbers passed the audit; RDL's downstream result remains negative
+after correcting its actual inference defect. No further ASR training was needed.
+
 ## Completion requirements after this audit
 
 - M4: package the selected LoRA/full checkpoints and scored candidates; finish

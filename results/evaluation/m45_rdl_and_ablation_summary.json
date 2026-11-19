@@ -279,5 +279,7 @@
     "Recovered edited minutes, not original private M1-corrected validation references",
     "No final test evaluation or final three-repeat benchmark performed",
     "Domain terminology metrics and final report/handoff remain pending"
-  ]
+  ],
+  "linker_version": "legacy exact-token (pre-D37)",
+  "superseded_for_corrected_linker_by": "m45_corrected_linker_validation.json"
 }

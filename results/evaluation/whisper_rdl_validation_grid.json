@@ -89,5 +89,7 @@
     "Validation selection, not a final test result",
     "Untimed offline rescoring; no combined ASR RTF",
     "CTC fusion grid and relation-removal ablations remain pending"
-  ]
+  ],
+  "linker_version": "legacy exact-token (pre-D37)",
+  "superseded_for_corrected_linker_by": "m45_corrected_linker_validation.json"
 }

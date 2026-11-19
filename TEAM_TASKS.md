@@ -184,14 +184,15 @@ contract, future `experiments/m4-whisper-notes.md`, component scripts/tests.
 
 **Tasks:**
 
-- [ ] Agree exact B1 parent checkpoint/processor and adaptation protocol with M2.
-- [ ] Document LoRA target modules, trainable parameters, budget and validation selection.
-- [ ] Assess full fine-tuning memory/time with measured feasibility once hardware is allocated.
-- [ ] Implement and run LoRA training on the approved train split; select on validation.
-- [ ] Implement/run a separate full fine-tuning experiment where hardware permits; otherwise retain an evidence-backed blocked task.
-- [ ] Export compatible adapter/full bundles with all parent/release/tokenizer hashes.
-- [ ] Produce true model-derived scored Whisper N-best with explicit token/length conventions.
-- [ ] Compare unmodified, LoRA and full systems through M6; hand candidate artifacts to M5.
+- [x] Freeze exact B1 parent/processor and adaptation protocol under owner D23; no M2 review is inferred.
+- [x] Document LoRA target modules, trainable parameters, budget and validation selection.
+- [x] Measure full fine-tuning feasibility and execute the seed-17 full experiment.
+- [x] Run LoRA training on the owner-authorized train split and select on the declared working validation reference version.
+- [x] Run a separate full fine-tuning experiment and evaluate all saved epochs.
+- [x] Save compatible adapter/full bundles with parent/release/tokenizer hashes and verify loading.
+- [x] Produce genuine scored Whisper N-best and consume it in M5's working rescoring experiments.
+- [x] Compare unchanged, LoRA and full systems with the shared M6 evaluator on validation.
+- [ ] Complete terminology metrics, final repeated timing/test comparisons, and final private artifact/report handoff.
 
 **Exact expected deliverables:** reviewed Whisper LoRA and full experiment configs;
 actual training/N-best code and meaningful offline score/compatibility tests;
@@ -205,17 +206,19 @@ M5 candidate/score consumption; M6 evaluation/timing/provenance; hardware access
 
 **Objective definition of done:**
 
-- [ ] LoRA training/selection has actual evidence and adapters load only against the exact base.
-- [ ] Full experiment is separately evidenced or explicitly pending/blocked with measured limits; no full-training completion claim without a run.
-- [ ] Real N-best scores can be traced to model outputs; no repeated one-best padding.
+- [x] LoRA training/selection has actual evidence and adapters load only against the exact base.
+- [x] Full experiment has separate measured training and validation evidence.
+- [x] Real N-best scores can be traced to model outputs; no repeated one-best padding.
 - [ ] M5 accepts candidates and M6 verifies matched baseline/adaptation comparisons and artifacts.
 
 **Handoff/review:** protocol/config PR reviewed by M2+M6; N-best contract/export PR
 by M5+M6; trained-artifact report by M2+M6. Record actual evidence and hardware
 blocks in [member_4.md](contributions/member_4.md).
 
-**Specific next task:** draft LoRA/full training protocols against B1 and a hardware
-feasibility plan, including exact parent compatibility and N-best score semantics.
+**Specific next task:** finish terminology metrics and the final three-repeat
+timing condition, freeze the final protocol, then run the held-out comparison
+and complete reproducible private artifact/report handoff. See the actual
+[working validation](docs/m45_validation_complete.md) and [audit](docs/m45_result_audit.md).
 
 ## Member 5 — CTC Fine-Tuning and RDL
 
@@ -229,15 +232,16 @@ curation and M3 owns unmodified CTC baseline/export infrastructure.
 
 **Tasks:**
 
-- [ ] Agree B4 parent/head/vocabulary and freeze a matched CTC adaptation protocol with M3.
-- [ ] Implement/run CTC fine-tuning, validation selection and compatible artifact export.
-- [ ] Agree relational CSV keys/types/provenance and training snapshot filters with M1.
-- [ ] Implement trainable heterogeneous message passing and typed relation decoder.
-- [ ] Split relation evidence by group; audit held-out/reverse edges, features and negative sampling.
-- [ ] Train/validate relation scoring and report genuine held-out relation metrics.
-- [ ] Implement reference-free hypothesis linking and acoustic/optional LM/RDL rescoring.
-- [ ] Tune fusion/missing-relation policy on validation, freezing candidate sets/configuration.
-- [ ] Export CTC/RDL artifacts, graph snapshots, N-best selections and controlled ablations for M6.
+- [x] Freeze B4 parent and the explicit vocabulary-extension contribution under owner D23/D33; no M3 review is inferred.
+- [x] Run CTC adaptation, select the working validation checkpoint and save compatible artifacts.
+- [x] Adopt M1's hashed typed/provenanced CSV schema and enforce train-only snapshot filters.
+- [x] Implement trainable heterogeneous message passing and typed relation decoder.
+- [x] Split relation evidence by group; audit held-out/reverse edges, features and negative sampling.
+- [x] Train/validate relation scoring and report genuine internal training-group holdout metrics.
+- [x] Implement reference-free hypothesis linking and acoustic/RDL rescoring; LM is explicitly disabled in the primary comparison.
+- [x] Complete D37 corrected-linker validation and relation-removal ablations on fixed acoustic candidates.
+- [ ] Freeze the final test systems/fusion configurations and their reference versions.
+- [ ] Complete terminology/relation coverage, end-to-end timing and final matched test/report handoff with CTC/RDL artifacts.
 
 **Exact expected deliverables:** reviewed CTC, graph and rescoring configs;
 actual training/graph/linker/rescorer code plus meaningful leakage/score tests;
@@ -251,18 +255,20 @@ CTC adaptation and graph interface work can be separate focused PRs.
 
 **Objective definition of done:**
 
-- [ ] Adapted CTC uses a compatible documented B4 parent and has matched evaluation.
-- [ ] Required RDL component learns parameters; a lookup table alone cannot satisfy it.
-- [ ] Training graph/features exclude held-out reference evidence and equivalent reverse edges.
-- [ ] Real model-derived candidates preserve IDs/scores; all fusion weights use validation only.
+- [x] Adapted CTC uses a documented B4 parent, explicit vocabulary extension and matched working validation.
+- [x] Required RDL component learns parameters; a lookup table alone cannot satisfy it.
+- [x] Training graph/features exclude held-out reference evidence and equivalent reverse edges.
+- [x] Real model-derived candidates preserve IDs/scores; all fusion weights use validation only.
 - [ ] M6 validates acoustic-only/LM/RDL ablations on the same candidates, with relation coverage and end-to-end cost.
 
 **Handoff/review:** CTC PRs require M3+M6, schema/graph-access PRs M1+M6, and
 rescoring/export PRs M4 (candidate consumer/producer compatibility) plus M6.
 Record code, runs and limitations in [member_5.md](contributions/member_5.md).
 
-**Specific next task:** review the relational and N-best contracts with M1/M3/M4,
-then specify typed graph splits, negative sampling and reference-free scoring.
+**Specific next task:** complete the corrected-linker audit and final fusion
+record, then terminology/relation coverage, repeated joint timing and final
+matched test/report handoff. A positive RDL WER gain is not claimed as a done
+condition; the measured outcome and limitations must be reported accurately.
 
 ## Member 6 — Integration, Evaluation, and QA
 

@@ -7,6 +7,13 @@ checkpoint hashes, decoder settings, graph versions, validation selection,
 reference identity and all comparisons are part of that file. Do not silently
 edit it or select new settings from final test results.
 
+Before test-reference access, a provenance audit found that Git's general LF
+rule had normalized this JSON's Windows CRLF bytes in the initial commit. The
+running protocol itself was unchanged and had the hash above. A path-specific
+`-text` attribute now preserves its exact already frozen bytes in Git. This is
+a repository serialization correction, not a refreeze or a model/metric change.
+All critical Python files and timing/group metadata already matched Git bytes.
+
 ## Inputs and environment
 
 The actual machine has an AMD Ryzen 5 7500F (6 cores, 12 threads), 16,765,120,512

@@ -45,15 +45,15 @@ EXPECTED_AUDIT_IDENTITIES = {
         "model_id": "Qwen/Qwen3-ASR-1.7B-hf",
         "revision": "bcd2b5b7f32b480ab5790554cfa8347f246a14f3",
         "precision": "bfloat16",
-        "acoustic_score_kind": "joint_speech_language_beam_score",
-        "score_convention_id": "qwen3-asr-joint-sequence-score-v1",
+        "acoustic_score_kind": "speech_llm_joint_token_log_prob_sum",
+        "score_convention_id": "smoke-qwen3-asr-joint-token-logprob-sum-v1",
     },
     "B3_candidate_2": {
         "model_id": "Qwen/Qwen3-ASR-0.6B-hf",
         "revision": "7f1569a48a89f3e3f4dc3a5c9d28bddd903bc76c",
         "precision": "bfloat16",
-        "acoustic_score_kind": "joint_speech_language_beam_score",
-        "score_convention_id": "qwen3-asr-joint-sequence-score-v1",
+        "acoustic_score_kind": "speech_llm_joint_token_log_prob_sum",
+        "score_convention_id": "smoke-qwen3-asr-joint-token-logprob-sum-v1",
     },
 }
 
@@ -158,7 +158,7 @@ class Member2BaselineConfigTests(unittest.TestCase):
                 self.assertEqual(decoding.get("max_new_tokens"), 440)
                 self.assertEqual(decoding.get("language"), "tr")
                 self.assertFalse(decoding.get("do_sample"))
-                self.assertEqual(decoding.get("temperature"), 0.0)
+                self.assertIsNone(decoding.get("temperature"))
 
                 # Track-specific decoding checks
                 if track.startswith("B1") or track.startswith("B2"):

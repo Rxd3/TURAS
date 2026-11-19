@@ -10,7 +10,12 @@
     "id": "Qwen/Qwen3-ASR-1.7B-hf",
     "revision": "bcd2b5b7f32b480ab5790554cfa8347f246a14f3",
     "weight_file": "model.safetensors",
-    "weight_sha256": null,
+    "weight_sha256": "2db53c7d81bd9b8cbc6a074e89be2c968a0d373fb4ee68bb1b1e14f7042dfee1",
+    "weight_sha256_kind": "Hub LFS oid; bytes verified at download",
+    "tokenizer_file": "tokenizer.json",
+    "tokenizer_file_sha256": null,
+    "processor_file": "processor_config.json",
+    "processor_file_sha256": null,
     "precision": "bfloat16",
     "device": "cuda"
   },
@@ -18,6 +23,10 @@
     "id": "Qwen/Qwen3-ASR-1.7B-hf",
     "revision": "bcd2b5b7f32b480ab5790554cfa8347f246a14f3",
     "sampling_rate_hz": 16000
+  },
+  "audio": {
+    "sampling_rate_hz": 16000,
+    "clip_duration_constraint": "10-20 s clips from TURAS (M1 source audit); within Qwen3-ASR input limit"
   },
   "inputs": {
     "inference": null,
@@ -33,14 +42,21 @@
     "requested_n": 5,
     "max_new_tokens": 440,
     "language": "tr",
+    "prompt_format": "AutoProcessor.apply_transcription_request(language='tr')",
     "do_sample": false,
-    "temperature": 0.0
+    "temperature": null,
+    "length_penalty": 1.0,
+    "early_stopping": false,
+    "repetition_penalty": 1.0,
+    "no_repeat_ngram_size": 0,
+    "num_return_sequences": 5
   },
   "nbest": {
-    "score_convention_id": "qwen3-asr-joint-sequence-score-v1",
-    "acoustic_score_kind": "joint_speech_language_beam_score",
+    "score_convention_id": "smoke-qwen3-asr-joint-token-logprob-sum-v1",
+    "acoustic_score_kind": "speech_llm_joint_token_log_prob_sum",
+    "library_beam_score_target": "decoder_sequence_score",
     "implementation_path": "native transformers AutoModelForMultimodalLM; qwen-asr package forbidden",
-    "deduplication_policy": "shared-export-dedup-v0.2"
+    "deduplication_policy": "exact raw-text match; first (lowest-rank) occurrence kept; removed IDs listed in dedup_map"
   },
-  "reviews_required": "M6 review of candidate trade-off against 0.6B (accuracy unmeasured in smoke test; 4.56 GiB peak VRAM, 0.098 RTF) and joint score convention; dataset binding pending approved release"
+  "reviews_required": "M6 review of candidate trade-off against 0.6B (validation WER/CER and M6 timing session RTF; both fit in VRAM) and joint score convention; dataset binding pending approved release"
 }

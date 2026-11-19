@@ -10,6 +10,11 @@
     "revision": "973afd24965f72e36ca33b3055d56a652f456b4d",
     "weight_file": "model.safetensors",
     "weight_sha256": "1d7734884874f1a1513ed9aa760a4f8e97aaa02fd6d93a3a85d27b2ae9ca596b",
+    "weight_sha256_kind": "Hub LFS oid; bytes verified at download",
+    "tokenizer_file": "tokenizer.json",
+    "tokenizer_file_sha256": null,
+    "preprocessor_file": "preprocessor_config.json",
+    "preprocessor_file_sha256": null,
     "precision": "float16",
     "device": "cuda"
   },
@@ -17,6 +22,10 @@
     "id": "openai/whisper-small",
     "revision": "973afd24965f72e36ca33b3055d56a652f456b4d",
     "sampling_rate_hz": 16000
+  },
+  "audio": {
+    "sampling_rate_hz": 16000,
+    "clip_duration_constraint": "10-20 s clips from TURAS (M1 source audit); fits within Whisper 30 s window, no chunking needed"
   },
   "inputs": {
     "inference": null,
@@ -34,7 +43,12 @@
     "language": "tr",
     "task": "transcribe",
     "do_sample": false,
-    "temperature": 0.0,
+    "temperature": null,
+    "length_penalty": 1.0,
+    "early_stopping": false,
+    "repetition_penalty": 1.0,
+    "no_repeat_ngram_size": 0,
+    "num_return_sequences": 10,
     "forced_prefix_tokens": [
       "<|startoftranscript|>",
       "<|tr|>",
@@ -46,7 +60,7 @@
     "score_convention_id": "whisper-original-logits-generated-plus-eos-v1",
     "acoustic_score_kind": "seq2seq_token_log_prob_sum",
     "implementation_path": "core GenerationMixin.generate; bypass WhisperForConditionalGeneration",
-    "deduplication_policy": "shared-export-dedup-v0.2"
+    "deduplication_policy": "exact raw-text match; first (lowest-rank) occurrence kept; removed IDs listed in dedup_map"
   },
-  "reviews_required": "M4 confirmation of parent compatibility; M6 agreement on frozen beam width and requested N; dataset binding pending approved release"
+  "reviews_required": "M4 confirmation of parent compatibility; M6 agreement on frozen beam width and requested N (provisional 5 or 10, chosen on validation); dataset binding pending approved release"
 }

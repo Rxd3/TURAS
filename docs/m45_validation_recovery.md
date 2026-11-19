@@ -141,3 +141,18 @@ It stops on a failed prerequisite and performs no test evaluation. Controlled
 relation-removal ablations, final repeat timing and final-test reporting remain
 separate unfinished work. These are working recovered-minutes validation results,
 not final benchmark or human-verified-reference claims.
+
+## Relation-removal ablation plan (before measuring these variants)
+
+Under the owner's delegated D26/D35 scope, diagnose the initial Whisper RDL
+results with two controlled graph variants: remove `rel_expresses` (quantity
+relations and hypothesis quantity scoring), or remove `rel_co_mentioned`
+(entity co-mentions). Retrain each at seed 17, 20 epochs, the same table hashes,
+hidden size, layers, dropout, learning rate and training-group holdout. Use the
+same selected acoustic N-best candidates and gamma grid 0/.1/.3/1 for each.
+
+This is a diagnostic plan chosen after the primary graph's validation results,
+not a claim that these specific variants were preregistered before those results.
+Keep all trial outcomes and identify single-seed/reference-quality limitations.
+Do not tune on test. Local ablation status will be in
+`artifacts/owner-m45/validation-recovery/relation-ablations/status.json`.

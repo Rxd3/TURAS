@@ -1,14 +1,14 @@
 # Project-owner decisions for Members 4 and 5
 
-Effective 2026-11-19. Authority: the project owner (the user in this session), who
-explicitly delegated technical choices and asked that decisions be recorded for
-the team. No personal name/GitHub identity or other member's approval is inferred.
+Effective 2026-11-19. Authority: the project owner (`Rxd3`), who explicitly
+delegated technical choices and asked that decisions be recorded for the team.
+No other member's approval is inferred.
 
-The owner instructed: "let me be the source of truth and do it as you see fit
-best" and requested a reusable record. This record supplies project approval for
-the experimental protocols below. It does **not** assert independent code review,
-successful training, baseline completion, hardware feasibility or validated gains.
-Existing draft PRs and main-branch protection remain separate from these choices.
+The owner requested a reusable record to supply project approval for the
+experimental protocols below. This record does **not** assert independent code
+review, successful training, baseline completion, hardware feasibility or
+validated gains. Main-branch protection and peer review remain separate from
+these choices.
 
 ## Approved choices
 

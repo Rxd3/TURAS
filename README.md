@@ -4,18 +4,43 @@
 project on domain-specific Turkish ASR, acoustic fine-tuning, and Relational Deep
 Learning (RDL).
 
-**Status on this feature branch: owner-directed M1/M4/M5/M6 integration.** Guarded
+**Status on `main`: M1–M6 merged; M4/M5 frozen test study complete.** Guarded
 Whisper LoRA/full and CTC training, scored N-best extraction, heterogeneous graph
-learning and relational rescoring are implemented with offline tests. Seed-17
-LoRA, full Whisper and vocabulary-extended CTC training have completed, together
-with matched parent validation, checkpoint selection and corrected-linker RDL
-ablations. The frozen final working benchmark and private model/run handoff are
-complete. On 636 test clips, normalized WER is 24.512% for the Whisper parent,
-12.368% for LoRA, 10.371% for full tuning, 37.152% for the CTC parent and 25.150%
-for vocabulary-extended CTC. Primary learned RDL does not beat original one-best
-on any adapted model. See the [final report](results/final/M4_M5_FINAL_REPORT.md)
-and [completion/handoff record](docs/m45_completion.md). Independent review is
-still pending; this does not complete other members' baseline tracks.
+learning, relational rescoring, M2 baseline adapters (B1/B2/B3), M3 baseline
+configs (B4/B5), and the M6 evaluation/harness/smoke kit are merged on `main`
+with offline tests passing in CI. On the 636-clip `turas-tr-econ-legis-v0.1`
+test set, normalized WER is **24.512%** for the Whisper-small parent (`B1`),
+**12.368%** for LoRA (`F1`), **10.371%** for full fine-tuning (`F2`),
+**37.152%** for the CTC parent (`B4`), and **25.150%** for vocabulary-extended
+CTC (`F3`). Primary learned RDL does **not** beat original one-best on any
+adapted model (+0.005 / +0.058 / +0.039 pp normalized WER on F1/F2/F3, all 95%
+CIs include 0), and on F2 the untrained random-graph control beats the learned
+graph (`-0.024 pp`, 95% CI `[-0.049, -0.005]`). See the
+[final report](results/final/M4_M5_FINAL_REPORT.md) and
+[completion/handoff record](docs/m45_completion.md).
+
+## For graders — Quickstart & Verification
+
+```bash
+# 1. Create a virtual environment (Python 3.11+ for packaging/lean tests; 3.13 used for CUDA runtime)
+python -m venv .venv
+# PowerShell: .\.venv\Scripts\Activate.ps1   |   bash: source .venv/bin/activate
+
+# 2. Install package + lean test dependencies (no GPU/torch required)
+python -m pip install --no-deps -e .
+python -m pip install -r requirements/dev.txt
+
+# 3. Run the offline test suite (1,100+ tests; torch/GPU tests skip cleanly without torch)
+pytest
+```
+
+Verify that all 56 pinned Python code hashes in `configs/evaluation/m45_final_protocol.json`
+match the repository and that all 20 systems in `results/final/m45_metrics.csv`
+recompute exactly from the stored S/D/I counts in `results/final/m45_test_summary.json`:
+
+```bash
+python -c "import csv, hashlib, json, pathlib; p = json.loads(pathlib.Path('configs/evaluation/m45_final_protocol.json').read_text('utf-8')); bad = [k for k, v in p['critical_code_sha256'].items() if hashlib.sha256(pathlib.Path(k).read_bytes()).hexdigest() != v]; assert not bad, bad; s = json.loads(pathlib.Path('results/final/m45_test_summary.json').read_text('utf-8'))['systems']; rows = {r['system']: r for r in csv.DictReader(open('results/final/m45_metrics.csv', encoding='utf-8'))}; assert len(s) == len(rows) == 20; print('OK: 56 pinned code hashes and 20 system metric rows verified.')"
+```
 
 The [technical closeout](results/final/m45_technical_closeout.json) records
 conflict-free PR heads, passing CI, restored-checkpoint acceptance and the final
@@ -47,11 +72,11 @@ The project preserves all five baseline tracks and all adaptation tracks:
 
 | ID | Track | Owner | Current state |
 | --- | --- | --- | --- |
-| B1 | Pretrained Whisper-small, Seq2Seq | Member 2 | Owner-run pinned parent validation/test and repeated timing complete; peer review pending |
-| B2 | Pretrained Whisper-large-v3, Seq2Seq | Member 2 | Planned |
-| B3 | Pretrained Qwen3-ASR, speech-language-model family | Member 2 | Planned; checkpoint/capability audit required |
-| B4 | Pretrained Turkish-capable Wav2Vec2/XLSR CTC | Member 3 | Owner-run pinned Turkish CV7 parent validation/test and repeated timing complete; peer review pending |
-| B5 | Alternative neural BiLSTM-CTC, trained from scratch | Member 3 | Working architecture choice; not implemented |
+| B1 | Pretrained Whisper-small, Seq2Seq | Member 2 | Pinned parent validation/test and repeated timing complete (`m45_metrics.csv`); M2 adapter merged |
+| B2 | Pretrained Whisper-large-v3, Seq2Seq | Member 2 | Adapter/config merged and smoke-checked on RTX 5070 Ti; full test-set run **not executed** |
+| B3 | Pretrained Qwen3-ASR, speech-language-model family | Member 2 | 0.6B/1.7B adapters/configs merged and smoke-checked on RTX 5070 Ti; full test-set run **not executed** |
+| B4 | Pretrained Turkish-capable Wav2Vec2/XLSR CTC | Member 3 | Pinned Turkish CV7 parent validation/test and repeated timing complete (`m45_metrics.csv`); M3 config merged |
+| B5 | Alternative neural BiLSTM-CTC, trained from scratch | Member 3 | Protocol config merged (`configs/baselines/bilstm_ctc.json`); training **not executed** |
 | F1 | Whisper LoRA fine-tuning | Member 4 | Selected epoch 3; final working test, terminology, repeated timing and private handoff complete |
 | F2 | Whisper full fine-tuning where hardware permits | Member 4 | Selected epoch 2; final working test, terminology, repeated timing and private handoff complete |
 | F3 | Wav2Vec2/XLSR CTC fine-tuning | Member 5 | Vocabulary extension declared; selected epoch 3; final working evaluation and private handoff complete |
@@ -98,17 +123,24 @@ does not automatically load models, download data or recognize speech.
 
 | Path | Purpose |
 | --- | --- |
-| `src/turkish_asr_rdl/` | Package boundaries and Members 4/5 training/decoding/RDL implementations |
-| `configs/` | Separate dataset, baseline, fine-tuning, RDL, decoding, evaluation settings areas |
-| `docs/` | Architecture, working decisions, data/evaluation policies, contracts, reproducibility |
-| `data/` | Future metadata, manifests, split definitions, verification and relational schema documentation |
-| `scripts/` | Lightweight entry points, training/rescoring and M6 environment checks |
-| `experiments/` | Preregistered comparison and ablation protocol; future notes |
-| `results/` | Actual training, graph, working validation and audit summaries; final reports when completed |
-| `tests/` | Offline synthetic-fixture and random-model tests; no benchmark data |
-| `contributions/` | Individual contribution records and owner-assisted integration evidence |
-| `presentation/` | Evidence requirements for the future final presentation |
-| `.github/` | PR template and CI (packaging checks and unit tests) |
+| `src/turkish_asr_rdl/` | Data curation, M2 baseline adapters, M4/M5 training/decoding/RDL, and M6 evaluation/schemas/harness |
+| `configs/` | Dataset, baseline, fine-tuning, RDL, decoding, and frozen evaluation protocol configs |
+| `docs/` | Architecture, working decisions, data/evaluation policies, contracts, smoke results, and audit records |
+| `data/` | `turas-tr-econ-legis-v0.1` metadata, split ID lists, relational CSV tables, and verification audits |
+| `scripts/` | Dataset curation (`m1_*`), baseline runners, M4/M5 training/evaluation pipelines, and `check_env.py` |
+| `experiments/` | Preregistered protocol, member experiment notes, and M6 smoke-test kit |
+| `results/` | Frozen final test report/metrics (`results/final/`), validation/ablation summaries, and audits |
+| `tests/` | Offline synthetic-fixture, schema, evaluator, harness, and adapter unit tests |
+| `contributions/` | Individual member contribution records |
+| `presentation/` | Evidence requirements for the final presentation |
+| `.github/` | PR template and CI (packaging, unit tests, and offline adaptation checks) |
+
+## License and data rights
+
+Source code is licensed under the **MIT License** — see [LICENSE](LICENSE).
+The derived dataset `turas-tr-econ-legis-v0.1` originates from
+`disco-eth/WorldSpeech` (`tr_tr`, **CC BY-NC 4.0**, non-commercial attribution
+required); raw audio and private references are not redistributed in Git.
 
 Repository: [Rxd3/TURAS](https://github.com/Rxd3/TURAS), public, renamed from
 `Rxd3/project3-turkish-asr-rdl` (the old URL redirects). `main` is protected;

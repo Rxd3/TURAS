@@ -46,10 +46,10 @@ or attribute other members' source code to the owner:
 3. A separate validation-only reference file for isolated local scoring, or genuine
    M6 validation reports. Validation/test references never enter the trainers.
 
-Use [the prepared Member 1 message](member1-handoff-request.md). Public metadata
-cannot reproduce private listening corrections or prove an unavailable bundle's
-bytes, so those inputs are not replaced by guesses. Baseline completion, selected
-checkpoints/fusion and final test scores remain unmeasured until real runs occur.
+Public metadata cannot reproduce private listening corrections or prove an
+unavailable bundle's bytes, so those inputs are not replaced by guesses.
+Baseline completion, selected checkpoints/fusion and final test scores remain
+unmeasured until real runs occur.
 
 ## Stage files after they arrive
 

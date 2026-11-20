@@ -10,13 +10,22 @@ repeated all four beam systems. This page is evidence from
 these runs, not a specification: it says what was measured and what each model
 owner should do next. Track labels follow the [README](../README.md#scope): F1
 is Whisper LoRA, F2 is Whisper full fine-tuning (both Member 4), F3 is XLS-R
-CTC fine-tuning (Member 5).
+CTC fine-tuning (Member 5). On 2026-11-20 the guidance, the open questions and
+the UNMEASURED legend (now: not run by the M6 smoke kit) were updated to follow
+PR #5's M4/M5 protocol, which was frozen on 2026-11-19 before the test
+references were opened (`configs/evaluation/m45_final_protocol.json` on
+`feat/m4-m5-integration` at `7a64ef1`, not merged yet), and its later erratum
+`docs/m45_decoding_erratum.md` (decision D41), which gives the effective decoder
+widths (Whisper 5 beams, CTC prefix beam 10). The timing rule was also updated,
+because Member 6 accepted PR #5's frozen timing block as the official RTF for
+its eight conditions on 2026-11-20. The measurements are unchanged.
 
 Every result number carries one of three labels:
 
 - **measured**: read from a smoke run's output.
 - **estimate**: arithmetic on measured numbers; nothing was run to check it.
-- **UNMEASURED**: not run at all.
+- **UNMEASURED**: not run by the M6 smoke kit; "not run" in a table means the
+  same.
 
 Settings (batch size, beam width, learning rate, model revisions, software
 versions, model limits) describe what was run and carry no label.
@@ -38,7 +47,8 @@ versions, model limits) describe what was run and carry no label.
   comparison runs. The re-run reports do not restate library versions.
 - No references were used: accuracy is UNMEASURED.
 - These runs used Member 6's smoke wrappers, not the owners' adapters. Each
-  owner's B1–B4 adapter needs its own check once it exists.
+  owner's B1–B4 adapter needs its own check; these smoke runs are not that
+  check.
 
 Pinned models (Hugging Face commit SHAs):
 
@@ -84,7 +94,10 @@ Both 2026-11-18 re-runs gave the same statistics, and peak VRAM matched
 (Qwen3-ASR) and greedy decoding (XLS-R), cover 20 clips and come from one
 repeat. RTFs also shift between sessions: see
 [Timing varies between sessions](#timing-varies-between-sessions). The
-official RTF comes from the re-run protocol in
+official RTF for B1, B4, F1–F3 and the `--rdl-full` joint systems of F1–F3 is
+PR #5's frozen timing block (see the rule in
+[Timing varies between sessions](#timing-varies-between-sessions)); for
+every other system it comes from the re-run protocol in
 [evaluation](evaluation.md#real-time-factor-and-latency). Batch > 1 inference
 and the 3-repeat timing protocol are UNMEASURED.
 
@@ -146,11 +159,20 @@ very differently.
   same-session measurements: their ratios to 2026-11-17 (1.25 and 1.20;
   estimate, from measured RTFs) match the other systems.
 
-Rule for everyone: compare RTFs only within one timing session. The official
-timing runs every system back to back in one session, records the machine
-state (GPU processes, power source and plan, CPU load, top CPU processes) and
-uses 3 repeats. No other GPU application is open, cloud-drive sync is paused
-and no OS update is installing.
+Rule for everyone: compare RTFs only within one timing session. PR #5's frozen
+timing block gives the official RTF for its eight conditions (B1, B4, F1–F3
+and the `--rdl-full` joint systems of F1–F3), timed serially, as set by the
+frozen protocol's `timing` block and decision D40 (both on PR #5's branch,
+unmerged). Compare
+those RTFs only with each other, keep PR #5's repeat dispersion and claim no
+CTC speed advantage from the means alone (see `docs/m45_completion.md` on
+PR #5's branch). Every other official timing (B2, B3, B5) runs every system it
+compares back to back in the shared timing session, records the machine state
+(GPU processes, power source and plan, CPU load, top CPU processes) and uses 3
+repeats. No other GPU application is open, cloud-drive sync is paused and no OS
+update is installing. A comparison between a system in PR #5's block and one
+outside it (for example B2 against B1) is made only when both are re-timed
+together in the shared timing session.
 
 ## Training probes
 
@@ -226,7 +248,9 @@ training memory, B5, and every fp32-master recipe.
   pass. Record `decoder_sequence_score` as length-normalized.
 - Not yet run (UNMEASURED): on a few clips, rank 1 from the core path should
   equal the 1-best of
-  `WhisperForConditionalGeneration.generate(num_beams=10, num_return_sequences=1)`.
+  `WhisperForConditionalGeneration.generate(input_features, language="tr", task="transcribe", return_timestamps=False, num_beams=5, num_return_sequences=1, length_penalty=1.0, do_sample=False, max_new_tokens=440)`,
+  run on the same input features at the core path's precision (bf16 for B1)
+  and beam width (the frozen 5 for B1; this page asks B2 to use 5 too).
 
 ## Duplicate candidates
 
@@ -251,7 +275,8 @@ What this changes (N-best contract 0.2, proposed by M6;
 - The export keeps the first (lowest-rank) occurrence of each exact raw text
   with its original rank and `candidate_id`, writes `dedup_map` only when it
   removed something, and sets `actual_n` to the kept count. `requested_n`
-  stays the requested beam width.
+  stays the requested N (for the beam systems above it also equals the beam
+  width).
 - Candidates with the same text and identical `token_ids` are copies of one
   hypothesis (the Whisper trap above), and the export turns that result into an
   error row.
@@ -273,23 +298,72 @@ joint ([N-best contract](contracts/nbest.md#score-meanings)). Never install the
 - B4: the mpoyraz XLS-R cv7 and cv8 checkpoints in fp32 with greedy decoding
   give valid 1-best output (measured), provided the processor is built
   explicitly (`Wav2Vec2CTCTokenizer` + `Wav2Vec2FeatureExtractor`, no LM).
-  Their vocabulary has no digits, so numerals in references become systematic
-  errors for B4, and for F3 if F3 keeps the head. Report it as a limitation, or
-  run vocabulary extension as a separate ablation.
-- CTC N-best does not exist yet and is UNMEASURED. Planned design: a small
-  numpy prefix beam search proposes the candidates, and each candidate's exact
-  score is `-CTCLoss(reduction='none')`, labeled per the
-  [N-best contract](contracts/nbest.md#score-meanings). Until it exists, no CTC
-  system can feed R1.
+  For the paired comparison with F3, the frozen protocol's B4
+  (`B4-xlsr-tr-cv7`) is cv7 at `708639f5`, decoded like F3: bf16 on CUDA,
+  prefix beam 10, requested N 5, rank 1 as the one-best. Report cv8 only as a
+  labelled secondary system, and fp32 greedy only as a labelled secondary
+  setting. Neither checkpoint's vocabulary has digits (cv7's has 38 tokens), so
+  numerals in references become systematic errors for B4; report it as a
+  limitation. F3 extends the
+  head to 52 tokens; the 14 added characters include the digits (decision D33
+  in `docs/owner_decisions.md` on PR #5's branch).
+- CTC N-best exists on PR #5's branch, unmerged, and was not run by the smoke
+  kit (UNMEASURED here). In `src/turkish_asr_rdl/decoding/ctc.py`,
+  `prefix_beam_search` (beam 10) ranks its prefixes by approximate beam mass.
+  `ctc_nbest` takes the first `requested_n` of them in that order (the top 5
+  of 10) and keeps that order as the rank. Only those get an exact score from
+  `sequence_log_probability`, a forward dynamic program over all CTC
+  alignments, written as `acoustic_log_score` with `acoustic_score_kind`
+  `ctc_sequence_log_probability`; the rest are discarded unscored, and the
+  list is not re-sorted by exact score. Rank 1, the one-best, is the highest
+  approximate beam mass, not necessarily the highest exact score. The
+  approximate beam mass goes in `decoder_sequence_score`, and `score_details`
+  sets `sequence_score_exact` and `beam_score_approximate` to true. A
+  candidate whose exact score is not finite is dropped, not given an
+  artificial score, and is not replaced. That branch does not fire on finite
+  fp32 frames: every alignment counted in a prefix's beam mass is also an
+  alignment of that prefix, so the exact score is at least the beam mass,
+  which is finite. In practice the exported CTC list falls below N when
+  distinct prefixes decode to the same text (for example a leading or trailing
+  word delimiter `|`, or a skipped special token), because the shared export
+  removes those duplicates. The
+  CTC path in `decoding/adapted.py` casts the logits to fp32, applies
+  `log_softmax` and uses the pad token as blank. Member 3 owns
+  `decoding/ctc*` in TEAM_TASKS: review
+  `decoding/ctc.py` and build on it rather than writing a second scorer.
+  `decoding/ctc.py`, like `decoding/adapted.py` and `decoding/whisper.py`, is
+  hash-pinned in the frozen protocol (`critical_code_sha256`), and the frozen
+  run and audit scripts stop if it changes: call it unchanged for B4 and put
+  any extension in a new module.
+- To cross-check CTC scores with `torch.nn.CTCLoss`, use `reduction='none'`
+  and `zero_infinity=False` on the same frames as the frozen path: the bf16
+  model's logits cast to fp32 before `log_softmax` (`decoding/adapted.py`),
+  with blank = `pad_token_id` (0 for both mpoyraz checkpoints, and for F3,
+  whose D33 extension keeps the blank ID). Each exact score should then equal
+  minus that loss within float tolerance (for example rel 1e-4), not bit for
+  bit: `ctc.py` sums in Python floats (float64), while `CTCLoss` on fp32
+  tensors works in fp32. Do not re-run the model in fp32 for this check.
+  `model(labels=...).loss` is no
+  check: both mpoyraz checkpoints set `ctc_loss_reduction` to `"mean"` in
+  `config.json`, so that loss is length-normalised, not a log probability.
 - B5 (BiLSTM-CTC from scratch): memory, step time, epoch time and whether it
   runs on CPU are all UNMEASURED. Before committing to a size, run a 3-step
   memory probe and time one epoch on the machine that will train it. Build the
   vocabulary from the train split only.
-- F3 (XLS-R CTC fine-tuning): memory is UNMEASURED; the 1.62 GiB inference
-  peak (measured) is only a floor. Before choosing a batch size, run a 3-step
-  probe on the training machine with fp32 master weights, a frozen feature
-  encoder and gradient checkpointing. Set `ctc_zero_infinity=True` or filter
-  long-label samples.
+- F3 (XLS-R CTC fine-tuning): memory is UNMEASURED by M6; the 1.62 GiB
+  inference peak (measured) is only a floor. PR #5's branch has its own
+  training-memory probes (`docs/m45_gpu_profile.md`); they are not smoke-kit
+  results. F3 was trained on PR #5's branch
+  (`F3-ctc-vocab`): the cv7 parent, the head extended to 52 tokens and a
+  one-off train-target length-feasibility check are recorded in
+  `docs/m45_execution_2026-11-19.md`; the frozen feature encoder,
+  non-reentrant gradient checkpointing and `ctc_zero_infinity=False` are set
+  in `src/turkish_asr_rdl/training/ctc.py` (both on PR #5's branch). It was
+  not run by the smoke kit. The probe
+  advice applies only to a new F3 recipe: run a 3-step probe on the training
+  machine with fp32 master weights before choosing a batch size, and keep
+  `ctc_zero_infinity=False` only with a train-target length-feasibility check
+  like F3's; otherwise set it to `True` or filter long labels.
 
 ## PyTorch Geometric
 
@@ -319,32 +393,49 @@ state the CER space policy and give a per-system count of hypotheses where
 
 ## Actions per member
 
-Everyone times only in the shared timing session (see
-[Timing varies between sessions](#timing-varies-between-sessions)) and does
-not quote an RTF measured in another session.
+B1, B4, F1–F3 and the `--rdl-full` joint systems of F1–F3 take their official
+RTF from PR #5's frozen timing block; everything else is timed only in the
+shared timing session (see
+[Timing varies between sessions](#timing-varies-between-sessions)), and nobody
+quotes an RTF measured outside PR #5's block or the shared session. A
+comparison between a system in that block and one outside it re-times both
+together in the shared session.
 
 | Member | Tracks | Next actions |
 | --- | --- | --- |
-| Member 2 | B1, B2, B3 | Build Whisper N-best on the core `GenerationMixin` path and never call `WhisperForConditionalGeneration.generate` with `num_return_sequences > 1`; one process per system. Return the raw candidate list; the shared export deduplicates. Run the rank-1 check on a few clips. Qwen3-ASR: use the `-hf` checkpoints, label the score joint, keep `qwen-asr` out of the main environment. Return text exactly as decoded. Freeze beam size and requested N in each decoder config before the timed re-run. |
-| Member 3 | B4, B5 | B4: build the XLS-R processor explicitly, fp32, greedy; report the missing digits as a limitation. CTC N-best (prefix beam search, exact `-CTCLoss` score) is UNMEASURED; until it exists B4 gives 1-best only. B5: run a 3-step memory probe and time one epoch on the training machine before choosing a size; train-only vocabulary. |
-| Member 4 | F1, F2 | F1: confirm the parent (see open questions); run a 3-step whisper-small LoRA probe before committing (UNMEASURED today). A large-v3 LoRA fits (4.05 GiB reserved at batch 2, measured) but is claimed only with its own B2-matched experiment. Train with fp32 master weights and bf16 autocast, LoRA adapters in fp32, the frozen base in bf16 or fp16, dtype passed explicitly. F2: run a 3-step fp32-master whisper-small probe (about 4.2–5.2 GiB, estimate); record large-v3 full fine-tuning as a measured hardware block naming the probed recipe. Follow the Whisper N-best rule and return raw lists. |
-| Member 5 | F3, R1 | F3: run the 3-step probe (fp32 master, frozen feature encoder, gradient checkpointing) before choosing a batch size; set `ctc_zero_infinity=True` or filter long labels; report the missing digits if the head is kept. R1: PyTorch Geometric works (full-batch, reverse edge types, no `pyg-lib` samplers). No owner adapter has produced a validated N-best list yet (the smoke wrappers' lists validated on 20 clips after the export dedup, measured 2026-11-18): the planned producers are Member 4's Whisper N-best (whisper-small parent) and Member 3's CTC export. Pick the producer early and freeze its validation and test candidate sets. |
+| Member 2 | B1, B2, B3 | Build Whisper N-best on the core `GenerationMixin` path and never call `WhisperForConditionalGeneration.generate` with `num_return_sequences > 1`; one process per system. Return the raw candidate list; the shared export deduplicates. Run the rank-1 check on a few clips. Qwen3-ASR: use the `-hf` checkpoints, label the score joint, keep `qwen-asr` out of the main environment. Return text exactly as decoded. Decode B1 like the frozen protocol's `B1-whisper-small` (bf16 on CUDA, `num_beams` = requested N = 5, `num_return_sequences` 5, `max_new_tokens` 440), and B2 the same way; the smoke run's fp16 beam 10 is not the frozen setting. Beam width alone is not enough (`docs/m45_decoding_erratum.md`): also match B1's checkpoint, the pinned `openai/whisper-small` at `973afd24` (weight SHA-256 `1d7734884874…` in the frozen protocol; decision D23), and the frozen `decoding/whisper.py` scoring and decoding policy (and the score convention `whisper-original-logits-generated-plus-eos-v1` that `decoding/adapted.py` assigns): the Turkish forced prompt of the [Whisper N-best rule](#whisper-n-best-rule) with `forced_decoder_ids` cleared, EOS kept in `token_ids` and `token_count`, a teacher-forced score from the original logits (no suppression or temperature in the score; the search itself uses a copy of the checkpoint's `generation_config` with only `forced_decoder_ids` cleared) over the generated tokens plus EOS with the prompt excluded, `length_penalty` 1.0, no sampling. B3's beam is your validation choice. Freeze beam size and requested N in each decoder config before the timed re-run. |
+| Member 3 | B4, B5 | B4: use cv7 at `708639f5` as the primary B4, decoded like F3 (bf16 on CUDA, prefix beam 10, requested N 5, rank 1 as the one-best); cv8, and fp32 greedy, only as labelled secondaries. Build the XLS-R processor explicitly; report the missing digits as a limitation. CTC N-best (not run by the smoke kit; UNMEASURED here): review `decoding/ctc.py` on PR #5's branch and build on it rather than writing a second scorer; it is hash-pinned in the frozen protocol (`critical_code_sha256`), so call it unchanged for B4 and put any extension in a new module. Cross-check with `CTCLoss` at `reduction='none'` and `zero_infinity=False` on the frozen path's frames (bf16 logits cast to fp32 before `log_softmax`, blank = `pad_token_id`), expecting agreement within float tolerance, not bit for bit; never with `model(labels=...).loss` (length-normalised). B5: run a 3-step memory probe and time one epoch on the training machine before choosing a size; train-only vocabulary. |
+| Member 4 | F1, F2 | F1 and F2 were trained from whisper-small on PR #5's branch, with `B1-whisper-small` as their control (see open questions); they were not run by the smoke kit. The training figures on this page are M6 smoke evidence only: whisper-small LoRA memory stays UNMEASURED by M6, and a whisper-small fp32-master full fine-tune at batch 8 needs about 4.2–5.2 GiB (estimate). PR #5's branch has its own training-memory probes (`docs/m45_gpu_profile.md`); they are not smoke-kit results. A large-v3 LoRA fits (4.05 GiB reserved at batch 2, measured) but is claimed only with its own B2-matched experiment; such a run trains with fp32 master weights and bf16 autocast, LoRA adapters in fp32, the frozen base in bf16 or fp16, dtype passed explicitly. Record large-v3 full fine-tuning as a measured hardware block naming the probed recipe. Follow the Whisper N-best rule and return raw lists. |
+| Member 5 | F3, R1 | F3 was trained on PR #5's branch (`F3-ctc-vocab`; head extended to 52 tokens with a one-off train-target length-feasibility check, recorded in `docs/m45_execution_2026-11-19.md`; `ctc_zero_infinity=False`, set in `src/turkish_asr_rdl/training/ctc.py`; both on PR #5's branch); it was not run by the smoke kit. The 3-step probe (fp32 master, frozen feature encoder, gradient checkpointing) applies only to a new F3 recipe, which keeps `ctc_zero_infinity=False` only with a train-target length-feasibility check like F3's and otherwise sets it to `True` or filters long labels. R1: PyTorch Geometric works (full-batch, reverse edge types, no `pyg-lib` samplers). The R1 candidate lists come from `decoding/whisper.py` (Whisper systems) and `decoding/ctc.py` (CTC systems) on PR #5's branch, unmerged; they passed the shared `validate_nbest` gate in PR #5's frozen run, and Member 6 has not independently re-checked them (not run by the smoke kit). The smoke wrappers' lists validated on 20 clips after the export dedup (measured 2026-11-18). The frozen protocol (`configs/evaluation/m45_final_protocol.json` on PR #5's branch) already pins the decoder settings, test inputs and validation selection reports. |
 
 ## Open questions
 
-1. **Who has a GPU, and how much VRAM?** Members 2–5: please say which
-   GPU, how much VRAM and which OS. If Member 4 or Member 5 has none, the M6
-   RTX 5070 Ti might host a training queue; that reverses the rule that it runs
-   only Member 6's jobs, so it is Member 6's call. GPU steps only, from 3-step
-   probes and a 20–30 h train set: about 21–32 minutes for 3 epochs of
+1. **Who has a GPU, and how much VRAM?** Members 2 and 3 (B1–B5): please say
+   which GPU, how much VRAM and which OS. PR #5 records an RTX 5070 for its
+   M4/M5 work (`docs/m45_gpu_profile.md` on PR #5's branch), and F1–F3 have
+   finished their 3 epochs on that branch. GPU steps only, from 3-step probes and a
+   20–30 h train set: about 21–32 minutes for 3 epochs of
    whisper-small full fine-tuning, and about 1.7–2.6 h for 3 epochs of
    whisper-large-v3 LoRA, the latter only if a large-v3 F1 is pursued with its
-   B2-matched experiment (estimate). whisper-small LoRA, XLS-R F3 and CPU
-   training times are UNMEASURED.
-2. **F1 parent.** [TEAM_TASKS](../TEAM_TASKS.md#member-4--whisper-fine-tuning)
-   makes whisper-small (B1) the adaptation parent. A whisper-large-v3 F1 needs
-   its own B2-matched experiment. Members 2 and 4: confirm whisper-small.
-3. **Beam sizes.** The smoke run used beam 10 for Whisper, beam 5 for
-   Qwen3-ASR and greedy decoding for XLS-R. Each owner freezes beam size and
-   requested N in the decoder config before timing, so the re-run times the
-   configuration that is reported.
+   B2-matched experiment (estimate). These planning figures now apply only to
+   new recipes. whisper-small LoRA, XLS-R F3 and CPU training times are
+   UNMEASURED by M6 (`docs/m45_gpu_profile.md` on PR #5's branch has the
+   M4/M5 tracks' own synthetic step-time probes).
+2. **F1 parent (decided by owner decision D23 on PR #5's branch, unmerged).**
+   [TEAM_TASKS](../TEAM_TASKS.md#member-4--whisper-fine-tuning)
+   makes whisper-small (B1) the adaptation parent, and the frozen protocol
+   follows it: F1 and F2 were trained from whisper-small, with
+   `B1-whisper-small` as their control. A whisper-large-v3 F1 needs its own
+   B2-matched experiment. D23 records no Member 2 review: Member 2, confirm
+   whisper-small.
+3. **Beam sizes (settled for the frozen protocol).** The smoke run used beam
+   10 for Whisper, beam 5 for Qwen3-ASR and greedy decoding for XLS-R. The
+   frozen protocol's decoder block is bf16 on CUDA, requested N 5, beam size
+   10 and `max_new_tokens` 440. Whisper (B1, F1, F2) uses `num_beams` 5 with 5
+   returned; the beam size 10 applies only to CTC (B4, F3), as prefix beam 10
+   with rank 1 as the one-best (decision D41 in `docs/owner_decisions.md`,
+   and `docs/m45_decoding_erratum.md`, on PR #5's branch). B2 and B3 are not
+   in the protocol: this page asks B2 to decode like B1, and B3's beam is
+   still Member 2's validation choice.
+   Each owner freezes beam size and requested N in the decoder config before
+   timing, so the re-run times the configuration that is reported.

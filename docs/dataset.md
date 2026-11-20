@@ -62,7 +62,9 @@ claimed now. See the [data contract](contracts/data.md) for required fields.
 ## Proposed release `turas-tr-econ-legis-v0.1` (M1, 2026-11-18)
 
 Status: **frozen on 2026-11-18** under the sampled-verification policy
-approved by M6 (D08; approval reported by M1). Final split manifest sha256
+(D08; sampled-verification freeze reported by M1; independent M6 review of PR #2
+requested metadata/schema fixes and noted that `turas-tr-econ-legis-v0.1` is a
+working release rather than a fully listening-verified verbatim release). Final split manifest sha256
 `a8fff65b99fcf11d9452685e438e250207032ecfe11152741562147126d095b8`; all hashes in
 `data/splits/…/split_manifest.json`, `data/manifests/turas-tr-econ-legis-v0.1.json`
 and the handoff record `data/manifests/turas-tr-econ-legis-v0.1-handoff.json`.

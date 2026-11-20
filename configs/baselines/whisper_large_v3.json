@@ -1,0 +1,68 @@
+{
+  "schema_version": "0.1",
+  "track_id": "B2",
+  "system_id": "baseline-whisper-large-v3",
+  "status": "proposed-baseline-protocol",
+  "dataset_release": null,
+  "split_manifest_sha256": null,
+  "model": {
+    "id": "openai/whisper-large-v3",
+    "revision": "06f233fe06e710322aca913c1bc4249a0d71fce1",
+    "weight_file": "model.safetensors",
+    "weight_sha256": "a8e94b85976e5864ba3e9525c7e6c83b2a1eca42d4b797a0c7c24d778e40fd95",
+    "weight_sha256_kind": "Hub LFS oid; bytes verified at download",
+    "tokenizer_file": "tokenizer.json",
+    "tokenizer_file_sha256": null,
+    "preprocessor_file": "preprocessor_config.json",
+    "preprocessor_file_sha256": null,
+    "generation_config_file": "generation_config.json",
+    "generation_config_file_sha256": null,
+    "precision": "bfloat16",
+    "device": "cuda"
+  },
+  "processor": {
+    "id": "openai/whisper-large-v3",
+    "revision": "06f233fe06e710322aca913c1bc4249a0d71fce1",
+    "sampling_rate_hz": 16000
+  },
+  "audio": {
+    "sampling_rate_hz": 16000,
+    "clip_duration_constraint": "10-20 s clips from TURAS (M1 source audit: data/metadata/worldspeech-tr_tr-source-audit.md:52); max 480,000 samples (30 s limit), no chunking needed"
+  },
+  "inputs": {
+    "inference": null,
+    "audio_root": null,
+    "split_manifest": null,
+    "test_ids": null,
+    "validation_ids": null
+  },
+  "decoding": {
+    "status": "proposed",
+    "algorithm": "beam",
+    "num_beams": 5,
+    "requested_n": 5,
+    "max_new_tokens": 440,
+    "language": "tr",
+    "task": "transcribe",
+    "do_sample": false,
+    "temperature": null,
+    "length_penalty": 1.0,
+    "early_stopping": false,
+    "repetition_penalty": 1.0,
+    "no_repeat_ngram_size": 0,
+    "num_return_sequences": 5,
+    "forced_prefix_tokens": [
+      "<|startoftranscript|>",
+      "<|tr|>",
+      "<|transcribe|>",
+      "<|notimestamps|>"
+    ]
+  },
+  "nbest": {
+    "score_convention_id": "whisper-original-logits-generated-plus-eos-v1",
+    "acoustic_score_kind": "seq2seq_token_log_prob_sum",
+    "implementation_path": "core GenerationMixin.generate; bypass WhisperForConditionalGeneration",
+    "deduplication_policy": "exact raw-text match; first (lowest-rank) occurrence kept; removed IDs listed in dedup_map"
+  },
+  "reviews_required": "Matches B1 decoding setting (bf16, beam 5, N 5); dataset binding pending approved release"
+}

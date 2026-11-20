@@ -16,7 +16,8 @@ CTC (`F3`). Primary learned RDL does **not** beat original one-best on any
 adapted model (+0.005 / +0.058 / +0.039 pp normalized WER on F1/F2/F3, all 95%
 CIs include 0), and on F2 the untrained random-graph control beats the learned
 graph (`-0.024 pp`, 95% CI `[-0.049, -0.005]`). See the
-[final report](results/final/M4_M5_FINAL_REPORT.md) and
+[final report](results/final/M4_M5_FINAL_REPORT.md),
+[quantitative error analysis & RDL diagnosis](docs/error_analysis.md), and
 [completion/handoff record](docs/m45_completion.md).
 
 ## For graders — Quickstart & Verification
@@ -30,16 +31,12 @@ python -m venv .venv
 python -m pip install --no-deps -e .
 python -m pip install -r requirements/dev.txt
 
-# 3. Run the offline test suite (1,100+ tests; torch/GPU tests skip cleanly without torch)
+# 3. Run the offline test suite (1,130+ tests; torch/GPU tests skip cleanly without torch)
 pytest
-```
 
-Verify that all 56 pinned Python code hashes in `configs/evaluation/m45_final_protocol.json`
-match the repository and that all 20 systems in `results/final/m45_metrics.csv`
-recompute exactly from the stored S/D/I counts in `results/final/m45_test_summary.json`:
-
-```bash
-python -c "import csv, hashlib, json, pathlib; p = json.loads(pathlib.Path('configs/evaluation/m45_final_protocol.json').read_text('utf-8')); bad = [k for k, v in p['critical_code_sha256'].items() if hashlib.sha256(pathlib.Path(k).read_bytes()).hexdigest() != v]; assert not bad, bad; s = json.loads(pathlib.Path('results/final/m45_test_summary.json').read_text('utf-8'))['systems']; rows = {r['system']: r for r in csv.DictReader(open('results/final/m45_metrics.csv', encoding='utf-8'))}; assert len(s) == len(rows) == 20; print('OK: 56 pinned code hashes and 20 system metric rows verified.')"
+# 4. Verify all 56 pinned code hashes, recompute all 20 systems' WER/CER from S/D/I/N counts,
+#    and verify train/validation/test split disjointness (4,376 / 438 / 636 clips)
+python scripts/verify_submission.py
 ```
 
 The [technical closeout](results/final/m45_technical_closeout.json) records
@@ -138,7 +135,8 @@ does not automatically load models, download data or recognize speech.
 ## License and data rights
 
 Source code is licensed under the **MIT License** — see [LICENSE](LICENSE).
-The derived dataset `turas-tr-econ-legis-v0.1` originates from
+Third-party dataset and pretrained checkpoint notices are in [NOTICE](NOTICE):
+the derived dataset `turas-tr-econ-legis-v0.1` originates from
 `disco-eth/WorldSpeech` (`tr_tr`, **CC BY-NC 4.0**, non-commercial attribution
 required); raw audio and private references are not redistributed in Git.
 

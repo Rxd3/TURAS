@@ -1,0 +1,165 @@
+{
+  "schema_version": "0.1",
+  "status": "preliminary_validation_recovered_minutes",
+  "reference_variant": "owner-recovered-validation-minutes-v1",
+  "dataset_release": "turas-tr-econ-legis-v0.1",
+  "split_manifest_sha256": "a8fff65b99fcf11d9452685e438e250207032ecfe11152741562147126d095b8",
+  "rows": 438,
+  "recordings": 15,
+  "upstream_revision": "b76b85395039f50332fbc421f7c098ee2f2653d7",
+  "references_sha256": "d0c8519ca6aed053f89786bc733541a70faee09cf8d8bdb6cc12065d97dbd958",
+  "reference_manifest_sha256": "8c06f3094c8afc13b457edf5cc455b5d26092817aae282636d1111e0663f3267",
+  "recovery_source_sha256": "4b590007bc349b98d186ae323b2df6d263e5f2f2baed6a1202374fe464d7ff53",
+  "scoring_source_sha256": "9a3ca5ef557daa45ae57aa11042f5a24d22434ddef91c6e7f1dac1fc5830f22a",
+  "limitations": [
+    "Edited parliamentary minutes, not verified verbatim speech",
+    "M1 reports three corrected validation references that are unavailable here",
+    "This is a separate preliminary reference version, not M1's original frozen gold",
+    "Underlying parquet column chunks may include unrelated rows; only exact validation IDs are retained",
+    "Never supply this reference file to model inference or acoustic/RDL training"
+  ],
+  "baselines": [
+    {
+      "status": "scored_preliminary_validation_minutes",
+      "dataset_release": "turas-tr-econ-legis-v0.1",
+      "split": "validation",
+      "split_manifest_sha256": "a8fff65b99fcf11d9452685e438e250207032ecfe11152741562147126d095b8",
+      "reference_variant": "owner-recovered-validation-minutes-v1",
+      "reference_sha256": "d0c8519ca6aed053f89786bc733541a70faee09cf8d8bdb6cc12065d97dbd958",
+      "reference_manifest_sha256": "8c06f3094c8afc13b457edf5cc455b5d26092817aae282636d1111e0663f3267",
+      "predictions_sha256": "f9800b30eb5e79696a6b9f3d03eea25d954f0b16c6210f38845a920c2e5bc93e",
+      "system_id": "m45-whisper-pretrained-validation-seed17",
+      "model_artifact_sha256": "1d7734884874f1a1513ed9aa760a4f8e97aaa02fd6d93a3a85d27b2ae9ca596b",
+      "evaluator_source_sha256": {
+        "align.py": "89699b724cdde42f5405a8a77d2ff6b6def8a85464abb49e758a3a257f4aca85",
+        "normalize.py": "f2c4ac06699d9abe976cca0c02a1dde5f8cf0e9ab832031b973e66cb67bb771c",
+        "metrics.py": "ef048aa65571f98efbe4e2364800b3629db89d45cfdf0677962b38201b0d4986"
+      },
+      "metrics": {
+        "raw-v1": {
+          "view": "raw-v1",
+          "utterances": 438,
+          "zero_reference_utterances": 0,
+          "error_rows": 0,
+          "words": {
+            "substitutions": 3671,
+            "deletions": 141,
+            "insertions": 1048,
+            "hits": 9296
+          },
+          "chars": {
+            "substitutions": 4718,
+            "deletions": 1797,
+            "insertions": 6286,
+            "hits": 91918
+          },
+          "wer": 0.3707659444613976,
+          "cer": 0.13004784980646733,
+          "wacc": 0.6292340555386025,
+          "reference_words": 13108,
+          "reference_characters": 98433
+        },
+        "tr-normalized-v1": {
+          "view": "tr-normalized-v1",
+          "utterances": 438,
+          "zero_reference_utterances": 0,
+          "error_rows": 0,
+          "words": {
+            "substitutions": 2287,
+            "deletions": 204,
+            "insertions": 871,
+            "hits": 10890
+          },
+          "chars": {
+            "substitutions": 3073,
+            "deletions": 1250,
+            "insertions": 5747,
+            "hits": 91922
+          },
+          "wer": 0.2512517749047156,
+          "cer": 0.10462881188633176,
+          "wacc": 0.7487482250952844,
+          "reference_words": 13381,
+          "reference_characters": 96245
+        }
+      },
+      "limitations": [
+        "Upstream edited minutes, every recovered row marked unreviewed",
+        "Missing three private validation corrections and original listening records",
+        "Not an official M1-corrected-reference or final-test result",
+        "Training/checkpoint/fusion selection must identify this reference view explicitly"
+      ]
+    },
+    {
+      "status": "scored_preliminary_validation_minutes",
+      "dataset_release": "turas-tr-econ-legis-v0.1",
+      "split": "validation",
+      "split_manifest_sha256": "a8fff65b99fcf11d9452685e438e250207032ecfe11152741562147126d095b8",
+      "reference_variant": "owner-recovered-validation-minutes-v1",
+      "reference_sha256": "d0c8519ca6aed053f89786bc733541a70faee09cf8d8bdb6cc12065d97dbd958",
+      "reference_manifest_sha256": "8c06f3094c8afc13b457edf5cc455b5d26092817aae282636d1111e0663f3267",
+      "predictions_sha256": "31cebbb60894d2eaf6df660729eaf840d0fd57aef8eb8e050e2e833eabd50982",
+      "system_id": "m45-ctc-pretrained-validation-seed17",
+      "model_artifact_sha256": "008d69c82bf45c82ec5485e550abc86ddabefe75080f22e1ebfdc1699889d82e",
+      "evaluator_source_sha256": {
+        "align.py": "89699b724cdde42f5405a8a77d2ff6b6def8a85464abb49e758a3a257f4aca85",
+        "normalize.py": "f2c4ac06699d9abe976cca0c02a1dde5f8cf0e9ab832031b973e66cb67bb771c",
+        "metrics.py": "ef048aa65571f98efbe4e2364800b3629db89d45cfdf0677962b38201b0d4986"
+      },
+      "metrics": {
+        "raw-v1": {
+          "view": "raw-v1",
+          "utterances": 438,
+          "zero_reference_utterances": 0,
+          "error_rows": 0,
+          "words": {
+            "substitutions": 6002,
+            "deletions": 251,
+            "insertions": 1121,
+            "hits": 6855
+          },
+          "chars": {
+            "substitutions": 6418,
+            "deletions": 3655,
+            "insertions": 6733,
+            "hits": 88360
+          },
+          "wer": 0.5625572169667379,
+          "cer": 0.1707354240955777,
+          "wacc": 0.4374427830332621,
+          "reference_words": 13108,
+          "reference_characters": 98433
+        },
+        "tr-normalized-v1": {
+          "view": "tr-normalized-v1",
+          "utterances": 438,
+          "zero_reference_utterances": 0,
+          "error_rows": 0,
+          "words": {
+            "substitutions": 3645,
+            "deletions": 353,
+            "insertions": 950,
+            "hits": 9383
+          },
+          "chars": {
+            "substitutions": 3985,
+            "deletions": 1821,
+            "insertions": 6951,
+            "hits": 90439
+          },
+          "wer": 0.36977804349450716,
+          "cer": 0.13254714530624967,
+          "wacc": 0.6302219565054928,
+          "reference_words": 13381,
+          "reference_characters": 96245
+        }
+      },
+      "limitations": [
+        "Upstream edited minutes, every recovered row marked unreviewed",
+        "Missing three private validation corrections and original listening records",
+        "Not an official M1-corrected-reference or final-test result",
+        "Training/checkpoint/fusion selection must identify this reference view explicitly"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "dataset_release": "turas-tr-econ-legis-v0.1",
+  "split_manifest_sha256": "a8fff65b99fcf11d9452685e438e250207032ecfe11152741562147126d095b8",
+  "inference_exports_sha256": {
+    "train": "1e4bfd3df1bf10bb39bde558c50939631d71bdc003c56f19ff134a8edb36dc8d",
+    "validation": "1c6b12d4a7de3ed5b717d193f07d8194dc7105bd6785305029afef6d9e3ac3f2",
+    "test": "299dc6ae1f50772eb85081293c9bbe746c746a9aefc94870deff530a641059ef"
+  },
+  "topic_hours": {
+    "train": {
+      "T_BANKING": 3.579,
+      "T_LABOR": 8.797,
+      "T_LEGIS": 4.985,
+      "T_MONETARY": 13.405,
+      "T_PUBFIN": 5.772,
+      "T_TAX": 2.744,
+      "T_TRADE": 8.304
+    },
+    "validation": {
+      "T_BANKING": 0.342,
+      "T_LABOR": 0.784,
+      "T_LEGIS": 0.437,
+      "T_MONETARY": 1.239,
+      "T_PUBFIN": 0.64,
+      "T_TAX": 0.407,
+      "T_TRADE": 0.951
+    },
+    "test": {
+      "T_BANKING": 0.916,
+      "T_LABOR": 1.716,
+      "T_LEGIS": 0.697,
+      "T_MONETARY": 2.104,
+      "T_PUBFIN": 0.835,
+      "T_TAX": 0.794,
+      "T_TRADE": 1.404
+    }
+  },
+  "audio_bytes_total": 1983862856
+}

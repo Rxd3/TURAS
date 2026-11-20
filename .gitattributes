@@ -3,3 +3,7 @@
 *.jpg binary
 *.pdf binary
 *.pptx binary
+# Preserve the already frozen protocol bytes and their recorded SHA-256.
+configs/evaluation/m45_final_protocol.json -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+# Final reports/manifests are hashed artifacts; retain their delivered bytes.
+results/final/** -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol

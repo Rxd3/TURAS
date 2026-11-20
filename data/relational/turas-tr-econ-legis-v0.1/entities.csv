@@ -1,0 +1,91 @@
+entity_id,canonical_label,entity_type,provenance_id
+BANK_BANKA,banka,concept,prov_lexicon
+BANK_BDDK,BDDK,organization,prov_lexicon
+BANK_BORC,borç,concept,prov_lexicon
+BANK_BORSA,borsa,concept,prov_lexicon
+BANK_KREDI,kredi,concept,prov_lexicon
+BANK_KREDI_KARTI,kredi kartı,concept,prov_lexicon
+BANK_KRIPTO,kripto varlık,concept,prov_lexicon
+BANK_MEVDUAT,mevduat,concept,prov_lexicon
+BANK_SPK,SPK,organization,prov_lexicon
+BANK_TMSF,TMSF,organization,prov_lexicon
+LAB_ASGARI_UCRET,asgari ücret,concept,prov_lexicon
+LAB_BAGKUR,Bağ-Kur,organization,prov_lexicon
+LAB_EMEKLI,emekli,concept,prov_lexicon
+LAB_EMEKLI_SANDIGI,Emekli Sandığı,organization,prov_lexicon
+LAB_EYT,EYT,concept,prov_lexicon
+LAB_ISSIZLIK,işsizlik,concept,prov_lexicon
+LAB_ISTIHDAM,istihdam,concept,prov_lexicon
+LAB_KIDEM_TAZMINATI,kıdem tazminatı,concept,prov_lexicon
+LAB_MAAS,maaş,concept,prov_lexicon
+LAB_PRIM,prim,concept,prov_lexicon
+LAB_SGK,SGK,organization,prov_lexicon
+LAB_SOSYAL_GUVENLIK,sosyal güvenlik,concept,prov_lexicon
+LAB_UCRET,ücret,concept,prov_lexicon
+LEGIS_ANAYASA,Anayasa,legal_text,prov_lexicon
+LEGIS_ANAYASA_MAHKEMESI,Anayasa Mahkemesi,organization,prov_lexicon
+LEGIS_GENEL_KURUL,Genel Kurul,organization,prov_lexicon
+LEGIS_IC_TUZUK,İç Tüzük,legal_text,prov_lexicon
+LEGIS_KANUN,kanun,legal_text,prov_lexicon
+LEGIS_KANUN_TEKLIFI,kanun teklifi,legal_text,prov_lexicon
+LEGIS_KARARNAME,Cumhurbaşkanlığı kararnamesi,legal_text,prov_lexicon
+LEGIS_KOMISYON,komisyon,organization,prov_lexicon
+LEGIS_MADDE,madde,legal_text,prov_lexicon
+LEGIS_MEVZUAT,mevzuat,concept,prov_lexicon
+LEGIS_ONERGE,önerge,legal_text,prov_lexicon
+LEGIS_TORBA_YASA,torba yasa,legal_text,prov_lexicon
+LEGIS_YASA,yasa,legal_text,prov_lexicon
+LEGIS_YASAMA,yasama,concept,prov_lexicon
+LEGIS_YONETMELIK,yönetmelik,legal_text,prov_lexicon
+MON_ALIM_GUCU,alım gücü,concept,prov_lexicon
+MON_AVRO,avro,currency,prov_lexicon
+MON_DOLAR,dolar,currency,prov_lexicon
+MON_DOVIZ,döviz,concept,prov_lexicon
+MON_ENFLASYON,enflasyon,concept,prov_lexicon
+MON_FAIZ,faiz,concept,prov_lexicon
+MON_HAYAT_PAHALILIGI,hayat pahalılığı,concept,prov_lexicon
+MON_KUR,döviz kuru,concept,prov_lexicon
+MON_MERKEZ_BANKASI,Merkez Bankası,organization,prov_lexicon
+MON_TUIK,TÜİK,organization,prov_lexicon
+MON_TURK_LIRASI,Türk lirası,currency,prov_lexicon
+MON_ZAM,zam,concept,prov_lexicon
+PUBFIN_BUTCE,bütçe,concept,prov_lexicon
+PUBFIN_BUTCE_ACIGI,bütçe açığı,concept,prov_lexicon
+PUBFIN_GARANTI,hazine garantisi,concept,prov_lexicon
+PUBFIN_HAZINE,Hazine,organization,prov_lexicon
+PUBFIN_HAZINE_MALIYE_BAKANLIGI,Hazine ve Maliye Bakanlığı,organization,prov_lexicon
+PUBFIN_KAMU_BORCU,kamu borcu,concept,prov_lexicon
+PUBFIN_KAMU_HARCAMASI,kamu harcaması,concept,prov_lexicon
+PUBFIN_KAMU_IHALE,kamu ihalesi,concept,prov_lexicon
+PUBFIN_KAMU_OZEL_ORTAKLIGI,kamu-özel iş birliği,concept,prov_lexicon
+PUBFIN_KAMU_ZARARI,kamu zararı,concept,prov_lexicon
+PUBFIN_MALIYE,maliye,concept,prov_lexicon
+PUBFIN_MERKEZI_YONETIM_BUTCESI,merkezi yönetim bütçesi,concept,prov_lexicon
+PUBFIN_ODENEK,ödenek,concept,prov_lexicon
+PUBFIN_PLAN_BUTCE_KOMISYONU,Plan ve Bütçe Komisyonu,organization,prov_lexicon
+PUBFIN_SAYISTAY,Sayıştay,organization,prov_lexicon
+TAX_GELIR_IDARESI,Gelir İdaresi Başkanlığı,organization,prov_lexicon
+TAX_GELIR_VERGISI,gelir vergisi,concept,prov_lexicon
+TAX_HARC,harç,concept,prov_lexicon
+TAX_KDV,KDV,concept,prov_lexicon
+TAX_KURUMLAR_VERGISI,kurumlar vergisi,concept,prov_lexicon
+TAX_MATRAH,matrah,concept,prov_lexicon
+TAX_OTV,ÖTV,concept,prov_lexicon
+TAX_STOPAJ,stopaj,concept,prov_lexicon
+TAX_VERGI,vergi,concept,prov_lexicon
+TAX_VERGI_AFFI,vergi affı,concept,prov_lexicon
+TRADE_BUYUME,ekonomik büyüme,concept,prov_lexicon
+TRADE_CARI_ACIK,cari açık,concept,prov_lexicon
+TRADE_EKONOMI,ekonomi,concept,prov_lexicon
+TRADE_IHRACAT,ihracat,concept,prov_lexicon
+TRADE_IMF,IMF,organization,prov_lexicon
+TRADE_ITHALAT,ithalat,concept,prov_lexicon
+TRADE_KOBI,KOBİ,concept,prov_lexicon
+TRADE_MILLI_GELIR,millî gelir,concept,prov_lexicon
+TRADE_OZELLESTIRME,özelleştirme,concept,prov_lexicon
+TRADE_PIYASA,piyasa,concept,prov_lexicon
+TRADE_SANAYI,sanayi,concept,prov_lexicon
+TRADE_TESVIK,teşvik,concept,prov_lexicon
+TRADE_TICARET,ticaret,concept,prov_lexicon
+TRADE_VARLIK_FONU,Türkiye Varlık Fonu,organization,prov_lexicon
+TRADE_YATIRIM,yatırım,concept,prov_lexicon

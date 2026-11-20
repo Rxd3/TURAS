@@ -5,12 +5,12 @@ import argparse
 import hashlib
 import json
 from pathlib import Path
-import time
 import uuid
 from datetime import datetime, timezone
 
 from turkish_asr_rdl.decoding.rescoring import rescore
 from turkish_asr_rdl.training.acoustic import read_jsonl, sha256_file, write_json
+from turkish_asr_rdl.schemas.nbest import validate_nbest
 
 
 def reject_gold(value):
@@ -34,8 +34,8 @@ def preflight(config):
         digest = config.get("inputs", {}).get(name)
         if not isinstance(digest, str) or len(digest) != 64:
             blockers.append("missing reviewed hash: " + name)
-    if not config.get("protocol_reviewed"):
-        blockers.append("rescoring protocol awaits M4/M6 review")
+    if not config.get("protocol_approved", config.get("protocol_reviewed", False)):
+        blockers.append("rescoring protocol has no recorded project approval")
     if config.get("split") == "test":
         selection = config.get("validation_selection", {})
         if not config.get("fusion_frozen") or not selection.get("path") or not selection.get("sha256"):
@@ -49,7 +49,7 @@ def run(config, output: Path, *, quantity_extractor=None):
     report = preflight(config)
     if report["blockers"]:
         raise ValueError("rescoring blocked: " + "; ".join(report["blockers"]))
-    if output.exists() or output.with_suffix(output.suffix + ".timing.json").exists():
+    if output.exists() or output.with_suffix(output.suffix + ".run.json").exists():
         raise ValueError("output already exists")
     inputs = config["inputs"]
     for name, digest_key in (("nbest", "nbest_sha256"), ("expected_ids", "expected_ids_sha256")):
@@ -65,17 +65,16 @@ def run(config, output: Path, *, quantity_extractor=None):
             raise ValueError("validation selection evidence hash mismatch")
     from turkish_asr_rdl.rdl.train import load_model
     from turkish_asr_rdl.rdl.scoring import attach_scores
-    cold = time.perf_counter()
     model, linker, graph_manifest = load_model(graph)
-    cold_seconds = time.perf_counter() - cold
     if (graph_manifest["dataset_release"] != config["dataset_release"] or
             graph_manifest["split_manifest_sha256"] != config["split_manifest_sha256"]):
         raise ValueError("graph artifact release/split mismatch")
-    started = time.perf_counter()
     rows = read_jsonl(Path(inputs["nbest"]))
     ids = Path(inputs["expected_ids"]).read_text(encoding="utf-8").splitlines()
     if len(ids) != len(set(ids)) or not ids or [r.get("utterance_id") for r in rows] != ids:
         raise ValueError("N-best IDs must match the frozen ordered input set exactly")
+    if not validate_nbest(rows, expected_ids=ids).ok:
+        raise ValueError("input N-best does not satisfy the shared schema")
     for row in rows:
         reject_gold(row)
         if (row.get("schema_version") != "0.1" or row.get("dataset_release") != config["dataset_release"] or
@@ -100,19 +99,20 @@ def run(config, output: Path, *, quantity_extractor=None):
                       "source_decoder_config_sha256": row["decoder_config_sha256"],
                       "decoder_config_sha256": config_hash, "rdl_artifact_sha256": graph_hash,
                       "candidates": updated, "selected_candidate_id": selected}
+            if not validate_nbest([result], expected_ids=[row["utterance_id"]]).ok:
+                raise ValueError("rescored N-best does not satisfy the shared schema")
             stream.write(json.dumps(result, ensure_ascii=False, allow_nan=False) + "\n")
-    seconds = time.perf_counter() - started
     import platform
     sidecar = {"schema_version": "0.1", "status": "completed", "run_id": run_id,
                "created_at_utc": datetime.now(timezone.utc).isoformat(),
                "runtime": {"python": platform.python_version(), "torch": torch.__version__,
                            "platform": platform.platform(), "device": "cpu"},
                "utterance_count": len(rows),
-               "seconds": seconds, "cold_graph_load_seconds": cold_seconds,
-               "scope": "offline N-best read, CPU RDL/fusion and JSONL write; excludes acoustic generation/audio decoding",
+               "seconds": None, "cold_graph_load_seconds": None,
+               "scope": "untimed offline rescoring; benchmark full inference with the shared run_timed harness",
                "end_to_end_asr_rtf": None, "source_nbest_sha256": inputs["nbest_sha256"],
                "output_sha256": sha256_file(output), "config_sha256": config_hash}
-    write_json(output.with_suffix(output.suffix + ".timing.json"), sidecar)
+    write_json(output.with_suffix(output.suffix + ".run.json"), sidecar)
     return sidecar
 
 

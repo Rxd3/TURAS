@@ -20,7 +20,7 @@ def verify_checkpoint(directory: Path, expected_manifest_sha256: str):
         member = (directory / name).resolve()
         if not member.is_relative_to(directory) or sha256_file(member) != digest:
             raise ValueError("checkpoint member path/hash mismatch")
-    if manifest.get("training_mode") not in {"lora", "full", "ctc_finetune"}:
+    if manifest.get("training_mode") not in {"lora", "full", "ctc_finetune", "ctc_vocab_extension"}:
         raise ValueError("unsupported checkpoint training mode")
     return manifest
 
@@ -43,7 +43,11 @@ class AdaptedAsrAdapter:
         self.device = device
         self.precision = precision
         self.manifest = verify_checkpoint(self.directory, manifest_sha256)
-        self.family = "ctc" if self.manifest["training_mode"] == "ctc_finetune" else "whisper"
+        self.family = "ctc" if self.manifest["training_mode"] in {"ctc_finetune", "ctc_vocab_extension"} else "whisper"
+        self._configure_decoder(device, precision, requested_n, beam_size, max_new_tokens)
+
+    def _configure_decoder(self, device, precision, requested_n, beam_size, max_new_tokens):
+        self.device, self.precision, self.requested_n = device, precision, requested_n
         self.score_convention_id = ("ctc-exact-alignment-marginalized-v1" if self.family == "ctc"
                                     else "whisper-original-logits-generated-plus-eos-v1")
         self.config = {"family": self.family, "device": device, "precision": precision,
@@ -80,7 +84,7 @@ class AdaptedAsrAdapter:
         dtype = {"fp32": torch.float32, "bf16": torch.bfloat16, "fp16": torch.float16}[self.precision]
         self.model.to(device=self.device, dtype=dtype).eval()
 
-    def nbest(self, samples):
+    def nbest(self, samples, *, deduplicate: bool = False):
         """One 16 kHz mono utterance; caller owns audio hashing and RTF timing."""
         import torch
         import numpy as np
@@ -91,14 +95,15 @@ class AdaptedAsrAdapter:
                 from turkish_asr_rdl.decoding.whisper import whisper_nbest
                 features = self.processor.feature_extractor(samples, sampling_rate=16000, return_tensors="pt").input_features
                 return whisper_nbest(self.model, self.processor, features.to(self.device, dtype=self.model.dtype),
-                                      requested_n=self.requested_n, max_new_tokens=self.config["max_new_tokens"])
+                                      requested_n=self.requested_n, max_new_tokens=self.config["max_new_tokens"],
+                                      deduplicate=deduplicate)
             from turkish_asr_rdl.decoding.ctc import ctc_nbest
             batch = self.processor.feature_extractor(samples, sampling_rate=16000, return_attention_mask=True, return_tensors="pt")
             batch = {key: value.to(self.device, dtype=self.model.dtype) if key == "input_values" else value.to(self.device)
                      for key, value in batch.items()}
             frames = self.model(**batch).logits[0].float().log_softmax(-1).cpu().tolist()
             return ctc_nbest(frames, self.processor.tokenizer, blank_id=self.model.config.pad_token_id,
-                              requested_n=self.requested_n, beam_size=self.config["beam_size"])
+                              requested_n=self.requested_n, beam_size=self.config["beam_size"], deduplicate=deduplicate)
 
     def transcribe(self, batch):
         try:
@@ -108,14 +113,14 @@ class AdaptedAsrAdapter:
         output = []
         for item in batch:
             try:
-                rows, dedup = self.nbest(item.samples)
+                rows, _ = self.nbest(item.samples, deduplicate=False)
                 if not rows:
                     raise ValueError("decoder returned no valid candidates")
                 candidates = tuple(Candidate(
                     candidate_id=row["candidate_id"], rank=row["rank"], text=row["text"], token_ids=tuple(row["token_ids"]),
                     acoustic_log_score=row["acoustic_log_score"], acoustic_score_kind=row["acoustic_score_kind"],
                     decoder_sequence_score=row["decoder_sequence_score"],
-                    score_details={**row["score_details"], "dedup_map": dedup},
+                    score_details=row["score_details"],
                 ) for row in rows)
                 text = candidates[0].text
                 output.append(Hypothesis(item.utterance_id, "ok" if text else "empty", text, candidates))
@@ -123,3 +128,35 @@ class AdaptedAsrAdapter:
                 output.append(Hypothesis(item.utterance_id, "error", None,
                                          error_code=type(exc).__name__, error_message="adapted decoding failed"))
         return output
+
+
+class PretrainedAsrAdapter(AdaptedAsrAdapter):
+    """Unmodified pinned parent using exactly the adapted system's decoding path."""
+    def __init__(self, parent: dict, *, family: str, system_id: str,
+                 device="cuda", precision="bf16", requested_n=5, beam_size=10, max_new_tokens=440):
+        import re
+        if (family not in {"whisper", "ctc"} or not re.fullmatch(r"[a-f0-9]{40}", parent.get("revision", ""))
+                or not re.fullmatch(r"[a-f0-9]{64}", parent.get("weight_sha256", ""))
+                or requested_n < 1 or beam_size < requested_n or precision not in {"fp32", "bf16", "fp16"}):
+            raise ValueError("invalid pinned pretrained adapter configuration")
+        self.parent, self.family, self.system_id = dict(parent), family, system_id
+        self.model_artifact_sha256 = parent["weight_sha256"]
+        self._configure_decoder(device, precision, requested_n, beam_size, max_new_tokens)
+
+    def load(self):
+        import torch
+        from huggingface_hub import hf_hub_download
+        from transformers import WhisperForConditionalGeneration, WhisperProcessor, Wav2Vec2ForCTC, Wav2Vec2Processor
+        parent = self.parent
+        weight = Path(hf_hub_download(parent["id"], parent["weight_file"], revision=parent["revision"], local_files_only=True))
+        if sha256_file(weight) != parent["weight_sha256"]:
+            raise ValueError("pretrained parent checksum mismatch")
+        model_cls, processor_cls = ((WhisperForConditionalGeneration, WhisperProcessor) if self.family == "whisper"
+                                    else (Wav2Vec2ForCTC, Wav2Vec2Processor))
+        self.processor = processor_cls.from_pretrained(parent["id"], revision=parent["revision"], local_files_only=True)
+        self.model = model_cls.from_pretrained(parent["id"], revision=parent["revision"], local_files_only=True)
+        if self.family == "ctc" and (self.model.config.vocab_size != len(self.processor.tokenizer)
+                                    or self.model.config.pad_token_id != self.processor.tokenizer.pad_token_id):
+            raise ValueError("pretrained CTC head/tokenizer mismatch")
+        dtype = {"fp32": torch.float32, "bf16": torch.bfloat16, "fp16": torch.float16}[self.precision]
+        self.model.to(device=self.device, dtype=dtype).eval()

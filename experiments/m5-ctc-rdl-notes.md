@@ -1,8 +1,22 @@
 # Member 5: CTC adaptation, heterogeneous RDL and rescoring
 
-Updated 2026-11-19. This is an implementation/review handoff, not an experiment
-report. Training bundles are not ready locally, no pretrained weights were
-downloaded, and no corpus model, prediction bundle or benchmark metric exists.
+Current measured status: seed-17 CTC adaptation, train-only graph training,
+corrected-linker validation/selection, all 636 frozen test predictions, fifteen
+candidate controls, terminology/relation coverage and repeated joint timing are
+complete. CTC epoch 3 has normalized test WER 25.150%, versus its unchanged
+CV7 parent's 37.152%; the explicit 38-to-52-token vocabulary extension is part
+of this contribution. The primary learned graph does not improve original
+one-best on any adapted ASR model. The private handoff includes selected CTC,
+three learned/ablated graphs and an explicitly untrained random control.
+See [completion](../docs/m45_completion.md), [final report](../results/final/M4_M5_FINAL_REPORT.md)
+and [internal relation result](../results/rdl/m45_seed17_internal.json).
+Independent peer review and consumer ACK remain separate and are not claimed.
+
+## Historical implementation-only handoff
+
+The sections below record the original pre-training review stage. Proposed
+budgets, CPU-only development and missing-input/run statements describe that
+stage; the measured completion above supersedes those pending-work lists.
 
 ## Delivered components
 

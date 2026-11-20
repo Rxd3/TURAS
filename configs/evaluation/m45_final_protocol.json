@@ -1,0 +1,532 @@
+{
+  "schema_version": "0.1",
+  "status": "frozen_for_final_evaluation",
+  "frozen_at_utc": "2026-11-19T15:30:07.159403+00:00",
+  "authority": "project owner instruction to finish M4/M5; docs/owner_decisions.md D38-D40",
+  "dataset_release": "turas-tr-econ-legis-v0.1",
+  "split_manifest_sha256": "a8fff65b99fcf11d9452685e438e250207032ecfe11152741562147126d095b8",
+  "code_commit": "8c5c54a8b01dd50df760e41de1612c58274418f5",
+  "critical_code_sha256": {
+    "scripts/m45_final_evaluate.py": "8d420f50ef80b9d65cf541b4a324f8de2300630887c68ba1b054f5495e0dbb6c",
+    "scripts/m45_final_handoff.py": "4fa8eb1e51efa35d556e9a72cada626f777c7c982797c53897867922779257e4",
+    "scripts/m45_final_infer.py": "aa3b19e6be7363b6fed79f69a83ed90f035d99c2894db86c972d2eb29f586a69",
+    "scripts/m45_final_rescore.py": "efd60c320f5fa4a17bb25f4923b622106cf9f5aedcb647d9ee277279accd843c",
+    "scripts/m45_prepare_final.py": "a4a92e52ff59d73e4b081604eb4e95d5328866686796b431735d897c1e55e15d",
+    "scripts/m45_random_graph_control.py": "0f31645f2ca2f5def6aa7eb8601635d83dc333cda2e74c4c9301f77a5fb667b1",
+    "scripts/m45_stage_final_references.py": "870c0c3c10dc3bd63172d20f8784cfa13f82dbf1d3a67a4e74251f24fed9f045",
+    "src/turkish_asr_rdl/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "src/turkish_asr_rdl/baselines/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "src/turkish_asr_rdl/data/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "src/turkish_asr_rdl/data/recover_validation.py": "4b590007bc349b98d186ae323b2df6d263e5f2f2baed6a1202374fe464d7ff53",
+    "src/turkish_asr_rdl/data/relational.py": "77848c22dd29bd018c5052e3dab161301db7301fe643edebc9b507e5804a229f",
+    "src/turkish_asr_rdl/data/release.py": "319e9d57064333665c92102685e781881696951b9ce480491f118e97971cc04a",
+    "src/turkish_asr_rdl/data/review.py": "830148ced6ea15fa913e48434c01308ae732c46418c276b7a89e4d481c490109",
+    "src/turkish_asr_rdl/data/screening.py": "84fc6da92bc4131b23110c7ae95ce8dc1b7b0634d045ff9e204dc5eff21b2a42",
+    "src/turkish_asr_rdl/data/selection.py": "03d5851e6d1a7c99a2adfdc2c3b07752e281f66b503e0ceffa59ee617d0db118",
+    "src/turkish_asr_rdl/data/worldspeech.py": "0738b74226c9306843a44c02bcf1e6c5cca3d7f2f9838e22a8309197a521b433",
+    "src/turkish_asr_rdl/decoding/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "src/turkish_asr_rdl/decoding/adapted.py": "7fc43d72db2133d25769bdfde0b7b1b690c738503d59c6fd78f7a081466eb8d5",
+    "src/turkish_asr_rdl/decoding/audio.py": "5b51bf8c0251d4ae0c40c224a016752d9aa45763e41d3269f5be3ba0656b5faa",
+    "src/turkish_asr_rdl/decoding/ctc.py": "a74dbeff91845e9228c38c04911313334474e9f3a6746da4874b96d81986b876",
+    "src/turkish_asr_rdl/decoding/export.py": "601b78cac1c0b55248f13163451b6a63b51003c26fb03874cbdbe9b3b5a461f8",
+    "src/turkish_asr_rdl/decoding/hardware.py": "95512791ff78fbe3b474d1f45cb8dec85930957b6293f0ed3734a9814686254e",
+    "src/turkish_asr_rdl/decoding/interface.py": "711268ee43f1f5d7398a73a972cfac4d1d1f656f78fff875a72432ac7d6d2f27",
+    "src/turkish_asr_rdl/decoding/memory.py": "99784e7d5aa61d21ba310c3259661925e4294d8cb011ab1cf11b3805c13ae203",
+    "src/turkish_asr_rdl/decoding/relational.py": "8b5380bac41ec99c6f7cff10fa4fa23ea8789919538559c19c80b2c3f4336379",
+    "src/turkish_asr_rdl/decoding/rescoring.py": "5138eb5769c8b3b0d132e812c779bc2299519f6d18cbf2dbb547140818dbbe0d",
+    "src/turkish_asr_rdl/decoding/timing.py": "7605716090b7cdfbb954d8d37d2f829d87afe7cfff2030c923e00e4751763949",
+    "src/turkish_asr_rdl/decoding/whisper.py": "7c8e4bbc8ec0c6d522f1c2a7f1edadd9925c3ada2c31bf91acfaa4a038c3627c",
+    "src/turkish_asr_rdl/evaluation/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "src/turkish_asr_rdl/evaluation/align.py": "89699b724cdde42f5405a8a77d2ff6b6def8a85464abb49e758a3a257f4aca85",
+    "src/turkish_asr_rdl/evaluation/domain.py": "61f8ad9d1df625f6b585c4a7651ffc0529933a5d07712d466ae055b3751e2624",
+    "src/turkish_asr_rdl/evaluation/join.py": "0d09b7182f22fbedf0aa1b8874f7d95547c508d1197236364352100bf793999f",
+    "src/turkish_asr_rdl/evaluation/metrics.py": "ef048aa65571f98efbe4e2364800b3629db89d45cfdf0677962b38201b0d4986",
+    "src/turkish_asr_rdl/evaluation/normalize.py": "f2c4ac06699d9abe976cca0c02a1dde5f8cf0e9ab832031b973e66cb67bb771c",
+    "src/turkish_asr_rdl/models/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "src/turkish_asr_rdl/rdl/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "src/turkish_asr_rdl/rdl/graph.py": "09dea37334f28927cbb40ffa215b8ebe12ac42899d9ac63ba9a4c3f946a9f9cb",
+    "src/turkish_asr_rdl/rdl/model.py": "aaf18fa24e37646281a52be6c5129410349c9aafb7d3d235cf4c747b2138e442",
+    "src/turkish_asr_rdl/rdl/rescore.py": "1f13f4c3cb918db9e8d3635deeb82271e81ccbfd1f602e3b795bf86956ef872b",
+    "src/turkish_asr_rdl/rdl/scoring.py": "ed4b620d0e71ab1cbf63f422a8d2358c71e9d843e6fc7656b092ac8af37dfbfd",
+    "src/turkish_asr_rdl/rdl/train.py": "d5f8010325186fd0a7d04b6d40fab6492ad6dee8de549b798fed623ff8d145e2",
+    "src/turkish_asr_rdl/reporting/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "src/turkish_asr_rdl/schemas/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "src/turkish_asr_rdl/schemas/jsonl.py": "63b0a099ceae050286ff159dae36b8e9bb7530085db9da02926b707958a2d937",
+    "src/turkish_asr_rdl/schemas/nbest.py": "34e72d5cb97732e8af901ab07327fcea3a0ef7ede1a082551b42437832f267a7",
+    "src/turkish_asr_rdl/schemas/predictions.py": "98940c065090f96a8be818c34a540df65bb8daa6d81871c0693ffcd2804b13e4",
+    "src/turkish_asr_rdl/schemas/report.py": "eb587876a2467183243f88b2d95ceff100f9c98b034766e1ed211528b544861f",
+    "src/turkish_asr_rdl/training/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "src/turkish_asr_rdl/training/acoustic.py": "ca7d942e58cd8707af1b6aeb92c07b00c3539991f7a7f7deafcdd4af40a86dd4",
+    "src/turkish_asr_rdl/training/ctc.py": "26b6ca1f1e32b7d7890d8bc83eee37c438218aceb97aa651ea3a368ec0be8682",
+    "src/turkish_asr_rdl/training/profile.py": "6b5441e5a3999323256b184ae2c69ea087383a06ae573824628f998bd7401173",
+    "src/turkish_asr_rdl/training/whisper.py": "95fd96794e0d1c600aff953f8e43a7ba581d04a827e63e4893d2055acc14f7ec",
+    "src/turkish_asr_rdl/utils/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "src/turkish_asr_rdl/utils/bundles.py": "babe74fa31a8fb8dbee7a09a06ad7937a075937ae7300a2da44c41adf9023322",
+    "src/turkish_asr_rdl/utils/env_check.py": "411502923ab3d0875f747daddd2e01a7711afd1c98a32faa327be6303a8aa2f5"
+  },
+  "inputs": {
+    "audio_root": "data/private/turas-tr-econ-legis-v0.1/inference/turas-tr-econ-legis-v0.1",
+    "test_inference": "data/private/turas-tr-econ-legis-v0.1/inference/turas-tr-econ-legis-v0.1/turas-tr-econ-legis-v0.1.inference.test.jsonl",
+    "test_inference_sha256": "299dc6ae1f50772eb85081293c9bbe746c746a9aefc94870deff530a641059ef",
+    "test_ids": "data/splits/turas-tr-econ-legis-v0.1/test.txt",
+    "test_ids_sha256": "35c6ed9f206c5b4a609e05eff641e1d8317c04c3d4a6f62627fc309b824d122f",
+    "warmup_inference": "data/private/turas-tr-econ-legis-v0.1/inference/turas-tr-econ-legis-v0.1/turas-tr-econ-legis-v0.1.inference.train.jsonl",
+    "warmup_inference_sha256": "1e4bfd3df1bf10bb39bde558c50939631d71bdc003c56f19ff134a8edb36dc8d",
+    "timing_ids": "data/splits/turas-tr-econ-legis-v0.1/m45-timing-30min.txt",
+    "timing_ids_sha256": "33df11475ae1d9c172522e5b8d20e927a7dca2e6a7cbeb1a7af54032e1fb939c",
+    "test_groups": "data/metadata/m45-test-recording-groups.csv",
+    "test_groups_sha256": "1ed73f5838fe14585fc023a1615d033246fa047163572a4773e09619daa8c102"
+  },
+  "test_reference": {
+    "variant": "m1-test-minutes-archive-01ad5878-v1",
+    "archive_sha256": "01ad58784cc27489db6048b573d2412ea193ec2370f2d447eddb0e841cf06d97",
+    "archive_member": "turas-tr-econ-legis-v0.1-test/turas-tr-econ-legis-v0.1.references.test.jsonl",
+    "payload_sha256": "31e372f0e35f504de59b49f1e0e1f3ed6fcc2772138c591a2cf2b054a4e7ef3f",
+    "gold_bodies_unopened_at_freeze": true,
+    "access_rule": "only after all frozen accuracy, cached-selection and timing outputs have completed"
+  },
+  "validation_reference": {
+    "variant": "owner-recovered-validation-minutes-v1",
+    "manifest_sha256": "8c06f3094c8afc13b457edf5cc455b5d26092817aae282636d1111e0663f3267"
+  },
+  "selection_evidence": {
+    "F1-whisper-lora": {
+      "report_sha256": "7fec37beb621a3aabfdb045f949f80a7cd25cc51ce59c256d071ab73af17c1fa",
+      "best_positive_gamma": 0.1,
+      "criterion": "secondary RDL-enabled condition: best positive validation gamma; original one-best remains primary"
+    },
+    "F2-whisper-full": {
+      "report_sha256": "eb62cc7bf6abcdd8a170b9a2f94d735f87e1a7dfbf6f74ccb60b0b90ca96f116",
+      "best_positive_gamma": 0.1,
+      "criterion": "secondary RDL-enabled condition: best positive validation gamma; original one-best remains primary"
+    },
+    "F3-ctc-vocab": {
+      "report_sha256": "bc8940d74986e8a0926de5d2009a0ace011cf0c37ee5b3f64fda19fd8fd92151",
+      "best_positive_gamma": 0.1,
+      "criterion": "secondary RDL-enabled condition: best positive validation gamma; original one-best remains primary"
+    }
+  },
+  "systems": [
+    {
+      "system_id": "B1-whisper-small",
+      "kind": "pretrained",
+      "family": "whisper",
+      "model": {
+        "id": "openai/whisper-small",
+        "revision": "973afd24965f72e36ca33b3055d56a652f456b4d",
+        "weight_file": "model.safetensors",
+        "weight_sha256": "1d7734884874f1a1513ed9aa760a4f8e97aaa02fd6d93a3a85d27b2ae9ca596b"
+      }
+    },
+    {
+      "system_id": "B4-xlsr-tr-cv7",
+      "kind": "pretrained",
+      "family": "ctc",
+      "model": {
+        "id": "mpoyraz/wav2vec2-xls-r-300m-cv7-turkish",
+        "revision": "708639f50559d7970f462e13ec64d3f059ca89f6",
+        "weight_file": "pytorch_model.bin",
+        "weight_sha256": "008d69c82bf45c82ec5485e550abc86ddabefe75080f22e1ebfdc1699889d82e"
+      }
+    },
+    {
+      "system_id": "F1-whisper-lora",
+      "kind": "adapted",
+      "family": "whisper",
+      "checkpoint": "artifacts/owner-m45/whisper-lora-seed17/epoch-3",
+      "checkpoint_manifest_sha256": "95e25108715b0fab14136c7526614e2f2aaa6e690b8c98eb2deef5eab796b4bb",
+      "selected_epoch": 3,
+      "validation_score_report_sha256": "45b79adae86654d16435f701f8311d1242d3a44e8eaf199ed7fcd294ab4b0c79"
+    },
+    {
+      "system_id": "F2-whisper-full",
+      "kind": "adapted",
+      "family": "whisper",
+      "checkpoint": "artifacts/owner-m45/whisper-full-seed17/epoch-2",
+      "checkpoint_manifest_sha256": "0c49d7423a55de173204c8025a463a677d956f42a8ac3ebd6af577ec9cfc1c46",
+      "selected_epoch": 2,
+      "validation_score_report_sha256": "b84ef9e89f9e5dc69e5ba8b15cacf73284889ae8126a07e7bc7e6449a2f582ff"
+    },
+    {
+      "system_id": "F3-ctc-vocab",
+      "kind": "adapted",
+      "family": "ctc",
+      "checkpoint": "artifacts/owner-m45/ctc-extended-seed17/epoch-3",
+      "checkpoint_manifest_sha256": "f0a7179e901b75233fafb3f7f6e8e29e2aca44650c099f8b2705c300bd30a39a",
+      "selected_epoch": 3,
+      "validation_score_report_sha256": "5cc89a25dd234b43f043c3a7dc75fb0844ea9020327a17288af29727c8abc370"
+    },
+    {
+      "system_id": "F1-whisper-lora--rdl-full",
+      "base_system": "F1-whisper-lora",
+      "graph": "artifacts/owner-m45/validation-recovery/corrected-linker-v2/graph-full",
+      "graph_manifest_sha256": "588a955a9d874a44000b8f8b265afd3461f9f374e098c18608d7ddf168d74c3d",
+      "fusion": {
+        "acoustic_weight": 1.0,
+        "lm_weight": 0.0,
+        "rdl_weight": 0.1,
+        "acoustic_exponent": 1.0,
+        "lm_exponent": 1.0
+      },
+      "kind": "relational"
+    },
+    {
+      "system_id": "F2-whisper-full--rdl-full",
+      "base_system": "F2-whisper-full",
+      "graph": "artifacts/owner-m45/validation-recovery/corrected-linker-v2/graph-full",
+      "graph_manifest_sha256": "588a955a9d874a44000b8f8b265afd3461f9f374e098c18608d7ddf168d74c3d",
+      "fusion": {
+        "acoustic_weight": 1.0,
+        "lm_weight": 0.0,
+        "rdl_weight": 0.1,
+        "acoustic_exponent": 1.0,
+        "lm_exponent": 1.0
+      },
+      "kind": "relational"
+    },
+    {
+      "system_id": "F3-ctc-vocab--rdl-full",
+      "base_system": "F3-ctc-vocab",
+      "graph": "artifacts/owner-m45/validation-recovery/corrected-linker-v2/graph-full",
+      "graph_manifest_sha256": "588a955a9d874a44000b8f8b265afd3461f9f374e098c18608d7ddf168d74c3d",
+      "fusion": {
+        "acoustic_weight": 1.0,
+        "lm_weight": 0.0,
+        "rdl_weight": 0.1,
+        "acoustic_exponent": 1.0,
+        "lm_exponent": 1.0
+      },
+      "kind": "relational"
+    }
+  ],
+  "adapted_system_ids": [
+    "F1-whisper-lora",
+    "F2-whisper-full",
+    "F3-ctc-vocab"
+  ],
+  "rescore_conditions": [
+    {
+      "system_id": "F1-whisper-lora--acoustic-control",
+      "base_system": "F1-whisper-lora",
+      "graph": "artifacts/owner-m45/validation-recovery/corrected-linker-v2/graph-full",
+      "graph_manifest_sha256": "588a955a9d874a44000b8f8b265afd3461f9f374e098c18608d7ddf168d74c3d",
+      "fusion": {
+        "acoustic_weight": 1.0,
+        "lm_weight": 0.0,
+        "rdl_weight": 0.0,
+        "acoustic_exponent": 1.0,
+        "lm_exponent": 1.0
+      }
+    },
+    {
+      "system_id": "F1-whisper-lora--rdl-full",
+      "base_system": "F1-whisper-lora",
+      "graph": "artifacts/owner-m45/validation-recovery/corrected-linker-v2/graph-full",
+      "graph_manifest_sha256": "588a955a9d874a44000b8f8b265afd3461f9f374e098c18608d7ddf168d74c3d",
+      "fusion": {
+        "acoustic_weight": 1.0,
+        "lm_weight": 0.0,
+        "rdl_weight": 0.1,
+        "acoustic_exponent": 1.0,
+        "lm_exponent": 1.0
+      }
+    },
+    {
+      "system_id": "F1-whisper-lora--rdl-no-quantities",
+      "base_system": "F1-whisper-lora",
+      "graph": "artifacts/owner-m45/validation-recovery/corrected-linker-v2/graph-no-quantities",
+      "graph_manifest_sha256": "b167c249fc45a2c8a6f8ea5e9d25e6eeff78b97bc8a5dbacefd35fbc01cdaf58",
+      "fusion": {
+        "acoustic_weight": 1.0,
+        "lm_weight": 0.0,
+        "rdl_weight": 0.1,
+        "acoustic_exponent": 1.0,
+        "lm_exponent": 1.0
+      }
+    },
+    {
+      "system_id": "F1-whisper-lora--rdl-no-comention",
+      "base_system": "F1-whisper-lora",
+      "graph": "artifacts/owner-m45/validation-recovery/corrected-linker-v2/graph-no-comention",
+      "graph_manifest_sha256": "5e1c0f8e87b1b9559a1bf2c2f3e00eb7a010aa1729651bc86248aeace8a43fb4",
+      "fusion": {
+        "acoustic_weight": 1.0,
+        "lm_weight": 0.0,
+        "rdl_weight": 0.1,
+        "acoustic_exponent": 1.0,
+        "lm_exponent": 1.0
+      }
+    },
+    {
+      "system_id": "F1-whisper-lora--rdl-random",
+      "base_system": "F1-whisper-lora",
+      "graph": "artifacts/owner-m45/final/random-graph-control",
+      "graph_manifest_sha256": "19ba1024d1618b6b2448036233533f06ad454e8b054380ea9746d844330c5e85",
+      "fusion": {
+        "acoustic_weight": 1.0,
+        "lm_weight": 0.0,
+        "rdl_weight": 0.1,
+        "acoustic_exponent": 1.0,
+        "lm_exponent": 1.0
+      }
+    },
+    {
+      "system_id": "F2-whisper-full--acoustic-control",
+      "base_system": "F2-whisper-full",
+      "graph": "artifacts/owner-m45/validation-recovery/corrected-linker-v2/graph-full",
+      "graph_manifest_sha256": "588a955a9d874a44000b8f8b265afd3461f9f374e098c18608d7ddf168d74c3d",
+      "fusion": {
+        "acoustic_weight": 1.0,
+        "lm_weight": 0.0,
+        "rdl_weight": 0.0,
+        "acoustic_exponent": 1.0,
+        "lm_exponent": 1.0
+      }
+    },
+    {
+      "system_id": "F2-whisper-full--rdl-full",
+      "base_system": "F2-whisper-full",
+      "graph": "artifacts/owner-m45/validation-recovery/corrected-linker-v2/graph-full",
+      "graph_manifest_sha256": "588a955a9d874a44000b8f8b265afd3461f9f374e098c18608d7ddf168d74c3d",
+      "fusion": {
+        "acoustic_weight": 1.0,
+        "lm_weight": 0.0,
+        "rdl_weight": 0.1,
+        "acoustic_exponent": 1.0,
+        "lm_exponent": 1.0
+      }
+    },
+    {
+      "system_id": "F2-whisper-full--rdl-no-quantities",
+      "base_system": "F2-whisper-full",
+      "graph": "artifacts/owner-m45/validation-recovery/corrected-linker-v2/graph-no-quantities",
+      "graph_manifest_sha256": "b167c249fc45a2c8a6f8ea5e9d25e6eeff78b97bc8a5dbacefd35fbc01cdaf58",
+      "fusion": {
+        "acoustic_weight": 1.0,
+        "lm_weight": 0.0,
+        "rdl_weight": 0.1,
+        "acoustic_exponent": 1.0,
+        "lm_exponent": 1.0
+      }
+    },
+    {
+      "system_id": "F2-whisper-full--rdl-no-comention",
+      "base_system": "F2-whisper-full",
+      "graph": "artifacts/owner-m45/validation-recovery/corrected-linker-v2/graph-no-comention",
+      "graph_manifest_sha256": "5e1c0f8e87b1b9559a1bf2c2f3e00eb7a010aa1729651bc86248aeace8a43fb4",
+      "fusion": {
+        "acoustic_weight": 1.0,
+        "lm_weight": 0.0,
+        "rdl_weight": 0.1,
+        "acoustic_exponent": 1.0,
+        "lm_exponent": 1.0
+      }
+    },
+    {
+      "system_id": "F2-whisper-full--rdl-random",
+      "base_system": "F2-whisper-full",
+      "graph": "artifacts/owner-m45/final/random-graph-control",
+      "graph_manifest_sha256": "19ba1024d1618b6b2448036233533f06ad454e8b054380ea9746d844330c5e85",
+      "fusion": {
+        "acoustic_weight": 1.0,
+        "lm_weight": 0.0,
+        "rdl_weight": 0.1,
+        "acoustic_exponent": 1.0,
+        "lm_exponent": 1.0
+      }
+    },
+    {
+      "system_id": "F3-ctc-vocab--acoustic-control",
+      "base_system": "F3-ctc-vocab",
+      "graph": "artifacts/owner-m45/validation-recovery/corrected-linker-v2/graph-full",
+      "graph_manifest_sha256": "588a955a9d874a44000b8f8b265afd3461f9f374e098c18608d7ddf168d74c3d",
+      "fusion": {
+        "acoustic_weight": 1.0,
+        "lm_weight": 0.0,
+        "rdl_weight": 0.0,
+        "acoustic_exponent": 1.0,
+        "lm_exponent": 1.0
+      }
+    },
+    {
+      "system_id": "F3-ctc-vocab--rdl-full",
+      "base_system": "F3-ctc-vocab",
+      "graph": "artifacts/owner-m45/validation-recovery/corrected-linker-v2/graph-full",
+      "graph_manifest_sha256": "588a955a9d874a44000b8f8b265afd3461f9f374e098c18608d7ddf168d74c3d",
+      "fusion": {
+        "acoustic_weight": 1.0,
+        "lm_weight": 0.0,
+        "rdl_weight": 0.1,
+        "acoustic_exponent": 1.0,
+        "lm_exponent": 1.0
+      }
+    },
+    {
+      "system_id": "F3-ctc-vocab--rdl-no-quantities",
+      "base_system": "F3-ctc-vocab",
+      "graph": "artifacts/owner-m45/validation-recovery/corrected-linker-v2/graph-no-quantities",
+      "graph_manifest_sha256": "b167c249fc45a2c8a6f8ea5e9d25e6eeff78b97bc8a5dbacefd35fbc01cdaf58",
+      "fusion": {
+        "acoustic_weight": 1.0,
+        "lm_weight": 0.0,
+        "rdl_weight": 0.1,
+        "acoustic_exponent": 1.0,
+        "lm_exponent": 1.0
+      }
+    },
+    {
+      "system_id": "F3-ctc-vocab--rdl-no-comention",
+      "base_system": "F3-ctc-vocab",
+      "graph": "artifacts/owner-m45/validation-recovery/corrected-linker-v2/graph-no-comention",
+      "graph_manifest_sha256": "5e1c0f8e87b1b9559a1bf2c2f3e00eb7a010aa1729651bc86248aeace8a43fb4",
+      "fusion": {
+        "acoustic_weight": 1.0,
+        "lm_weight": 0.0,
+        "rdl_weight": 0.1,
+        "acoustic_exponent": 1.0,
+        "lm_exponent": 1.0
+      }
+    },
+    {
+      "system_id": "F3-ctc-vocab--rdl-random",
+      "base_system": "F3-ctc-vocab",
+      "graph": "artifacts/owner-m45/final/random-graph-control",
+      "graph_manifest_sha256": "19ba1024d1618b6b2448036233533f06ad454e8b054380ea9746d844330c5e85",
+      "fusion": {
+        "acoustic_weight": 1.0,
+        "lm_weight": 0.0,
+        "rdl_weight": 0.1,
+        "acoustic_exponent": 1.0,
+        "lm_exponent": 1.0
+      }
+    }
+  ],
+  "paired_comparisons": [
+    {
+      "system": "F1-whisper-lora",
+      "control": "B1-whisper-small"
+    },
+    {
+      "system": "F2-whisper-full",
+      "control": "B1-whisper-small"
+    },
+    {
+      "system": "F3-ctc-vocab",
+      "control": "B4-xlsr-tr-cv7"
+    },
+    {
+      "system": "F2-whisper-full",
+      "control": "F1-whisper-lora"
+    },
+    {
+      "system": "F1-whisper-lora--rdl-full",
+      "control": "F1-whisper-lora--acoustic-control"
+    },
+    {
+      "system": "F1-whisper-lora--rdl-full",
+      "control": "F1-whisper-lora"
+    },
+    {
+      "system": "F1-whisper-lora--rdl-no-quantities",
+      "control": "F1-whisper-lora--rdl-full"
+    },
+    {
+      "system": "F1-whisper-lora--rdl-no-comention",
+      "control": "F1-whisper-lora--rdl-full"
+    },
+    {
+      "system": "F1-whisper-lora--rdl-random",
+      "control": "F1-whisper-lora--rdl-full"
+    },
+    {
+      "system": "F2-whisper-full--rdl-full",
+      "control": "F2-whisper-full--acoustic-control"
+    },
+    {
+      "system": "F2-whisper-full--rdl-full",
+      "control": "F2-whisper-full"
+    },
+    {
+      "system": "F2-whisper-full--rdl-no-quantities",
+      "control": "F2-whisper-full--rdl-full"
+    },
+    {
+      "system": "F2-whisper-full--rdl-no-comention",
+      "control": "F2-whisper-full--rdl-full"
+    },
+    {
+      "system": "F2-whisper-full--rdl-random",
+      "control": "F2-whisper-full--rdl-full"
+    },
+    {
+      "system": "F3-ctc-vocab--rdl-full",
+      "control": "F3-ctc-vocab--acoustic-control"
+    },
+    {
+      "system": "F3-ctc-vocab--rdl-full",
+      "control": "F3-ctc-vocab"
+    },
+    {
+      "system": "F3-ctc-vocab--rdl-no-quantities",
+      "control": "F3-ctc-vocab--rdl-full"
+    },
+    {
+      "system": "F3-ctc-vocab--rdl-no-comention",
+      "control": "F3-ctc-vocab--rdl-full"
+    },
+    {
+      "system": "F3-ctc-vocab--rdl-random",
+      "control": "F3-ctc-vocab--rdl-full"
+    }
+  ],
+  "decoder": {
+    "device": "cuda",
+    "precision": "bf16",
+    "requested_n": 5,
+    "beam_size": 10,
+    "max_new_tokens": 440
+  },
+  "missing_probability": 0.1,
+  "lexicon": {
+    "path": "configs/datasets/turas-domain-lexicon-v0.1.json",
+    "sha256": "8ef903fe74135897a9d3781966c5e484c0711a6679d72346efb1ec89eff6df94",
+    "term_metric_version": "canonical-occurrence-m1-v1"
+  },
+  "timing": {
+    "repeats": 3,
+    "batch_size": 1,
+    "warmup_batches": 3,
+    "utterances": 107,
+    "duration_s": 1813.764999,
+    "recording_groups": 28,
+    "algorithm": "seed2026 shuffled recordings and within-recording IDs; round-robin until >=1800s; then sorted IDs",
+    "concurrency": 1,
+    "cache": "local files, OS caches not flushed; no downloads in measurement",
+    "cooldown_seconds": 30,
+    "system_order": [
+      "F2-whisper-full--rdl-full",
+      "F3-ctc-vocab--rdl-full",
+      "F2-whisper-full",
+      "B1-whisper-small",
+      "F1-whisper-lora--rdl-full",
+      "F3-ctc-vocab",
+      "F1-whisper-lora",
+      "B4-xlsr-tr-cv7"
+    ]
+  },
+  "bootstrap": {
+    "seed": 2026,
+    "replicates": 2000,
+    "method": "paired recording-group percentile bootstrap"
+  },
+  "limitations": [
+    "Working benchmark on edited parliamentary minutes, not fully verified verbatim speech",
+    "M1 reported pilot listening corrections; no independent M6 release approval is claimed",
+    "Unknown speakers: recording-disjoint splits do not prove speaker disjointness",
+    "Single training seed17; no training-seed uncertainty or robustness claim",
+    "Validation used recovered upstream minutes without three private M1 corrections",
+    "Quantities are automatic digit-based amount/percentage diagnostics, not human quantity annotations",
+    "This completes M4/M5 matched-parent work; other baseline-family tracks remain separate M2/M3 responsibilities",
+    "Diagnostic relation-removal studies were chosen after initial validation results; final test conditions were frozen before gold access"
+  ]
+}

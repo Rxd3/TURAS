@@ -9,6 +9,7 @@ import hashlib
 import json
 import random
 import subprocess
+import time
 import uuid
 from datetime import datetime, timezone
 from pathlib import Path
@@ -134,25 +135,36 @@ def preflight(config: dict) -> dict:
         value = config.get("inputs", {}).get(key)
         if not isinstance(value, str) or len(value) != 64:
             blockers.append("missing reviewed hash: " + key)
-    if not config.get("protocol_reviewed", False):
-        blockers.append("protocol has not been reviewed by the affected owners")
-    if not config.get("baseline_reviewed", False):
-        blockers.append("corresponding unmodified baseline has not been reviewed")
+    if not config.get("protocol_approved", config.get("protocol_reviewed", False)):
+        blockers.append("protocol has no recorded project approval")
     return {"status": "blocked" if blockers else "ready_for_input_validation", "blockers": blockers}
 
 
 def validate_baseline(config: dict) -> None:
-    report = json.loads(Path(config["inputs"]["baseline_report"]).read_text(encoding="utf-8"))
+    path = Path(config["inputs"]["baseline_report"])
+    if config["inputs"].get("baseline_report_sha256") and sha256_file(path) != config["inputs"]["baseline_report_sha256"]:
+        raise ValueError("baseline report hash mismatch")
+    report = json.loads(path.read_text(encoding="utf-8"))
     expected = config["model"]
     if (report.get("status") != "completed" or report.get("training_mode") != "pretrained"
+            or report.get("split") != "validation"
             or report.get("model_id") != expected["id"] or report.get("revision") != expected["revision"]
             or report.get("dataset_release") != config["dataset_release"]
             or report.get("split_manifest_sha256") != config["split_manifest_sha256"]):
-        raise ValueError("baseline evidence is incompatible with the proposed adaptation")
+        raise ValueError("baseline validation evidence is incompatible with the proposed adaptation")
+    if report.get("scope") == "validation_inference_only":
+        if not config.get("allow_fixed_budget_with_pending_validation_metrics", False):
+            raise ValueError("pending baseline metrics require the explicit D32 fixed-budget protocol")
+        if not {"predictions.jsonl", "nbest.jsonl", "manifest.json"}.issubset(report.get("files", {})):
+            raise ValueError("baseline evidence lacks actual inference artifacts")
+        for name, digest in report["files"].items():
+            member = (path.parent / name).resolve()
+            if not member.is_relative_to(path.parent.resolve()) or sha256_file(member) != digest:
+                raise ValueError("baseline artifact path/hash mismatch")
 
 
 def fit(model, rows: list[dict], collate, *, epochs: int, accumulation: int,
-        learning_rate: float, seed: int, device: str, precision: str, on_epoch):
+        learning_rate: float, seed: int, device: str, precision: str, on_epoch, on_progress=None):
     """Batch-one AdamW training; correctly scales the final partial accumulation."""
     import torch
     if not rows or epochs < 1 or accumulation < 1 or learning_rate <= 0:
@@ -169,6 +181,9 @@ def fit(model, rows: list[dict], collate, *, epochs: int, accumulation: int,
     if not parameters:
         raise ValueError("model has no trainable parameters")
     optimizer = torch.optim.AdamW(parameters, lr=learning_rate)
+    if device == "cuda":
+        torch.cuda.reset_peak_memory_stats()
+    optimization_started = time.perf_counter()
     history = []
     rng = random.Random(seed)
     for epoch in range(1, epochs + 1):
@@ -191,6 +206,15 @@ def fit(model, rows: list[dict], collate, *, epochs: int, accumulation: int,
             torch.nn.utils.clip_grad_norm_(parameters, 1.0, error_if_nonfinite=True)
             optimizer.step()
             steps += 1
+            if on_progress is not None and (steps == 1 or steps % 10 == 0 or start + len(group) == len(order)):
+                facts = {"epoch": epoch, "optimizer_steps": steps,
+                         "utterances_seen": start + len(group), "utterances_per_epoch": len(order),
+                         "mean_train_loss_so_far": total_loss / (start + len(group)),
+                         "elapsed_optimization_s": time.perf_counter() - optimization_started}
+                if device == "cuda":
+                    facts.update(peak_cuda_allocated_bytes=torch.cuda.max_memory_allocated(),
+                                 peak_cuda_reserved_bytes=torch.cuda.max_memory_reserved())
+                on_progress(facts)
         facts = {"epoch": epoch, "train_loss": total_loss / len(rows), "optimizer_steps": steps}
         on_epoch(epoch, facts)
         history.append(facts)
@@ -230,7 +254,13 @@ def run_training(config: dict, output: Path, build_model, build_collator) -> dic
     import importlib.metadata
     import sys
     environment = {d.metadata["Name"]: d.version for d in importlib.metadata.distributions() if d.metadata["Name"]}
-    write_json(output / "environment.json", {"python": sys.version, "packages": environment})
+    from turkish_asr_rdl.decoding.hardware import probe_gpu
+    write_json(output / "environment.json", {"python": sys.version, "packages": environment,
+        "cuda": torch.version.cuda, "gpu": probe_gpu() if config["training"]["device"] == "cuda" else None,
+        "torch_threads": torch.get_num_threads(),
+        "deterministic_algorithms": torch.are_deterministic_algorithms_enabled(),
+        "cudnn_deterministic": torch.backends.cudnn.deterministic,
+        "cudnn_benchmark": torch.backends.cudnn.benchmark})
     manifest = {"schema_version": "0.1", "run_id": "acoustic-" + uuid.uuid4().hex,
                 "started_at_utc": started_at, "status": "running", "dataset_release": config["dataset_release"],
                 "split_manifest_sha256": config["split_manifest_sha256"], "model": config["model"],
@@ -252,12 +282,20 @@ def run_training(config: dict, output: Path, build_model, build_collator) -> dic
                 "training_mode": config["mode"], "config_sha256": manifest["config_sha256"],
                 "dataset_release": config["dataset_release"],
                 "split_manifest_sha256": config["split_manifest_sha256"]}
+        if "vocabulary_extension" in config:
+            item["vocabulary_extension"] = config["vocabulary_extension"]
         write_json(path / "checkpoint-manifest.json", item)
         manifest["checkpoints"].append(item)
         write_json(output / "run.json", manifest)
 
+    def progress(facts):
+        pending = output / "progress.tmp"
+        write_json(pending, {**facts, "updated_at_utc": datetime.now(timezone.utc).isoformat()})
+        pending.replace(output / "progress.json")
+        print(json.dumps({"event": "training_progress", **facts}), flush=True)
+
     try:
-        manifest["history"] = fit(model, rows, collate, on_epoch=checkpoint, **config["training"])
+        manifest["history"] = fit(model, rows, collate, on_epoch=checkpoint, on_progress=progress, **config["training"])
         manifest["status"] = "training_completed_selection_pending"
     except Exception as exc:
         manifest.update(status="failed", error_type=type(exc).__name__)

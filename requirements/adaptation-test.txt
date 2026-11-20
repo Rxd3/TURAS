@@ -6,3 +6,8 @@ peft==0.21.3
 numpy==2.5.5
 soundfile==0.14.0
 pytest==9.2.0
+# Integrated M1/M6 checks run in the same offline CPU suite.
+pandas==3.1.1
+pyarrow==26.0.1
+soxr==1.1.0
+jiwer==4.0.0

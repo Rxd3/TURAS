@@ -88,3 +88,39 @@ def test_real_ctc_tokenizer_rejects_unknown_numeric_training_labels(tmp_path):
     sf.write(audio, np.zeros(16000, dtype=np.float32), 16000)
     with pytest.raises(ValueError, match="OOV"):
         build_collator(processor)([{"audio_path": audio, "duration_s": 1.0, "reference_text": "30"}])
+    from turkish_asr_rdl.training.ctc import audit_targets
+    audit = audit_targets([{"split": "train", "utterance_id": "fixture-only", "reference_text": "30"}], tokenizer)
+    assert audit["unsupported_characters"] == {"0": 1, "3": 1}
+    assert audit["affected_utterance_ids"] == ["fixture-only"]
+    with pytest.raises(ValueError, match="training references only"):
+        audit_targets([{"split": "test"}], tokenizer)
+
+
+def test_explicit_extension_preserves_old_rows_ids_and_roundtrips(tmp_path):
+    import json
+    torch = pytest.importorskip("torch")
+    transformers = pytest.importorskip("transformers")
+    from turkish_asr_rdl.training.ctc import extend_vocabulary
+    vocab = tmp_path / "vocab.json"
+    vocab.write_text(json.dumps({"<pad>": 0, "<unk>": 1, "|": 2, "a": 3, "<s>": 4, "</s>": 5}))
+    tokenizer = transformers.Wav2Vec2CTCTokenizer(str(vocab))
+    model = transformers.Wav2Vec2ForCTC(transformers.Wav2Vec2Config(
+        hidden_size=8, num_hidden_layers=1, num_attention_heads=2, intermediate_size=16,
+        conv_dim=(4,), conv_stride=(2,), conv_kernel=(3,), num_conv_pos_embedding_groups=2,
+        vocab_size=len(tokenizer), pad_token_id=0, apply_spec_augment=False))
+    old_weights = model.lm_head.weight.detach().clone()
+    old_bias = model.lm_head.bias.detach().clone()
+    old_vocab = tokenizer.get_vocab().copy()
+    info = extend_vocabulary(model, tokenizer, ["3", "0", "\u00e2"])
+    assert model.config.vocab_size == len(tokenizer) == info["new_vocab_size"] == 9
+    assert torch.equal(model.lm_head.weight[:6], old_weights)
+    assert torch.equal(model.lm_head.bias[:6], old_bias)
+    assert all(tokenizer.get_vocab()[k] == v for k, v in old_vocab.items())
+    text = "a30 \u00e2a"
+    assert tokenizer.unk_token_id not in tokenizer(text).input_ids
+    assert tokenizer.decode(tokenizer(text).input_ids, group_tokens=False) == text
+    saved = tmp_path / "extended"
+    tokenizer.save_pretrained(saved)
+    restored = transformers.Wav2Vec2CTCTokenizer.from_pretrained(saved)
+    assert restored.get_vocab() == tokenizer.get_vocab()
+    assert restored.decode(restored(text).input_ids, group_tokens=False) == text

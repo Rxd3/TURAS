@@ -1,0 +1,95 @@
+{
+  "status": "completed_whisper_working_validation_fusion_grids",
+  "reference_variant": "owner-recovered-validation-minutes-v1",
+  "reference_manifest_sha256": "8c06f3094c8afc13b457edf5cc455b5d26092817aae282636d1111e0663f3267",
+  "graph_manifest_sha256": "308c1e1722d1492a3b8ced51104b2dd86e4fe40c8e856c39a96188a9ac6595df",
+  "source_commit": "295d2b91ee0d9f7d7e9e2f64655ea4c54134a2d2",
+  "utterances_per_system": 438,
+  "reports": [
+    {
+      "model": "whisper-lora-seed17",
+      "epoch": 3,
+      "source_one_best_normalized_wer": 0.12457962783050594,
+      "source_nbest_sha256": "cb4e18c92cac414129b4c954cfd194e320922df1438bcdc0b1f7be31b9b2115c",
+      "grid_selection_sha256": "bc4cca72708fcf78134123b7908ba799a57dd90c5c546255bfed67af98e8e54d",
+      "selected_rdl_weight": 0.0,
+      "trials": [
+        {
+          "rdl_weight": 0.0,
+          "normalized_wer": 0.12547642179209326,
+          "normalized_cer": 0.039856615928100164,
+          "raw_wer": 0.21170277693011902,
+          "changed_selections_from_acoustic_control": 0
+        },
+        {
+          "rdl_weight": 0.1,
+          "normalized_wer": 0.12577535311262236,
+          "normalized_cer": 0.039918956828926176,
+          "raw_wer": 0.2120079340860543,
+          "changed_selections_from_acoustic_control": 11
+        },
+        {
+          "rdl_weight": 0.3,
+          "normalized_wer": 0.1259995516030192,
+          "normalized_cer": 0.03996051742947686,
+          "raw_wer": 0.2122368019530058,
+          "changed_selections_from_acoustic_control": 16
+        },
+        {
+          "rdl_weight": 1.0,
+          "normalized_wer": 0.1260742844331515,
+          "normalized_cer": 0.03997090757961452,
+          "raw_wer": 0.2122368019530058,
+          "changed_selections_from_acoustic_control": 20
+        }
+      ]
+    },
+    {
+      "model": "whisper-full-seed17",
+      "epoch": 2,
+      "source_one_best_normalized_wer": 0.10193558030042597,
+      "source_nbest_sha256": "033348323eb3077a1d0cf21be42543aae4584cac8431088123d16a46a8141542",
+      "grid_selection_sha256": "c40c7a01d19e411e3a410867cf18fc04f8a7060a382474b3afe3b3aaf7618bfc",
+      "selected_rdl_weight": 0.0,
+      "trials": [
+        {
+          "rdl_weight": 0.0,
+          "normalized_wer": 0.10201031313055825,
+          "normalized_cer": 0.03463037040885241,
+          "raw_wer": 0.18385718645102228,
+          "changed_selections_from_acoustic_control": 0
+        },
+        {
+          "rdl_weight": 0.1,
+          "normalized_wer": 0.10268290860174875,
+          "normalized_cer": 0.03481739311133046,
+          "raw_wer": 0.18462007934086055,
+          "changed_selections_from_acoustic_control": 10
+        },
+        {
+          "rdl_weight": 0.3,
+          "normalized_wer": 0.10290710709214558,
+          "normalized_cer": 0.034858953711881135,
+          "raw_wer": 0.18484894720781203,
+          "changed_selections_from_acoustic_control": 12
+        },
+        {
+          "rdl_weight": 1.0,
+          "normalized_wer": 0.10343023690307152,
+          "normalized_cer": 0.03517065821601122,
+          "raw_wer": 0.1853829722306988,
+          "changed_selections_from_acoustic_control": 17
+        }
+      ]
+    }
+  ],
+  "conclusion": "No tested positive RDL weight improves either Whisper acoustic-rescoring control; original decoder one-best also remains better.",
+  "limitations": [
+    "Recovered edited minutes, not the private M1 corrections",
+    "Validation selection, not a final test result",
+    "Untimed offline rescoring; no combined ASR RTF",
+    "CTC fusion grid and relation-removal ablations remain pending"
+  ],
+  "linker_version": "legacy exact-token (pre-D37)",
+  "superseded_for_corrected_linker_by": "m45_corrected_linker_validation.json"
+}

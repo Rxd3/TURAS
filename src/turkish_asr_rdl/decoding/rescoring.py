@@ -37,5 +37,6 @@ def rescore(candidates: list[dict], *, acoustic_weight: float = 1.0, lm_weight: 
         if not math.isfinite(score):
             raise ValueError("combined score is non-finite")
         candidate["combined_score"] = score
+        candidate.get("score_details", {}).get("null_reasons", {}).pop("combined_score", None)
     winner = min(output, key=lambda c: (-c["combined_score"], c["rank"], c["candidate_id"]))
     return winner["candidate_id"], output

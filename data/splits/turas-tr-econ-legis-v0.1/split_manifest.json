@@ -1,0 +1,125 @@
+{
+  "schema_version": "0.1",
+  "dataset_release": "turas-tr-econ-legis-v0.1",
+  "status": "frozen by M1 on 2026-11-18; sampled verification approved by M6 on 2026-11-18 (D08, as reported by M1); PR https://github.com/Rxd3/TURAS/pull/2",
+  "upstream": {
+    "dataset": "disco-eth/WorldSpeech",
+    "config": "tr_tr",
+    "revision": "b76b85395039f50332fbc421f7c098ee2f2653d7",
+    "data_glob": "data/tr_tr/*.parquet"
+  },
+  "config_sha256": "d530be46e07f561ca5a93ac7368f16da51f3a1a8cbb5cbcdab086724b84da7b4",
+  "lexicon_sha256": "8ef903fe74135897a9d3781966c5e484c0711a6679d72346efb1ec89eff6df94",
+  "algorithm": "turkish_asr_rdl.data.selection.select (recording-grouped, temporal test, seeded validation)",
+  "group_key": "source_url",
+  "seed": 2026,
+  "caps_minutes": {
+    "test": 6.563,
+    "validation": 8.388,
+    "train": 10.144
+  },
+  "splits": {
+    "train": {
+      "file": "train.txt",
+      "sha256": "3758fae04956ef65464b9c15821527535bd40b4d00438885d7fbffdaf33bda1e",
+      "utterances": 4376,
+      "duration_s": 72008.405,
+      "recordings": 129,
+      "session_date_min": "2017-01-10",
+      "session_date_max": "2025-12-23",
+      "upstream_test_rows": 0,
+      "ordered_id_digest": "603e498e797d2f4646d41357e922560aad60a5a5cc5f2e9afb30b6f42ffc85ea"
+    },
+    "validation": {
+      "file": "validation.txt",
+      "sha256": "2dd6126b221ab586dc4417141291ff3f7dfef2264a397a2c317c2a5a505f936f",
+      "utterances": 438,
+      "duration_s": 7207.657,
+      "recordings": 15,
+      "session_date_min": "2025-10-01",
+      "session_date_max": "2025-12-24",
+      "upstream_test_rows": 18,
+      "ordered_id_digest": "6d2819326112267ebbe3d19ec5df226a2445f2b0e304867b1d24254d1466c981"
+    },
+    "test": {
+      "file": "test.txt",
+      "sha256": "35c6ed9f206c5b4a609e05eff641e1d8317c04c3d4a6f62627fc309b824d122f",
+      "utterances": 636,
+      "duration_s": 10814.485,
+      "recordings": 28,
+      "session_date_min": "2026-01-06",
+      "session_date_max": "2026-04-22",
+      "upstream_test_rows": 23,
+      "ordered_id_digest": "86b9ead025ac60ccd9f40ca608180d0c87133e53fca86d58b9c13c14ecd34879"
+    }
+  },
+  "leakage_checks": {
+    "recordings_in_more_than_one_split": 0,
+    "dates_in_more_than_one_split": 0,
+    "train_rows_from_upstream_test": 0,
+    "normalized_texts_shared_across_splits": 0,
+    "duplicate_segment_ids": 0,
+    "rows_without_split_or_reason": 0
+  },
+  "exclusion_counts": {
+    "not_in_domain": 184567,
+    "eligible_not_sampled": 22288,
+    "non_spoken_or_truncated_text": 16768,
+    "selected": 5450,
+    "upstream_cer_above_max": 3886,
+    "repeated_text": 3175,
+    "source_not_selected": 2451,
+    "upstream_test_in_train_recording": 1069,
+    "rejected_in_listening_review": 0
+  },
+  "speaker_identity": "unknown for every row; speaker-disjointness is NOT claimed",
+  "references_sha256": "5085e1cb1a76f12f7a523fda55e3db39b979c04ca68ac31a644f8edbe6dbd9a5",
+  "exclusion_ledger_sha256": "6077dc6f804fff838f253eddf1bd4ebd91c2228f4ab41d916103511c6068c0c1",
+  "audio_written": true,
+  "policy": {
+    "upstream_split": "upstream test rows never enter TURAS train (quarantined); validation/test may contain them because upstream test shares every recording with upstream train",
+    "duplicates": "identical screening-normalized text anywhere in tr_tr -> all copies excluded; no audio near-duplicate audit (one recording = one source_url = one session date)",
+    "max_upstream_cer": 0.25,
+    "target_hours": {
+      "train": 20.0,
+      "validation": 2.0,
+      "test": 3.0
+    }
+  },
+  "build": {
+    "code_commit": "9e55fdbd92af601da561dfe79af87b79668d75b1",
+    "code_dirty": false,
+    "python": "3.13.3",
+    "libsndfile": "1.2.2",
+    "soundfile": "0.14.0",
+    "soxr": "1.1.0",
+    "numpy": "2.5.5",
+    "pandas": "3.1.1",
+    "pyarrow": "26.0.1"
+  },
+  "verification": {
+    "policy": "turas-verbatim-v0.1",
+    "scope": "sampled: validation/test references are upstream minutes; only the listed sample was verified by listening (docs/dataset.md, D08)",
+    "unreviewed_validation_test_rows": 1034,
+    "review_records_sha256": "9e036d0ff9fcb757764231a75d819d5df41cc1289b75e0547b1301fb4c32e13b",
+    "review_records": 50,
+    "reviewer_ids": 1,
+    "rows_by_split_status_origin": {
+      "test|unreviewed|upstream_human": 611,
+      "test|verified|local_human": 10,
+      "test|verified|upstream_human": 15,
+      "train|unreviewed|upstream_human": 4366,
+      "train|verified|local_human": 3,
+      "train|verified|upstream_human": 7,
+      "validation|unreviewed|upstream_human": 423,
+      "validation|verified|local_human": 3,
+      "validation|verified|upstream_human": 12
+    },
+    "rejected_in_listening_review": {
+      "train": 0,
+      "validation": 0,
+      "test": 0
+    }
+  },
+  "frozen_on": "2026-11-18"
+}

@@ -1,0 +1,167 @@
+{
+  "schema_version": "0.1",
+  "status": "passed",
+  "kind": "owner_assisted_restored_delivery_verification",
+  "acceptance_tool_sha256": "abedc196b4080673067800d65b32ce85d43e28d251521eb328ad35b4bc17ffda",
+  "private_acceptance_sha256": "ac7ccbf8c37f0eca894a3c97485977e70fe3cdf9d7c2a56fb6bd447b33cbf545",
+  "acceptance": {
+    "status": "passed",
+    "verification": "owner-assisted fresh-source restore; existing pinned runtime reused",
+    "jobs": [
+      {
+        "name": "verify-import-origin",
+        "status": "passed",
+        "exit_code": 0
+      },
+      {
+        "name": "F1-whisper-lora",
+        "status": "passed",
+        "exit_code": 0
+      },
+      {
+        "name": "F2-whisper-full",
+        "status": "passed",
+        "exit_code": 0
+      },
+      {
+        "name": "F3-ctc-vocab",
+        "status": "passed",
+        "exit_code": 0
+      },
+      {
+        "name": "F1-whisper-lora--rdl-full",
+        "status": "passed",
+        "exit_code": 0
+      },
+      {
+        "name": "F2-whisper-full--rdl-full",
+        "status": "passed",
+        "exit_code": 0
+      },
+      {
+        "name": "F3-ctc-vocab--rdl-full",
+        "status": "passed",
+        "exit_code": 0
+      },
+      {
+        "name": "F1-whisper-lora--acoustic-control-cached",
+        "status": "passed",
+        "exit_code": 0
+      },
+      {
+        "name": "F1-whisper-lora--rdl-full-cached",
+        "status": "passed",
+        "exit_code": 0
+      },
+      {
+        "name": "F1-whisper-lora--rdl-no-quantities-cached",
+        "status": "passed",
+        "exit_code": 0
+      },
+      {
+        "name": "F1-whisper-lora--rdl-no-comention-cached",
+        "status": "passed",
+        "exit_code": 0
+      },
+      {
+        "name": "F1-whisper-lora--rdl-random-cached",
+        "status": "passed",
+        "exit_code": 0
+      },
+      {
+        "name": "F2-whisper-full--acoustic-control-cached",
+        "status": "passed",
+        "exit_code": 0
+      },
+      {
+        "name": "F2-whisper-full--rdl-full-cached",
+        "status": "passed",
+        "exit_code": 0
+      },
+      {
+        "name": "F2-whisper-full--rdl-no-quantities-cached",
+        "status": "passed",
+        "exit_code": 0
+      },
+      {
+        "name": "F2-whisper-full--rdl-no-comention-cached",
+        "status": "passed",
+        "exit_code": 0
+      },
+      {
+        "name": "F2-whisper-full--rdl-random-cached",
+        "status": "passed",
+        "exit_code": 0
+      },
+      {
+        "name": "F3-ctc-vocab--acoustic-control-cached",
+        "status": "passed",
+        "exit_code": 0
+      },
+      {
+        "name": "F3-ctc-vocab--rdl-full-cached",
+        "status": "passed",
+        "exit_code": 0
+      },
+      {
+        "name": "F3-ctc-vocab--rdl-no-quantities-cached",
+        "status": "passed",
+        "exit_code": 0
+      },
+      {
+        "name": "F3-ctc-vocab--rdl-no-comention-cached",
+        "status": "passed",
+        "exit_code": 0
+      },
+      {
+        "name": "F3-ctc-vocab--rdl-random-cached",
+        "status": "passed",
+        "exit_code": 0
+      }
+    ],
+    "archive_sha256": "3bbaf65cd8ac45b4dceab6e1401748392e0bf3dd0039d395d1e092719740a91d",
+    "original_final_protocol_sha256": "288aebd71d8a3574e13d436748d4161bc258a487e65066f1c3508bc8e835bec1",
+    "validation_preflight_protocol_sha256": "a02aced714dcf72cd551f39c2e94fc740b468fdec29e02b5451bd2bfefcb3c73",
+    "restored_source_commit": "709015a49f4f83567cfdb96f6e4b7b8dd9a4e689",
+    "validation_utterance_ids": [
+      "utt_0153b4edfd89154d",
+      "utt_0182e2145d3227ec"
+    ],
+    "restored_files_verified": 226,
+    "selected_acoustic_models_executed": 3,
+    "online_joint_models_executed": 3,
+    "cached_controls_executed": 15,
+    "joint_cached_transcript_parity": "passed all three models",
+    "references_read": false,
+    "test_audio_decoded": false,
+    "final_protocol_and_results_modified": false,
+    "independent_human_review": "not claimed",
+    "runtime_lock_sha256": "cae5d3578b1bcd8e182f68811fb01718d809ef04163bb53f588beba5cdb12d61"
+  },
+  "job_log_sha256": {
+    "verify-import-origin": "d5ac1ca913c0b0719eb2616e7bd9da7219e3be2571dbaa4a60dc94bee5d6ec79",
+    "F1-whisper-lora": "db6e68ebff10ea8981348ee23a9c5934ae0ababa53ab743b4354b7eeb99d075f",
+    "F2-whisper-full": "44fef5f687563527e05c3210d052cb18fd2aeb792d8dc44cd17c564fe44a3ec7",
+    "F3-ctc-vocab": "ce33ffe45b5ba77f96221197beb45efe5a24ba46d70b19593b6a9e659124a5f1",
+    "F1-whisper-lora--rdl-full": "4b1e4fef143b9e96b6363f7d9737020d2bda6184b51616aa8335d34eb47a5e11",
+    "F2-whisper-full--rdl-full": "3e5befaa9c908d80b681a4303fce318b71e93017fe2c26d6ee97280147b39d17",
+    "F3-ctc-vocab--rdl-full": "e58b4d40fc72f70d330e6517cbbf989ce96129fe88e2202e64365437e9f3c77e",
+    "F1-whisper-lora--acoustic-control-cached": "22788a780df10b67613ff024dbbd5035707b0a2eeba4996dc2e34c6692badc04",
+    "F1-whisper-lora--rdl-full-cached": "d0300fcd11f26db04ba97cad6e67bc373049a1d468849d57923ff3bea71b342a",
+    "F1-whisper-lora--rdl-no-quantities-cached": "50f949050b4008cc78bfbe5eab2c1c2500eacfff27fd1bf367b7de19b22fb449",
+    "F1-whisper-lora--rdl-no-comention-cached": "8f22a4b7cc1a7680be8e4feea8e73977590d9ba50ace68f9777a03532aa82789",
+    "F1-whisper-lora--rdl-random-cached": "89fc615838fa5fac5420cd2d03a9ec54f7e071e4ea9b2e6f16b885e93f5ec2aa",
+    "F2-whisper-full--acoustic-control-cached": "8ba3900af22d1cfab22284ca32bca05c43c38b19090d72f5718f5247ea6412fb",
+    "F2-whisper-full--rdl-full-cached": "1a516127ee0ef3e6749275927f568ec3d1a89a18e22b98157a1ff3519fc8b888",
+    "F2-whisper-full--rdl-no-quantities-cached": "8fe14c55384a2dd51790b0cfa92e25ea3652425f17f205d41c5ceb7f023fcdc8",
+    "F2-whisper-full--rdl-no-comention-cached": "b7540228a3d69e70abac4f5e4e016787273f61690962108f4d99ac9cddec3bef",
+    "F2-whisper-full--rdl-random-cached": "a37cf595da71f2a654126d48a3818aba7eefef56e7a1d6ebb5fb5437b77f0700",
+    "F3-ctc-vocab--acoustic-control-cached": "f48973f5be0debd23de9500b27e8375f84e39eb26a32a7916aaa7ec7deb39633",
+    "F3-ctc-vocab--rdl-full-cached": "6fdd38b2e40b8861f9ef463551fa8af003b35b78eb02e24fbbc2fd6ae383a447",
+    "F3-ctc-vocab--rdl-no-quantities-cached": "f9ceee0e2479d1096cdab893253b7c0c5b651439d0155d14179c4971dd465a97",
+    "F3-ctc-vocab--rdl-no-comention-cached": "8454a7db6323e7ad212e98f5bf2de68c45c49753fe8b723fee4928899ef9e372",
+    "F3-ctc-vocab--rdl-random-cached": "47faa1d53b3e439c48990611cc1f797006224fcbd28f89b716d469dc57ff3381"
+  },
+  "scope": "Fresh archived source/model restore, existing pinned runtime; not independent peer review or clean environment reproduction",
+  "original_test_reports_and_protocol_byte_identical": true
+}

@@ -1,0 +1,12 @@
+# Test environment for the checker kit: CPU only, no torch.
+# numpy 2.5.x needs Python 3.12+, so Python 3.11 gets the last 2.4 release.
+pytest==9.2.0
+pytest-cov==7.1.0
+numpy==2.5.5; python_version >= "3.12"
+numpy==2.4.6; python_version < "3.12"
+soundfile==0.14.0
+soxr==1.1.0
+jiwer==4.0.0
+# M1 source selection/extraction integration tests; no datasets/models are fetched.
+pandas==3.1.1
+pyarrow==26.0.1

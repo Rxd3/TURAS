@@ -1,0 +1,203 @@
+{
+  "status": "passed_numerical_and_identity_audit",
+  "reference_variant": "owner-recovered-validation-minutes-v1",
+  "references_sha256": "d0c8519ca6aed053f89786bc733541a70faee09cf8d8bdb6cc12065d97dbd958",
+  "independent_scorer": "jiwer 4.0.0",
+  "independent_scorer_documentation": "https://jitsi.github.io/jiwer/usage/",
+  "normalization": "shared TURAS normalizer; no competing normalizer added; raw CER preserves whitespace",
+  "crosschecks": [
+    {
+      "system": "whisper-baseline",
+      "rows": 438,
+      "error_rows": 0,
+      "numerical_checks": [
+        {
+          "view": "raw-v1",
+          "wer": 0.3707659444613976,
+          "cer": 0.13004784980646733,
+          "independent_error_totals_match": true
+        },
+        {
+          "view": "tr-normalized-v1",
+          "wer": 0.2512517749047156,
+          "cer": 0.10462881188633176,
+          "independent_error_totals_match": true
+        }
+      ]
+    },
+    {
+      "system": "ctc-baseline",
+      "rows": 438,
+      "error_rows": 0,
+      "numerical_checks": [
+        {
+          "view": "raw-v1",
+          "wer": 0.5625572169667379,
+          "cer": 0.1707354240955777,
+          "independent_error_totals_match": true
+        },
+        {
+          "view": "tr-normalized-v1",
+          "wer": 0.36977804349450716,
+          "cer": 0.13254714530624967,
+          "independent_error_totals_match": true
+        }
+      ]
+    },
+    {
+      "system": "whisper-lora-seed17",
+      "rows": 438,
+      "error_rows": 0,
+      "numerical_checks": [
+        {
+          "view": "raw-v1",
+          "wer": 0.21093988404028075,
+          "cer": 0.05513394898052482,
+          "independent_error_totals_match": true
+        },
+        {
+          "view": "tr-normalized-v1",
+          "wer": 0.12457962783050594,
+          "cer": 0.03971115382617279,
+          "independent_error_totals_match": true
+        }
+      ]
+    },
+    {
+      "system": "whisper-full-seed17",
+      "rows": 438,
+      "error_rows": 0,
+      "numerical_checks": [
+        {
+          "view": "raw-v1",
+          "wer": 0.1844675007628929,
+          "cer": 0.04814442311013583,
+          "independent_error_totals_match": true
+        },
+        {
+          "view": "tr-normalized-v1",
+          "wer": 0.10193558030042597,
+          "cer": 0.034474518156787363,
+          "independent_error_totals_match": true
+        }
+      ]
+    },
+    {
+      "system": "ctc-extended-seed17",
+      "rows": 438,
+      "error_rows": 0,
+      "numerical_checks": [
+        {
+          "view": "raw-v1",
+          "wer": 0.44804699420201405,
+          "cer": 0.11106031513821585,
+          "independent_error_totals_match": true
+        },
+        {
+          "view": "tr-normalized-v1",
+          "wer": 0.2540168896196099,
+          "cer": 0.07636760351187075,
+          "independent_error_totals_match": true
+        }
+      ]
+    }
+  ],
+  "train_validation_overlap": {
+    "utterance_ids": 0,
+    "recording_groups": 0,
+    "audio_sha256": 0,
+    "normalized_reference_texts": 0
+  },
+  "matched_declared_decoder_hashes": true,
+  "verified_selected_checkpoints": [
+    {
+      "model": "whisper-lora-seed17",
+      "epoch": 3,
+      "manifest_sha256": "95e25108715b0fab14136c7526614e2f2aaa6e690b8c98eb2deef5eab796b4bb"
+    },
+    {
+      "model": "whisper-full-seed17",
+      "epoch": 2,
+      "manifest_sha256": "0c49d7423a55de173204c8025a463a677d956f42a8ac3ebd6af577ec9cfc1c46"
+    },
+    {
+      "model": "ctc-extended-seed17",
+      "epoch": 3,
+      "manifest_sha256": "f0a7179e901b75233fafb3f7f6e8e29e2aca44650c099f8b2705c300bd30a39a"
+    }
+  ],
+  "bootstrap": {
+    "groups": 15,
+    "group_unit": "source recording, not verified speaker",
+    "seed": 2026,
+    "replicates": 2000,
+    "paired": true,
+    "intervals": [
+      {
+        "system": "whisper-lora-seed17",
+        "control": "whisper-baseline",
+        "normalized_wer_difference_percentage_points": -12.667214707420968,
+        "group_bootstrap_95_percentile_interval_percentage_points": [
+          -14.240946672046991,
+          -11.162125821535609
+        ]
+      },
+      {
+        "system": "whisper-full-seed17",
+        "control": "whisper-baseline",
+        "normalized_wer_difference_percentage_points": -14.931619460428964,
+        "group_bootstrap_95_percentile_interval_percentage_points": [
+          -16.605902887470776,
+          -13.291924515674115
+        ]
+      },
+      {
+        "system": "ctc-extended-seed17",
+        "control": "ctc-baseline",
+        "normalized_wer_difference_percentage_points": -11.576115387489727,
+        "group_bootstrap_95_percentile_interval_percentage_points": [
+          -12.693155268656758,
+          -10.500043279163119
+        ]
+      },
+      {
+        "system": "whisper-full-seed17",
+        "control": "whisper-lora-seed17",
+        "normalized_wer_difference_percentage_points": -2.2644047530079967,
+        "group_bootstrap_95_percentile_interval_percentage_points": [
+          -2.8947401833685285,
+          -1.6534864034337189
+        ]
+      },
+      {
+        "system": "ctc-diagnostic-no-comention",
+        "control": "ctc-extended-seed17",
+        "normalized_wer_difference_percentage_points": -0.007473283013226251,
+        "group_bootstrap_95_percentile_interval_percentage_points": [
+          -0.09340825832308844,
+          0.07827716447171174
+        ],
+        "linker_version": "legacy exact-token; this interval is not a corrected-linker result"
+      }
+    ]
+  },
+  "limitations": [
+    "Numerical agreement does not establish the correctness of every reference transcript",
+    "Upstream edited minutes; recovered references are unreviewed and omit private M1 corrections",
+    "Recording disjointness checked; speaker disjointness remains unknown",
+    "One training seed; group intervals exclude training-seed and annotation uncertainty",
+    "Selected on the same validation set; intervals do not remove selection or multiple-comparison optimism",
+    "No final test scoring or new test-reference access performed",
+    "Exact audio hashes do not rule out near-duplicate audio with different encoding"
+  ],
+  "rdl_linker_audit": {
+    "issue": "legacy exact-token linking discarded frozen suffix wildcards",
+    "authority": "D37",
+    "corrected_policy": "m1-frozen-lexicon-v1",
+    "acoustic_scores_affected": false,
+    "legacy_artifacts_preserved": true,
+    "corrected_grids_require_new_versioned_artifacts": true,
+    "corrected_grids_status": "completed; all 36 trial artifacts verified",
+    "corrected_results": "m45_corrected_linker_validation.json"
+  }
+}

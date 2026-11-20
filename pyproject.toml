@@ -5,15 +5,22 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "turkish-asr-rdl"
 version = "0.0.1"
-description = "TURAS: scaffold for Turkish domain-specific ASR adaptation and RDL"
+description = "TURAS: Turkish domain-specific ASR adaptation and relational rescoring"
 readme = "README.md"
 requires-python = ">=3.11"
-dependencies = []
+dependencies = [
+    "numpy>=1.26.0",
+]
 
 [project.urls]
-Repository = "https://github.com/Rxd3/project3-turkish-asr-rdl"
+Repository = "https://github.com/Rxd3/TURAS"
 
 [tool.setuptools.packages.find]
 where = ["src"]
 include = ["turkish_asr_rdl*"]
 namespaces = false
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+addopts = "--import-mode=importlib"

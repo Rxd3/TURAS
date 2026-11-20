@@ -30,3 +30,21 @@ jobs:
           '.rdl', '.evaluation', '.reporting', '.schemas', '.utils')]"
       - name: Check whitespace
         run: git diff --check
+
+  tests:
+    name: Tests (Python ${{ matrix.python-version }})
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ['3.11', '3.13']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install test requirements and the package
+        run: |
+          python -m pip install -r requirements/dev.txt
+          python -m pip install --no-deps -e .
+      - name: Run unit tests with coverage
+        run: python -m pytest --cov=turkish_asr_rdl --cov-report=term-missing

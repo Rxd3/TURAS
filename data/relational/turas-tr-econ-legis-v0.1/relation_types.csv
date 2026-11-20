@@ -1,0 +1,6 @@
+relation_type_id,name,head_type,tail_type,directed,provenance_id
+rel_has_topic,has_topic,utterance,topic,true,prov_lexicon
+rel_mentions,mentions,utterance,entity,true,prov_lexicon
+rel_expresses,expresses,utterance,quantifier,true,prov_lexicon
+rel_belongs_to,belongs_to,entity,topic,true,prov_lexicon
+rel_co_mentioned,related_to:co_mentioned_in_utterance,entity,entity,false,prov_lexicon

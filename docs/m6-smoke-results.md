@@ -16,7 +16,9 @@ PR #5's M4/M5 protocol, which was frozen on 2026-11-19 before the test
 references were opened (`configs/evaluation/m45_final_protocol.json` on
 `feat/m4-m5-integration` at `7a64ef1`, not merged yet), and its later erratum
 `docs/m45_decoding_erratum.md` (decision D41), which gives the effective decoder
-widths (Whisper 5 beams, CTC prefix beam 10). The measurements are unchanged.
+widths (Whisper 5 beams, CTC prefix beam 10). The timing rule was also updated,
+because Member 6 accepted PR #5's frozen timing block as the official RTF for
+its eight conditions on 2026-11-20. The measurements are unchanged.
 
 Every result number carries one of three labels:
 
@@ -92,7 +94,10 @@ Both 2026-11-18 re-runs gave the same statistics, and peak VRAM matched
 (Qwen3-ASR) and greedy decoding (XLS-R), cover 20 clips and come from one
 repeat. RTFs also shift between sessions: see
 [Timing varies between sessions](#timing-varies-between-sessions). The
-official RTF comes from the re-run protocol in
+official RTF for B1, B4, F1–F3 and the `--rdl-full` joint systems of F1–F3 is
+PR #5's frozen timing block (see the rule in
+[Timing varies between sessions](#timing-varies-between-sessions)); for
+every other system it comes from the re-run protocol in
 [evaluation](evaluation.md#real-time-factor-and-latency). Batch > 1 inference
 and the 3-repeat timing protocol are UNMEASURED.
 
@@ -154,11 +159,20 @@ very differently.
   same-session measurements: their ratios to 2026-11-17 (1.25 and 1.20;
   estimate, from measured RTFs) match the other systems.
 
-Rule for everyone: compare RTFs only within one timing session. The official
-timing runs every system back to back in one session, records the machine
-state (GPU processes, power source and plan, CPU load, top CPU processes) and
-uses 3 repeats. No other GPU application is open, cloud-drive sync is paused
-and no OS update is installing.
+Rule for everyone: compare RTFs only within one timing session. PR #5's frozen
+timing block gives the official RTF for its eight conditions (B1, B4, F1–F3
+and the `--rdl-full` joint systems of F1–F3), timed serially, as set by the
+frozen protocol's `timing` block and decision D40 (both on PR #5's branch,
+unmerged). Compare
+those RTFs only with each other, keep PR #5's repeat dispersion and claim no
+CTC speed advantage from the means alone (see `docs/m45_completion.md` on
+PR #5's branch). Every other official timing (B2, B3, B5) runs every system it
+compares back to back in the shared timing session, records the machine state
+(GPU processes, power source and plan, CPU load, top CPU processes) and uses 3
+repeats. No other GPU application is open, cloud-drive sync is paused and no OS
+update is installing. A comparison between a system in PR #5's block and one
+outside it (for example B2 against B1) is made only when both are re-timed
+together in the shared timing session.
 
 ## Training probes
 
@@ -379,9 +393,13 @@ state the CER space policy and give a per-system count of hypotheses where
 
 ## Actions per member
 
-Everyone times only in the shared timing session (see
-[Timing varies between sessions](#timing-varies-between-sessions)) and does
-not quote an RTF measured in another session.
+B1, B4, F1–F3 and the `--rdl-full` joint systems of F1–F3 take their official
+RTF from PR #5's frozen timing block; everything else is timed only in the
+shared timing session (see
+[Timing varies between sessions](#timing-varies-between-sessions)), and nobody
+quotes an RTF measured outside PR #5's block or the shared session. A
+comparison between a system in that block and one outside it re-times both
+together in the shared session.
 
 | Member | Tracks | Next actions |
 | --- | --- | --- |

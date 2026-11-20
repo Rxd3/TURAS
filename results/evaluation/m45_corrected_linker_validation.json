@@ -1,0 +1,432 @@
+{
+  "status": "completed_corrected_linker_validation",
+  "linker_policy": "m1-frozen-lexicon-v1",
+  "reference_variant": "owner-recovered-validation-minutes-v1",
+  "reference_manifest_sha256": "8c06f3094c8afc13b457edf5cc455b5d26092817aae282636d1111e0663f3267",
+  "graphs": {
+    "full": {
+      "manifest_sha256": "588a955a9d874a44000b8f8b265afd3461f9f374e098c18608d7ddf168d74c3d",
+      "revision": {
+        "policy": "m1-frozen-lexicon-v1",
+        "parent_graph_manifest_sha256": "308c1e1722d1492a3b8ced51104b2dd86e4fe40c8e856c39a96188a9ac6595df",
+        "source_commit": "94c7c88ee3ae8fc9337ad95113b74ca9f7eaacf6",
+        "lexicon_sha256": "8ef903fe74135897a9d3781966c5e484c0711a6679d72346efb1ec89eff6df94",
+        "learned_weights_changed": false,
+        "snapshot_changed": false,
+        "reason": "preserve frozen prefix/exclusion/raw-token matching in inference"
+      }
+    },
+    "no-quantities": {
+      "manifest_sha256": "b167c249fc45a2c8a6f8ea5e9d25e6eeff78b97bc8a5dbacefd35fbc01cdaf58",
+      "revision": {
+        "policy": "m1-frozen-lexicon-v1",
+        "parent_graph_manifest_sha256": "525c41be570e3042bfd51aff49e5ace204c5cf87f252966be02de7c14a70d83c",
+        "source_commit": "94c7c88ee3ae8fc9337ad95113b74ca9f7eaacf6",
+        "lexicon_sha256": "8ef903fe74135897a9d3781966c5e484c0711a6679d72346efb1ec89eff6df94",
+        "learned_weights_changed": false,
+        "snapshot_changed": false,
+        "reason": "preserve frozen prefix/exclusion/raw-token matching in inference"
+      }
+    },
+    "no-comention": {
+      "manifest_sha256": "5e1c0f8e87b1b9559a1bf2c2f3e00eb7a010aa1729651bc86248aeace8a43fb4",
+      "revision": {
+        "policy": "m1-frozen-lexicon-v1",
+        "parent_graph_manifest_sha256": "dbda3c7a4f63c0b2f615d980d5de4cc5ff94b6a2cd4005064b8ddae21c57f629",
+        "source_commit": "94c7c88ee3ae8fc9337ad95113b74ca9f7eaacf6",
+        "lexicon_sha256": "8ef903fe74135897a9d3781966c5e484c0711a6679d72346efb1ec89eff6df94",
+        "learned_weights_changed": false,
+        "snapshot_changed": false,
+        "reason": "preserve frozen prefix/exclusion/raw-token matching in inference"
+      }
+    }
+  },
+  "reports": [
+    {
+      "name": "full--whisper-lora-seed17-epoch-3",
+      "selection_sha256": "7fec37beb621a3aabfdb045f949f80a7cd25cc51ce59c256d071ab73af17c1fa",
+      "graph_manifest_sha256": "588a955a9d874a44000b8f8b265afd3461f9f374e098c18608d7ddf168d74c3d",
+      "source_nbest_sha256": "cb4e18c92cac414129b4c954cfd194e320922df1438bcdc0b1f7be31b9b2115c",
+      "selected_gamma": 0.0,
+      "trials": [
+        {
+          "gamma": 0.0,
+          "normalized_wer": 0.12547642179209326,
+          "normalized_cer": 0.039856615928100164,
+          "raw_wer": 0.21170277693011902,
+          "changed_selections": 0
+        },
+        {
+          "gamma": 0.1,
+          "normalized_wer": 0.1259995516030192,
+          "normalized_cer": 0.040074809080991224,
+          "raw_wer": 0.21216051266402197,
+          "changed_selections": 13
+        },
+        {
+          "gamma": 0.3,
+          "normalized_wer": 0.1260742844331515,
+          "normalized_cer": 0.040074809080991224,
+          "raw_wer": 0.21231309124198963,
+          "changed_selections": 19
+        },
+        {
+          "gamma": 1.0,
+          "normalized_wer": 0.12644794858381286,
+          "normalized_cer": 0.040168320432230245,
+          "raw_wer": 0.2125419591089411,
+          "changed_selections": 26
+        }
+      ],
+      "entity_link_coverage": {
+        "legacy": {
+          "hypotheses": 1997,
+          "hypotheses_with_linked_entities": 1704,
+          "total_linked_entity_counts": 3201,
+          "rows_with_distinct_relational_scores": 54
+        },
+        "corrected": {
+          "hypotheses": 1997,
+          "hypotheses_with_linked_entities": 1996,
+          "total_linked_entity_counts": 6591,
+          "rows_with_distinct_relational_scores": 56
+        }
+      }
+    },
+    {
+      "name": "full--whisper-full-seed17-epoch-2",
+      "selection_sha256": "eb62cc7bf6abcdd8a170b9a2f94d735f87e1a7dfbf6f74ccb60b0b90ca96f116",
+      "graph_manifest_sha256": "588a955a9d874a44000b8f8b265afd3461f9f374e098c18608d7ddf168d74c3d",
+      "source_nbest_sha256": "033348323eb3077a1d0cf21be42543aae4584cac8431088123d16a46a8141542",
+      "selected_gamma": 0.0,
+      "trials": [
+        {
+          "gamma": 0.0,
+          "normalized_wer": 0.10201031313055825,
+          "normalized_cer": 0.03463037040885241,
+          "raw_wer": 0.18385718645102228,
+          "changed_selections": 0
+        },
+        {
+          "gamma": 0.1,
+          "normalized_wer": 0.10260817577161647,
+          "normalized_cer": 0.034827783261468126,
+          "raw_wer": 0.1844675007628929,
+          "changed_selections": 4
+        },
+        {
+          "gamma": 0.3,
+          "normalized_wer": 0.10313130558254241,
+          "normalized_cer": 0.0349732453633955,
+          "raw_wer": 0.18515410436374732,
+          "changed_selections": 8
+        },
+        {
+          "gamma": 1.0,
+          "normalized_wer": 0.10372916822360063,
+          "normalized_cer": 0.03531612031793859,
+          "raw_wer": 0.18584070796460178,
+          "changed_selections": 13
+        }
+      ],
+      "entity_link_coverage": {
+        "legacy": {
+          "hypotheses": 2050,
+          "hypotheses_with_linked_entities": 1762,
+          "total_linked_entity_counts": 3360,
+          "rows_with_distinct_relational_scores": 41
+        },
+        "corrected": {
+          "hypotheses": 2050,
+          "hypotheses_with_linked_entities": 2050,
+          "total_linked_entity_counts": 6972,
+          "rows_with_distinct_relational_scores": 30
+        }
+      }
+    },
+    {
+      "name": "full--ctc-extended-seed17-epoch-3",
+      "selection_sha256": "bc8940d74986e8a0926de5d2009a0ace011cf0c37ee5b3f64fda19fd8fd92151",
+      "graph_manifest_sha256": "588a955a9d874a44000b8f8b265afd3461f9f374e098c18608d7ddf168d74c3d",
+      "source_nbest_sha256": "7c0c09e0e00ed2214a0e4c4660f6c853d6137d1722bb3c00ef86a133a74237bc",
+      "selected_gamma": 0.1,
+      "trials": [
+        {
+          "gamma": 0.0,
+          "normalized_wer": 0.2546147522606681,
+          "normalized_cer": 0.07599355810691465,
+          "raw_wer": 0.448504729935917,
+          "changed_selections": 0
+        },
+        {
+          "gamma": 0.1,
+          "normalized_wer": 0.254315820940139,
+          "normalized_cer": 0.07613902020884201,
+          "raw_wer": 0.44835215135794937,
+          "changed_selections": 26
+        },
+        {
+          "gamma": 0.3,
+          "normalized_wer": 0.2546147522606681,
+          "normalized_cer": 0.07613902020884201,
+          "raw_wer": 0.44865730851388463,
+          "changed_selections": 35
+        },
+        {
+          "gamma": 1.0,
+          "normalized_wer": 0.2547642179209327,
+          "normalized_cer": 0.07612863005870435,
+          "raw_wer": 0.44858101922490085,
+          "changed_selections": 39
+        }
+      ],
+      "entity_link_coverage": {
+        "legacy": {
+          "hypotheses": 2166,
+          "hypotheses_with_linked_entities": 1809,
+          "total_linked_entity_counts": 3292,
+          "rows_with_distinct_relational_scores": 92
+        },
+        "corrected": {
+          "hypotheses": 2166,
+          "hypotheses_with_linked_entities": 2165,
+          "total_linked_entity_counts": 6874,
+          "rows_with_distinct_relational_scores": 110
+        }
+      }
+    },
+    {
+      "name": "no-quantities--whisper-lora-seed17-epoch-3",
+      "selection_sha256": "f9b0e08943b6ae903836ef830cffc2fed31988e99ac9e57234fe9bc864c8daa7",
+      "graph_manifest_sha256": "b167c249fc45a2c8a6f8ea5e9d25e6eeff78b97bc8a5dbacefd35fbc01cdaf58",
+      "source_nbest_sha256": "cb4e18c92cac414129b4c954cfd194e320922df1438bcdc0b1f7be31b9b2115c",
+      "selected_gamma": 0.0,
+      "trials": [
+        {
+          "gamma": 0.0,
+          "normalized_wer": 0.12547642179209326,
+          "normalized_cer": 0.039856615928100164,
+          "raw_wer": 0.21170277693011902,
+          "changed_selections": 0
+        },
+        {
+          "gamma": 0.1,
+          "normalized_wer": 0.12555115462222555,
+          "normalized_cer": 0.0398773962283755,
+          "raw_wer": 0.21185535550808665,
+          "changed_selections": 8
+        },
+        {
+          "gamma": 0.3,
+          "normalized_wer": 0.12614901726328376,
+          "normalized_cer": 0.03999168787988987,
+          "raw_wer": 0.21238938053097345,
+          "changed_selections": 14
+        },
+        {
+          "gamma": 1.0,
+          "normalized_wer": 0.12674687990434197,
+          "normalized_cer": 0.0401163696815419,
+          "raw_wer": 0.21299969484284406,
+          "changed_selections": 23
+        }
+      ]
+    },
+    {
+      "name": "no-quantities--whisper-full-seed17-epoch-2",
+      "selection_sha256": "3b21c5a5b2b9a17e52d880fd17de89b3c97b66ea4486c66bfc55ec028aaa49ca",
+      "graph_manifest_sha256": "b167c249fc45a2c8a6f8ea5e9d25e6eeff78b97bc8a5dbacefd35fbc01cdaf58",
+      "source_nbest_sha256": "033348323eb3077a1d0cf21be42543aae4584cac8431088123d16a46a8141542",
+      "selected_gamma": 0.0,
+      "trials": [
+        {
+          "gamma": 0.0,
+          "normalized_wer": 0.10201031313055825,
+          "normalized_cer": 0.03463037040885241,
+          "raw_wer": 0.18385718645102228,
+          "changed_selections": 0
+        },
+        {
+          "gamma": 0.1,
+          "normalized_wer": 0.10223451162095508,
+          "normalized_cer": 0.03466154085926541,
+          "raw_wer": 0.18416234360695757,
+          "changed_selections": 1
+        },
+        {
+          "gamma": 0.3,
+          "normalized_wer": 0.10268290860174875,
+          "normalized_cer": 0.034765442360642114,
+          "raw_wer": 0.1847726579188282,
+          "changed_selections": 5
+        },
+        {
+          "gamma": 1.0,
+          "normalized_wer": 0.10305657275241013,
+          "normalized_cer": 0.03486934386201881,
+          "raw_wer": 0.18523039365273117,
+          "changed_selections": 9
+        }
+      ]
+    },
+    {
+      "name": "no-quantities--ctc-extended-seed17-epoch-3",
+      "selection_sha256": "e0fe5c4f8eab462ed6b9bcb026c41f956e3caa95d30dce66b551d9f8b41514ce",
+      "graph_manifest_sha256": "b167c249fc45a2c8a6f8ea5e9d25e6eeff78b97bc8a5dbacefd35fbc01cdaf58",
+      "source_nbest_sha256": "7c0c09e0e00ed2214a0e4c4660f6c853d6137d1722bb3c00ef86a133a74237bc",
+      "selected_gamma": 0.1,
+      "trials": [
+        {
+          "gamma": 0.0,
+          "normalized_wer": 0.2546147522606681,
+          "normalized_cer": 0.07599355810691465,
+          "raw_wer": 0.448504729935917,
+          "changed_selections": 0
+        },
+        {
+          "gamma": 0.1,
+          "normalized_wer": 0.254315820940139,
+          "normalized_cer": 0.07599355810691465,
+          "raw_wer": 0.448504729935917,
+          "changed_selections": 10
+        },
+        {
+          "gamma": 0.3,
+          "normalized_wer": 0.2546894850908004,
+          "normalized_cer": 0.07605589900774067,
+          "raw_wer": 0.44865730851388463,
+          "changed_selections": 15
+        },
+        {
+          "gamma": 1.0,
+          "normalized_wer": 0.2547642179209327,
+          "normalized_cer": 0.07604550885760299,
+          "raw_wer": 0.448504729935917,
+          "changed_selections": 21
+        }
+      ]
+    },
+    {
+      "name": "no-comention--whisper-lora-seed17-epoch-3",
+      "selection_sha256": "9b4965de420b943c130da7cfa27c5a342ac297fe18b656fbc1bb1775532ca0d7",
+      "graph_manifest_sha256": "5e1c0f8e87b1b9559a1bf2c2f3e00eb7a010aa1729651bc86248aeace8a43fb4",
+      "source_nbest_sha256": "cb4e18c92cac414129b4c954cfd194e320922df1438bcdc0b1f7be31b9b2115c",
+      "selected_gamma": 0.0,
+      "trials": [
+        {
+          "gamma": 0.0,
+          "normalized_wer": 0.12547642179209326,
+          "normalized_cer": 0.039856615928100164,
+          "raw_wer": 0.21170277693011902,
+          "changed_selections": 0
+        },
+        {
+          "gamma": 0.1,
+          "normalized_wer": 0.12547642179209326,
+          "normalized_cer": 0.03980466517741181,
+          "raw_wer": 0.21170277693011902,
+          "changed_selections": 10
+        },
+        {
+          "gamma": 0.3,
+          "normalized_wer": 0.1259995516030192,
+          "normalized_cer": 0.040074809080991224,
+          "raw_wer": 0.21216051266402197,
+          "changed_selections": 18
+        },
+        {
+          "gamma": 1.0,
+          "normalized_wer": 0.12659741424407742,
+          "normalized_cer": 0.04022027118291859,
+          "raw_wer": 0.21261824839792492,
+          "changed_selections": 23
+        }
+      ]
+    },
+    {
+      "name": "no-comention--whisper-full-seed17-epoch-2",
+      "selection_sha256": "cde68ec9183bc9a7a04f6d35bbf8cb8c700853f54888a7c2a82a5dab5c2e9517",
+      "graph_manifest_sha256": "5e1c0f8e87b1b9559a1bf2c2f3e00eb7a010aa1729651bc86248aeace8a43fb4",
+      "source_nbest_sha256": "033348323eb3077a1d0cf21be42543aae4584cac8431088123d16a46a8141542",
+      "selected_gamma": 0.0,
+      "trials": [
+        {
+          "gamma": 0.0,
+          "normalized_wer": 0.10201031313055825,
+          "normalized_cer": 0.03463037040885241,
+          "raw_wer": 0.18385718645102228,
+          "changed_selections": 0
+        },
+        {
+          "gamma": 0.1,
+          "normalized_wer": 0.10260817577161647,
+          "normalized_cer": 0.034827783261468126,
+          "raw_wer": 0.1844675007628929,
+          "changed_selections": 4
+        },
+        {
+          "gamma": 0.3,
+          "normalized_wer": 0.10290710709214558,
+          "normalized_cer": 0.03493168476284483,
+          "raw_wer": 0.18492523649679585,
+          "changed_selections": 7
+        },
+        {
+          "gamma": 1.0,
+          "normalized_wer": 0.10290710709214558,
+          "normalized_cer": 0.034921294612707154,
+          "raw_wer": 0.18500152578577966,
+          "changed_selections": 9
+        }
+      ]
+    },
+    {
+      "name": "no-comention--ctc-extended-seed17-epoch-3",
+      "selection_sha256": "d5086a38702645abfaa5629cc67b6129368cf83e90a954782994728387aa9c01",
+      "graph_manifest_sha256": "5e1c0f8e87b1b9559a1bf2c2f3e00eb7a010aa1729651bc86248aeace8a43fb4",
+      "source_nbest_sha256": "7c0c09e0e00ed2214a0e4c4660f6c853d6137d1722bb3c00ef86a133a74237bc",
+      "selected_gamma": 0.3,
+      "trials": [
+        {
+          "gamma": 0.0,
+          "normalized_wer": 0.2546147522606681,
+          "normalized_cer": 0.07599355810691465,
+          "raw_wer": 0.448504729935917,
+          "changed_selections": 0
+        },
+        {
+          "gamma": 0.1,
+          "normalized_wer": 0.254315820940139,
+          "normalized_cer": 0.07613902020884201,
+          "raw_wer": 0.44842844064693316,
+          "changed_selections": 23
+        },
+        {
+          "gamma": 0.3,
+          "normalized_wer": 0.25416635527987447,
+          "normalized_cer": 0.07611823990856668,
+          "raw_wer": 0.4482758620689655,
+          "changed_selections": 25
+        },
+        {
+          "gamma": 1.0,
+          "normalized_wer": 0.2544652866004036,
+          "normalized_cer": 0.07608706945815367,
+          "raw_wer": 0.4482758620689655,
+          "changed_selections": 37
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "Working validation on recovered unreviewed minutes",
+    "Single seed; final test is untouched",
+    "Corrected linker; learned weights and training snapshots are unchanged",
+    "All legacy-linker results remain separately versioned",
+    "Untimed offline rescoring; final combined RTF remains pending"
+  ],
+  "conclusion": "Corrected suffix/exclusion-aware linking preserves acoustic controls but no tested RDL variant beats the original one-best WER.",
+  "verified_trial_artifacts": 36,
+  "acoustic_metric_audit": "m45_result_audit.json",
+  "legacy_results": "Separate historical exact-token-linker reports are retained and superseded for intended-linker conclusions."
+}

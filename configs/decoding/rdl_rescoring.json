@@ -1,0 +1,44 @@
+{
+  "schema_version": "0.1",
+  "dataset_release": "turas-tr-econ-legis-v0.1",
+  "split_manifest_sha256": "a8fff65b99fcf11d9452685e438e250207032ecfe11152741562147126d095b8",
+  "split": "validation",
+  "fusion_frozen": false,
+  "inputs": {
+    "nbest": null,
+    "expected_ids": "data/splits/turas-tr-econ-legis-v0.1/validation.txt",
+    "graph_artifact": null,
+    "nbest_sha256": null,
+    "expected_ids_sha256": "2dd6126b221ab586dc4417141291ff3f7dfef2264a397a2c317c2a5a505f936f",
+    "graph_manifest_sha256": null
+  },
+  "missing_probability": 0.1,
+  "fusion": {
+    "acoustic_weight": 1.0,
+    "lm_weight": 0.0,
+    "rdl_weight": 0.1,
+    "acoustic_exponent": 1.0,
+    "lm_exponent": 1.0
+  },
+  "validation_selection": {
+    "path": null,
+    "sha256": null
+  },
+  "status": "owner-approved experimental protocol; missing inputs and actual evidence remain blocking",
+  "protocol_approved": true,
+  "approval": {
+    "authority": "project owner via explicit delegation",
+    "date": "2026-11-19",
+    "record": "docs/owner_decisions.md",
+    "scope": "experimental protocol; no claim of peer review, measured feasibility or completed baselines"
+  },
+  "validation_search": {
+    "rdl_weight": [
+      0.0,
+      0.1,
+      0.3,
+      1.0
+    ],
+    "selection": "lowest validation normalized WER, then raw WER, then smaller gamma; no test access"
+  }
+}

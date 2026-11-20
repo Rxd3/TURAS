@@ -1,0 +1,346 @@
+{
+  "status": "supplementary_final_integrity_audit_complete",
+  "protocol_sha256": "288aebd71d8a3574e13d436748d4161bc258a487e65066f1c3508bc8e835bec1",
+  "audit_code_sha256": "a5e84fc6033b0451ae3a7999e5a779161573d6b88f54f125b90fa89b1ab9c6c8",
+  "audit_code_commit": "709015a49f4f83567cfdb96f6e4b7b8dd9a4e689",
+  "scope": "post-freeze descriptive integrity/overlap audit; no model selection or metric-policy changes",
+  "run_inventory": [
+    {
+      "system_id": "B4-xlsr-tr-cv7",
+      "mode": "accuracy",
+      "completed_sha256": "56261ab3fed26b62b6aa242f4d827203d92bce578ab2cd04dc031b0c1f659a49"
+    },
+    {
+      "system_id": "B1-whisper-small",
+      "mode": "accuracy",
+      "completed_sha256": "96802d65dd25d4e809303314dcb2cfb7d2c1a64181c1d3046b76d143f99e6452"
+    },
+    {
+      "system_id": "F1-whisper-lora",
+      "mode": "accuracy",
+      "completed_sha256": "a6f568d587efd4490ee2a6ca6d89054e7d81a1edc40f66ad71623d4c1cc7d332"
+    },
+    {
+      "system_id": "F3-ctc-vocab",
+      "mode": "accuracy",
+      "completed_sha256": "7d3d911e2f5dfdb7b7882a9d7e71ee1afb8d470625f6b118e20b2108a8a01377"
+    },
+    {
+      "system_id": "F2-whisper-full",
+      "mode": "accuracy",
+      "completed_sha256": "499bcd7d4dc6e633a71432584d1b883ba1c230512a47b595a393d0558e7bb2cc"
+    },
+    {
+      "system_id": "F1-whisper-lora--acoustic-control",
+      "mode": "cached_nbest_selection",
+      "completed_sha256": "2b3f25c8a17d160bd7bde3d6a1623ce69c2b3b0b9a11ad25173c004b510c3d9e"
+    },
+    {
+      "system_id": "F1-whisper-lora--rdl-full",
+      "mode": "cached_nbest_selection",
+      "completed_sha256": "8ad291007b79c4dfdc59769fef817c4f2fffdf6ab4a01514a53fa91ebb309116"
+    },
+    {
+      "system_id": "F1-whisper-lora--rdl-no-quantities",
+      "mode": "cached_nbest_selection",
+      "completed_sha256": "506c55833d876072181bc504df0328fb9df79a40fda0bd7b5ba7eefd3fe34830"
+    },
+    {
+      "system_id": "F1-whisper-lora--rdl-no-comention",
+      "mode": "cached_nbest_selection",
+      "completed_sha256": "60ab5830af524b0a2d70d8c882381bcd7cb37a941b83d8f65426250632eb6bb6"
+    },
+    {
+      "system_id": "F1-whisper-lora--rdl-random",
+      "mode": "cached_nbest_selection",
+      "completed_sha256": "49102fe254e04b882a6d5875a1b3beb80d7de265ad1125aaac58c2cf85405db1"
+    },
+    {
+      "system_id": "F2-whisper-full--acoustic-control",
+      "mode": "cached_nbest_selection",
+      "completed_sha256": "514b66eb8b56cb61d46a93807668e8604fd74371ed42275c76a9a6f5ddaa86f3"
+    },
+    {
+      "system_id": "F2-whisper-full--rdl-full",
+      "mode": "cached_nbest_selection",
+      "completed_sha256": "0f1f3782e54c6ffd1d5a12760437e2e9306f8d53125d36917cfdb7cd96a1704a"
+    },
+    {
+      "system_id": "F2-whisper-full--rdl-no-quantities",
+      "mode": "cached_nbest_selection",
+      "completed_sha256": "fc35ed6b7385839c68a2a349c996228e15fcd9ebd3899783caeb6f9445cc1f56"
+    },
+    {
+      "system_id": "F2-whisper-full--rdl-no-comention",
+      "mode": "cached_nbest_selection",
+      "completed_sha256": "7db19f2b01076bc32e9086f493cdd31b9eacce916804a23fa8dda6263e31e7dd"
+    },
+    {
+      "system_id": "F2-whisper-full--rdl-random",
+      "mode": "cached_nbest_selection",
+      "completed_sha256": "c96191e7e6be071889b132a5411d6c2ae689a0a67e0de21d2d8c96b227012f69"
+    },
+    {
+      "system_id": "F3-ctc-vocab--acoustic-control",
+      "mode": "cached_nbest_selection",
+      "completed_sha256": "ddce33902395a1254b9df6386d41f442821888f41a9790f1fd988f12e311c5de"
+    },
+    {
+      "system_id": "F3-ctc-vocab--rdl-full",
+      "mode": "cached_nbest_selection",
+      "completed_sha256": "ed38bb53fa8bca69c6ffd15255bd407b2e4334cc194d76576475abfb56b114b8"
+    },
+    {
+      "system_id": "F3-ctc-vocab--rdl-no-quantities",
+      "mode": "cached_nbest_selection",
+      "completed_sha256": "e99a9de9b6a4571d7711c2f1884b3537a469b7a719b4a50b6a04a7f1d014b59d"
+    },
+    {
+      "system_id": "F3-ctc-vocab--rdl-no-comention",
+      "mode": "cached_nbest_selection",
+      "completed_sha256": "3e589830d815b1c37dd658a71143fe5d5a143c94025581ae7cb09303c100ea4d"
+    },
+    {
+      "system_id": "F3-ctc-vocab--rdl-random",
+      "mode": "cached_nbest_selection",
+      "completed_sha256": "5b681eb6976b218d7748e193ac6c0be6388ec275624dc872cefbd3d6013a8e10"
+    },
+    {
+      "system_id": "F2-whisper-full--rdl-full",
+      "mode": "timing",
+      "completed_sha256": "4cf795c62887ca257715a10ebc4374a2551b9229e23c7f7519bb2340c9d9e94b"
+    },
+    {
+      "system_id": "F3-ctc-vocab--rdl-full",
+      "mode": "timing",
+      "completed_sha256": "1b55c9dd0b78a46c12ed3654816e2f94fec582a139d34443697b5c16e5c4319a"
+    },
+    {
+      "system_id": "F2-whisper-full",
+      "mode": "timing",
+      "completed_sha256": "0f948183e338e6ec33d6bd1a0a748f6061a9a3b465f4360b47c2794c25f5020e"
+    },
+    {
+      "system_id": "B1-whisper-small",
+      "mode": "timing",
+      "completed_sha256": "0aab106c762d0fb33cfb19162e7a0070507919a9791d53e38459c01dd44eaed4"
+    },
+    {
+      "system_id": "F1-whisper-lora--rdl-full",
+      "mode": "timing",
+      "completed_sha256": "3406b7849ffc19c7170c514065699823d0df3d1b589efda436ac61a0da8461ed"
+    },
+    {
+      "system_id": "F3-ctc-vocab",
+      "mode": "timing",
+      "completed_sha256": "e5fbde998f0faaf8fee76e81858560b1642b5cf924ac6386ed1edafdab11d80e"
+    },
+    {
+      "system_id": "F1-whisper-lora",
+      "mode": "timing",
+      "completed_sha256": "d3b7246198b316b79227f929b59d2fcacdc9ae57f67b771ed13f953130ffe217"
+    },
+    {
+      "system_id": "B4-xlsr-tr-cv7",
+      "mode": "timing",
+      "completed_sha256": "38b4b819743451f2621aee48d4280898267304aac0383da5ce0c83658729f3cb"
+    }
+  ],
+  "fixed_candidate_checks": [
+    {
+      "system_id": "F1-whisper-lora--acoustic-control",
+      "utterances": 636,
+      "all_native_candidates_and_acoustic_scores_preserved": true
+    },
+    {
+      "system_id": "F1-whisper-lora--rdl-full",
+      "utterances": 636,
+      "all_native_candidates_and_acoustic_scores_preserved": true
+    },
+    {
+      "system_id": "F1-whisper-lora--rdl-no-quantities",
+      "utterances": 636,
+      "all_native_candidates_and_acoustic_scores_preserved": true
+    },
+    {
+      "system_id": "F1-whisper-lora--rdl-no-comention",
+      "utterances": 636,
+      "all_native_candidates_and_acoustic_scores_preserved": true
+    },
+    {
+      "system_id": "F1-whisper-lora--rdl-random",
+      "utterances": 636,
+      "all_native_candidates_and_acoustic_scores_preserved": true
+    },
+    {
+      "system_id": "F2-whisper-full--acoustic-control",
+      "utterances": 636,
+      "all_native_candidates_and_acoustic_scores_preserved": true
+    },
+    {
+      "system_id": "F2-whisper-full--rdl-full",
+      "utterances": 636,
+      "all_native_candidates_and_acoustic_scores_preserved": true
+    },
+    {
+      "system_id": "F2-whisper-full--rdl-no-quantities",
+      "utterances": 636,
+      "all_native_candidates_and_acoustic_scores_preserved": true
+    },
+    {
+      "system_id": "F2-whisper-full--rdl-no-comention",
+      "utterances": 636,
+      "all_native_candidates_and_acoustic_scores_preserved": true
+    },
+    {
+      "system_id": "F2-whisper-full--rdl-random",
+      "utterances": 636,
+      "all_native_candidates_and_acoustic_scores_preserved": true
+    },
+    {
+      "system_id": "F3-ctc-vocab--acoustic-control",
+      "utterances": 636,
+      "all_native_candidates_and_acoustic_scores_preserved": true
+    },
+    {
+      "system_id": "F3-ctc-vocab--rdl-full",
+      "utterances": 636,
+      "all_native_candidates_and_acoustic_scores_preserved": true
+    },
+    {
+      "system_id": "F3-ctc-vocab--rdl-no-quantities",
+      "utterances": 636,
+      "all_native_candidates_and_acoustic_scores_preserved": true
+    },
+    {
+      "system_id": "F3-ctc-vocab--rdl-no-comention",
+      "utterances": 636,
+      "all_native_candidates_and_acoustic_scores_preserved": true
+    },
+    {
+      "system_id": "F3-ctc-vocab--rdl-random",
+      "utterances": 636,
+      "all_native_candidates_and_acoustic_scores_preserved": true
+    }
+  ],
+  "timing_prediction_consistency": [
+    {
+      "system_id": "B1-whisper-small",
+      "timing_utterances": 107,
+      "changed_first_repeat_transcripts": 0,
+      "complete_timed_repeats": 3,
+      "timed_batches": 321,
+      "warmup_batches": 3,
+      "all_repeat_error_rows": 0,
+      "scope": "first timed repeat versus full-test accuracy/cached selection; later-repeat hypotheses are not retained by the shared harness"
+    },
+    {
+      "system_id": "B4-xlsr-tr-cv7",
+      "timing_utterances": 107,
+      "changed_first_repeat_transcripts": 0,
+      "complete_timed_repeats": 3,
+      "timed_batches": 321,
+      "warmup_batches": 3,
+      "all_repeat_error_rows": 0,
+      "scope": "first timed repeat versus full-test accuracy/cached selection; later-repeat hypotheses are not retained by the shared harness"
+    },
+    {
+      "system_id": "F1-whisper-lora",
+      "timing_utterances": 107,
+      "changed_first_repeat_transcripts": 0,
+      "complete_timed_repeats": 3,
+      "timed_batches": 321,
+      "warmup_batches": 3,
+      "all_repeat_error_rows": 0,
+      "scope": "first timed repeat versus full-test accuracy/cached selection; later-repeat hypotheses are not retained by the shared harness"
+    },
+    {
+      "system_id": "F2-whisper-full",
+      "timing_utterances": 107,
+      "changed_first_repeat_transcripts": 0,
+      "complete_timed_repeats": 3,
+      "timed_batches": 321,
+      "warmup_batches": 3,
+      "all_repeat_error_rows": 0,
+      "scope": "first timed repeat versus full-test accuracy/cached selection; later-repeat hypotheses are not retained by the shared harness"
+    },
+    {
+      "system_id": "F3-ctc-vocab",
+      "timing_utterances": 107,
+      "changed_first_repeat_transcripts": 0,
+      "complete_timed_repeats": 3,
+      "timed_batches": 321,
+      "warmup_batches": 3,
+      "all_repeat_error_rows": 0,
+      "scope": "first timed repeat versus full-test accuracy/cached selection; later-repeat hypotheses are not retained by the shared harness"
+    },
+    {
+      "system_id": "F1-whisper-lora--rdl-full",
+      "timing_utterances": 107,
+      "changed_first_repeat_transcripts": 0,
+      "complete_timed_repeats": 3,
+      "timed_batches": 321,
+      "warmup_batches": 3,
+      "all_repeat_error_rows": 0,
+      "scope": "first timed repeat versus full-test accuracy/cached selection; later-repeat hypotheses are not retained by the shared harness"
+    },
+    {
+      "system_id": "F2-whisper-full--rdl-full",
+      "timing_utterances": 107,
+      "changed_first_repeat_transcripts": 0,
+      "complete_timed_repeats": 3,
+      "timed_batches": 321,
+      "warmup_batches": 3,
+      "all_repeat_error_rows": 0,
+      "scope": "first timed repeat versus full-test accuracy/cached selection; later-repeat hypotheses are not retained by the shared harness"
+    },
+    {
+      "system_id": "F3-ctc-vocab--rdl-full",
+      "timing_utterances": 107,
+      "changed_first_repeat_transcripts": 0,
+      "complete_timed_repeats": 3,
+      "timed_batches": 321,
+      "warmup_batches": 3,
+      "all_repeat_error_rows": 0,
+      "scope": "first timed repeat versus full-test accuracy/cached selection; later-repeat hypotheses are not retained by the shared harness"
+    }
+  ],
+  "train_test_overlap": {
+    "train_reference_sha256": "f4992d2951389ac243c281d2875511cfa0669d026d8698993db48b30b09a4508",
+    "test_reference_sha256": "31e372f0e35f504de59b49f1e0e1f3ed6fcc2772138c591a2cf2b054a4e7ef3f",
+    "utterance_ids": 0,
+    "recording_groups": 0,
+    "exact_audio_hashes": 0,
+    "sentence_checks": {
+      "literal_reference_string": {
+        "test_utterances_also_in_train": 0,
+        "distinct_matching_test_sentences": 0
+      },
+      "raw_word_token_sequence": {
+        "test_utterances_also_in_train": 0,
+        "distinct_matching_test_sentences": 0
+      },
+      "turkish_normalized_reference": {
+        "test_utterances_also_in_train": 0,
+        "distinct_matching_test_sentences": 0
+      }
+    },
+    "speakers": "unknown; recording disjointness does not prove speaker disjointness"
+  },
+  "private_handoff": {
+    "status": "private_handoff_ready",
+    "archive": "artifacts/owner-m45/final/handoff/TURAS-M4-M5-private-handoff.tar",
+    "bytes": 2424330240,
+    "sha256": "3bbaf65cd8ac45b4dceab6e1401748392e0bf3dd0039d395d1e092719740a91d",
+    "protocol_sha256": "288aebd71d8a3574e13d436748d4161bc258a487e65066f1c3508bc8e835bec1",
+    "recipient_acknowledgment": "not recorded; ready for owner delivery",
+    "public_report": "results/final/M4_M5_FINAL_REPORT.md"
+  },
+  "delivered_files_verified": 226,
+  "archive_members_verified_against_index": 226,
+  "archive_audio_or_test_reference_files": 0,
+  "test_reference_status_counts": {
+    "unreviewed": 611,
+    "verified": 25
+  }
+}

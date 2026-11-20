@@ -1,6 +1,9 @@
-# Evaluation and timing policy — 0.1
+# Evaluation and timing policy — 0.2 (proposed by M6, pending review by M1 and model owners M2–M5)
 
-M6 owns the shared offline evaluator; it is not implemented. All five baselines,
+Owner adoption for M4/M5 integration: 2026-11-19; see [D24](owner_decisions.md).
+This records project approval, not independent peer-review sign-off.
+
+M6 owns the shared offline evaluator, now integrated on the M4/M5 branch. All baselines,
 fine-tuned systems and RDL conditions must be reported on the same frozen test
 IDs and reference release. A missing or incompatible prediction bundle blocks
 comparison; never silently score its successful subset.
@@ -18,7 +21,9 @@ Do not average per-utterance percentages to produce corpus WER/CER. Report
 denominators and rates as both ratios and clearly labeled percentages when used.
 Rates may exceed 1. Deterministic alignment ties prefer substitution, then
 deletion, then insertion so error-type counts remain stable. Alignment direction
-is reference to hypothesis. Empty hypotheses incur deletions; an empty reference
+is reference to hypothesis; the backtrace runs from the end of both sequences
+(exact rule and golden test in
+[normalization](contracts/normalization.md#alignment-tie-break)). Empty hypotheses incur deletions; an empty reference
 adds insertions and zero denominator. Report zero-reference cases separately;
 if total N is zero, the aggregate rate is undefined, not zero.
 
@@ -29,14 +34,38 @@ view, counts errors separately, and retains their original status. Successful-on
 scores, if diagnostic, must state their denominator and cannot replace the primary
 matched all-ID comparison. Do not silently impute absent rows.
 
+## Metric names and course mapping
+
+The Hugging Face audio course (chapter 5) asks to justify WER, CER and any
+additional metric. Reports name metrics as follows:
+
+| Course name | TURAS metric |
+| --- | --- |
+| Orthographic WER | WER under `raw-v1` |
+| Normalised WER | WER under `tr-normalized-v1` |
+| CER | CER under each view, with the space policy stated |
+| WAcc | `1 - WER` under the same view |
+| RTFx | `1 / RTF` under the same timing condition |
+
+WER is the course's headline ASR metric. CER also gives partial credit inside
+long suffixed Turkish words, where one wrong suffix makes the whole word wrong.
+The normalized view separates spelling conventions (case, punctuation) from
+recognition errors; the raw view keeps them visible. The course's
+`BasicTextNormalizer` is not used: it is not Turkish-aware and splits `İZMİR`
+into three tokens.
+
 ## Domain terminology
 
 M1/M6 freeze a versioned domain lexicon with canonical IDs, approved aliases,
 topic/entity/quantity categories and provenance before test evaluation. Train-only
 and audited independent external sources may build inference vocabulary; held-out
-reference annotations remain evaluator-only. Match normalized longest token spans,
-left-to-right without overlap; break equal-length alias ties by canonical ID.
-Freeze ambiguity rules before evaluation.
+reference annotations remain evaluator-only. For the M4/M5 final protocol, owner
+decision D38 freezes `canonical-occurrence-m1-v1`: apply M1's existing raw-text
+`screening_tokens` and lexicon matcher, longest spans left-to-right without
+overlap, canonical-ID ties, prefix aliases and exclusions. This amends the earlier
+normalized-span proposal because normalization can erase apostrophe boundaries
+needed by frozen aliases. WER/CER normalization remains unchanged. The frozen
+lexicon hash and ambiguity rules are recorded in the final protocol.
 
 Report exact canonical term precision, recall and F1 from occurrence-count
 multisets per utterance (TP = minimum reference/predicted count per canonical
@@ -99,9 +128,52 @@ audio duration, batch size, warm-up flag, cold-load time, per-stage and end-to-e
 seconds, device synchronization, hardware/environment hash and measurement scope.
 Training wall time/peak memory is separate from inference RTF.
 
+The headline condition is end-to-end RTF at batch size 1, with 3 timed repeats
+over a frozen 30-minute timing subset of test IDs, sampled by recording group
+with seed 2026 when the release freezes. Each timed boundary synchronizes the GPU
+with `torch.cuda.synchronize()` when CUDA is in use and reads `time.perf_counter()`.
+A secondary core-model RTF times only the model call, after audio is loaded and
+before results are serialized; it is always labeled core-model and never replaces
+the end-to-end figure. Batched throughput is an optional, labeled secondary view.
+
+Before and after each timed repeat, record from `nvidia-smi` the GPU name,
+driver version, SM clock and maximum SM clock, power draw, temperature and
+`clocks_event_reasons.active`, `.hw_slowdown`, `.hw_thermal_slowdown`,
+`.sw_thermal_slowdown` and `.sw_power_cap`. A sample in which a hardware or
+thermal slowdown reason is `Active` is flagged, and the number of flagged samples
+is reported. `sw_power_cap` alone is normal on laptops and is only recorded.
+When `nvidia-smi` is unavailable, the record states the error and the run
+continues.
+
 ## Final report requirements
 
 Include system and parent baseline, split/release/hash, raw/normalized edit counts
 and WER/CER, terminology supports/P/R/F1, RTF/latency scope/hardware, actual seed
 count, uncertainty, artifact/run hashes, N-best coverage, failure counts, ablations
 and limitations. No numeric result exists until a traceable run is completed.
+
+## Declared limitations
+
+The Monday 2026-11-23 deadline forces these cuts. Each is reported as a
+limitation, never hidden:
+
+- One training seed per system, labeled single-seed, instead of seeds 17/42/2026.
+- Timing uses batch 1 and 3 repeats on a frozen 30-minute timing subset instead
+  of a 1-hour subset.
+- Terminology P/R/F1 is computed only if Member 1 freezes a lexicon by Thursday
+  2026-11-19; otherwise the report states that it was not done.
+- The 0.2 contract amendments land as one combined documentation pull request
+  with decision entries D17–D21, not as separate contract pull requests.
+- Run-manifest and timing checks cover required keys only.
+- F2 (Whisper full fine-tuning) and the R1 ablations run only if GPU time remains
+  after the headline systems. They stay in scope; if they do not run, the report
+  says so, with measured hardware feasibility evidence for F2.
+
+## Version history
+
+- 0.1 (2026-11-17): initial policy.
+- 0.2 (proposed by M6 on 2026-11-17, pending review by M1 and model owners
+  M2–M5; [D21](decisions.md)): fixes the timing headline (end-to-end, batch 1,
+  3 repeats, 30-minute subset), labels core-model RTF as secondary, records
+  `clocks_event_reasons`, maps the course metric names and lists the declared
+  limitations.

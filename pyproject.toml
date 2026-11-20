@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "turkish-asr-rdl"
 version = "0.0.1"
-description = "TURAS: scaffold for Turkish domain-specific ASR adaptation and RDL"
+description = "TURAS: Turkish domain-specific ASR adaptation and relational rescoring"
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [

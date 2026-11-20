@@ -1,0 +1,43 @@
+{
+  "schema_version": "0.1",
+  "experiment": "M5 heterogeneous RDL seed17 internal holdout",
+  "dataset_release": "turas-tr-econ-legis-v0.1",
+  "split_manifest_sha256": "a8fff65b99fcf11d9452685e438e250207032ecfe11152741562147126d095b8",
+  "run_id": "rdl-fba6f35107f14e219fa968fbbb6eaaf8",
+  "status": "trained_internal_holdout_only",
+  "artifact_manifest_sha256": "308c1e1722d1492a3b8ced51104b2dd86e4fe40c8e856c39a96188a9ac6595df",
+  "model_safetensors_sha256": "8dbd35fe7649ad3e15aea251bdf1d94c93e0c7c7dba6fd5eabdf925c0d2d355a",
+  "source_commit": "b6afa13063f7fa90bb1bc190c67b4529e40e91a5",
+  "source_dirty_diff_sha256": "33fb678e74bc096e870bc33ebb3702c3c2e5029fc1d9ac362c01c997bbde0687",
+  "seed": 17,
+  "epochs": 20,
+  "node_counts": {
+    "entity": 90,
+    "topic": 7,
+    "quantifier": 1247,
+    "utterance": 3457
+  },
+  "train_edges": 25607,
+  "internal_validation_edges": 128,
+  "train_groups": 103,
+  "internal_validation_groups": 26,
+  "overlapping_validation_relations_excluded": 956,
+  "first_epoch_loss": 0.6931825876235962,
+  "last_epoch_loss": 0.5884859561920166,
+  "relation_evaluation": {
+    "status": "measured_internal_training_group_holdout",
+    "average_precision": 0.6752456653575426,
+    "mrr": 0.24940714003300807,
+    "hits_at_10": 0.5859375,
+    "positive_count": 128,
+    "negative_count": 128,
+    "saturated_positive_edges": 0,
+    "scope": "internal split of training annotations only; not corpus validation/test"
+  },
+  "limitations": [
+    "Automatic weak relation labels",
+    "Internal holdout of ASR training groups only",
+    "No downstream ASR accuracy or corpus validation/test result",
+    "No checkpoint or fusion selection evidence"
+  ]
+}

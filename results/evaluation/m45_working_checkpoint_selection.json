@@ -1,0 +1,306 @@
+{
+  "status": "working_selection_recovered_minutes",
+  "reference_variant": "owner-recovered-validation-minutes-v1",
+  "reference_manifest_sha256": "8c06f3094c8afc13b457edf5cc455b5d26092817aae282636d1111e0663f3267",
+  "source_commit": "d8e37915b8908225e17d3f8facc3cf0ffac1e45b",
+  "created_at_utc": "2026-11-19T13:06:09.172276+00:00",
+  "selections": [
+    {
+      "model": "whisper-lora-seed17",
+      "criterion": "normalized WER, raw WER, earlier epoch",
+      "candidates": [
+        {
+          "epoch": 1,
+          "checkpoint": "artifacts/owner-m45/whisper-lora-seed17/epoch-1",
+          "checkpoint_manifest_sha256": "118d4e6ca579873f0fa96e3d6f1f60bf0b70057e986e729553d1f075cf4689f0",
+          "score_report": "artifacts/owner-m45/validation-recovery/whisper-lora-seed17-epoch-1-scores.json",
+          "score_report_sha256": "1ad965b436443e8c0c59466d4043c7ac8634584ca56183c25c0e93166d14dee7",
+          "normalized_wer": 0.1429639040430461,
+          "raw_wer": 0.23619163869392737
+        },
+        {
+          "epoch": 2,
+          "checkpoint": "artifacts/owner-m45/whisper-lora-seed17/epoch-2",
+          "checkpoint_manifest_sha256": "50b74b260f7a6987a699884d42140706abd1345ee59c5172fe1466881548a0e5",
+          "score_report": "artifacts/owner-m45/validation-recovery/whisper-lora-seed17-epoch-2-scores.json",
+          "score_report_sha256": "d8d562a8aca16b7ec7b037a32c5b361a5f8fcd76709f3cebb89b36581921e90e",
+          "normalized_wer": 0.13138031537254316,
+          "raw_wer": 0.2185688129386634
+        },
+        {
+          "epoch": 3,
+          "checkpoint": "artifacts/owner-m45/whisper-lora-seed17/epoch-3",
+          "checkpoint_manifest_sha256": "95e25108715b0fab14136c7526614e2f2aaa6e690b8c98eb2deef5eab796b4bb",
+          "score_report": "artifacts/owner-m45/validation-recovery/whisper-lora-seed17-epoch-3-scores.json",
+          "score_report_sha256": "45b79adae86654d16435f701f8311d1242d3a44e8eaf199ed7fcd294ab4b0c79",
+          "normalized_wer": 0.12457962783050594,
+          "raw_wer": 0.21093988404028075
+        }
+      ],
+      "selected": {
+        "epoch": 3,
+        "checkpoint": "artifacts/owner-m45/whisper-lora-seed17/epoch-3",
+        "checkpoint_manifest_sha256": "95e25108715b0fab14136c7526614e2f2aaa6e690b8c98eb2deef5eab796b4bb",
+        "score_report": "artifacts/owner-m45/validation-recovery/whisper-lora-seed17-epoch-3-scores.json",
+        "score_report_sha256": "45b79adae86654d16435f701f8311d1242d3a44e8eaf199ed7fcd294ab4b0c79",
+        "normalized_wer": 0.12457962783050594,
+        "raw_wer": 0.21093988404028075
+      }
+    },
+    {
+      "model": "whisper-full-seed17",
+      "criterion": "normalized WER, raw WER, earlier epoch",
+      "candidates": [
+        {
+          "epoch": 1,
+          "checkpoint": "artifacts/owner-m45/whisper-full-seed17/epoch-1",
+          "checkpoint_manifest_sha256": "77e36974d39489e14d78f9171fa5bb6348b466bb844de8e12869bb4e90adbe10",
+          "score_report": "artifacts/owner-m45/validation-recovery/whisper-full-seed17-epoch-1-scores.json",
+          "score_report_sha256": "e5256dd461f01c03041fc665cfa8c696f736ace9d80801414e082a40a769ac80",
+          "normalized_wer": 0.1106793214259024,
+          "raw_wer": 0.1922490082392432
+        },
+        {
+          "epoch": 2,
+          "checkpoint": "artifacts/owner-m45/whisper-full-seed17/epoch-2",
+          "checkpoint_manifest_sha256": "0c49d7423a55de173204c8025a463a677d956f42a8ac3ebd6af577ec9cfc1c46",
+          "score_report": "artifacts/owner-m45/validation-recovery/whisper-full-seed17-epoch-2-scores.json",
+          "score_report_sha256": "b84ef9e89f9e5dc69e5ba8b15cacf73284889ae8126a07e7bc7e6449a2f582ff",
+          "normalized_wer": 0.10193558030042597,
+          "raw_wer": 0.1844675007628929
+        },
+        {
+          "epoch": 3,
+          "checkpoint": "artifacts/owner-m45/whisper-full-seed17/epoch-3",
+          "checkpoint_manifest_sha256": "c10a6d18a3ded941579504f97546e80fde250744de907cd4640cd7a653c74a5f",
+          "score_report": "artifacts/owner-m45/validation-recovery/whisper-full-seed17-epoch-3-scores.json",
+          "score_report_sha256": "0b494aee018cc345c2cd564012467736a7fcb1652514741c206083bdb1bb85aa",
+          "normalized_wer": 0.10380390105373291,
+          "raw_wer": 0.18942630454684162
+        }
+      ],
+      "selected": {
+        "epoch": 2,
+        "checkpoint": "artifacts/owner-m45/whisper-full-seed17/epoch-2",
+        "checkpoint_manifest_sha256": "0c49d7423a55de173204c8025a463a677d956f42a8ac3ebd6af577ec9cfc1c46",
+        "score_report": "artifacts/owner-m45/validation-recovery/whisper-full-seed17-epoch-2-scores.json",
+        "score_report_sha256": "b84ef9e89f9e5dc69e5ba8b15cacf73284889ae8126a07e7bc7e6449a2f582ff",
+        "normalized_wer": 0.10193558030042597,
+        "raw_wer": 0.1844675007628929
+      }
+    },
+    {
+      "model": "ctc-extended-seed17",
+      "criterion": "normalized WER, raw WER, earlier epoch",
+      "candidates": [
+        {
+          "epoch": 1,
+          "checkpoint": "artifacts/owner-m45/ctc-extended-seed17/epoch-1",
+          "checkpoint_manifest_sha256": "106181d1b657644b81e56c179418e16bb1b52ae07384a677bfb7b48f8bfdc8f4",
+          "score_report": "artifacts/owner-m45/validation-recovery/ctc-extended-seed17-epoch-1-scores.json",
+          "score_report_sha256": "812c1dcba0a8ac57b23b467ed784bc70d5ef6c5ac2814a04d3a89d91f35c1df4",
+          "normalized_wer": 0.28159330393842014,
+          "raw_wer": 0.46803478791577663
+        },
+        {
+          "epoch": 2,
+          "checkpoint": "artifacts/owner-m45/ctc-extended-seed17/epoch-2",
+          "checkpoint_manifest_sha256": "84d7ae794702476a171589c7ef8d73e2e0decade31d59dd4f3599f9cf51065c3",
+          "score_report": "artifacts/owner-m45/validation-recovery/ctc-extended-seed17-epoch-2-scores.json",
+          "score_report_sha256": "4239540d7a1b6ddf86804f57da8c073083aa1687da08a40a0817a0ee4059a4d0",
+          "normalized_wer": 0.2655257454599806,
+          "raw_wer": 0.4570491303021056
+        },
+        {
+          "epoch": 3,
+          "checkpoint": "artifacts/owner-m45/ctc-extended-seed17/epoch-3",
+          "checkpoint_manifest_sha256": "f0a7179e901b75233fafb3f7f6e8e29e2aca44650c099f8b2705c300bd30a39a",
+          "score_report": "artifacts/owner-m45/validation-recovery/ctc-extended-seed17-epoch-3-scores.json",
+          "score_report_sha256": "5cc89a25dd234b43f043c3a7dc75fb0844ea9020327a17288af29727c8abc370",
+          "normalized_wer": 0.2540168896196099,
+          "raw_wer": 0.44804699420201405
+        }
+      ],
+      "selected": {
+        "epoch": 3,
+        "checkpoint": "artifacts/owner-m45/ctc-extended-seed17/epoch-3",
+        "checkpoint_manifest_sha256": "f0a7179e901b75233fafb3f7f6e8e29e2aca44650c099f8b2705c300bd30a39a",
+        "score_report": "artifacts/owner-m45/validation-recovery/ctc-extended-seed17-epoch-3-scores.json",
+        "score_report_sha256": "5cc89a25dd234b43f043c3a7dc75fb0844ea9020327a17288af29727c8abc370",
+        "normalized_wer": 0.2540168896196099,
+        "raw_wer": 0.44804699420201405
+      }
+    }
+  ],
+  "fusion_frozen": false,
+  "limitations": [
+    "Edited upstream minutes; no private M1 corrections/review evidence",
+    "Preliminary validation only; not a final test result",
+    "RDL fusion and final repeat timing remain pending"
+  ],
+  "selection_sha256": "7304e4d7380ae33320a3e17dbc159ac3a101f689a725d0e146a61b5947cfd96f",
+  "verified_selected_reports": [
+    {
+      "model": "whisper-lora-seed17",
+      "epoch": 3,
+      "metrics": {
+        "raw-v1": {
+          "view": "raw-v1",
+          "utterances": 438,
+          "zero_reference_utterances": 0,
+          "error_rows": 0,
+          "words": {
+            "substitutions": 2386,
+            "deletions": 174,
+            "insertions": 205,
+            "hits": 10548
+          },
+          "chars": {
+            "substitutions": 2191,
+            "deletions": 1816,
+            "insertions": 1420,
+            "hits": 94426
+          },
+          "wer": 0.21093988404028075,
+          "cer": 0.05513394898052482,
+          "wacc": 0.7890601159597193,
+          "reference_words": 13108,
+          "reference_characters": 98433
+        },
+        "tr-normalized-v1": {
+          "view": "tr-normalized-v1",
+          "utterances": 438,
+          "zero_reference_utterances": 0,
+          "error_rows": 0,
+          "words": {
+            "substitutions": 1263,
+            "deletions": 197,
+            "insertions": 207,
+            "hits": 11921
+          },
+          "chars": {
+            "substitutions": 1210,
+            "deletions": 1384,
+            "insertions": 1228,
+            "hits": 93651
+          },
+          "wer": 0.12457962783050594,
+          "cer": 0.03971115382617279,
+          "wacc": 0.8754203721694941,
+          "reference_words": 13381,
+          "reference_characters": 96245
+        }
+      },
+      "predictions_sha256": "b12134d441149169944b3b6aa93d50ac3813efb9fee836b21597476378c24500",
+      "reference_sha256": "d0c8519ca6aed053f89786bc733541a70faee09cf8d8bdb6cc12065d97dbd958"
+    },
+    {
+      "model": "whisper-full-seed17",
+      "epoch": 2,
+      "metrics": {
+        "raw-v1": {
+          "view": "raw-v1",
+          "utterances": 438,
+          "zero_reference_utterances": 0,
+          "error_rows": 0,
+          "words": {
+            "substitutions": 2080,
+            "deletions": 158,
+            "insertions": 180,
+            "hits": 10870
+          },
+          "chars": {
+            "substitutions": 1784,
+            "deletions": 1644,
+            "insertions": 1311,
+            "hits": 95005
+          },
+          "wer": 0.1844675007628929,
+          "cer": 0.04814442311013583,
+          "wacc": 0.8155324992371071,
+          "reference_words": 13108,
+          "reference_characters": 98433
+        },
+        "tr-normalized-v1": {
+          "view": "tr-normalized-v1",
+          "utterances": 438,
+          "zero_reference_utterances": 0,
+          "error_rows": 0,
+          "words": {
+            "substitutions": 1007,
+            "deletions": 179,
+            "insertions": 178,
+            "hits": 12195
+          },
+          "chars": {
+            "substitutions": 924,
+            "deletions": 1259,
+            "insertions": 1135,
+            "hits": 94062
+          },
+          "wer": 0.10193558030042597,
+          "cer": 0.034474518156787363,
+          "wacc": 0.8980644196995741,
+          "reference_words": 13381,
+          "reference_characters": 96245
+        }
+      },
+      "predictions_sha256": "e63ba8d51dc9591cd7f9e65795104b07b3ae76a066d68ad406c577c01759b58b",
+      "reference_sha256": "d0c8519ca6aed053f89786bc733541a70faee09cf8d8bdb6cc12065d97dbd958"
+    },
+    {
+      "model": "ctc-extended-seed17",
+      "epoch": 3,
+      "metrics": {
+        "raw-v1": {
+          "view": "raw-v1",
+          "utterances": 438,
+          "zero_reference_utterances": 0,
+          "error_rows": 0,
+          "words": {
+            "substitutions": 4946,
+            "deletions": 690,
+            "insertions": 237,
+            "hits": 7472
+          },
+          "chars": {
+            "substitutions": 3908,
+            "deletions": 5556,
+            "insertions": 1468,
+            "hits": 88969
+          },
+          "wer": 0.44804699420201405,
+          "cer": 0.11106031513821585,
+          "wacc": 0.551953005797986,
+          "reference_words": 13108,
+          "reference_characters": 98433
+        },
+        "tr-normalized-v1": {
+          "view": "tr-normalized-v1",
+          "utterances": 438,
+          "zero_reference_utterances": 0,
+          "error_rows": 0,
+          "words": {
+            "substitutions": 2213,
+            "deletions": 956,
+            "insertions": 230,
+            "hits": 10212
+          },
+          "chars": {
+            "substitutions": 1755,
+            "deletions": 4033,
+            "insertions": 1562,
+            "hits": 90457
+          },
+          "wer": 0.2540168896196099,
+          "cer": 0.07636760351187075,
+          "wacc": 0.7459831103803901,
+          "reference_words": 13381,
+          "reference_characters": 96245
+        }
+      },
+      "predictions_sha256": "99c751eca722b5fe9d634f257a506500d5cbe5437a5efa59684453a359437c82",
+      "reference_sha256": "d0c8519ca6aed053f89786bc733541a70faee09cf8d8bdb6cc12065d97dbd958"
+    }
+  ]
+}

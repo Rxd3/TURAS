@@ -1,0 +1,168 @@
+{
+  "schema_version": "0.1",
+  "status": "training_completed_selection_pending",
+  "dataset_release": "turas-tr-econ-legis-v0.1",
+  "split_manifest_sha256": "a8fff65b99fcf11d9452685e438e250207032ecfe11152741562147126d095b8",
+  "seed": 17,
+  "runs": [
+    {
+      "local_directory": "artifacts/owner-m45/whisper-lora-seed17",
+      "run_id": "acoustic-bbc267859abb4a769e44e1bd7877ae61",
+      "training_mode": "lora",
+      "status": "training_completed_selection_pending",
+      "source_commit": "20cf280ec4c3deb2abe43db8418628a274a45598",
+      "model": {
+        "id": "openai/whisper-small",
+        "revision": "973afd24965f72e36ca33b3055d56a652f456b4d",
+        "weight_file": "model.safetensors",
+        "weight_sha256": "1d7734884874f1a1513ed9aa760a4f8e97aaa02fd6d93a3a85d27b2ae9ca596b"
+      },
+      "ended_at_utc": "2026-11-19T09:36:47.394946+00:00",
+      "history": [
+        {
+          "epoch": 1,
+          "train_loss": 0.44147789032263185,
+          "optimizer_steps": 274
+        },
+        {
+          "epoch": 2,
+          "train_loss": 0.3496236853421558,
+          "optimizer_steps": 274
+        },
+        {
+          "epoch": 3,
+          "train_loss": 0.3116766130164354,
+          "optimizer_steps": 274
+        }
+      ],
+      "run_manifest_sha256": "4a0d9403f0fd0726c0a819a70d0d7db576e387cae9ff92b37cef1d0209e97459",
+      "checkpoints": [
+        {
+          "epoch": 1,
+          "manifest_sha256": "118d4e6ca579873f0fa96e3d6f1f60bf0b70057e986e729553d1f075cf4689f0"
+        },
+        {
+          "epoch": 2,
+          "manifest_sha256": "50b74b260f7a6987a699884d42140706abd1345ee59c5172fe1466881548a0e5"
+        },
+        {
+          "epoch": 3,
+          "manifest_sha256": "95e25108715b0fab14136c7526614e2f2aaa6e690b8c98eb2deef5eab796b4bb"
+        }
+      ]
+    },
+    {
+      "local_directory": "artifacts/owner-m45/whisper-full-seed17",
+      "run_id": "acoustic-fdb825e7cc2b46fda2b14e0b3c655313",
+      "training_mode": "full",
+      "status": "training_completed_selection_pending",
+      "source_commit": "3d48879cc36480ec385361aa4163adc05bd5ca5a",
+      "model": {
+        "id": "openai/whisper-small",
+        "revision": "973afd24965f72e36ca33b3055d56a652f456b4d",
+        "weight_file": "model.safetensors",
+        "weight_sha256": "1d7734884874f1a1513ed9aa760a4f8e97aaa02fd6d93a3a85d27b2ae9ca596b"
+      },
+      "ended_at_utc": "2026-11-19T10:01:51.726399+00:00",
+      "history": [
+        {
+          "epoch": 1,
+          "train_loss": 0.33984337160082867,
+          "optimizer_steps": 274
+        },
+        {
+          "epoch": 2,
+          "train_loss": 0.1827326585890698,
+          "optimizer_steps": 274
+        },
+        {
+          "epoch": 3,
+          "train_loss": 0.10621937540335533,
+          "optimizer_steps": 274
+        }
+      ],
+      "run_manifest_sha256": "d45e1ecd25a0588a6dfb273452adb270163401cd770b6a798615fb3d59550d81",
+      "checkpoints": [
+        {
+          "epoch": 1,
+          "manifest_sha256": "77e36974d39489e14d78f9171fa5bb6348b466bb844de8e12869bb4e90adbe10"
+        },
+        {
+          "epoch": 2,
+          "manifest_sha256": "0c49d7423a55de173204c8025a463a677d956f42a8ac3ebd6af577ec9cfc1c46"
+        },
+        {
+          "epoch": 3,
+          "manifest_sha256": "c10a6d18a3ded941579504f97546e80fde250744de907cd4640cd7a653c74a5f"
+        }
+      ]
+    },
+    {
+      "local_directory": "artifacts/owner-m45/ctc-extended-seed17",
+      "run_id": "acoustic-fbf01b9c73a84b4cba3cccad4a7e0bdc",
+      "training_mode": "ctc_vocab_extension",
+      "status": "training_completed_selection_pending",
+      "source_commit": "3d48879cc36480ec385361aa4163adc05bd5ca5a",
+      "model": {
+        "id": "mpoyraz/wav2vec2-xls-r-300m-cv7-turkish",
+        "revision": "708639f50559d7970f462e13ec64d3f059ca89f6",
+        "weight_file": "pytorch_model.bin",
+        "weight_sha256": "008d69c82bf45c82ec5485e550abc86ddabefe75080f22e1ebfdc1699889d82e"
+      },
+      "ended_at_utc": "2026-11-19T10:42:52.427380+00:00",
+      "history": [
+        {
+          "epoch": 1,
+          "train_loss": 0.5337988191771184,
+          "optimizer_steps": 274
+        },
+        {
+          "epoch": 2,
+          "train_loss": 0.4339630212532646,
+          "optimizer_steps": 274
+        },
+        {
+          "epoch": 3,
+          "train_loss": 0.39887875998801325,
+          "optimizer_steps": 274
+        }
+      ],
+      "run_manifest_sha256": "4dec54b5cff773e82072a1ea25c9bcd5c89d74f4f3f04b9c474864e4eed6fcc8",
+      "checkpoints": [
+        {
+          "epoch": 1,
+          "manifest_sha256": "106181d1b657644b81e56c179418e16bb1b52ae07384a677bfb7b48f8bfdc8f4"
+        },
+        {
+          "epoch": 2,
+          "manifest_sha256": "84d7ae794702476a171589c7ef8d73e2e0decade31d59dd4f3599f9cf51065c3"
+        },
+        {
+          "epoch": 3,
+          "manifest_sha256": "f0a7179e901b75233fafb3f7f6e8e29e2aca44650c099f8b2705c300bd30a39a"
+        }
+      ]
+    }
+  ],
+  "baselines": [
+    {
+      "family": "whisper",
+      "utterances": 438,
+      "scope": "validation_inference_only",
+      "metrics_status": "pending_validation_references",
+      "evidence_sha256": "405996c49c3f1ba1ca963c76b085ee202e854c95b3b65404218810aba41825cb"
+    },
+    {
+      "family": "ctc",
+      "utterances": 438,
+      "scope": "validation_inference_only",
+      "metrics_status": "pending_validation_references",
+      "evidence_sha256": "6b4fd3bcfd920498a76c665242d3b2936b9c8898edbbb9999b76ee4c0e3da9b3"
+    }
+  ],
+  "limitations": [
+    "Training loss is not ASR accuracy",
+    "Validation references unavailable; checkpoint and fusion selection pending",
+    "No final test evaluation performed"
+  ]
+}

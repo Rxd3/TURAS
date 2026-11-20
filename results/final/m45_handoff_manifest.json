@@ -1,0 +1,46 @@
+{
+  "schema_version": "0.1",
+  "status": "owner_delivery_ready_independent_review_pending",
+  "protocol_sha256": "288aebd71d8a3574e13d436748d4161bc258a487e65066f1c3508bc8e835bec1",
+  "private_archive": "artifacts/owner-m45/final/handoff/TURAS-M4-M5-private-handoff.tar",
+  "archive_bytes": 2424330240,
+  "archive_sha256": "3bbaf65cd8ac45b4dceab6e1401748392e0bf3dd0039d395d1e092719740a91d",
+  "artifact_index_sha256": "33827fde6cdeb46254d575939358b039d5b515ba3733355755f5c5f1faa4d3a1",
+  "source_git_bundle_sha256": "65d2738d8662cae0f8f67ce587288c8600aa8550c3d4a9bff9befc6bb08cb9fc",
+  "audit_sha256": "8f5d153b6e019eeec6b0eeef0c65505e566a3c73bc72afb1a7c6e717950ffec3",
+  "selected_checkpoints": [
+    {
+      "system_id": "F1-whisper-lora",
+      "checkpoint": "artifacts/owner-m45/whisper-lora-seed17/epoch-3",
+      "checkpoint_manifest_sha256": "95e25108715b0fab14136c7526614e2f2aaa6e690b8c98eb2deef5eab796b4bb",
+      "selected_epoch": 3
+    },
+    {
+      "system_id": "F2-whisper-full",
+      "checkpoint": "artifacts/owner-m45/whisper-full-seed17/epoch-2",
+      "checkpoint_manifest_sha256": "0c49d7423a55de173204c8025a463a677d956f42a8ac3ebd6af577ec9cfc1c46",
+      "selected_epoch": 2
+    },
+    {
+      "system_id": "F3-ctc-vocab",
+      "checkpoint": "artifacts/owner-m45/ctc-extended-seed17/epoch-3",
+      "checkpoint_manifest_sha256": "f0a7179e901b75233fafb3f7f6e8e29e2aca44650c099f8b2705c300bd30a39a",
+      "selected_epoch": 3
+    }
+  ],
+  "reference_transcripts_included": false,
+  "audio_included": false,
+  "consumer_acknowledgment": "not recorded",
+  "public_files_sha256": {
+    "m45_final_integrity_audit.json": "8f5d153b6e019eeec6b0eeef0c65505e566a3c73bc72afb1a7c6e717950ffec3",
+    "m45_metrics.csv": "629e2e5dc1e07629753cfa62e2e8ad21a4677377a1f5046b6203d471e1ccc9f4",
+    "m45_test_summary.json": "ec78889bbe93ecb1bdf23c8757ab7d86bce2365a2b0eaf914707aa39492aa9c0",
+    "M4_M5_FINAL_REPORT.md": "29cca7276c4344f5da1824c226da578e4a3cbeb387090ae827bf01d2bc889378"
+  },
+  "limitations": [
+    "Working edited-minutes benchmark; 611/636 test references unreviewed and 25 M1-reported verified",
+    "Unknown speakers; exact overlap checks do not prove speaker disjointness or absence of near-duplicates",
+    "Single training seed17; independent review/reproduction pending",
+    "Primary learned RDL did not improve original decoder one-best"
+  ]
+}

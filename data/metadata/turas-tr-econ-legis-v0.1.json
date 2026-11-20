@@ -1,0 +1,89 @@
+{
+  "dataset_release": "turas-tr-econ-legis-v0.1",
+  "status": "frozen by M1 on 2026-11-18; sampled verification approved by M6 (D08, as reported by M1)",
+  "card_written": "2026-11-18",
+  "description": "Turkish Grand National Assembly (TBMM) plenary speech about the economy, public finance, tax, wages/pensions, banking, trade and legislation, selected from WorldSpeech tr_tr with a versioned domain lexicon and split by recording.",
+  "upstream": {
+    "dataset": "disco-eth/WorldSpeech",
+    "config": "tr_tr",
+    "revision": "b76b85395039f50332fbc421f7c098ee2f2653d7",
+    "paper": "arXiv:2605.09167",
+    "rows": 239654,
+    "hours": 1007.7,
+    "recordings": 197
+  },
+  "rights": {
+    "rights_record_id": "rights_worldspeech_tr_tr_tbmm",
+    "licence": "CC BY-NC 4.0 (WorldSpeech); source terms: TBMM parliamentary proceedings, https://www.tbmm.gov.tr/",
+    "attribution": "WorldSpeech (disco-eth) and the Grand National Assembly of Turkey (TBMM)",
+    "allowed_use": "non-commercial course research",
+    "sharing": "audio, reference text and the exclusion ledger stay outside the public Git repository; only opaque IDs, hashes, counts and source URLs are committed",
+    "team_approval": "pending (decisions D02/D16)"
+  },
+  "audit": "data/metadata/worldspeech-tr_tr-source-audit.md",
+  "source_registry": "data/metadata/turas-tr-econ-legis-v0.1-source-registry.csv",
+  "configuration": {
+    "release_config": "configs/datasets/turas-tr-econ-legis-v0.1.json",
+    "release_config_sha256": "d530be46e07f561ca5a93ac7368f16da51f3a1a8cbb5cbcdab086724b84da7b4",
+    "lexicon": "configs/datasets/turas-domain-lexicon-v0.1.json",
+    "lexicon_sha256": "8ef903fe74135897a9d3781966c5e484c0711a6679d72346efb1ec89eff6df94",
+    "lexicon_freeze_record": "configs/datasets/turas-domain-lexicon-v0.1.freeze.json",
+    "erratum": "Fixed 2026-11-18: the release config said 'soxr VHQ' while the audio was always written with soxr 'HQ' (src/turkish_asr_rdl/data/release.py); the config now says HQ."
+  },
+  "audio": {
+    "format": "FLAC PCM_16",
+    "sample_rate_hz": 16000,
+    "channels": 1,
+    "conversion": "decode OGG Opus 24 kHz stereo, float32 channel mean, soxr HQ resample to 16 kHz",
+    "files": 5450,
+    "bytes_total": 1983862856,
+    "rebuild_note": "Rebuilt locally 2026-11-18; split files and exclusion ledger byte-identical to the first build; FLAC bytes differ by at most 1 LSB per sample (library rounding)."
+  },
+  "splits": {
+    "manifest": "data/splits/turas-tr-econ-legis-v0.1/split_manifest.json",
+    "manifest_sha256": "a8fff65b99fcf11d9452685e438e250207032ecfe11152741562147126d095b8",
+    "group_key": "source_url (one recording = one session date)",
+    "train": {
+      "utterances": 4376,
+      "hours": 20.0,
+      "recordings": 129,
+      "session_dates": "2017-01-10..2025-12-23"
+    },
+    "validation": {
+      "utterances": 438,
+      "hours": 2.0,
+      "recordings": 15,
+      "session_dates": "2025-10-01..2025-12-24"
+    },
+    "test": {
+      "utterances": 636,
+      "hours": 3.0,
+      "recordings": 28,
+      "session_dates": "2026-01-06..2026-04-22"
+    },
+    "leakage_checks": "all zero; see split manifest"
+  },
+  "references": {
+    "origin": "upstream_human (TBMM stenographic minutes as aligned by WorldSpeech)",
+    "annotation_policy": "data/verification/turas-verbatim-v0.1.md",
+    "verification_status": {
+      "policy": "sampled verification, approved by M6 2026-11-18 (D08): docs/dataset.md",
+      "sample": "50 clips by listening (25 test, 15 validation, 10 train), seed 2026, spread over recordings",
+      "result": "34 accept, 16 correct, 0 reject; upstream minutes vs verified text WER 2.43% (1,561 words)",
+      "train": "unreviewed except 10 sampled clips (labelled as such in training runs)",
+      "validation": "upstream minutes; 15 clips verified",
+      "test": "upstream minutes; 25 clips verified (report metrics on them separately)"
+    },
+    "verification_audit": "data/verification/turas-tr-econ-legis-v0.1-audit.md"
+  },
+  "relational": "data/relational/README.md",
+  "speakers": "unknown for every row; speaker-disjointness is not claimed",
+  "limitations": [
+    "Validation/test references are edited minutes, not verbatim transcripts; a 50-clip listening sample measured 2.43% WER between minutes and speech, so absolute WERs are overstated by roughly 2-3 points.",
+    "The upstream CER <= 0.25 alignment filter favours segments an upstream ASR system handled well.",
+    "Topic labels and relational facts are automatic lexicon matches (lexicon-screening-unverified).",
+    "Pre-2026 audio and minutes are public, so pretraining contamination of baselines cannot be excluded for train/validation; test uses only 2026 sessions."
+  ],
+  "commands": "docs/dataset.md#commands-artifact-root-outside-git",
+  "handoff": "data/manifests/turas-tr-econ-legis-v0.1-handoff.json"
+}

@@ -1,0 +1,155 @@
+alias_id,entity_id,alias_text,normalization_version,provenance_id
+BANK_BANKA__a0,BANK_BANKA,banka*,screening-lower-v0.1,prov_lexicon
+BANK_BDDK__a0,BANK_BDDK,bddk*,screening-lower-v0.1,prov_lexicon
+BANK_BORC__a0,BANK_BORC,borç*,screening-lower-v0.1,prov_lexicon
+BANK_BORC__a1,BANK_BORC,borcu*,screening-lower-v0.1,prov_lexicon
+BANK_BORC__a2,BANK_BORC,borcun*,screening-lower-v0.1,prov_lexicon
+BANK_BORSA__a0,BANK_BORSA,borsa*,screening-lower-v0.1,prov_lexicon
+BANK_KREDI__a0,BANK_KREDI,kredi*,screening-lower-v0.1,prov_lexicon
+BANK_KREDI_KARTI__a0,BANK_KREDI_KARTI,kredi kart*,screening-lower-v0.1,prov_lexicon
+BANK_KRIPTO__a0,BANK_KRIPTO,kripto*,screening-lower-v0.1,prov_lexicon
+BANK_MEVDUAT__a0,BANK_MEVDUAT,mevduat*,screening-lower-v0.1,prov_lexicon
+BANK_SPK__a0,BANK_SPK,spk*,screening-lower-v0.1,prov_lexicon
+BANK_SPK__a1,BANK_SPK,sermaye piyasa*,screening-lower-v0.1,prov_lexicon
+BANK_TMSF__a0,BANK_TMSF,tmsf*,screening-lower-v0.1,prov_lexicon
+BANK_TMSF__a1,BANK_TMSF,tasarruf mevduatı sigorta fon*,screening-lower-v0.1,prov_lexicon
+LAB_ASGARI_UCRET__a0,LAB_ASGARI_UCRET,asgari ücret*,screening-lower-v0.1,prov_lexicon
+LAB_BAGKUR__a0,LAB_BAGKUR,bağ kur*,screening-lower-v0.1,prov_lexicon
+LAB_BAGKUR__a1,LAB_BAGKUR,bağkur*,screening-lower-v0.1,prov_lexicon
+LAB_EMEKLI__a0,LAB_EMEKLI,emekli*,screening-lower-v0.1,prov_lexicon
+LAB_EMEKLI_SANDIGI__a0,LAB_EMEKLI_SANDIGI,emekli sandığ*,screening-lower-v0.1,prov_lexicon
+LAB_EYT__a0,LAB_EYT,eyt*,screening-lower-v0.1,prov_lexicon
+LAB_EYT__a1,LAB_EYT,emeklilikte yaşa takıl*,screening-lower-v0.1,prov_lexicon
+LAB_ISSIZLIK__a0,LAB_ISSIZLIK,işsiz*,screening-lower-v0.1,prov_lexicon
+LAB_ISTIHDAM__a0,LAB_ISTIHDAM,istihdam*,screening-lower-v0.1,prov_lexicon
+LAB_KIDEM_TAZMINATI__a0,LAB_KIDEM_TAZMINATI,kıdem tazminat*,screening-lower-v0.1,prov_lexicon
+LAB_MAAS__a0,LAB_MAAS,maaş*,screening-lower-v0.1,prov_lexicon
+LAB_PRIM__a0,LAB_PRIM,prim*,screening-lower-v0.1,prov_lexicon
+LAB_SGK__a0,LAB_SGK,sgk*,screening-lower-v0.1,prov_lexicon
+LAB_SGK__a1,LAB_SGK,sosyal güvenlik kurum*,screening-lower-v0.1,prov_lexicon
+LAB_SOSYAL_GUVENLIK__a0,LAB_SOSYAL_GUVENLIK,sosyal güvenlik*,screening-lower-v0.1,prov_lexicon
+LAB_UCRET__a0,LAB_UCRET,ücret*,screening-lower-v0.1,prov_lexicon
+LEGIS_ANAYASA__a0,LEGIS_ANAYASA,anayasa*,screening-lower-v0.1,prov_lexicon
+LEGIS_ANAYASA_MAHKEMESI__a0,LEGIS_ANAYASA_MAHKEMESI,anayasa mahkeme*,screening-lower-v0.1,prov_lexicon
+LEGIS_GENEL_KURUL__a0,LEGIS_GENEL_KURUL,genel kurul*,screening-lower-v0.1,prov_lexicon
+LEGIS_IC_TUZUK__a0,LEGIS_IC_TUZUK,iç tüzü*,screening-lower-v0.1,prov_lexicon
+LEGIS_IC_TUZUK__a1,LEGIS_IC_TUZUK,içtüzü*,screening-lower-v0.1,prov_lexicon
+LEGIS_KANUN__a0,LEGIS_KANUN,kanun*,screening-lower-v0.1,prov_lexicon
+LEGIS_KANUN_TEKLIFI__a0,LEGIS_KANUN_TEKLIFI,kanun teklif*,screening-lower-v0.1,prov_lexicon
+LEGIS_KANUN_TEKLIFI__a1,LEGIS_KANUN_TEKLIFI,yasa teklif*,screening-lower-v0.1,prov_lexicon
+LEGIS_KARARNAME__a0,LEGIS_KARARNAME,kararname*,screening-lower-v0.1,prov_lexicon
+LEGIS_KARARNAME__a1,LEGIS_KARARNAME,khk*,screening-lower-v0.1,prov_lexicon
+LEGIS_KOMISYON__a0,LEGIS_KOMISYON,komisyon*,screening-lower-v0.1,prov_lexicon
+LEGIS_MADDE__a0,LEGIS_MADDE,madde*,screening-lower-v0.1,prov_lexicon
+LEGIS_MEVZUAT__a0,LEGIS_MEVZUAT,mevzuat*,screening-lower-v0.1,prov_lexicon
+LEGIS_MEVZUAT__a1,LEGIS_MEVZUAT,düzenleme*,screening-lower-v0.1,prov_lexicon
+LEGIS_ONERGE__a0,LEGIS_ONERGE,önerge*,screening-lower-v0.1,prov_lexicon
+LEGIS_TORBA_YASA__a0,LEGIS_TORBA_YASA,torba yasa*,screening-lower-v0.1,prov_lexicon
+LEGIS_TORBA_YASA__a1,LEGIS_TORBA_YASA,torba kanun*,screening-lower-v0.1,prov_lexicon
+LEGIS_YASA__a0,LEGIS_YASA,yasa*,screening-lower-v0.1,prov_lexicon
+LEGIS_YASAMA__a0,LEGIS_YASAMA,yasama*,screening-lower-v0.1,prov_lexicon
+LEGIS_YONETMELIK__a0,LEGIS_YONETMELIK,yönetmeli*,screening-lower-v0.1,prov_lexicon
+MON_ALIM_GUCU__a0,MON_ALIM_GUCU,alım gücü*,screening-lower-v0.1,prov_lexicon
+MON_ALIM_GUCU__a1,MON_ALIM_GUCU,alım güc*,screening-lower-v0.1,prov_lexicon
+MON_ALIM_GUCU__a2,MON_ALIM_GUCU,satın alma gücü*,screening-lower-v0.1,prov_lexicon
+MON_AVRO__a0,MON_AVRO,avro*,screening-lower-v0.1,prov_lexicon
+MON_AVRO__a1,MON_AVRO,euro*,screening-lower-v0.1,prov_lexicon
+MON_DOLAR__a0,MON_DOLAR,dolar*,screening-lower-v0.1,prov_lexicon
+MON_DOVIZ__a0,MON_DOVIZ,döviz*,screening-lower-v0.1,prov_lexicon
+MON_ENFLASYON__a0,MON_ENFLASYON,enflasyon*,screening-lower-v0.1,prov_lexicon
+MON_FAIZ__a0,MON_FAIZ,faiz*,screening-lower-v0.1,prov_lexicon
+MON_HAYAT_PAHALILIGI__a0,MON_HAYAT_PAHALILIGI,hayat pahalılığ*,screening-lower-v0.1,prov_lexicon
+MON_HAYAT_PAHALILIGI__a1,MON_HAYAT_PAHALILIGI,pahalılık*,screening-lower-v0.1,prov_lexicon
+MON_HAYAT_PAHALILIGI__a2,MON_HAYAT_PAHALILIGI,pahalılığ*,screening-lower-v0.1,prov_lexicon
+MON_KUR__a0,MON_KUR,kur korumal*,screening-lower-v0.1,prov_lexicon
+MON_KUR__a1,MON_KUR,döviz kur*,screening-lower-v0.1,prov_lexicon
+MON_KUR__a2,MON_KUR,kur artış*,screening-lower-v0.1,prov_lexicon
+MON_KUR__a3,MON_KUR,kur şok*,screening-lower-v0.1,prov_lexicon
+MON_MERKEZ_BANKASI__a0,MON_MERKEZ_BANKASI,merkez bankas*,screening-lower-v0.1,prov_lexicon
+MON_MERKEZ_BANKASI__a1,MON_MERKEZ_BANKASI,tcmb,screening-lower-v0.1,prov_lexicon
+MON_TUIK__a0,MON_TUIK,tüik*,screening-lower-v0.1,prov_lexicon
+MON_TUIK__a1,MON_TUIK,türkiye istatistik kurum*,screening-lower-v0.1,prov_lexicon
+MON_TURK_LIRASI__a0,MON_TURK_LIRASI,türk lira*,screening-lower-v0.1,prov_lexicon
+MON_TURK_LIRASI__a1,MON_TURK_LIRASI,lira*,screening-lower-v0.1,prov_lexicon
+MON_TURK_LIRASI__a2,MON_TURK_LIRASI,tl,screening-lower-v0.1,prov_lexicon
+MON_ZAM__a0,MON_ZAM,zam,screening-lower-v0.1,prov_lexicon
+MON_ZAM__a1,MON_ZAM,zamlar*,screening-lower-v0.1,prov_lexicon
+MON_ZAM__a2,MON_ZAM,zamma,screening-lower-v0.1,prov_lexicon
+MON_ZAM__a3,MON_ZAM,zammı,screening-lower-v0.1,prov_lexicon
+MON_ZAM__a4,MON_ZAM,zammın*,screening-lower-v0.1,prov_lexicon
+MON_ZAM__a5,MON_ZAM,zamlan*,screening-lower-v0.1,prov_lexicon
+PUBFIN_BUTCE__a0,PUBFIN_BUTCE,bütçe*,screening-lower-v0.1,prov_lexicon
+PUBFIN_BUTCE_ACIGI__a0,PUBFIN_BUTCE_ACIGI,bütçe açığ*,screening-lower-v0.1,prov_lexicon
+PUBFIN_BUTCE_ACIGI__a1,PUBFIN_BUTCE_ACIGI,bütçe açık*,screening-lower-v0.1,prov_lexicon
+PUBFIN_GARANTI__a0,PUBFIN_GARANTI,hazine garanti*,screening-lower-v0.1,prov_lexicon
+PUBFIN_HAZINE__a0,PUBFIN_HAZINE,hazine*,screening-lower-v0.1,prov_lexicon
+PUBFIN_HAZINE_MALIYE_BAKANLIGI__a0,PUBFIN_HAZINE_MALIYE_BAKANLIGI,hazine ve maliye bakan*,screening-lower-v0.1,prov_lexicon
+PUBFIN_KAMU_BORCU__a0,PUBFIN_KAMU_BORCU,kamu borc*,screening-lower-v0.1,prov_lexicon
+PUBFIN_KAMU_BORCU__a1,PUBFIN_KAMU_BORCU,kamu borç*,screening-lower-v0.1,prov_lexicon
+PUBFIN_KAMU_BORCU__a2,PUBFIN_KAMU_BORCU,dış borç*,screening-lower-v0.1,prov_lexicon
+PUBFIN_KAMU_BORCU__a3,PUBFIN_KAMU_BORCU,iç borç*,screening-lower-v0.1,prov_lexicon
+PUBFIN_KAMU_BORCU__a4,PUBFIN_KAMU_BORCU,borçlanma*,screening-lower-v0.1,prov_lexicon
+PUBFIN_KAMU_HARCAMASI__a0,PUBFIN_KAMU_HARCAMASI,kamu harcama*,screening-lower-v0.1,prov_lexicon
+PUBFIN_KAMU_HARCAMASI__a1,PUBFIN_KAMU_HARCAMASI,harcama*,screening-lower-v0.1,prov_lexicon
+PUBFIN_KAMU_IHALE__a0,PUBFIN_KAMU_IHALE,kamu ihale*,screening-lower-v0.1,prov_lexicon
+PUBFIN_KAMU_IHALE__a1,PUBFIN_KAMU_IHALE,ihale*,screening-lower-v0.1,prov_lexicon
+PUBFIN_KAMU_OZEL_ORTAKLIGI__a0,PUBFIN_KAMU_OZEL_ORTAKLIGI,kamu özel iş birliğ*,screening-lower-v0.1,prov_lexicon
+PUBFIN_KAMU_OZEL_ORTAKLIGI__a1,PUBFIN_KAMU_OZEL_ORTAKLIGI,kamu özel işbirliğ*,screening-lower-v0.1,prov_lexicon
+PUBFIN_KAMU_OZEL_ORTAKLIGI__a2,PUBFIN_KAMU_OZEL_ORTAKLIGI,kamu özel ortaklığ*,screening-lower-v0.1,prov_lexicon
+PUBFIN_KAMU_ZARARI__a0,PUBFIN_KAMU_ZARARI,kamu zarar*,screening-lower-v0.1,prov_lexicon
+PUBFIN_MALIYE__a0,PUBFIN_MALIYE,maliye*,screening-lower-v0.1,prov_lexicon
+PUBFIN_MERKEZI_YONETIM_BUTCESI__a0,PUBFIN_MERKEZI_YONETIM_BUTCESI,merkezi yönetim bütçe*,screening-lower-v0.1,prov_lexicon
+PUBFIN_MERKEZI_YONETIM_BUTCESI__a1,PUBFIN_MERKEZI_YONETIM_BUTCESI,merkezî yönetim bütçe*,screening-lower-v0.1,prov_lexicon
+PUBFIN_ODENEK__a0,PUBFIN_ODENEK,ödenek*,screening-lower-v0.1,prov_lexicon
+PUBFIN_ODENEK__a1,PUBFIN_ODENEK,ödeneğ*,screening-lower-v0.1,prov_lexicon
+PUBFIN_PLAN_BUTCE_KOMISYONU__a0,PUBFIN_PLAN_BUTCE_KOMISYONU,plan ve bütçe komisyon*,screening-lower-v0.1,prov_lexicon
+PUBFIN_PLAN_BUTCE_KOMISYONU__a1,PUBFIN_PLAN_BUTCE_KOMISYONU,plan ve bütçe*,screening-lower-v0.1,prov_lexicon
+PUBFIN_SAYISTAY__a0,PUBFIN_SAYISTAY,sayıştay*,screening-lower-v0.1,prov_lexicon
+TAX_GELIR_IDARESI__a0,TAX_GELIR_IDARESI,gelir idare*,screening-lower-v0.1,prov_lexicon
+TAX_GELIR_IDARESI__a1,TAX_GELIR_IDARESI,gib,screening-lower-v0.1,prov_lexicon
+TAX_GELIR_VERGISI__a0,TAX_GELIR_VERGISI,gelir vergi*,screening-lower-v0.1,prov_lexicon
+TAX_HARC__a0,TAX_HARC,harç,screening-lower-v0.1,prov_lexicon
+TAX_HARC__a1,TAX_HARC,harçlar*,screening-lower-v0.1,prov_lexicon
+TAX_HARC__a2,TAX_HARC,harcı,screening-lower-v0.1,prov_lexicon
+TAX_HARC__a3,TAX_HARC,harcın*,screening-lower-v0.1,prov_lexicon
+TAX_KDV__a0,TAX_KDV,kdv*,screening-lower-v0.1,prov_lexicon
+TAX_KDV__a1,TAX_KDV,katma değer vergi*,screening-lower-v0.1,prov_lexicon
+TAX_KURUMLAR_VERGISI__a0,TAX_KURUMLAR_VERGISI,kurumlar vergi*,screening-lower-v0.1,prov_lexicon
+TAX_MATRAH__a0,TAX_MATRAH,matrah*,screening-lower-v0.1,prov_lexicon
+TAX_OTV__a0,TAX_OTV,ötv*,screening-lower-v0.1,prov_lexicon
+TAX_OTV__a1,TAX_OTV,özel tüketim vergi*,screening-lower-v0.1,prov_lexicon
+TAX_STOPAJ__a0,TAX_STOPAJ,stopaj*,screening-lower-v0.1,prov_lexicon
+TAX_VERGI__a0,TAX_VERGI,vergi*,screening-lower-v0.1,prov_lexicon
+TAX_VERGI_AFFI__a0,TAX_VERGI_AFFI,vergi aff*,screening-lower-v0.1,prov_lexicon
+TAX_VERGI_AFFI__a1,TAX_VERGI_AFFI,matrah artırım*,screening-lower-v0.1,prov_lexicon
+TAX_VERGI_AFFI__a2,TAX_VERGI_AFFI,yapılandırma*,screening-lower-v0.1,prov_lexicon
+TRADE_BUYUME__a0,TRADE_BUYUME,ekonomik büyüme*,screening-lower-v0.1,prov_lexicon
+TRADE_BUYUME__a1,TRADE_BUYUME,büyüme oran*,screening-lower-v0.1,prov_lexicon
+TRADE_BUYUME__a2,TRADE_BUYUME,büyüme rakam*,screening-lower-v0.1,prov_lexicon
+TRADE_CARI_ACIK__a0,TRADE_CARI_ACIK,cari açı*,screening-lower-v0.1,prov_lexicon
+TRADE_CARI_ACIK__a1,TRADE_CARI_ACIK,cari denge*,screening-lower-v0.1,prov_lexicon
+TRADE_EKONOMI__a0,TRADE_EKONOMI,ekonomi*,screening-lower-v0.1,prov_lexicon
+TRADE_IHRACAT__a0,TRADE_IHRACAT,ihracat*,screening-lower-v0.1,prov_lexicon
+TRADE_IMF__a0,TRADE_IMF,imf*,screening-lower-v0.1,prov_lexicon
+TRADE_IMF__a1,TRADE_IMF,uluslararası para fon*,screening-lower-v0.1,prov_lexicon
+TRADE_ITHALAT__a0,TRADE_ITHALAT,ithalat*,screening-lower-v0.1,prov_lexicon
+TRADE_ITHALAT__a1,TRADE_ITHALAT,ithal*,screening-lower-v0.1,prov_lexicon
+TRADE_KOBI__a0,TRADE_KOBI,kobi*,screening-lower-v0.1,prov_lexicon
+TRADE_KOBI__a1,TRADE_KOBI,esnaf*,screening-lower-v0.1,prov_lexicon
+TRADE_MILLI_GELIR__a0,TRADE_MILLI_GELIR,millî gelir*,screening-lower-v0.1,prov_lexicon
+TRADE_MILLI_GELIR__a1,TRADE_MILLI_GELIR,milli gelir*,screening-lower-v0.1,prov_lexicon
+TRADE_MILLI_GELIR__a2,TRADE_MILLI_GELIR,gsyh*,screening-lower-v0.1,prov_lexicon
+TRADE_MILLI_GELIR__a3,TRADE_MILLI_GELIR,gayrisafi*,screening-lower-v0.1,prov_lexicon
+TRADE_MILLI_GELIR__a4,TRADE_MILLI_GELIR,kişi başı gelir*,screening-lower-v0.1,prov_lexicon
+TRADE_MILLI_GELIR__a5,TRADE_MILLI_GELIR,kişi başına düşen gelir*,screening-lower-v0.1,prov_lexicon
+TRADE_MILLI_GELIR__a6,TRADE_MILLI_GELIR,gelir dağılım*,screening-lower-v0.1,prov_lexicon
+TRADE_MILLI_GELIR__a7,TRADE_MILLI_GELIR,gelir adaletsizliğ*,screening-lower-v0.1,prov_lexicon
+TRADE_OZELLESTIRME__a0,TRADE_OZELLESTIRME,özelleştir*,screening-lower-v0.1,prov_lexicon
+TRADE_PIYASA__a0,TRADE_PIYASA,piyasa*,screening-lower-v0.1,prov_lexicon
+TRADE_SANAYI__a0,TRADE_SANAYI,sanayi*,screening-lower-v0.1,prov_lexicon
+TRADE_SANAYI__a1,TRADE_SANAYI,sanayici*,screening-lower-v0.1,prov_lexicon
+TRADE_TESVIK__a0,TRADE_TESVIK,teşvik*,screening-lower-v0.1,prov_lexicon
+TRADE_TICARET__a0,TRADE_TICARET,ticaret*,screening-lower-v0.1,prov_lexicon
+TRADE_TICARET__a1,TRADE_TICARET,ticari*,screening-lower-v0.1,prov_lexicon
+TRADE_VARLIK_FONU__a0,TRADE_VARLIK_FONU,varlık fon*,screening-lower-v0.1,prov_lexicon
+TRADE_YATIRIM__a0,TRADE_YATIRIM,yatırım*,screening-lower-v0.1,prov_lexicon

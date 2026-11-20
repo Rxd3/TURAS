@@ -7,3 +7,6 @@ numpy==2.4.6; python_version < "3.12"
 soundfile==0.14.0
 soxr==1.1.0
 jiwer==4.0.0
+# M1 source selection/extraction integration tests; no datasets/models are fetched.
+pandas==3.1.1
+pyarrow==26.0.1

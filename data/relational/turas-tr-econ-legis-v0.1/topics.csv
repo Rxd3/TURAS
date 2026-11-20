@@ -1,0 +1,8 @@
+topic_id,canonical_label,parent_topic_id,provenance_id
+T_BANKING,"Banking, credit and capital markets",,prov_lexicon
+T_LABOR,"Wages, pensions and social security",,prov_lexicon
+T_LEGIS,Legislation and legal texts,,prov_lexicon
+T_MONETARY,"Inflation, interest and currency",,prov_lexicon
+T_PUBFIN,Public finance and budget,,prov_lexicon
+T_TAX,Taxation,,prov_lexicon
+T_TRADE,"Trade, investment and growth",,prov_lexicon

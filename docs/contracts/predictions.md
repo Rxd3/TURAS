@@ -1,4 +1,7 @@
-# Inference and prediction JSONL contract — 0.1
+# Inference and prediction JSONL contract — 0.2
+
+Owner adoption for M4/M5 integration: 2026-11-19; see [D24](../owner_decisions.md).
+This records project approval, not independent peer-review sign-off.
 
 ## Strict inference inputs
 
@@ -12,7 +15,9 @@ Topic/entity metadata derived from the held-out reference is forbidden. Any
 external knowledge or source context must be available at actual inference time,
 separately declared in the run manifest, and evaluated as a distinct condition.
 No hidden prompt containing reference text is allowed. Predictions for every
-frozen ID are exported in the same stable input order.
+frozen ID are exported in the same stable input order. The stable input order
+is the line order of the frozen split file `data/splits/<release>/<split>.txt`,
+which is sorted (see [frozen split files](data.md#frozen-split-files)).
 
 ## Output fields: one UTF-8 JSON object per line
 
@@ -21,7 +26,7 @@ frozen ID are exported in the same stable input order.
 | `schema_version` | string | `0.1` |
 | `run_id`, `system_id` | strings | Unique run and frozen system configuration |
 | `dataset_release`, `split` | strings | Frozen release and target split |
-| `split_manifest_sha256` | string | Exact frozen split manifest hash |
+| `split_manifest_sha256` | string | Exact frozen split manifest hash (defined below) |
 | `utterance_id`, `audio_sha256` | strings | Match the inference input |
 | `status` | enum | `ok`, `empty`, or `error` |
 | `hypothesis_text` | string or null | Raw decoded text; empty string for `empty`, null only for `error` |
@@ -31,6 +36,10 @@ frozen ID are exported in the same stable input order.
 | `normalization_version` | string | Evaluation policy label; text here remains raw |
 | `timing_record_id` | string | FK to timing record, even when a failure is measured |
 | `error` | object or null | Sanitized error code/message for `error`; null otherwise |
+
+In inference inputs and predictions alike, `split_manifest_sha256` is the SHA-256
+of the split manifest file's bytes as stored, written as 64 lowercase hex
+characters. Rows keep `schema_version: "0.1"`; contract 0.2 changes no field.
 
 A deterministic empty result is a valid ASR output, not a missing record. An error
 is never silently dropped or relabeled as a successful empty transcript. The
@@ -48,3 +57,11 @@ The sidecar run manifest supplies code/config/environment/model/knowledge hashes
 selection policy, actual command, decoding parameters, hardware and timing scope.
 JSONL schema and score semantics must be validated before aggregate reporting;
 validators are future work.
+
+## Version history
+
+- 0.1 (2026-11-17): initial contract.
+- 0.2 (proposed by M6 on 2026-11-17, pending review by M1 and model owners
+  M2–M5; [D19](../decisions.md)): defines the stable input order as the sorted
+  split-file order and `split_manifest_sha256` as the SHA-256 of the split
+  manifest file's bytes.

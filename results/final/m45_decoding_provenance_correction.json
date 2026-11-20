@@ -1,0 +1,347 @@
+{
+  "schema_version": "0.1",
+  "correction_version": "m45-effective-decoding-v1",
+  "status": "verified_all_frozen_exports",
+  "authority": "owner-authorized factual provenance correction, D41",
+  "original_protocol_sha256": "288aebd71d8a3574e13d436748d4161bc258a487e65066f1c3508bc8e835bec1",
+  "original_generic_beam_size_field": 10,
+  "effective_decoding": {
+    "whisper": {
+      "num_beams": 5,
+      "requested_n": 5
+    },
+    "ctc": {
+      "prefix_beam_size": 10,
+      "requested_n": 5
+    }
+  },
+  "cause": "The frozen adapter forwards beam_size only to CTC. Whisper uses num_beams=requested_n; candidate score_details already recorded this correctly.",
+  "consequence": "Prior prose describing every system as beam 10 is corrected. M2 beam-5 Whisper settings match the measured Whisper width. Parent/adapted comparisons remain matched.",
+  "frozen_model_code_sha256": {
+    "src/turkish_asr_rdl/decoding/whisper.py": "7c8e4bbc8ec0c6d522f1c2a7f1edadd9925c3ada2c31bf91acfaa4a038c3627c",
+    "src/turkish_asr_rdl/decoding/adapted.py": "7fc43d72db2133d25769bdfde0b7b1b690c738503d59c6fd78f7a081466eb8d5",
+    "src/turkish_asr_rdl/decoding/ctc.py": "a74dbeff91845e9228c38c04911313334474e9f3a6746da4874b96d81986b876"
+  },
+  "audit_code_sha256": "7fd5c01a8f0e42234408d7d17ca76123f955a51b0cab65e4fd75bd0c7a1c7959",
+  "runs_checked": 28,
+  "candidate_evidence_totals": {
+    "whisper": {
+      "5": 41031
+    },
+    "ctc": {
+      "10": 23296
+    }
+  },
+  "runs": [
+    {
+      "system_id": "B4-xlsr-tr-cv7",
+      "mode": "accuracy",
+      "family": "ctc",
+      "utterances": 636,
+      "candidate_evidence_field": "score_details.beam_size",
+      "observed_effective_beam_counts": {
+        "10": 2917
+      },
+      "nbest_sha256": "2007217108a5f3ffbcde31340b38cfa1d5e133d22f4705e7ab61e5024015e7dc"
+    },
+    {
+      "system_id": "B1-whisper-small",
+      "mode": "accuracy",
+      "family": "whisper",
+      "utterances": 636,
+      "candidate_evidence_field": "score_details.num_beams",
+      "observed_effective_beam_counts": {
+        "5": 2949
+      },
+      "nbest_sha256": "d0f077aa5cba7697b1698c68d34e0e9726ee58f731a5129d5e34adefaf90b1a9"
+    },
+    {
+      "system_id": "F1-whisper-lora",
+      "mode": "accuracy",
+      "family": "whisper",
+      "utterances": 636,
+      "candidate_evidence_field": "score_details.num_beams",
+      "observed_effective_beam_counts": {
+        "5": 2939
+      },
+      "nbest_sha256": "3832c90eb92984e87c1852b9a2f6d4cf6842e7a958cf08ef4479da103f4c75da"
+    },
+    {
+      "system_id": "F3-ctc-vocab",
+      "mode": "accuracy",
+      "family": "ctc",
+      "utterances": 636,
+      "candidate_evidence_field": "score_details.beam_size",
+      "observed_effective_beam_counts": {
+        "10": 3137
+      },
+      "nbest_sha256": "950b6c5e184e6cc27c0338acfb6691b1b840fceee3920254691202a99e84ef1a"
+    },
+    {
+      "system_id": "F2-whisper-full",
+      "mode": "accuracy",
+      "family": "whisper",
+      "utterances": 636,
+      "candidate_evidence_field": "score_details.num_beams",
+      "observed_effective_beam_counts": {
+        "5": 2994
+      },
+      "nbest_sha256": "b32290d57e2f6cd3f50c1cd401efbd541e39ec5a1d6b8ae6527b54702776f1a5"
+    },
+    {
+      "system_id": "F1-whisper-lora--acoustic-control",
+      "mode": "cached_nbest_selection",
+      "family": "whisper",
+      "utterances": 636,
+      "candidate_evidence_field": "score_details.num_beams",
+      "observed_effective_beam_counts": {
+        "5": 2939
+      },
+      "nbest_sha256": "fff6f96247cc0d724a89b57c66eff4ee8382266e3ffe7bfb168ef4783b696ea2"
+    },
+    {
+      "system_id": "F1-whisper-lora--rdl-full",
+      "mode": "cached_nbest_selection",
+      "family": "whisper",
+      "utterances": 636,
+      "candidate_evidence_field": "score_details.num_beams",
+      "observed_effective_beam_counts": {
+        "5": 2939
+      },
+      "nbest_sha256": "5fd24e607a7eabfd41bb14e0afb77b26052ee9ef310e8ad9d3a70dc19540d96a"
+    },
+    {
+      "system_id": "F1-whisper-lora--rdl-no-quantities",
+      "mode": "cached_nbest_selection",
+      "family": "whisper",
+      "utterances": 636,
+      "candidate_evidence_field": "score_details.num_beams",
+      "observed_effective_beam_counts": {
+        "5": 2939
+      },
+      "nbest_sha256": "7c0f77cba48eb4c62ea42d8afd3a95648e9177a8df3a1270bfa2f8fa97308d13"
+    },
+    {
+      "system_id": "F1-whisper-lora--rdl-no-comention",
+      "mode": "cached_nbest_selection",
+      "family": "whisper",
+      "utterances": 636,
+      "candidate_evidence_field": "score_details.num_beams",
+      "observed_effective_beam_counts": {
+        "5": 2939
+      },
+      "nbest_sha256": "267eca22ed7bc4418976747e621ab96cf084217603e87b8b1c458c46cae09611"
+    },
+    {
+      "system_id": "F1-whisper-lora--rdl-random",
+      "mode": "cached_nbest_selection",
+      "family": "whisper",
+      "utterances": 636,
+      "candidate_evidence_field": "score_details.num_beams",
+      "observed_effective_beam_counts": {
+        "5": 2939
+      },
+      "nbest_sha256": "84c7e4c4329707ab52b402f11691fe67011f21c7dc1460e2d3040eb5bca6b409"
+    },
+    {
+      "system_id": "F2-whisper-full--acoustic-control",
+      "mode": "cached_nbest_selection",
+      "family": "whisper",
+      "utterances": 636,
+      "candidate_evidence_field": "score_details.num_beams",
+      "observed_effective_beam_counts": {
+        "5": 2994
+      },
+      "nbest_sha256": "f52c16ac1c3b03ea05d0274c9bb2813fa06c90a76db5e51f6d831b6169bd6107"
+    },
+    {
+      "system_id": "F2-whisper-full--rdl-full",
+      "mode": "cached_nbest_selection",
+      "family": "whisper",
+      "utterances": 636,
+      "candidate_evidence_field": "score_details.num_beams",
+      "observed_effective_beam_counts": {
+        "5": 2994
+      },
+      "nbest_sha256": "e4fc4aa6da637ddb2391252f5eabac2380190dfc098d7c38f3d4018654c76313"
+    },
+    {
+      "system_id": "F2-whisper-full--rdl-no-quantities",
+      "mode": "cached_nbest_selection",
+      "family": "whisper",
+      "utterances": 636,
+      "candidate_evidence_field": "score_details.num_beams",
+      "observed_effective_beam_counts": {
+        "5": 2994
+      },
+      "nbest_sha256": "a0b201acaa49336c24ca0dffce842927f0fc368bb91ad2d3bbf106f0ed4697e1"
+    },
+    {
+      "system_id": "F2-whisper-full--rdl-no-comention",
+      "mode": "cached_nbest_selection",
+      "family": "whisper",
+      "utterances": 636,
+      "candidate_evidence_field": "score_details.num_beams",
+      "observed_effective_beam_counts": {
+        "5": 2994
+      },
+      "nbest_sha256": "adc766a9d59ac57520a89fa30e4fb9d34396232c7769b40534001e1bda18b4da"
+    },
+    {
+      "system_id": "F2-whisper-full--rdl-random",
+      "mode": "cached_nbest_selection",
+      "family": "whisper",
+      "utterances": 636,
+      "candidate_evidence_field": "score_details.num_beams",
+      "observed_effective_beam_counts": {
+        "5": 2994
+      },
+      "nbest_sha256": "c4177e30203001d0042fb0829c624e9963236b57f215f896e9bd6cbdd6ad47f8"
+    },
+    {
+      "system_id": "F3-ctc-vocab--acoustic-control",
+      "mode": "cached_nbest_selection",
+      "family": "ctc",
+      "utterances": 636,
+      "candidate_evidence_field": "score_details.beam_size",
+      "observed_effective_beam_counts": {
+        "10": 3137
+      },
+      "nbest_sha256": "334a475436c5940ae96bfd90e83938d2084a7e1fe0179a39ffb880d5ab2aac5e"
+    },
+    {
+      "system_id": "F3-ctc-vocab--rdl-full",
+      "mode": "cached_nbest_selection",
+      "family": "ctc",
+      "utterances": 636,
+      "candidate_evidence_field": "score_details.beam_size",
+      "observed_effective_beam_counts": {
+        "10": 3137
+      },
+      "nbest_sha256": "0e338a5a9235601f635d1bc69f5ecd53e147d423d10be1f8c609209fb317c232"
+    },
+    {
+      "system_id": "F3-ctc-vocab--rdl-no-quantities",
+      "mode": "cached_nbest_selection",
+      "family": "ctc",
+      "utterances": 636,
+      "candidate_evidence_field": "score_details.beam_size",
+      "observed_effective_beam_counts": {
+        "10": 3137
+      },
+      "nbest_sha256": "4e62ba05281d4116d9032e8b5087bf280fd87da815728927034f6e7503b8a617"
+    },
+    {
+      "system_id": "F3-ctc-vocab--rdl-no-comention",
+      "mode": "cached_nbest_selection",
+      "family": "ctc",
+      "utterances": 636,
+      "candidate_evidence_field": "score_details.beam_size",
+      "observed_effective_beam_counts": {
+        "10": 3137
+      },
+      "nbest_sha256": "8b6b7fabc406124afadd8d81bd8748c8a854d5f6ab8cc888316676019d57970d"
+    },
+    {
+      "system_id": "F3-ctc-vocab--rdl-random",
+      "mode": "cached_nbest_selection",
+      "family": "ctc",
+      "utterances": 636,
+      "candidate_evidence_field": "score_details.beam_size",
+      "observed_effective_beam_counts": {
+        "10": 3137
+      },
+      "nbest_sha256": "0f263380f89fabfc110ab60308f96e748d1a8a251896da19227ebf6d50ce0d27"
+    },
+    {
+      "system_id": "F2-whisper-full--rdl-full",
+      "mode": "timing",
+      "family": "whisper",
+      "utterances": 107,
+      "candidate_evidence_field": "score_details.num_beams",
+      "observed_effective_beam_counts": {
+        "5": 500
+      },
+      "nbest_sha256": "f68b16361b059dd84233ac938b4ef1a11af39eca5a17e920c7b7453b463f03c5"
+    },
+    {
+      "system_id": "F3-ctc-vocab--rdl-full",
+      "mode": "timing",
+      "family": "ctc",
+      "utterances": 107,
+      "candidate_evidence_field": "score_details.beam_size",
+      "observed_effective_beam_counts": {
+        "10": 528
+      },
+      "nbest_sha256": "af689a675dfa28f0b654a19d2a396afd775697eed3b1a4cb54ef32b3decd49b8"
+    },
+    {
+      "system_id": "F2-whisper-full",
+      "mode": "timing",
+      "family": "whisper",
+      "utterances": 107,
+      "candidate_evidence_field": "score_details.num_beams",
+      "observed_effective_beam_counts": {
+        "5": 500
+      },
+      "nbest_sha256": "9f76bcea6831ea5f6769f9b4656c628b80cf47376746ad980fd1b28fba3c58fb"
+    },
+    {
+      "system_id": "B1-whisper-small",
+      "mode": "timing",
+      "family": "whisper",
+      "utterances": 107,
+      "candidate_evidence_field": "score_details.num_beams",
+      "observed_effective_beam_counts": {
+        "5": 490
+      },
+      "nbest_sha256": "ac95a076c4702c724e5ada0f12516b1b614f12561866093797cdfb8ba4495838"
+    },
+    {
+      "system_id": "F1-whisper-lora--rdl-full",
+      "mode": "timing",
+      "family": "whisper",
+      "utterances": 107,
+      "candidate_evidence_field": "score_details.num_beams",
+      "observed_effective_beam_counts": {
+        "5": 497
+      },
+      "nbest_sha256": "1844d186ad12cf1cbfd8f673e55f4ca93ecfb464de8aa58f85dd3174e660e492"
+    },
+    {
+      "system_id": "F3-ctc-vocab",
+      "mode": "timing",
+      "family": "ctc",
+      "utterances": 107,
+      "candidate_evidence_field": "score_details.beam_size",
+      "observed_effective_beam_counts": {
+        "10": 528
+      },
+      "nbest_sha256": "925f1430fee03755a653a33de486e009cb0cb813dac444c927037bff21b91fa7"
+    },
+    {
+      "system_id": "F1-whisper-lora",
+      "mode": "timing",
+      "family": "whisper",
+      "utterances": 107,
+      "candidate_evidence_field": "score_details.num_beams",
+      "observed_effective_beam_counts": {
+        "5": 497
+      },
+      "nbest_sha256": "0776ca0ece041b85e04f74279ead7f8d03297be2f72385c0387bb07a26c3610d"
+    },
+    {
+      "system_id": "B4-xlsr-tr-cv7",
+      "mode": "timing",
+      "family": "ctc",
+      "utterances": 107,
+      "candidate_evidence_field": "score_details.beam_size",
+      "observed_effective_beam_counts": {
+        "10": 501
+      },
+      "nbest_sha256": "63c41fa8feedd1fe7751aa3afc361e13d4a58923a6179cfc7b3c25d9df70a5bb"
+    }
+  ],
+  "models_predictions_protocol_and_metrics_changed": false,
+  "references_read": false
+}

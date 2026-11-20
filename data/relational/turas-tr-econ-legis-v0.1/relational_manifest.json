@@ -1,0 +1,57 @@
+{
+  "dataset_release": "turas-tr-econ-legis-v0.1",
+  "schema": "docs/contracts/rdl.md 0.1",
+  "references_sha256": "5085e1cb1a76f12f7a523fda55e3db39b979c04ca68ac31a644f8edbe6dbd9a5",
+  "static": {
+    "entities.csv": "b67b1394cff2c9328e54ccc5650aedc888d7420ba239c8fa409169571c50ccfc",
+    "entity_aliases.csv": "abc5e4174566a8563850c24d4c26e988afffa6d7637dcd2f7a9961d0bab6e7e6",
+    "provenance.csv": "e60561e061e7bfef68ea4fc72b927fabd9d71f2b78bdd1a3222b4787dff51723",
+    "relation_types.csv": "5133c00ba7642b0c3bb82023233b6b2b717b6f8a3e934ad2b60a076f38a50112",
+    "relationships_static.csv": "2792c18b7ab0c2c662d6d5d40b3515118b9fabb559eb90c7939bbd0d584a9b63",
+    "topics.csv": "3b045e9f35402914f3cce757ed62e1d76c023476f01c50038ecb0f1c435f282b"
+  },
+  "splits": {
+    "train": {
+      "access": "graph training allowed",
+      "counts": {
+        "utterances": 4376,
+        "quantifiers": 1459,
+        "relationships": 31639
+      },
+      "files": {
+        "provenance.csv": "8662b92facb19a4c043f71839aa072751e81ea5545d557e151c2fb8f5fce6592",
+        "quantifiers.csv": "4b882af77bac12097edca1f16cf0f98274c49a3b4c186e58cc59e6540af42968",
+        "relationships.csv": "a19749be0cfd45cda191d488cb4695755dc98d892ac003021476a015a56b4c50",
+        "utterances.csv": "9dbb86b6bd56e884aac8402c2bc452eff6ca636fa6fc20f2ad1dde0d21175fc0"
+      }
+    },
+    "validation": {
+      "access": "evaluator-only; never in training snapshots",
+      "counts": {
+        "utterances": 438,
+        "quantifiers": 274,
+        "relationships": 3784
+      },
+      "files": {
+        "provenance.csv": "757175c979af33f95aeff3d7fdb1b33c8a9b770ab222e3b64124d926f2907865",
+        "quantifiers.csv": "e296f08cb85bf0edd57c49b6f45210c833b392ee43e953a974091f1251891f4d",
+        "relationships.csv": "e7d3c716bb5c0b54250804d96a06fd99c2659df4c6806d671f293db0abaa90c0",
+        "utterances.csv": "e6b58cd4e95da92a273d5adf4cf2f8f13444d0b8ff693b4b8d1ad7fe86582dfd"
+      }
+    },
+    "test": {
+      "access": "evaluator-only; never in training snapshots",
+      "counts": {
+        "utterances": 636,
+        "quantifiers": 373,
+        "relationships": 6249
+      },
+      "files": {
+        "provenance.csv": "7df0dd9f10d323452917766e59af85eab61b7cb5fc9483853747fd1b0141b2de",
+        "quantifiers.csv": "c2b95f95df05979a378d1891206ff6cf84e86030942581f5cc6f32064cc8f6bd",
+        "relationships.csv": "48b5c94b25304c466efada6256455119d4c97bb0fe1233cc7ed8375241cb3b61",
+        "utterances.csv": "7216be3ed9f8e49383a01c2cd87afe344c99f9d16874f9ea27f3bde48b4fbdd0"
+      }
+    }
+  }
+}

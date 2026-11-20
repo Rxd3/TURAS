@@ -4,9 +4,10 @@
 project on domain-specific Turkish ASR, acoustic fine-tuning, and Relational Deep
 Learning (RDL).
 
-**This is the Member 4 component branch of the completed M4/M5 integration
-stack.** It contains guarded Whisper LoRA/full training, scored beam extraction
-and offline tests. Actual training, selected checkpoints, frozen test results and
+**This is the Member 5 component branch of the completed M4/M5 integration
+stack.** It includes its Member 4 dependency, guarded CTC training, heterogeneous
+graph learning, scored candidate extraction/rescoring and offline tests. Actual
+training, selected checkpoints, frozen test results and
 the verified private handoff are documented in
 [integration PR #5](https://github.com/Rxd3/TURAS/pull/5). The table below describes
 this component branch's contents; the integration branch carries final project
@@ -30,8 +31,8 @@ The project preserves all five baseline tracks and all adaptation tracks:
 | B5 | Alternative neural BiLSTM-CTC, trained from scratch | Member 3 | Working architecture choice; not implemented |
 | F1 | Whisper LoRA fine-tuning | Member 4 | Code and offline tests here; completed experiments in integration PR #5 |
 | F2 | Whisper full fine-tuning where hardware permits | Member 4 | Code and offline tests here; completed experiments in integration PR #5 |
-| F3 | Wav2Vec2/XLSR CTC fine-tuning | Member 5 | Planned |
-| R1 | Trainable heterogeneous graph relation scorer and N-best rescoring | Member 5 | Planned |
+| F3 | Wav2Vec2/XLSR CTC fine-tuning | Member 5 | Code and offline tests here; completed experiments in integration PR #5 |
+| R1 | Trainable heterogeneous graph relation scorer and N-best rescoring | Member 5 | Code and offline tests here; corrected-linker results and controls in integration PR #5 |
 
 The dataset contribution is a **curated Turkish legislative/financial speech
 benchmark**. [WorldSpeech](https://huggingface.co/datasets/disco-eth/WorldSpeech),
@@ -72,7 +73,7 @@ part of repository initialization.
 
 | Path | Purpose |
 | --- | --- |
-| `src/turkish_asr_rdl/` | Package boundaries and Member 4 training/decoding implementation |
+| `src/turkish_asr_rdl/` | Package boundaries and Members 4/5 training/decoding/RDL implementations |
 | `configs/` | Separate dataset, baseline, fine-tuning, RDL, decoding, evaluation settings areas |
 | `docs/` | Architecture, working decisions, data/evaluation policies, contracts, reproducibility |
 | `data/` | Future metadata, manifests, split definitions, verification and relational schema documentation |

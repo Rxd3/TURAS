@@ -1,0 +1,29 @@
+{
+  "schema_version": "0.1",
+  "dataset_release": "turas-tr-econ-legis-v0.1",
+  "split_manifest_sha256": "a8fff65b99fcf11d9452685e438e250207032ecfe11152741562147126d095b8",
+  "protocol_reviewed": false,
+  "split": "validation",
+  "fusion_frozen": false,
+  "inputs": {
+    "nbest": null,
+    "expected_ids": null,
+    "graph_artifact": null,
+    "nbest_sha256": null,
+    "expected_ids_sha256": null,
+    "graph_manifest_sha256": null
+  },
+  "missing_probability": 0.1,
+  "fusion": {
+    "acoustic_weight": 1.0,
+    "lm_weight": 0.0,
+    "rdl_weight": 0.1,
+    "acoustic_exponent": 1.0,
+    "lm_exponent": 1.0
+  },
+  "validation_selection": {
+    "path": null,
+    "sha256": null
+  },
+  "status": "draft validation proposal; weights are not selected; test requires hashed M6 validation selection"
+}

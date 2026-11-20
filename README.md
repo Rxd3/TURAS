@@ -4,11 +4,18 @@
 project on domain-specific Turkish ASR, acoustic fine-tuning, and Relational Deep
 Learning (RDL).
 
-**Status: scaffold only.** This repository contains documentation, written
-contracts, empty Python packages, minimal packaging metadata, and collaboration
-policies. No data release, model adapter, training, inference, graph model,
-evaluator, predictions, or experiment results have been implemented or produced.
-The package version identifies this scaffold, not a working ASR system.
+**This is the Member 4 component branch of the completed M4/M5 integration
+stack.** It contains guarded Whisper LoRA/full training, scored beam extraction
+and offline tests. Actual training, selected checkpoints, frozen test results and
+the verified private handoff are documented in
+[integration PR #5](https://github.com/Rxd3/TURAS/pull/5). The table below describes
+this component branch's contents; the integration branch carries final project
+status and measured evidence. Independent review remains pending.
+
+The five baseline tracks below are the original project roster. The professor's
+later requirements also call for a GMM-HMM track and explicit HuBERT/transducer
+language-support audits. That expanded baseline coverage remains pending with
+Members 2/3/6; adaptation code does not establish baseline compliance.
 
 ## Scope
 
@@ -21,8 +28,8 @@ The project preserves all five baseline tracks and all adaptation tracks:
 | B3 | Pretrained Qwen3-ASR, speech-language-model family | Member 2 | Planned; checkpoint/capability audit required |
 | B4 | Pretrained Turkish-capable Wav2Vec2/XLSR CTC | Member 3 | Planned; ASR checkpoint/head selection required |
 | B5 | Alternative neural BiLSTM-CTC, trained from scratch | Member 3 | Working architecture choice; not implemented |
-| F1 | Whisper LoRA fine-tuning | Member 4 | Planned |
-| F2 | Whisper full fine-tuning where hardware permits | Member 4 | Planned; resource feasibility required |
+| F1 | Whisper LoRA fine-tuning | Member 4 | Code and offline tests here; completed experiments in integration PR #5 |
+| F2 | Whisper full fine-tuning where hardware permits | Member 4 | Code and offline tests here; completed experiments in integration PR #5 |
 | F3 | Wav2Vec2/XLSR CTC fine-tuning | Member 5 | Planned |
 | R1 | Trainable heterogeneous graph relation scorer and N-best rescoring | Member 5 | Planned |
 
@@ -65,19 +72,19 @@ part of repository initialization.
 
 | Path | Purpose |
 | --- | --- |
-| `src/turkish_asr_rdl/` | Empty packages for future implementation |
+| `src/turkish_asr_rdl/` | Package boundaries and Member 4 training/decoding implementation |
 | `configs/` | Separate dataset, baseline, fine-tuning, RDL, decoding, evaluation settings areas |
 | `docs/` | Architecture, working decisions, data/evaluation policies, contracts, reproducibility |
 | `data/` | Future metadata, manifests, split definitions, verification and relational schema documentation |
-| `scripts/` | Lightweight executable entry points (`check_env.py` environment check) |
+| `scripts/` | Lightweight entry points, Member 4 training and M6 environment checks |
 | `experiments/` | Preregistered comparison and ablation protocol; future notes |
 | `results/` | Future benchmark outputs and reports; no results |
-| `tests/` | Meaningful automated unit tests; no fabricated test suite |
+| `tests/` | Offline synthetic-fixture, random-model and environment checks; no benchmark data |
 | `contributions/` | Six individual, initially empty contribution records |
 | `presentation/` | Evidence requirements for the future final presentation |
 | `.github/` | PR template and CI (packaging checks and unit tests) |
 
-Repository: [Rxd3/project3-turkish-asr-rdl](https://github.com/Rxd3/project3-turkish-asr-rdl).
+Repository: [Rxd3/TURAS](https://github.com/Rxd3/TURAS).
 Architecture references are [NALTRA](https://github.com/Rxd3/NALTRA) and
 [RECAP](https://github.com/Rxd3/RECAP); see the inspected revisions and adaptation
 boundaries in [reference review](docs/reference_review.md). No unrelated

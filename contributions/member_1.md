@@ -164,3 +164,19 @@ These are technical checks; zero new human review decisions were supplied.
 
 These are technical contributions with coding-agent assistance. This entry does
 not assign a human identity to Member 1 or claim new human listening/adjudication.
+
+## 2026-11-21 ? partial supplied-review import
+
+The owner (`rev_rasit`, Member 5) supplied three review exports. Imported 57
+compatible primary records: 53 accept, four correct (49 test, four validation,
+four train). One inconsistent text-changed flag was amended only after the
+owner explicitly confirmed accepting the original reference; original export
+bytes and decision timestamps are preserved. No transcript edits were inferred.
+
+A private provisional page binds the four corrections to their primary record
+IDs for a different listener. The full pinned adjudication/accept-sample plan
+still awaits complete primary coverage. There are 192 missing primary records;
+no assumed acceptances were added. Frozen references, splits and metrics remain
+unchanged. See [aggregate receipt](../data/verification/turas-tr-econ-legis-v0.1-review-progress-v1.json).
+These are supplied primary decisions, not independent confirmation of listening
+or a completed verified reference release.

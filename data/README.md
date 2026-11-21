@@ -1,18 +1,24 @@
-# Data area — metadata only at initialization
+# Data area — metadata, splits, and relational schema
 
-There is no approved dataset release and no audio or transcript has been added.
-WorldSpeech `tr_tr` and the legislative/financial domain are working decisions;
-read the [dataset plan](../docs/dataset.md) and [data contract](../docs/contracts/data.md).
+This directory contains the public metadata, split ID lists, relational schema
+tables, and verification/audit records for the working release
+`turas-tr-econ-legis-v0.1` (5,450 Turkish legislative/economic speech clips,
+~25 h total, temporal train/validation/test split derived from
+`disco-eth/WorldSpeech` `tr_tr`, CC BY-NC 4.0).
 
-| Area | Future reviewed contents |
+See [docs/dataset.md](../docs/dataset.md) and
+[docs/contracts/data.md](../docs/contracts/data.md) for full provenance,
+inclusion/exclusion rules, and known limitations (611 of 636 test clips use
+unreviewed edited TBMM minutes; 25 clips received single-reviewer verification).
+
+| Area | Committed contents |
 | --- | --- |
-| `metadata/` | Candidate/source/rights inventory, release cards and actual statistics |
-| `manifests/` | Small release manifests/hashes; protected utterance/reference manifests distributed separately |
-| `splits/` | Immutable train/validation/test ID lists and grouped-split manifests |
-| `verification/` | Annotation policy and aggregate verification/audit evidence, without personal data |
-| `relational/` | Documented relational table schema and approved small inventories |
+| `metadata/` | Source audit (`worldspeech-tr_tr-source-audit.md`), release card (`turas-tr-econ-legis-v0.1.json`), source registry, and test recording groups |
+| `manifests/` | Public release manifest (`turas-tr-econ-legis-v0.1.json`) and hashed handoff manifest (`turas-tr-econ-legis-v0.1-handoff.json`) |
+| `splits/turas-tr-econ-legis-v0.1/` | Frozen `train.txt`, `validation.txt`, `test.txt`, `m45-timing-30min.txt`, and `split_manifest.json` |
+| `verification/` | Pilot verification IDs (`turas-tr-econ-legis-v0.1-pilot-ids.txt`), audit summary, and verbatim verification policy |
+| `relational/turas-tr-econ-legis-v0.1/` | Relational CSV tables (`entities.csv`, `entity_aliases.csv`, `topics.csv`, `relation_types.csv`, `relationships_static.csv`, `provenance.csv`) and `relational_manifest.json` |
 
-Raw/processed audio, downloads, private references, bulky tables and local
-databases belong in ignored locations or external hashed bundles. Permission to
-use a source does not imply permission to redistribute it. Do not add fabricated
-rows, transcripts or split lists. `.gitkeep` retains otherwise empty metadata areas.
+Raw/processed audio, private test references, and large intermediate archives
+are not committed to Git (upstream WorldSpeech is CC BY-NC 4.0). To rebuild
+locally from upstream WorldSpeech, see `scripts/m1_build_release.py`.

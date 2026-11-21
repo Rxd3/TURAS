@@ -23,7 +23,7 @@ TURAS/
 |   |-- member_2.md
 |   |-- member_3.md
 |   |-- member_4.md
-|   |-- member_5.md
+|   |-- Rasit_Isaoglu_2309015397_Rxd3.md
 |   `-- member_6.md
 |-- data/
 |   |-- manifests/

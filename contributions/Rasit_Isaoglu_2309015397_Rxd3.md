@@ -1,6 +1,6 @@
 # Member 5 — CTC Fine-Tuning and RDL
 
-Name: unassigned. GitHub username: unassigned.
+Name: Raşit isaoğlu. Student ID: `2309015397`. GitHub username: [`Rxd3`](https://github.com/Rxd3).
 Branch convention: `feat/m5-ctc-rdl-rescoring` (focused topic suffixes allowed).
 Ownership/tasks/review routing: [TEAM_TASKS.md](../TEAM_TASKS.md).
 

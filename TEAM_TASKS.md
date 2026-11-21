@@ -171,7 +171,7 @@ M5 CTC fine-tuning and score convention agreement. B5 must not depend on test vo
 **Handoff/review:** capability/design PR reviewed by M5+M6; baseline/export PRs
 reviewed by M6 with M5 for shared CTC paths. Give M5 the parent checkpoint,
 vocabulary/processor and decoding contract. Record actual work in
-[member_3.md](contributions/member_3.md).
+[Abdullah_Gamal_2309015819_abdu3061.md](contributions/Abdullah_Gamal_2309015819_abdu3061.md).
 
 **Specific next task:** audit Turkish-capable pretrained CTC checkpoint candidates
 and propose the BiLSTM-CTC train-only baseline protocol and resource budget.

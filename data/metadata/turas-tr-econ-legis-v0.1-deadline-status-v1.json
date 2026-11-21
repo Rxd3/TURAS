@@ -1,0 +1,104 @@
+{
+  "additional_test_review_clips": 199,
+  "all_three_relational_scope_keys_types_and_provenance_verified": {
+    "test": {
+      "quantifiers": 373,
+      "relationships": 6249,
+      "utterances": 636
+    },
+    "train": {
+      "quantifiers": 1459,
+      "relationships": 31639,
+      "utterances": 4376
+    },
+    "validation": {
+      "quantifiers": 274,
+      "relationships": 3784,
+      "utterances": 438
+    }
+  },
+  "cloud_acl_changed": false,
+  "compatible_primary_records_received": 0,
+  "consumer_acknowledgments_invented": false,
+  "dataset_release": "turas-tr-econ-legis-v0.1",
+  "date": "2026-11-21",
+  "decision": "D43",
+  "four_original_working_bundles_unchanged": true,
+  "frozen_audio_split_references_or_metrics_modified": false,
+  "frozen_split_manifest_sha256": "a8fff65b99fcf11d9452685e438e250207032ecfe11152741562147126d095b8",
+  "fully_human_verified_release": false,
+  "generator_sha256": "596dcaac8850c5e67d9c64391649ad6a90bedf756cb3e0acda56d8ba9b3e5be6",
+  "independent_M6_release_approval": null,
+  "missing_source_components": [
+    "original 50 pilot review-record payloads and adjudication evidence",
+    "original corrected validation-only bundle and its three private corrections",
+    "original upstream exclusion ledger",
+    "listed original M6 full archive (7a721b6b...)",
+    "independent M6 release approval and consumer ACKs"
+  ],
+  "new_adjudication_decisions": 0,
+  "new_human_listening_decisions": 0,
+  "owner_acceptance": "continue working study with explicitly disclosed reference-quality and missing-artifact limits",
+  "pilot_evidence_recovery_clips": 50,
+  "planned_test_review_clips": 224,
+  "presentation_wording_source": "docs/m1_deadline_handoff.md",
+  "prohibited_claims": [
+    "all clips listened to",
+    "fully human-verified",
+    "independent M6 approval",
+    "speaker-disjoint without evidence"
+  ],
+  "reference_inputs": {
+    "test": {
+      "path": "data/private/turas-tr-econ-legis-v0.1/evaluator-final/references.test.jsonl",
+      "sha256": "31e372f0e35f504de59b49f1e0e1f3ed6fcc2772138c591a2cf2b054a4e7ef3f",
+      "variant": "M1-v0.1-source-snapshot"
+    },
+    "train": {
+      "path": "data/private/turas-tr-econ-legis-v0.1/train/turas-tr-econ-legis-v0.1/turas-tr-econ-legis-v0.1.references.train.jsonl",
+      "sha256": "f4992d2951389ac243c281d2875511cfa0669d026d8698993db48b30b09a4508",
+      "variant": "M1-v0.1-source-snapshot"
+    },
+    "validation": {
+      "path": "data/private/turas-tr-econ-legis-v0.1/validation-recovered-minutes-v1/references.validation.jsonl",
+      "sha256": "d0c8519ca6aed053f89786bc733541a70faee09cf8d8bdb6cc12065d97dbd958",
+      "variant": "owner-recovered-validation-minutes-v1"
+    }
+  },
+  "required_primary_records": 249,
+  "schema_version": "0.1",
+  "supplement_member_checksums_verified": 6,
+  "technical_status": "available_input_working_handoff_complete",
+  "test_clips": 636,
+  "validation_relational_supplement": {
+    "access": "evaluator/validation selection only; never training graph or inference inputs",
+    "bundle": {
+      "bytes": 1361920,
+      "file": "turas-tr-econ-legis-v0.1-VALIDATION-RELATIONAL-WORKING.tar",
+      "macos_appledouble_members": 0,
+      "members": 7,
+      "sha256": "bb0362b23135cd2de5da3a67fcf4d1a7c44c73c3032d4d60fe316d68bc03d3fe"
+    },
+    "counts": {
+      "quantifiers": 274,
+      "relationships": 3784,
+      "utterances": 438
+    },
+    "csv_sha256": {
+      "provenance.csv": "30fa110a12319072055b5c33b9ca62575b921edd93f0022bd7c81711d19e396c",
+      "quantifiers.csv": "e296f08cb85bf0edd57c49b6f45210c833b392ee43e953a974091f1251891f4d",
+      "relationships.csv": "e7d3c716bb5c0b54250804d96a06fd99c2659df4c6806d671f293db0abaa90c0",
+      "utterances.csv": "e6b58cd4e95da92a273d5adf4cf2f8f13444d0b8ff693b4b8d1ad7fe86582dfd"
+    },
+    "dataset_release": "turas-tr-econ-legis-v0.1",
+    "new_human_review_records": 0,
+    "original_M1_corrected_validation_bundle_recovered": false,
+    "reference_sha256": "d0c8519ca6aed053f89786bc733541a70faee09cf8d8bdb6cc12065d97dbd958",
+    "reference_variant": "owner-recovered-validation-minutes-v1",
+    "source_reported_verification_tags": {
+      "unreviewed": 438
+    },
+    "status": "working_validation_evidence_only_not_human_verified"
+  },
+  "verified_variant_gate_overridden": false
+}

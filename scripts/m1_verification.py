@@ -24,6 +24,10 @@ def main():
     verify=sub.add_parser('verify-bundles')
     verify.add_argument('--workspace',required=True,type=Path)
     verify.add_argument('--out',type=Path)
+    tables=sub.add_parser('validation-tables')
+    tables.add_argument('--profile',type=Path,default=REPO/'configs/datasets/m1-verification-working-v1.json')
+    tables.add_argument('--inputs-root',required=True,type=Path)
+    tables.add_argument('--out',required=True,type=Path)
     for name in ['ingest','adjudication-kit','check','publish']:
         command=sub.add_parser(name)
         command.add_argument('--workspace',required=True,type=Path)
@@ -49,6 +53,10 @@ def main():
         report=W.verify_bundles(args.workspace)
         if args.out:V.dump_json(args.out,report)
         print(json.dumps({'status':report['status'],'bundles':len(report['bundles'])}))
+        return 0
+    if args.command=='validation-tables':
+        report=W.validation_tables(REPO,args.inputs_root.resolve(),args.profile,args.out)
+        print(json.dumps({'status':report['status'],'counts':report['counts'],'bundle_sha256':report['bundle']['sha256']}))
         return 0
     root=args.workspace.resolve()
     meta,refs,plan=W.load_workspace(root)

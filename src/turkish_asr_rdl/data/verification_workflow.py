@@ -1,12 +1,15 @@
 """Private review kits and access-separated exports; never mutate frozen inputs."""
 from collections import Counter, defaultdict
+from datetime import datetime, timezone
 import csv
 import hashlib
 import io
 import json
+import os
 from pathlib import Path
 import subprocess
 import tarfile
+import uuid
 
 from turkish_asr_rdl.data import verification as V
 from turkish_asr_rdl.decoding.interface import InferenceInput
@@ -305,3 +308,63 @@ def verify_bundles(workspace):
             'audio_members':audio_count,'inference_rows':inference_count,'reference_splits':sorted(reference_splits)})
     return {'status':'all_working_bundle_bytes_and_roles_verified','bundles':checked,
         'human_listening_or_delivery_proved':False,'cloud_acl_checked_or_changed':False}
+
+
+def validation_tables(repo, inputs_root, profile_path, output):
+    """Rebuild only evaluator validation evidence from the pinned working minutes."""
+    import pandas as pd
+    from turkish_asr_rdl.data.relational import write_split_tables
+    from turkish_asr_rdl.data.screening import Lexicon
+
+    profile=json.loads(Path(profile_path).read_text(encoding='utf8'))
+    release=profile['dataset_release'];source=profile['references']['validation']
+    reference=(Path(inputs_root)/source['path']).resolve()
+    if sha256_file(reference)!=source['sha256']:
+        raise ValueError('validation reference source hash mismatch')
+    rows=read_jsonl(reference)
+    ids=(Path(repo)/'data/splits'/release/'validation.txt').read_text(encoding='utf8').splitlines()
+    if [r['utterance_id'] for r in rows]!=ids or any(r['split']!='validation' or r['dataset_release']!=release for r in rows):
+        raise ValueError('validation IDs/order/split mismatch')
+    output=Path(output).resolve();repo=Path(repo).resolve()
+    audio=(Path(inputs_root)/profile['inference_root']).resolve()
+    if output.exists() or output.is_relative_to(audio) or audio.is_relative_to(output):
+        raise ValueError('supplement output must be fresh and separate from inference audio')
+    if output.is_relative_to(repo) and not any(output.is_relative_to(repo/p) for p in ['data/private','artifacts']):
+        raise ValueError('reference supplement cannot target a public repository path')
+    stage=output.with_name(output.name+'.staging-'+uuid.uuid4().hex)
+    stage.mkdir(parents=True)
+    V.write_new(stage/'references.validation.jsonl',reference.read_bytes())
+    tables=stage/'relational/validation'
+    counts=write_split_tables(pd.DataFrame(rows),'validation',
+        Lexicon.load(repo/'configs/datasets/turas-domain-lexicon-v0.1.json'),release,source['sha256'],tables)
+    provenance=tables/'provenance.csv'
+    with provenance.open(encoding='utf8',newline='') as stream:
+        reader=csv.DictReader(stream);fields=reader.fieldnames;records=list(reader)
+    records[0].update(source_uri='references.validation.jsonl',source_revision=source['variant'],
+        available_at_utc=datetime.now(timezone.utc).isoformat())
+    with provenance.open('w',encoding='utf8',newline='') as stream:
+        writer=csv.DictWriter(stream,fieldnames=fields,lineterminator='\n');writer.writeheader();writer.writerows(records)
+    def table(path):
+        with path.open(encoding='utf8',newline='') as stream:return list(csv.DictReader(stream))
+    utterances=table(tables/'utterances.csv')
+    if [r['utterance_id'] for r in utterances]!=ids or any(r['split']!='validation' for r in utterances):
+        raise ValueError('generated validation utterance scope mismatch')
+    relations=table(tables/'relationships.csv')
+    if any(r['access_split']!='validation' or r['evidence_utterance_id'] not in set(ids) for r in relations):
+        raise ValueError('generated validation evidence scope mismatch')
+    metadata={'status':'working_validation_evidence_only_not_human_verified',
+        'dataset_release':release,'reference_variant':source['variant'],'reference_sha256':source['sha256'],
+        'source_reported_verification_tags':dict(Counter(r['verification_status'] for r in rows)),
+        'counts':counts,'csv_sha256':{p.name:sha256_file(p) for p in sorted(tables.glob('*.csv'))},
+        'access':'evaluator/validation selection only; never training graph or inference inputs',
+        'original_M1_corrected_validation_bundle_recovered':False,'new_human_review_records':0}
+    V.dump_json(stage/'REFERENCE-VARIANT.json',metadata)
+    members={release+'/references.validation.jsonl':stage/'references.validation.jsonl',
+        release+'/REFERENCE-VARIANT.json':stage/'REFERENCE-VARIANT.json'}
+    members.update({release+'/relational/validation/'+p.name:p for p in sorted(tables.glob('*.csv'))})
+    bundle=_archive(stage/(release+'-VALIDATION-RELATIONAL-WORKING.tar'),members)
+    metadata['bundle']=bundle
+    V.dump_json(stage/'supplement-manifest.json',metadata)
+    if output.exists():raise ValueError('supplement destination changed')
+    os.replace(stage,output)
+    return metadata

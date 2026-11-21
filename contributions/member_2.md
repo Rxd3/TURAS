@@ -1,17 +1,22 @@
 # Member 2 — Seq2Seq and Speech-LLM Baselines
 
-Name: Omar. GitHub username: Devinci101.
+Name: Omar Alzyod. Student ID: `2409015412`. GitHub username: [`Devinci101`](https://github.com/Devinci101).
+Role: Member 2 — Seq2Seq and Speech-LLM Baselines.
 Branch convention: `feat/m2-seq2seq-speech-llm-baselines` (focused topic suffixes allowed).
 Ownership/tasks/review routing: [TEAM_TASKS.md](../TEAM_TASKS.md).
 
-**Status: in progress (baseline adapters, smoke runner, batch exporter workflow, and M6 round-two review fixes implemented and verified offline; awaiting official dataset release, split manifests, and B3 candidate selection).** Checkpoint 2 baseline adapters (B1, B2, B3), smoke runners, batch exporters, and decoding contracts implemented and verified offline (75 tests passing); no pretrained models executed on dataset splits.
+> [!NOTE]
+> **Canonical Individual Contribution Record:**
+> The primary named record for university submission is [`OMAR_ALZYOD_2409015412_Devinci101.md`](OMAR_ALZYOD_2409015412_Devinci101.md). This file (`member_2.md`) is maintained for backward compatibility with repository documentation and historical links.
+
+**Status: PR #6 approved and merged to `main` (`cbdc07c`); baseline adapters (B1, B2, B3), smoke runner, batch exporter workflow, and all review fixes merged and verified offline (75 tests passing).** Checkpoint 2 baseline adapters (B1, B2, B3), smoke runners, batch exporters, and decoding contracts implemented, reviewed by Member 6, and merged; no pretrained models executed on dataset splits.
 
 ## Actual contributions
 
-### 2026-11-19: Response to Member 6 round-two review on PR #6 (commit 54ec128)
+### 2026-11-19: Response to Member 6 round-two review on PR #6 (commit 54ec128) and CI test fixes (PR #6 merged as cbdc07c)
 
-- **Scope:** Implementation of fixes from Member 6's round-two review on PR #6 ([review 5979396403](https://github.com/Rxd3/TURAS/pull/6#pullrequestreview-5979396403)), covering verified local snapshot loading, B1/B2 decoding alignment with M4's PR #5 protocol, formal B3 score convention approval (`qwen3-asr-generation-logprob-sum-v1`), real decode-path testing with tiny random-init models, strict input length limits, shared interface validation, and packaging updates.
-- **Owned paths:** `configs/baselines/whisper_small.json`, `configs/baselines/whisper_large_v3.json`, `configs/baselines/qwen3_asr_1_7b.json`, `configs/baselines/qwen3_asr_0_6b.json`, `src/turkish_asr_rdl/baselines/whisper.py`, `src/turkish_asr_rdl/baselines/qwen.py`, `src/turkish_asr_rdl/baselines/runner.py`, `scripts/smoke_check_whisper_rank1.py`, `pyproject.toml`, `experiments/m2-baseline-notes.md`, `contributions/member_2.md`, and all `tests/test_m2_*.py`.
+- **Scope:** Implementation of fixes from Member 6's round-two review on PR #6 ([review 5979396403](https://github.com/Rxd3/TURAS/pull/6#pullrequestreview-5979396403)) and resolution of lean CI test compatibility (commit `e06d0a8`), covering verified local snapshot loading, B1/B2 decoding alignment with M4's PR #5 protocol, formal B3 score convention approval (`qwen3-asr-generation-logprob-sum-v1`), real decode-path testing with tiny random-init models, strict input length limits, shared interface validation, lean CI optional-dependency handling, and packaging updates. All changes approved by Member 6 and merged into `main` at commit `cbdc07cf869c03dd2561554eae0734c3884d7b4d`.
+- **Owned paths:** `configs/baselines/whisper_small.json`, `configs/baselines/whisper_large_v3.json`, `configs/baselines/qwen3_asr_1_7b.json`, `configs/baselines/qwen3_asr_0_6b.json`, `src/turkish_asr_rdl/baselines/whisper.py`, `src/turkish_asr_rdl/baselines/qwen.py`, `src/turkish_asr_rdl/baselines/runner.py`, `scripts/smoke_check_whisper_rank1.py`, `pyproject.toml`, `experiments/m2-baseline-notes.md`, `contributions/member_2.md`, `contributions/OMAR_ALZYOD_2409015412_Devinci101.md`, and all `tests/test_m2_*.py`.
 - **Key fixes and verified implementations:**
   1. *Exact Local Snapshot Loading:* Verified snapshot loading in `WhisperBaselineAdapter`, `QwenBaselineAdapter`, `runner.py`, and `smoke_check_whisper_rank1.py`. When `--checkpoint` / `checkpoint_path` is provided, loads strictly from that verified path with `local_files_only=True` without Hub or cache fallback. For Hub cache resolution, resolves exact local snapshot with `local_files_only=True`, enforces pinned LFS OIDs (`PINNED_WHISPER_LFS_OIDS`, `PINNED_QWEN_LFS_OIDS`), verifies `config.json` presence, and checks model architecture type. Decoupled production LFS verification from injected mock unit testing. Dedicated adapter-level unit tests verify that explicit local checkpoints deliver the identical directory to model and processor loaders with `local_files_only=True`, that hash mismatches fail before loaders run, and that explicit paths never call the Hub.
   2. *B1/B2 Decoding Alignment with M4:* Matched B1 decoding parameters with M4's frozen B1/F1/F2 protocol from PR #5 (`configs/evaluation/m45_final_protocol.json`, commit `4639b5e`): `bfloat16` precision, `num_beams: 5`, `requested_n: 5`, `num_return_sequences: 5`. Configured B2 identically to maintain parity. Added `generation_config_file: "generation_config.json"` with null hash.
@@ -114,14 +119,14 @@ Ownership/tasks/review routing: [TEAM_TASKS.md](../TEAM_TASKS.md).
 
 ## Reviews and handoffs
 
-- PR #6 updated with Whisper and Qwen adapters, baseline runners, exporter workflows, and Member 6 round-two review fixes.
+- PR #6 updated with Whisper and Qwen adapters, baseline runners, exporter workflows, and Member 6 round-two review fixes. Approved by Member 6 (`@afel6`) and merged into `main` at commit `cbdc07cf869c03dd2561554eae0734c3884d7b4d` (`cbdc07c`) on 2026-11-20T21:19:03Z.
 - Reusable runners and exporter workflows tested locally with temporary fixtures, synthetic inputs, and mock loaders; ready for execution as soon as official dataset manifests and approved checkpoints arrive.
 - **Handoff Sequence:** The first real run is B1/B2 rank-1 smoke check on approved local clips and verified weights, followed by validation decoding and parameter freeze (B1 and B2 aligned to beam 5, requested_n 5 following M4's PR #5 protocol; B3 beam search selection deferred to validation), followed by official test export using the frozen setting. Both Qwen candidates remain strictly unselected.
 
 ## Remaining work & Unresolved prerequisites
 
 Executing actual pretrained baseline inference runs and handing off official prediction bundles to Member 6 is blocked by the following unresolved prerequisites:
-1. **Approval of PR #6 Review (Owner: Member 6):** Review clearance on PR #6 at `54ec128` / subsequent update (or merging shared decoding integration into `main`).
+1. **Approval of PR #6 Review (RESOLVED):** PR #6 was approved by Member 6 (`@afel6`) and merged into `main` at commit `cbdc07c` (merge commit `cbdc07cf869c03dd2561554eae0734c3884d7b4d`) with all 75 tests passing.
 2. **Official Dataset Release & Split Manifests (Owners: Member 1 & Member 6):** Release of official `dataset_release` name and `split_manifest_sha256` for the test and validation splits to bind into baseline configs and input manifests.
 3. **Local Weight Checkpoint Downloads & SHA-256 Verification (Owner: Member 2 / Runner Operator):** Local download of safetensors files to destination outside repository and verification of the 64-character lowercase hex SHA-256 artifact hashes and pinned LFS OIDs.
 4. **Validation Beam / N Confirmation (Owners: Member 2 & Member 4):** Validation run confirmation of the matched beam 5 / requested_n 5 protocol on validation set before freezing settings for official test runs; selection of B3 beam width.

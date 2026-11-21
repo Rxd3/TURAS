@@ -1,8 +1,16 @@
 # Member 1 — Dataset and Relational Schema
 
-Name: unassigned (member to add). GitHub username: unassigned (member to add).
+Name: Almutesim alakili. Student ID: `220911336`. GitHub username: [`Sam-Ali23`](https://github.com/Sam-Ali23).
+Role: Member 1 — Dataset and Relational Schema.
 Branch: `feat/m1-data-relational-schema`.
 Ownership/tasks/review routing: [TEAM_TASKS.md](../TEAM_TASKS.md).
+
+> [!NOTE]
+> **Canonical individual contribution record:** the named record for university
+> submission is [`Almutesim_alakili_220911336_Sam-Ali23.md`](Almutesim_alakili_220911336_Sam-Ali23.md).
+> It separates Member 1's own work from later owner-assisted M1-workstream
+> entries. This file (`member_1.md`) is kept unchanged below for backward
+> compatibility with historical links.
 
 **Status (2026-11-21): frozen by M1; working technical closeout prepared.
 M6 release approval, genuine review/adjudication evidence and consumer ACKs

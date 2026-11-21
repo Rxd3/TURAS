@@ -46,6 +46,8 @@ until a reviewed implementation PR adds it.
 
 **Deadline status (D43, 2026-11-21):** available-input technical handoff complete;
 owner accepts the explicitly labelled working minutes for continued work.
+Primary records now cover 249/249 required items (57 browser exports plus 192
+explicit user-attested acceptances); 55 independent adjudication items remain.
 Listening/adjudication, missing original artifacts and independent release
 acceptance remain open. See [deadline handoff](docs/m1_deadline_handoff.md).
 

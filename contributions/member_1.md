@@ -164,3 +164,34 @@ These are technical checks; zero new human review decisions were supplied.
 
 These are technical contributions with coding-agent assistance. This entry does
 not assign a human identity to Member 1 or claim new human listening/adjudication.
+
+## 2026-11-21 ? partial supplied-review import
+
+The owner (`rev_rasit`, Member 5) supplied three review exports. Imported 57
+compatible primary records: 53 accept, four correct (49 test, four validation,
+four train). One inconsistent text-changed flag was amended only after the
+owner explicitly confirmed accepting the original reference; original export
+bytes and decision timestamps are preserved. No transcript edits were inferred.
+
+A private provisional page binds the four corrections to their primary record
+IDs for a different listener. The full pinned adjudication/accept-sample plan
+still awaits complete primary coverage. There are 192 missing primary records;
+no assumed acceptances were added. Frozen references, splits and metrics remain
+unchanged. See [aggregate receipt](../data/verification/turas-tr-econ-legis-v0.1-review-progress-v1.json).
+These are supplied primary decisions, not independent confirmation of listening
+or a completed verified reference release.
+
+## 2026-11-21 ? completed primary scope from explicit owner attestation
+
+The owner (`rev_rasit`) explicitly confirmed reviewing and accepting all 192
+remaining items and retaining the four earlier corrections. Generated a primary
+JSON export that declares its source as a user batch attestation. The shared
+UTC timestamp is the recording time of that attestation; no historical per-clip
+listening/playback timestamps are claimed. The earlier 57 records are preserved.
+
+The canonical set now has 249 primary records: 245 accept and four correct
+(224 test, 15 validation, 10 train). The reproducible final adjudication plan
+pins 55 items, including 25 sampled accepts. Generated two private second-listener
+pages with the primary reviewer blocked from adjudicating their own records.
+No second-listener decisions, new reference variant or changed metric is claimed.
+See [current receipt](../data/verification/turas-tr-econ-legis-v0.1-review-progress-v2.json).

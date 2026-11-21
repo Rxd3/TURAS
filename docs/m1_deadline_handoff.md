@@ -48,17 +48,48 @@ different purposes. Do not share the reference-bearing review pages as inference
 inputs or put protected materials in the public repository.
 
 The expanded test review selection is 224 clips across 28 recordings, including
-the original 25 test pilot IDs. Current primary-evidence coverage is **0/249** in
-the new gate because compatible decision payloads are missing. Historical
-single-reviewer tags on 25 test clips are reported history, not newly received
-review/adjudication evidence. The strict verified-variant gate remains enabled.
+the original 25 test pilot IDs, plus 15 validation and 10 train pilot items.
+The [first receipt](../data/verification/turas-tr-econ-legis-v0.1-review-progress-v1.json)
+recorded 57 compatible browser-export primary decisions. The
+[current receipt](../data/verification/turas-tr-econ-legis-v0.1-review-progress-v2.json)
+adds 192 acceptances from the owner's explicit confirmation that all remaining
+items were reviewed and accepted, retaining the four earlier corrections.
+
+All **249 required primary items** now have a record: **245 accept, four
+correct**. The 192 new records identify their source as a user batch attestation;
+their UTC timestamp is the attestation recording time, not an invented per-clip
+playback time. The earlier 57 records and original export bytes are unchanged.
+These records do not establish independent adjudication or complete verbatim
+verification of all 636 test clips.
+
+The final seeded adjudication plan contains **55 items**, including the 25-item
+accept sample and mandatory pilot/correction checks. A different listener must
+review them; `rev_rasit` cannot adjudicate their own primary decisions. No
+independent adjudication records have been received, so the strict verified-
+variant gate remains blocked. Reference text and reported model metrics remain
+unchanged.
+
+Current private files, relative to the review workspace
+`data/private/turas-tr-econ-legis-v0.1/m1-closeout-2026-11-21/`:
+
+```text
+review-imports/rev-rasit-2026-11-21-02/remaining-192-attestation-rev_rasit.json
+review-imports/rev-rasit-2026-11-21-02/primary-records.jsonl
+review-imports/rev-rasit-2026-11-21-02/adjudication-v1/index.html
+review-imports/rev-rasit-2026-11-21-02/adjudication-v1/adjudication-plan.json
+```
+
+Use this 249-record file as `--records` when importing genuine second-listener
+exports, and use the listed plan in the subsequent `check` command. Keep both
+the transcript-bearing attestation export and adjudication pages private.
 
 ## Completion wording for the report and presentation
 
 > M1 completed the working dataset's technical curation, frozen recording-group
 > splits, provenance/schema documentation, automated integrity checks and
 > access-separated local artifact preparation. References are edited TBMM minutes.
-> Expanded local listening/adjudication is incomplete, and validation uses an
+> Primary decisions comprise browser exports and an explicit user batch
+> attestation. Independent adjudication is incomplete, and validation uses an
 > explicitly recovered upstream-minutes variant. Results are a working benchmark
 > with those reference-quality limitations.
 

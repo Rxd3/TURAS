@@ -1,0 +1,55 @@
+{
+  "dataset_release": "turas-tr-econ-legis-v0.1",
+  "evidence_limit": "User-supplied primary decisions; not independent confirmation that listening occurred. No adjudication exports received.",
+  "independent_adjudication_records_received": 0,
+  "inferred_acceptance_records_created": 0,
+  "missing_compatible_primary_records": 192,
+  "original_export_bytes_preserved": true,
+  "primary_decisions": {
+    "accept": 53,
+    "correct": 4
+  },
+  "primary_records_by_split": {
+    "test": 49,
+    "train": 4,
+    "validation": 4
+  },
+  "primary_records_received": 57,
+  "primary_records_sha256": "ead7b5bdc362f49a5949630fb60d97ff5b284f573d29ee4788e6189506a3df7e",
+  "private_import_directory": "data/private/turas-tr-econ-legis-v0.1/m1-closeout-2026-11-21/review-imports/rev-rasit-2026-11-21-01",
+  "received_utc": "2026-11-21T15:32:48.812476+00:00",
+  "reference_audio_splits_or_metrics_modified": false,
+  "reference_variant_published": false,
+  "remaining_pages_without_compatible_export": [
+    "test-new-02.html",
+    "test-new-03.html",
+    "test-new-04.html",
+    "test-new-05.html",
+    "test-new-06.html",
+    "pilot-evidence-01.html"
+  ],
+  "required_primary": 249,
+  "schema_version": "0.1",
+  "source_exports": [
+    {
+      "file": "pilot-evidence-2-d5aeff8c88-decisions-rev_rasit.json",
+      "items": 18,
+      "sha256": "f11161b79e007b2a5be1166f0b004e64d1289d3813fe37290ffc3dd52db892f2"
+    },
+    {
+      "file": "test-new-7-d5aeff8c88-decisions-rev_rasit.json",
+      "items": 7,
+      "sha256": "62ad00257f5599d731988f64793c04e95f578b583eaeb9ed3befd0396a9d5a1b"
+    },
+    {
+      "file": "test-new-1-d5aeff8c88-decisions-rev_rasit.json",
+      "items": 32,
+      "sha256": "ec897602d513410b2cbfe26b12580a8c258a816a3bab6df87d6910f312d9d1e7"
+    }
+  ],
+  "status": "partial_user_supplied_primary_decisions_received",
+  "supplied_corrections_awaiting_second_listener": 4,
+  "user_confirmed_import_metadata_amendments": 1,
+  "verification_gate_status": "blocked_pending_evidence",
+  "working_study_policy": "D43 permits continued use of existing working minutes; assumed acceptance is not a review record."
+}

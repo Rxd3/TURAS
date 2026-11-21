@@ -8,7 +8,7 @@ and rescoring conditions on the same frozen 636 clips against working references
 
 | Material | What it covers |
 | --- | --- |
-| [Presentation](presentation/TURAS.pptx) | Dataset, experimental design, measured results and limitations |
+| [Two-minute presentation](presentation/TURAS-2-minute.pptx) and [full deck](presentation/TURAS.pptx) | Four timed slides for delivery and 12 slides for questions |
 | [Final report](results/final/M4_M5_FINAL_REPORT.md) | Raw and normalized WER/CER, terminology, timing, controls and paired uncertainty |
 | [Metrics CSV](results/final/m45_metrics.csv) and [evaluation summary](results/final/m45_test_summary.json) | Per-system aggregates, edit counts and evaluation provenance |
 | [Error analysis](docs/error_analysis.md) | Error profiles, terminology and quantity diagnostics, and the RDL null result |
@@ -84,6 +84,6 @@ The test references are edited parliamentary minutes. The working set contains
 611 unreviewed test clips and 25 clips with historical single-reviewer tags.
 Recording groups are disjoint across splits, and speaker disjointness remains
 unproven. The recovered validation minutes omit three private reference
-corrections. Expanded listening, adjudication, and independent release approval
-remain pending. [Dataset handoff](docs/m1_deadline_handoff.md) ·
+corrections. All 249 primary decisions for the separate review plan have been
+recorded. Independent adjudication of 55 items and release approval are pending. [Dataset handoff](docs/m1_deadline_handoff.md) ·
 [Completion record](docs/m45_completion.md)

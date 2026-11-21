@@ -66,10 +66,24 @@ decide whether full verification of validation (2 h) and test (3 h) is
 feasible before the deadline, or whether test must shrink. Pilot results are
 reported in `data/verification/turas-tr-econ-legis-v0.1-audit.md`.
 
-## Policy change after the pilot (2026-11-18, pending M6 approval)
+## Current working verification scope (2026-11-21, D42)
 
-M1 decided to stop after the 50-clip pilot (sampled verification) instead
-of reviewing all validation and test clips. The rules above still define how
-the pilot clips were judged. The decision, the measured reference quality and
-its consequences are in
-[docs/dataset.md](../../docs/dataset.md#verification-policy-sampled-verification-m1-decision-2026-11-18-needs-m6-approval-d08).
+The historical M1 proposal to stop after the 50-clip pilot was not approved
+by M6. It is superseded by the committed 224-test-clip, recording-stratified
+plan and evidence recovery for the original pilot (249 distinct primary IDs).
+See [current closeout](../../docs/m1_closeout.md) and
+[data contract 0.3](../../docs/contracts/data.md).
+
+The transcription rules above still apply. A different listener adjudicates
+all corrections/rejections/conflicts and the pinned seed-2026 10% accept sample.
+Adjudication binds actual primary record IDs and reviewed text. A reviewer must
+not approve their own primary decisions under another assumed role. Genuine
+original compatible exports can be imported; status tags alone are insufficient.
+
+For the current frozen benchmark, rejection is recorded in the private check
+report ledger and blocks publication. It never drops a frozen ID or changes its
+split. New corrections create a separate reference variant; the original files
+stay unchanged. Outside the pinned sample, minutes remain explicitly unreviewed.
+No claim of complete verbatim verification is permitted for that working variant.
+The new plan was prepared after working test exposure, before new listening;
+selection uses metadata and original pilot IDs, not model errors.

@@ -14,7 +14,8 @@
         "M5",
         "M6"
       ],
-      "contents": "5,450 FLAC files, inference.{train,validation,test}.jsonl (contract allowlist, no text), split files, split manifest, SHA256SUMS"
+      "contents": "5,450 FLAC files, inference.{train,validation,test}.jsonl (contract allowlist, no text), split files, split manifest, SHA256SUMS",
+      "availability_on_owner_machine": "original artifact bytes available; clean replacement inventoried separately"
     },
     {
       "file": "turas-tr-econ-legis-v0.1-train-references-M3-M4-M5.tar",
@@ -24,7 +25,8 @@
         "M4",
         "M5"
       ],
-      "contents": "train references only (4,376 rows) and train relational evidence; training use allowed"
+      "contents": "train references only (4,376 rows) and train relational evidence; training use allowed",
+      "availability_on_owner_machine": "original artifact bytes available; clean replacement inventoried separately"
     },
     {
       "file": "turas-tr-econ-legis-v0.1-EVALUATOR-ONLY-M6.tar",
@@ -32,7 +34,8 @@
       "recipients": [
         "M6"
       ],
-      "contents": "all references incl. validation/test (evaluator-only), review status, validation/test relational evidence, pilot IDs"
+      "contents": "all references incl. validation/test (evaluator-only), review status, validation/test relational evidence, pilot IDs",
+      "availability_on_owner_machine": "not found; original M6 archive missing"
     }
   ],
   "acknowledgments": {
@@ -42,5 +45,15 @@
     "M5": null,
     "M6": null
   },
-  "acknowledgment_rule": "each consumer replies with the split_manifest_sha256 above; M1 records name/date here"
+  "acknowledgment_rule": "each consumer replies with the split_manifest_sha256 above; M1 records name/date here",
+  "inventory_status": "Historical original bundle declarations, not proof of current availability or delivery; see current working inventory",
+  "current_working_inventory": "data/manifests/turas-tr-econ-legis-v0.1-m1-working-handoff-v1.json",
+  "additional_original_test_archive": {
+    "file": "turas-tr-econ-legis-v0.1-TEST-split-EVALUATOR-ONLY.tar",
+    "sha256": "01ad58784cc27489db6048b573d2412ea193ec2370f2d447eddb0e841cf06d97",
+    "recipients": [
+      "M6/evaluator only"
+    ],
+    "status": "available original; contains macOS metadata, replaced by whitelisted working evaluator export; no delivery ACK inferred"
+  }
 }

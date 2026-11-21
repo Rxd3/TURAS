@@ -1,0 +1,38 @@
+{
+  "dataset_release": "turas-tr-econ-legis-v0.1",
+  "split_manifest_sha256": "a8fff65b99fcf11d9452685e438e250207032ecfe11152741562147126d095b8",
+  "inference_root": "data/private/turas-tr-econ-legis-v0.1/inference/turas-tr-econ-legis-v0.1",
+  "inference_sha256": {
+    "train": "1e4bfd3df1bf10bb39bde558c50939631d71bdc003c56f19ff134a8edb36dc8d",
+    "validation": "1c6b12d4a7de3ed5b717d193f07d8194dc7105bd6785305029afef6d9e3ac3f2",
+    "test": "299dc6ae1f50772eb85081293c9bbe746c746a9aefc94870deff530a641059ef"
+  },
+  "references": {
+    "train": {
+      "path": "data/private/turas-tr-econ-legis-v0.1/train/turas-tr-econ-legis-v0.1/turas-tr-econ-legis-v0.1.references.train.jsonl",
+      "sha256": "f4992d2951389ac243c281d2875511cfa0669d026d8698993db48b30b09a4508",
+      "variant": "M1-v0.1-source-snapshot"
+    },
+    "validation": {
+      "path": "data/private/turas-tr-econ-legis-v0.1/validation-recovered-minutes-v1/references.validation.jsonl",
+      "sha256": "d0c8519ca6aed053f89786bc733541a70faee09cf8d8bdb6cc12065d97dbd958",
+      "variant": "owner-recovered-validation-minutes-v1"
+    },
+    "test": {
+      "path": "data/private/turas-tr-econ-legis-v0.1/evaluator-final/references.test.jsonl",
+      "sha256": "31e372f0e35f504de59b49f1e0e1f3ed6fcc2772138c591a2cf2b054a4e7ef3f",
+      "variant": "M1-v0.1-source-snapshot"
+    }
+  },
+  "original_validation_corrections_missing": true,
+  "missing_components": [
+    "original 50 pilot review-record payloads and adjudication evidence",
+    "original corrected validation-only bundle and its three private corrections",
+    "original upstream exclusion ledger",
+    "listed original M6 full archive (7a721b6b...)",
+    "independent M6 release approval and consumer ACKs"
+  ],
+  "train_relational_dir": "data/private/turas-tr-econ-legis-v0.1/train/turas-tr-econ-legis-v0.1/relational/train",
+  "test_archive": "data/private/turas-tr-econ-legis-v0.1/test-archive/turas-tr-econ-legis-v0.1-TEST-split-EVALUATOR-ONLY.tar",
+  "status": "Owner-authorized working source profile; never asserts complete verification or exact original M6-bundle recovery"
+}

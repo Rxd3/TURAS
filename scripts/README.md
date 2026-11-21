@@ -21,3 +21,11 @@ unexpected error stops the report) it prints one line and exits 1 without
 `READY`/`NOT READY`. Setup steps are in
 [reproducibility](../docs/reproducibility.md#environment-setup-windows).
 
+
+M1 working verification: `m1_verification.py` prepares pinned review kits and
+role-separated archives, ingests genuine exports, pins independent adjudication,
+checks its evidence gate and publishes only new reference variants. Its
+`verify-bundles` command checks every archive member and access role.
+`m1_freeze_release.py` delegates to that publisher; its old in-place CLI is
+retired. See [M1 closeout](../docs/m1_closeout.md). No command performs listening
+or asserts another member's approval.

@@ -20,6 +20,12 @@ graph (`-0.024 pp`, 95% CI `[-0.049, -0.005]`). See the
 [quantitative error analysis & RDL diagnosis](docs/error_analysis.md), and
 [completion/handoff record](docs/m45_completion.md).
 
+M1 technical closeout is tracked in [M1 closeout](docs/m1_closeout.md): the
+224-test-clip plan, listening pages, evidence-gated publisher and clean private
+working bundles are prepared. Human listening/adjudication, independent release
+approval and consumer acknowledgments remain pending; PR #2's merge did not
+resolve its release review. Frozen benchmark artifacts are unchanged.
+
 ## For graders — Quickstart & Verification
 
 ```bash

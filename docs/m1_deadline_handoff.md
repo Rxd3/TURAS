@@ -48,8 +48,11 @@ different purposes. Do not share the reference-bearing review pages as inference
 inputs or put protected materials in the public repository.
 
 The expanded test review selection is 224 clips across 28 recordings, including
-the original 25 test pilot IDs. Current primary-evidence coverage is **0/249** in
-the new gate because compatible decision payloads are missing. Historical
+the original 25 test pilot IDs. At the initial deadline handoff primary-evidence
+coverage was 0/249. The subsequent [review receipt](../data/verification/turas-tr-econ-legis-v0.1-review-progress-v1.json)
+records **57/249 compatible user-supplied primary decisions**: 53 accept and four
+correct, with 192 compatible records still missing. No independent adjudication
+exports have been received; the verified-variant gate remains blocked. Historical
 single-reviewer tags on 25 test clips are reported history, not newly received
 review/adjudication evidence. The strict verified-variant gate remains enabled.
 

@@ -1,6 +1,6 @@
 # Member 3 — CTC and Classical Baselines
 
-Name: Abdullah Gamal GitHub username: abdu3061
+Name: Abdullah Gamal student id:2309015819 GitHub username: abdu3061
 Branch convention: `feat/m3-ctc-alternative-baselines` (focused topic suffixes allowed).
 Ownership/tasks/review routing: [TEAM_TASKS.md](../TEAM_TASKS.md).
 

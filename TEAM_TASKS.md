@@ -31,7 +31,8 @@ has approved or acknowledged anything.
 | 6 | Integration, Evaluation, and QA — `feat/m6-integration-evaluation-qa` | Evaluation/reporting/schemas/utils packages; shared decoding, shared package files, evaluation/shared-decoding configs; integration/reproducibility/results/tests governance | Affected data/model owner; independent non-author approval mandatory |
 
 All paths above are under `src/turkish_asr_rdl/` when referring to package leaves.
-Each member owns their `contributions/member_<N>.md` and component tests/notes.
+Each member owns their contribution record linked in `contributions/README.md`
+and their component tests/notes.
 `tests/` is coordinated by M6; component authors own their named test files.
 `scripts/` has the same component ownership as the wrapped package function;
 M6 reviews all new entry points. Shared `__init__.py`, README, CONTRIBUTING,
@@ -274,7 +275,7 @@ CTC adaptation and graph interface work can be separate focused PRs.
 
 **Handoff/review:** CTC PRs require M3+M6, schema/graph-access PRs M1+M6, and
 rescoring/export PRs M4 (candidate consumer/producer compatibility) plus M6.
-Record code, runs and limitations in [member_5.md](contributions/member_5.md).
+Record code, runs and limitations in [Rasit_Isaoglu_2309015397_Rxd3.md](contributions/Rasit_Isaoglu_2309015397_Rxd3.md).
 
 **Specific next task:** obtain independent review/reproduction of the CTC,
 train-only graph and final fixed-candidate study; record genuine artifact

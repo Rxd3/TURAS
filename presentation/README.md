@@ -1,17 +1,12 @@
-# Final presentation requirements
+# TURAS presentation
 
-See [SLIDE_OUTLINE.md](SLIDE_OUTLINE.md) for the evidence-backed 12-slide deck
-outline grounded in `results/final/M4_M5_FINAL_REPORT.md` and
-`docs/error_analysis.md`. M6 coordinates the final presentation with all members
-after real experiments and an independent reproduction audit.
+[Download the 12-slide PowerPoint](TURAS.pptx). The deck covers the working
+dataset, the frozen evaluation, acoustic and timing results, the relational
+rescoring controls, and the remaining course work. It includes source links
+and additional metrics in the speaker notes.
 
-The future deck should cover the problem/domain and working-to-approved dataset
-decisions; provenance and human verification; frozen split/leakage analysis; all
-five baselines; Whisper LoRA/full feasibility and CTC fine-tuning; typed relational
-database and trained heterogeneous graph; genuine scored N-best and fusion;
-matched WER/CER/terminology/RTF comparisons; ablations; actual contributions;
-limitations, negative findings and reproducibility.
-
-Every figure/claim needs a reviewed report/run/artifact source and owner sign-off.
-Distinguish implemented functionality, measured evidence, hardware-blocked work
-and future scope. Do not create illustrative metrics that look experimental.
+Use the [speaker outline](SLIDE_OUTLINE.md) for rehearsal and the
+[submission guide](../SUBMISSION.md) to open the source reports and run public
+verification. For a live model demonstration, use the
+[restored-model acceptance procedure](../docs/m45_delivery_acceptance.md) with
+authorized artifacts. Independent reproduction and owner sign-off remain pending.

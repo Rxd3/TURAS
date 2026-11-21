@@ -180,3 +180,18 @@ no assumed acceptances were added. Frozen references, splits and metrics remain
 unchanged. See [aggregate receipt](../data/verification/turas-tr-econ-legis-v0.1-review-progress-v1.json).
 These are supplied primary decisions, not independent confirmation of listening
 or a completed verified reference release.
+
+## 2026-11-21 ? completed primary scope from explicit owner attestation
+
+The owner (`rev_rasit`) explicitly confirmed reviewing and accepting all 192
+remaining items and retaining the four earlier corrections. Generated a primary
+JSON export that declares its source as a user batch attestation. The shared
+UTC timestamp is the recording time of that attestation; no historical per-clip
+listening/playback timestamps are claimed. The earlier 57 records are preserved.
+
+The canonical set now has 249 primary records: 245 accept and four correct
+(224 test, 15 validation, 10 train). The reproducible final adjudication plan
+pins 55 items, including 25 sampled accepts. Generated two private second-listener
+pages with the primary reviewer blocked from adjudicating their own records.
+No second-listener decisions, new reference variant or changed metric is claimed.
+See [current receipt](../data/verification/turas-tr-econ-legis-v0.1-review-progress-v2.json).

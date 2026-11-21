@@ -1,0 +1,41 @@
+{
+  "adjudication_plan_sha256": "44450260a15fb914b1af111257f419eceb9319a01bbeb49e3ee749864c280fa6",
+  "attestation_export_sha256": "ddc71fdb759bd9fa92f748f853f440fd8fdd7e84df89e1fd83c9aaf1213c2ec4",
+  "dataset_release": "turas-tr-econ-legis-v0.1",
+  "earlier_four_corrections_preserved": true,
+  "evidence_limit": "192 primary acceptances record the user attestation, not browser playback events. Independent adjudication and verified-variant publication remain pending.",
+  "evidence_sources": {
+    "earlier_browser_export_records": 57,
+    "explicit_user_batch_attestation": 192
+  },
+  "fully_human_verified_test_release_claimed": false,
+  "independent_adjudication_records_received": 0,
+  "independent_adjudication_required": 55,
+  "missing_compatible_primary_records": 0,
+  "per_clip_playback_timestamps_available_for_batch": false,
+  "previous_progress": "data/verification/turas-tr-econ-legis-v0.1-review-progress-v1.json",
+  "previous_records_sha256": "ead7b5bdc362f49a5949630fb60d97ff5b284f573d29ee4788e6189506a3df7e",
+  "primary_decisions": {
+    "accept": 245,
+    "correct": 4
+  },
+  "primary_records_by_split": {
+    "test": 224,
+    "train": 10,
+    "validation": 15
+  },
+  "primary_records_received": 249,
+  "primary_records_sha256": "dc0b12f4854f59a565bda27bbe690ec68dad603f0b847b01277ec25dc6668ab9",
+  "private_import_directory": "data/private/turas-tr-econ-legis-v0.1/m1-closeout-2026-11-21/review-imports/rev-rasit-2026-11-21-02",
+  "recorded_utc": "2026-11-21T16:03:04.767292+00:00",
+  "reference_audio_splits_or_metrics_modified": false,
+  "reference_variant_published": false,
+  "required_primary": 249,
+  "reviewer_id": "rev_rasit",
+  "schema_version": "0.1",
+  "seeded_accept_sample_size": 25,
+  "status": "primary_scope_complete_independent_adjudication_pending",
+  "timestamp_meaning_for_batch": "Time attestation was recorded, not claimed per-clip listening times",
+  "user_confirmation": "All 192 remaining items; keep my four earlier corrections",
+  "verification_gate_status": "blocked_pending_evidence"
+}

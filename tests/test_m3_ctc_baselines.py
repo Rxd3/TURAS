@@ -139,9 +139,25 @@ def test_b5_vocab_train_only_subsampling_4x_and_feasibility() -> None:
     assert logits.shape == (2, int(out_lens[0].item()), len(tok))
     assert int(out_lens[0].item()) == (((int(feat_lens[0].item()) + 1) // 2) + 1) // 2
 
-    valid, dropped = check_ctc_feasibility([10, 4, 15], [8, 6, 15])
-    assert valid == [0, 2]
-    assert dropped == 1
+    assert check_ctc_feasibility([10, 4, 15], [8, 6, 15]) == ([0, 2], 1)
+    assert check_ctc_feasibility(
+        output_lengths=[10, 4, 15], target_lengths=[8, 6, 15]
+    ) == ([0, 2], 1)
+
+
+def test_b5_ctc_feasibility_requires_blanks_between_adjacent_repeats() -> None:
+    targets = [[1, 1], [1, 1], [1, 2, 1], [1, 1, 1]]
+    valid, dropped = check_ctc_feasibility([2, 3, 3, 4], [2, 2, 3, 3], targets=targets)
+
+    assert valid == [1, 2]
+    assert dropped == 2
+
+
+def test_b5_ctc_feasibility_validates_target_lengths() -> None:
+    with pytest.raises(ValueError, match="same number of items"):
+        check_ctc_feasibility([3], [2], targets=[])
+    with pytest.raises(ValueError, match="Target 0 length"):
+        check_ctc_feasibility([3], [2], targets=[[1]])
 
 
 def test_b5_3step_probe_and_adapter_roundtrip(tmp_path: Path) -> None:

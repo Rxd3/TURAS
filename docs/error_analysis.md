@@ -1,6 +1,6 @@
-# TURAS Quantitative Error Analysis and RDL Failure Diagnosis
+# TURAS Quantitative Error Analysis and RDL Results
 
-All numbers below are computed directly from the frozen test benchmark artifact
+The reported test metrics come from the frozen benchmark artifact
 [`results/final/m45_test_summary.json`](../results/final/m45_test_summary.json)
 (`turas-tr-econ-legis-v0.1`, 636 test clips across 28 recording groups,
 `20,529` normalized reference words, `146,220` normalized reference characters,
@@ -12,7 +12,7 @@ single training seed `17`).
 
 Word-level error breakdown under `tr-normalized-v1` (`N = 20,529` reference words):
 
-| System | Norm WER | Substitutions | Deletions | Insertions | Total Errors | Verified-25 WER |
+| System | Norm WER | Substitutions | Deletions | Insertions | Total Errors | 25-clip pilot WER |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: |
 | `B1-whisper-small` | 24.512% | 3,433 (16.72%) | 335 (1.63%) | 1,264 (6.16%) | 5,032 | 22.103% |
 | `F1-whisper-lora` | 12.368% | 1,871 (9.11%) | 311 (1.51%) | 357 (1.74%) | 2,539 | 12.067% |
@@ -23,14 +23,14 @@ Word-level error breakdown under `tr-normalized-v1` (`N = 20,529` reference word
 | `F2-whisper-full--rdl-full` | 10.429% | 1,571 (7.65%) | 265 (1.29%) | 305 (1.49%) | 2,141 | 10.992% |
 | `F3-ctc-vocab--rdl-full` | 25.189% | 3,467 (16.89%) | 1,330 (6.48%) | 374 (1.82%) | 5,171 | 25.209% |
 
-### Key findings from S / D / I and verified-subset tracking
+### Key findings from S / D / I and the listening pilot
 
 1. **Whisper fine-tuning cuts insertions by 76% and substitutions by 54% (`B1 -> F2`):**
-   Insertions fall from `1,264` (`6.16%`) to `303` (`1.48%`), and total word errors drop by **57.7% relative** (`5,032 -> 2,129`). A large driver of the insertion drop is that pretrained `B1` spells out spoken Turkish numbers as multi-word phrases and emits conversational fillers, whereas TBMM parliamentary minutes use compact digit/edited forms.
-2. **CTC vocabulary extension (`B4 -> F3`) trades substitutions/insertions for deletions:**
-   Substitutions drop `-39.2%` (`5,669 -> 3,449`) and insertions drop `-74.2%` (`1,416 -> 365`), but **deletions more than double** (`542 -> 1,349`, `2.64% -> 6.57%`). This is a classic CTC blank-overprediction signature when extending a pretrained CTC head (`38 -> 52` tokens) over limited fine-tuning epochs.
-3. **Adaptation gains hold on the human-verified subset (`n = 25`):**
-   Although 611/636 test clips rely on unreviewed edited TBMM minutes, the 25 single-reviewer verified clips track full-set WER closely (`B1: 22.10% -> F2: 10.75%`, `B4: 35.96% -> F3: 25.09%`), confirming that the ~12–14 pp adaptation gains are not an artifact of unreviewed minutes.
+   Insertions fall from `1,264` (`6.16%`) to `303` (`1.48%`), and total word errors drop by **57.7% relative** (`5,032 -> 2,129`). One plausible contributor is the transcript style. Pretrained `B1` spells out some numbers and emits fillers, while edited TBMM parliamentary minutes use compact digit forms and can omit fillers. The aggregate counts do not quantify this contribution.
+2. **CTC fine-tuning with vocabulary extension (`B4 -> F3`) reduces substitutions and insertions and increases deletions.**
+   Substitutions fall by `39.2%` (`5,669 -> 3,449`) and insertions fall by `74.2%` (`1,416 -> 365`). **Deletions more than double** (`542 -> 1,349`, `2.64% -> 6.57%`). Blank overprediction is one possible explanation. This comparison changes both the CTC head (`38 -> 52` tokens) and the weights, and the edit counts alone cannot isolate a cause.
+3. **The 25-clip listening pilot shows gains in the same direction.**
+   On the 25 test clips historically marked as verified by one reviewer, WER fell from 22.10% to 10.75% for `B1 -> F2` and from 35.96% to 25.09% for `B4 -> F3`. The other 611 test references use unreviewed edited TBMM minutes. The small pilot and unavailable review records limit what it can establish about how much reference editing affects the full-set gains. [M1 deadline handoff](m1_deadline_handoff.md#where-the-actual-clips-are)
 
 ---
 
@@ -71,26 +71,26 @@ Pretrained Whisper struggles most on Turkish institutional acronyms and domain-s
 | `B4-xlsr-tr-cv7` | 0.00% | 0 / 0 / 618 | 0.00% | 0.00% |
 | `F3-ctc-vocab` | 0.00% | 0 / 12 / 618 | 0.00% | 0.00% |
 
-**Why `F3-ctc-vocab` remains at 0.00% quantity F1 despite vocabulary extension:**
-`B4`'s original 38-token CTC head cannot emit digits `0–9` at all (`FP=0`). Extending the head to 52 tokens (`F3`) enables digit emission in principle, yet `F3` emitted only `12` digit-pattern quantities across all 636 clips and matched `0/618` exact `(type, unit, value)` tuples. Character-level CTC maps acoustics monotonically to characters and cannot easily perform the non-monotonic inverse text normalization (ITN) required to convert spoken Turkish number phrases into parliamentary digit formatting, whereas Whisper's Seq2Seq decoder learns this ITN mapping rapidly (`32.13% -> 94.68%` F1).
+**`F3-ctc-vocab` remains at 0.00% on exact digit-based quantity F1.**
+`B4`'s original 38-token CTC head cannot emit digits `0–9` (`FP=0`). Extending the head to 52 tokens lets `F3` emit digits. It produced `12` digit-pattern quantities across 636 clips and matched `0/618` exact `(type, unit, value)` tuples. One plausible explanation is that a character-level CTC alignment makes it harder to convert spoken Turkish numbers into the minutes' digit format. Whisper's result (`32.13% -> 94.68%` F1) shows much closer agreement with that format after fine-tuning.
 
 ---
 
-## 3. Why Relational Deep Learning (RDL) Rescoring Did Not Improve WER
+## 3. Relational Deep Learning (RDL) Rescoring Results
 
-Across all three adapted models, learned RDL rescoring slightly degraded normalized WER relative to original one-best:
+Learned RDL rescoring produced slightly higher normalized WER point estimates than original one-best across all three adapted models.
 
 * `F1--rdl-full`: `+0.005 pp` (**+1 word** out of `20,529`: `2,540` vs `2,539` errors)
 * `F2--rdl-full`: `+0.058 pp` (**+12 words** out of `20,529`: `2,141` vs `2,129` errors)
 * `F3--rdl-full`: `+0.039 pp` (**+8 words** out of `20,529`: `5,171` vs `5,163` errors)
 
-Four concrete factors explain this negative result:
+The candidate coverage, controls and uncertainty help interpret these results.
 
-1. **Coarse KG saturation across N-best candidates:**
-   The static relational schema (`data/relational/turas-tr-econ-legis-v0.1/`) contains **90 entities** and **90 static edges**. On `F2`, `2,994 / 2,994` N-best hypotheses (`100%`) linked to entities (`12,402` entity links, `36,996` relation queries). Because almost every candidate in a 5-best beam triggers the same high-frequency parliamentary entities, the graph score has very low discriminative variance across candidates.
-2. **Noisy co-mention and ungrounded quantifier signals:**
-   On `F2`, **37.5%** of quantifier queries (`1,074 / 2,867`) were `unknown_or_contextless_quantifiers`, injecting ungrounded scoring noise. Consistent with this, removing co-mentions on `F1` improved WER over full RDL (`-0.049 pp`, ~10 words, 95% CI `[-0.098, -0.010]`), and replacing the learned graph on `F2` with an untrained random graph also beat full RDL (`-0.024 pp`, ~5 words, 95% CI `[-0.049, -0.005]`).
-3. **Statistical multiplicity across 19 paired bootstrap intervals:**
-   The 19 paired comparisons in `M4_M5_FINAL_REPORT.md` report uncorrected 95% percentile bootstrap CIs. Under strict family-wise correction (e.g., Bonferroni `alpha = 0.05 / 19 ≈ 0.0026`), all four acoustic adaptation gains (`-12.14`, `-14.14`, `-12.00`, `-2.00 pp`) remain overwhelmingly significant, whereas the small RDL ablation deltas (`< 0.06 pp`, 1–12 words across 636 clips) represent negligible practical effects.
-4. **Unmeasured diagnostics left as explicit future work:**
-   Two diagnostics were not executed before freeze and would be the immediate next steps for follow-up research: (a) computing **N-best oracle WER** on the `N=5` beam lists to bound available rescoring headroom, and (b) adding a **classic Turkish n-gram / neural LM rescoring baseline** alongside RDL to separate general language-model priors from structured relational priors.
+1. **Candidate coverage and score variation.**
+   The [static relational schema](../data/relational/turas-tr-econ-legis-v0.1/) contains **90 entities** and **90 static edges**. On the `F2` test set, `2,994 / 2,994` N-best hypotheses (`100%`) linked to entities (`12,402` entity links, `36,996` relation queries). In the corrected-linker validation run, only 30 of 438 `F2` utterances had different relational scores across candidates. The scorer had limited opportunities to change rankings in that run. [Linker audit](m45_result_audit.md#corrected-linker-rerun-completed)
+2. **Quantifier coverage and graph controls.**
+   On `F2`, **37.5%** of quantifier queries (`1,074 / 2,867`) were `unknown_or_contextless_quantifiers`. Removing co-mentions on `F1` lowered WER relative to the full graph (`-0.049 pp`, ~10 words, unadjusted 95% CI `[-0.098, -0.010]`). The untrained random graph also scored lower WER than the learned `F2` graph (`-0.024 pp`, ~5 words, unadjusted 95% CI `[-0.049, -0.005]`). These exploratory controls do not establish what caused the null result.
+3. **Uncertainty across 19 paired comparisons.**
+   All four reported acoustic comparisons (`-12.14`, `-14.14`, `-12.00`, and `-2.00 pp`) have unadjusted 95% recording-group bootstrap intervals excluding zero. The largest learned-RDL change against original one-best is 12 words across 636 clips, and all three of those intervals include zero. The intervals are per comparison. Family-wise significance was not evaluated. [Paired uncertainty](../results/final/M4_M5_FINAL_REPORT.md#paired-uncertainty)
+4. **Unmeasured diagnostics.**
+   N-best oracle WER would bound how much the existing five-best candidate lists could improve the result. A Turkish n-gram or neural language-model rescoring baseline would help distinguish general language-model effects from relational effects. Neither diagnostic was included in the frozen study. [Oracle evaluation script](../scripts/compute_nbest_oracle.py)

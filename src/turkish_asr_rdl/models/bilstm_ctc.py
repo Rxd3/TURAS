@@ -5,6 +5,7 @@ import json
 import math
 from collections.abc import Iterable, Sequence
 from dataclasses import dataclass
+from itertools import pairwise
 from pathlib import Path
 from typing import Any
 
@@ -284,12 +285,27 @@ class BiLSTMCTC(nn.Module):
 def check_ctc_feasibility(
     output_lengths: Sequence[int],
     target_lengths: Sequence[int],
+    *,
+    targets: Sequence[Sequence[int]] | None = None,
 ) -> tuple[list[int], int]:
-    """Enforce T_out >= L_target CTC feasibility rule and count dropped clips."""
+    """Check the CTC frame lower bound from lengths, or the exact minimum from tokens.
+
+    Each adjacent repeated token in a supplied target needs a blank frame.
+    """
+    if targets is not None and len(targets) != len(target_lengths):
+        raise ValueError("targets and target_lengths must have the same number of items")
+
     valid_indices: list[int] = []
     dropped = 0
-    for idx, (t_out, l_tgt) in enumerate(zip(output_lengths, target_lengths)):
-        if l_tgt > 0 and t_out >= l_tgt:
+    lengths = zip(output_lengths, target_lengths, strict=targets is not None)
+    for idx, (output_length, target_length) in enumerate(lengths):
+        required_frames = target_length
+        if targets is not None:
+            target = targets[idx]
+            if len(target) != target_length:
+                raise ValueError(f"Target {idx} length does not match target_lengths")
+            required_frames += sum(left == right for left, right in pairwise(target))
+        if target_length > 0 and output_length >= required_frames:
             valid_indices.append(idx)
         else:
             dropped += 1

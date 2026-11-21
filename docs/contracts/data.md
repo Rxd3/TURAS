@@ -136,6 +136,11 @@ consumer receipt or speaker/near-duplicate disjointness. These need real evidenc
 
 ## Version history
 
+Deadline note (D43, 2026-11-21): owner acceptance permits continued use of the
+existing, honestly labelled working reference snapshots. It changes no verified-
+variant evidence requirement above, supplies no human decision or external
+approval, and authorizes no overwritten references, test tuning or re-splitting.
+
 - 0.1 (2026-11-17): initial contract. `audio_uri` could also be an
   access-controlled artifact URI, and the audio format was not fixed.
 - 0.2 (proposed by M6 on 2026-11-17, pending review by M1;

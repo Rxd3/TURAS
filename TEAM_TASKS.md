@@ -44,6 +44,11 @@ until a reviewed implementation PR adds it.
 
 ## Member 1 — Dataset and Relational Schema
 
+**Deadline status (D43, 2026-11-21):** available-input technical handoff complete;
+owner accepts the explicitly labelled working minutes for continued work.
+Listening/adjudication, missing original artifacts and independent release
+acceptance remain open. See [deadline handoff](docs/m1_deadline_handoff.md).
+
 **Branch:** `feat/m1-data-relational-schema` (focused suffixes allowed).
 
 **File ownership:** `data/**`, `configs/datasets/**`, package `data/**`,
@@ -53,14 +58,14 @@ data entry points. Graph learning remains Member 5's responsibility.
 
 **Tasks:**
 
-- [ ] Audit WorldSpeech `tr_tr` revision, fields, source terms, access and domain coverage.
-- [ ] Propose inclusion/exclusion and verbatim transcription/verification instructions.
+- [x] Audit WorldSpeech `tr_tr` revision, fields, source terms, access and domain coverage (source audit/release card).
+- [x] Propose inclusion/exclusion and verbatim transcription/verification instructions (dataset documentation and review guide).
 - [ ] Preserve source provenance, stable IDs, audio hashes and exclusion reasons.
 - [ ] Perform documented human listening verification and adjudication; never guess text.
 - [ ] Audit source/session/speaker/duplicate groups and upstream-test conflicts.
 - [ ] Freeze train/validation/test definitions and reference access boundaries with M6.
-- [ ] Curate a versioned domain vocabulary and typed relational CSV tables with M5.
-- [ ] Produce actual duration/topic/verification/leakage statistics and a release card.
+- [x] Curate a versioned domain vocabulary and typed relational CSV tables; static/train/test tables plus recovered-validation supplement have checked keys/types/scope.
+- [x] Produce actual duration/topic/verification/leakage statistics and a working release card (public audits and deadline status).
 - [ ] Validate the release and obtain consumer acknowledgment of the same hashes.
 
 **Exact expected deliverables:** updated `docs/dataset.md` and data/RDL contracts;
@@ -81,7 +86,7 @@ relational type/graph needs; actual team approval of source rights and working d
   evidence pass independent adjudication; all other minutes are labelled unreviewed.
   Full-verbatim-release status still requires complete held-out listening.
 - [ ] Unique IDs, disjoint groups, duplicate audits and byte hashes validate without hidden exclusions.
-- [ ] CSV keys/types and provenance access validate; test-derived facts cannot enter training/inference.
+- [x] CSV keys/types and provenance access validate across all three scopes; test-derived facts cannot enter training/inference (deadline integrity report).
 - [ ] M2–M6 acknowledge a single release; a non-author verifies the regeneration/retrieval instructions.
 
 **Handoff/review:** submit source/schema policy PR first (M5+M6 review), then

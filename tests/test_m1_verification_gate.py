@@ -169,3 +169,38 @@ def test_working_bundle_verifier_checks_checksums_and_reference_roles(tmp_path):
     with (prefix/info['file']).open('ab') as stream:stream.write(b'tamper')
     with pytest.raises(ValueError,match='identity mismatch'):
         verify_bundles(tmp_path)
+
+
+def test_validation_supplement_preserves_source_and_refuses_training_rows(tmp_path):
+    import hashlib
+    import shutil
+    from turkish_asr_rdl.data.verification_workflow import validation_tables
+    project=Path(__file__).resolve().parents[1];repo=tmp_path/'repo';inputs=tmp_path/'inputs'
+    split=repo/'data/splits/synthetic-fixture';split.mkdir(parents=True)
+    (split/'validation.txt').write_bytes(b'synthetic_val\n')
+    lexicon=repo/'configs/datasets/turas-domain-lexicon-v0.1.json';lexicon.parent.mkdir(parents=True)
+    shutil.copyfile(project/'configs/datasets/turas-domain-lexicon-v0.1.json',lexicon)
+    inputs.mkdir();source=inputs/'reference.jsonl'
+    row={'utterance_id':'synthetic_val','split':'validation','dataset_release':'synthetic-fixture',
+        'reference_text':'SYNTHETIC_VALIDATION_FIXTURE','leakage_group_id':'synthetic_group',
+        'verification_status':'unreviewed'}
+    V.dump_jsonl(source,[row]);original=source.read_bytes()
+    profile=tmp_path/'profile.json'
+    value={'dataset_release':'synthetic-fixture','inference_root':'audio',
+        'references':{'validation':{'path':'reference.jsonl','variant':'synthetic-working-v1',
+            'sha256':hashlib.sha256(original).hexdigest()}}}
+    V.dump_json(profile,value)
+    out=tmp_path/'private-supplement'
+    report=validation_tables(repo,inputs,profile,out)
+    assert (out/'references.validation.jsonl').read_bytes()==original==source.read_bytes()
+    assert report['new_human_review_records']==0
+    assert report['source_reported_verification_tags']=={'unreviewed':1}
+    assert report['counts']['utterances']==1 and report['bundle']['sha256']
+    with pytest.raises(ValueError,match='fresh'):
+        validation_tables(repo,inputs,profile,out)
+    row['split']='train';source.write_text(json.dumps(row)+'\n',encoding='utf8',newline='\n')
+    value['references']['validation']['sha256']=hashlib.sha256(source.read_bytes()).hexdigest()
+    profile.write_text(json.dumps(value),encoding='utf8')
+    with pytest.raises(ValueError,match='IDs/order/split'):
+        validation_tables(repo,inputs,profile,tmp_path/'bad')
+    assert not (tmp_path/'bad').exists()

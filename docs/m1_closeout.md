@@ -5,6 +5,11 @@ are pending. This document supersedes the historical 50-clip stop policy. The
 owner adopts [D42](owner_decisions.md) and [data contract 0.3](contracts/data.md);
 owner approval does not manufacture listening decisions or another member's ACK.
 
+The [D43 deadline handoff](m1_deadline_handoff.md) records owner acceptance of
+continued work with these declared limitations, supplies all 636 test-audio links
+locally and adds the real recovered-validation relational supplement. It does
+not mark listening complete or bypass verified-variant publication checks.
+
 ## What exists and what was checked
 
 All 16 remote branches and PRs #1–#10, their files and review history were checked
@@ -58,12 +63,11 @@ Pages embed audio and references: send only to assigned listeners, keep them
 out of Git and reference-free model inputs. Export before changing browsers or
 machines; browser autosave is local and is not a shared review database.
 
-Use the focused `feat/m1-release-closeout` checkout until merged. On this machine
-it is under `artifacts/owner-m1/closeout-2026-11-21/worktree`; its commands can
-use the original repository's existing `.venv/Scripts/python.exe`.
+PR #12 is merged. Use the current `main` checkout and the existing pinned
+environment for these commands. The protected owner workspace remains in place.
 
 ```powershell
-# Run from the closeout checkout; use its source, not a stale main checkout.
+# Run from the current repository checkout.
 $py = 'C:\Users\USER\Downloads\NLP-3\.venv\Scripts\python.exe'
 $env:PYTHONUTF8 = '1'
 $m1 = 'C:\Users\USER\Downloads\NLP-3\data\private\turas-tr-econ-legis-v0.1\m1-closeout-2026-11-21'

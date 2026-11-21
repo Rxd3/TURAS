@@ -134,6 +134,9 @@ These are technical checks; zero new human review decisions were supplied.
 
 ## Remaining work
 
+- Deadline technical handoff is complete for the available inputs under D43;
+  this list remains the genuine outstanding evidence/access work, not completed
+  listening. See [deadline handoff](../docs/m1_deadline_handoff.md).
 - Obtain compatible original 50 pilot decision payloads, or have real Turkish
   listeners review the recovery pages; review the 199 additional test clips.
 - Complete independent adjudication, including corrections and the pinned
@@ -145,3 +148,19 @@ These are technical checks; zero new human review decisions were supplied.
 - Have M6 re-audit the named closeout head/release variant, M5 check relational
   provenance, and a non-author verify retrieval. Regenerate/version relational
   evidence and rerun shared comparisons if new listening changes text.
+
+## 2026-11-21 — deadline working handoff (owner-assisted)
+
+- Generated four validation relational CSVs from the exact pinned recovered
+  minutes (438 utterances, 274 quantifiers, 3,784 relationships); kept all 438
+  references unreviewed and wrote a separate private, hashed evaluator supplement.
+- Checked utterance/quantifier/relationship keys, relation types, provenance and
+  access scope across train, recovered validation and test CSVs.
+- Prepared a private page linking all 636 real test audio files, plus the existing
+  evidence-bearing listening pages. No decisions, corrections or ACKs were added.
+- Recorded D43 and machine-readable deadline status; owner accepts continued
+  working-study use with explicit reference-quality/missing-artifact limitations.
+  The strict verified-reference publication gate remains active.
+
+These are technical contributions with coding-agent assistance. This entry does
+not assign a human identity to Member 1 or claim new human listening/adjudication.

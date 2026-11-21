@@ -26,6 +26,11 @@ working bundles are prepared. Human listening/adjudication, independent release
 approval and consumer acknowledgments remain pending; PR #2's merge did not
 resolve its release review. Frozen benchmark artifacts are unchanged.
 
+The owner-accepted [M1 deadline handoff](docs/m1_deadline_handoff.md) supports
+continued work with the existing working references and a checked validation
+relational supplement. Human listening/adjudication remains incomplete and must
+be disclosed in the report and presentation.
+
 ## For graders — Quickstart & Verification
 
 ```bash

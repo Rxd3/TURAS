@@ -1,6 +1,6 @@
 # Member 6 — Integration, Evaluation, and QA
 
-Name: Member 6. GitHub username: `afel6`.
+Name: Abdalraouf Alkabir. Student ID: `2309015482`. GitHub username: [`afel6`](https://github.com/afel6).
 Branch convention: `feat/m6-integration-evaluation-qa` (focused topic suffixes allowed).
 Ownership/tasks/review routing: [TEAM_TASKS.md](../TEAM_TASKS.md).
 
@@ -36,6 +36,9 @@ Ownership/tasks/review routing: [TEAM_TASKS.md](../TEAM_TASKS.md).
 * **PR #5 (`feat/m4-m5-integration`):** reviewed (verified 56 pinned code hashes, split/manifest/lexicon hashes, S/D/I metric recomputation across 20 systems, and 1,084 lean tests), approved, and merged (`62fadf5`).
 * **PR #6 (`feat/m2-seq2seq-speech-llm-baselines`):** reviewed rounds 1–3 ([round 2](https://github.com/Rxd3/TURAS/pull/6#pullrequestreview-5979396403)), approved at `e06d0a8`, and merged (`cbdc07c`).
 * **PR #7 (`feat/m3-ctc-alternative-baselines`):** reviewed rounds 1–2 ([round 1](https://github.com/Rxd3/TURAS/pull/7#pullrequestreview-5979398124)), approved at `9351849`, and merged (`695016f`).
+* **PR #8 (`feat/m6-submission-cleanup`):** authored and merged (`3f10894`) — root `LICENSE`, grader quickstart, `docs/m6-smoke-results.md` sync, and stale README/process-file cleanup.
+* **PR #9 (`feat/m6-final-polish`):** authored and merged (`95089eb`) — quantitative error analysis & RDL failure diagnosis (`docs/error_analysis.md`), standalone verifier (`scripts/verify_submission.py`), aggregate-only N-best oracle script (`scripts/compute_nbest_oracle.py`), `presentation/SLIDE_OUTLINE.md`, and pure MIT `LICENSE` + separate `NOTICE`.
+* **PR #10 (`feat/m3-ctc-adapters-tests`):** reviewed, approved, and merged (`1ad2d7c`).
 
 ## Remaining work
 

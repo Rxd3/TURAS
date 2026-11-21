@@ -6,13 +6,13 @@ from types import SimpleNamespace
 
 import numpy as np
 import pytest
-import torch
+
+torch = pytest.importorskip("torch")
 
 from turkish_asr_rdl.baselines.bilstm_ctc import BiLstmCtcBaselineAdapter, save_bilstm_checkpoint
 from turkish_asr_rdl.baselines.ctc import (
     Wav2Vec2CtcBaselineAdapter,
     ctc_loss_cross_check,
-    greedy_ctc_decode,
 )
 from turkish_asr_rdl.decoding.interface import AudioItem, check_adapter
 from turkish_asr_rdl.models.bilstm_ctc import (
@@ -98,7 +98,6 @@ def test_b4_config_loads_and_matches_adapter_contract() -> None:
     )
     assert len(hyps) == 3
     assert hyps[0].status == "ok"
-    # Preserves leading/trailing spaces verbatim under raw-v1
     assert hyps[0].text == " merhaba "
     assert hyps[0].selected_candidate_id == "ctc-0001"
     assert len(hyps[0].candidates) == 5
@@ -123,12 +122,11 @@ def test_ctc_loss_cross_check_finite_for_feasible_sequence() -> None:
 
 
 def test_b5_vocab_train_only_subsampling_4x_and_feasibility() -> None:
-    # Build vocabulary strictly from train transcripts; unseen test characters map to <unk>=1
     tok = CharCtcTokenizer.fit_from_train_texts(["merhaba dünya", "ekonomi bütçe"])
     assert tok.blank_token_id == 0
     assert tok.unk_token_id == 1
     assert tok.space_token_id == 2
-    assert tok.encode("merhaba!")[-1] == 1  # '!' never seen in train -> <unk>
+    assert tok.encode("merhaba!")[-1] == 1
     assert tok.decode(tok.encode("merhaba dünya"), group_tokens=False) == "merhaba dünya"
 
     extractor = LogMelSpectrogramExtractor(sample_rate_hz=16000, n_mels=80)
@@ -139,7 +137,6 @@ def test_b5_vocab_train_only_subsampling_4x_and_feasibility() -> None:
     model = BiLSTMCTC(vocab_size=len(tok), n_mels=80, hidden_size=32, num_layers=2, dropout=0.1)
     logits, out_lens = model(feats, feat_lens)
     assert logits.shape == (2, int(out_lens[0].item()), len(tok))
-    # Verify exact 4x subsampling ratio
     assert int(out_lens[0].item()) == (((int(feat_lens[0].item()) + 1) // 2) + 1) // 2
 
     valid, dropped = check_ctc_feasibility([10, 4, 15], [8, 6, 15])

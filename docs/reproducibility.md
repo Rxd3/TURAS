@@ -87,9 +87,9 @@ output of `python scripts/check_env.py` with the team.
    importable, or an unexpected error stops the report) it prints one line and
    exits 1 without `READY`/`NOT READY`.
 
-**Gotcha (uv in the Claude desktop app):** when installing Python with uv inside
-the Claude desktop app, set `UV_PYTHON_INSTALL_DIR` to a folder outside `AppData`
-first.
+**Gotcha (uv in sandboxed Windows environments):** when installing Python with
+`uv` under restricted `AppData` paths, set `UV_PYTHON_INSTALL_DIR` to a
+writable folder outside `AppData` first.
 
 **Unit tests only (CPU, no torch):** `pip install -r requirements/dev.txt`,
 `pip install --no-deps -e .`, then `python -m pytest --cov=turkish_asr_rdl

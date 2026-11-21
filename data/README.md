@@ -9,7 +9,9 @@ tables, and verification/audit records for the working release
 See [docs/dataset.md](../docs/dataset.md) and
 [docs/contracts/data.md](../docs/contracts/data.md) for full provenance,
 inclusion/exclusion rules, and known limitations (611 of 636 test clips use
-unreviewed edited TBMM minutes; 25 clips received single-reviewer verification).
+unreviewed edited TBMM minutes; 25 clips carry M1-reported single-reviewer
+tags whose original payloads are unavailable). See [M1 closeout](../docs/m1_closeout.md)
+for the new pinned 224-clip verification plan and truthful working-bundle status.
 
 | Area | Committed contents |
 | --- | --- |

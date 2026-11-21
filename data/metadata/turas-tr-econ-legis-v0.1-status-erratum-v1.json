@@ -1,0 +1,12 @@
+{
+  "schema_version": "0.1",
+  "status": "frozen_by_M1_M6_approval_pending",
+  "authority": "project owner working-study authorization; M6 review 5962363421",
+  "legacy_split_manifest_sha256": "a8fff65b99fcf11d9452685e438e250207032ecfe11152741562147126d095b8",
+  "correction": "The embedded legacy claim of M6 approval of the 50-clip policy was disputed by M6. Preserve legacy bytes/hashes; this sidecar records the actual approval state.",
+  "M6_review_url": "https://github.com/Rxd3/TURAS/pull/2#pullrequestreview-5962363421",
+  "verification_target": "up to eight test clips per recording, seed2026, plus evidence/adjudication for the original pilot",
+  "frozen_splits_reassigned": false,
+  "reference_corrections_require_new_variant": true,
+  "M6_approval": null
+}

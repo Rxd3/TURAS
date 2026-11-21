@@ -67,7 +67,7 @@ button.primary{background:var(--acc);color:#fff;border-color:var(--acc)}
 input[type=text]{font:inherit;padding:4px 8px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--fg)}
 </style></head><body><main>
 <header><strong>TURAS listening review</strong> · policy turas-verbatim-v0.1 · <span id="prog"></span><br>
-Reviewer ID <input type="text" id="rev" value="rev_m1" size="8"> <button class="primary" onclick="exportJson()">Export decisions (JSON)</button>
+Reviewer ID <input type="text" id="rev" value="" placeholder="rev_your_id" size="14"> <button class="primary" onclick="exportJson()">Export decisions (JSON)</button>
 <span class="meta">Decisions autosave in this browser.</span></header>
 <p class="ar">استمع للمقطع كاملاً وقارن النص كلمة بكلمة. <b>accept</b> إذا النص مطابق، <b>correct</b> إذا الكلام واضح والنص فيه خطأ (صحّح النص في المربع)، <b>reject</b> إذا الكلام غير واضح أو مقطوع أو لا تتأكد. لا تخمّن أبداً. بالنهاية اضغط Export وأرسل الملف.</p>
 <p>Rules: write what is spoken; keep digits as written (<code>5 milyar lira</code>, <code>yüzde 42</code>); remove non-spoken labels; never guess — reject instead. Full guide: data/verification/turas-verbatim-v0.1.md</p>
@@ -90,7 +90,7 @@ ITEMS.forEach((it, i) => {
   c.innerHTML = `<div class="meta"><b>#${i + 1}</b><span>${esc(it.split)}</span><span>${esc(it.session_date)}</span>
     <span>${esc(it.utterance_id)}</span><a href="${esc(it.src)}" target="_blank" rel="noopener">source video at ${esc(String(it.t))}s</a></div>
     <audio controls preload="none" src="data:audio/flac;base64,${it.audio}"></audio>
-    <div class="meta">Upstream reference (edit only when choosing correct):</div>
+    <div class="meta">Reference under review (edit only when choosing correct):</div>
     <textarea>${esc(s.text)}</textarea>
     <div>${["accept","correct","reject"].map(d => `<label><input type="radio" name="d${i}" value="${d}" ${s.decision === d ? "checked" : ""}> ${d}</label>`).join("")}</div>
     <div class="meta">${ISSUES.map(x => `<label><input type="checkbox" value="${x}" ${s.issues.includes(x) ? "checked" : ""}> ${x}</label>`).join("")}</div>
@@ -105,13 +105,16 @@ ITEMS.forEach((it, i) => {
 });
 prog();
 function exportJson(){
-  const rev = document.getElementById("rev").value.trim() || "rev_unknown";
+  const rev = document.getElementById("rev").value.trim();
+  if (!/^rev_[a-z0-9_]{1,32}$/.test(rev) || rev === "rev_unknown") { alert("Enter your own reviewer ID before exporting."); return; }
+  if (ITEMS.some(it => (it.blocked_reviewers || []).includes(rev))) { alert("Adjudication needs a different reviewer from the primary listener."); return; }
   const out = ITEMS.map(it => { const s = state[it.utterance_id + "|" + it.audio_sha256];
     return {utterance_id: it.utterance_id, audio_sha256: it.audio_sha256, reviewer_id: rev,
+      reviewed_reference_text: it.reference_text, adjudicates_record_ids: it.adjudicates_record_ids || [],
       review_utc: s.ts || null, annotation_policy_version: "turas-verbatim-v0.1", decision: s.decision || null,
       corrected_text: s.decision === "correct" ? s.text : null, text_changed: s.text !== it.reference_text,
       issue_codes: s.issues, note: s.note || ""}; });
-  const blob = new Blob([JSON.stringify({kit: "__KIT__", reviews: out}, null, 1)], {type: "application/json"});
+  const blob = new Blob([JSON.stringify({kit: "__KIT__", role: "__ROLE__", reviews: out}, null, 1)], {type: "application/json"});
   const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = "__KIT__-decisions-" + rev + ".json"; a.click();
 }
 </script></body></html>"""
@@ -161,7 +164,9 @@ def main() -> int:
     return 0
 
 
-def _write_page(artifact_root: Path, items: list[dict], kit: str, registry: dict, out: Path) -> None:
+def _write_page(artifact_root: Path, items: list[dict], kit: str, registry: dict, out: Path, *, role: str = "primary") -> None:
+    if role not in ("primary", "adjudication"):
+        raise ValueError("invalid review role")
     payload = []
     for r in items:
         audio = (artifact_root / RELEASE / r["audio_uri"]).read_bytes()
@@ -170,9 +175,12 @@ def _write_page(artifact_root: Path, items: list[dict], kit: str, registry: dict
             "utterance_id": r["utterance_id"], "split": r["split"], "session_date": registry[r["source_id"]],
             "src": f"{r['source_url']}&t={t}s", "t": t, "audio_sha256": r["audio_sha256"],
             "reference_text": r["reference_text"], "audio": base64.b64encode(audio).decode("ascii"),
+            "adjudicates_record_ids": r.get("_adjudicates_record_ids", []),
+            "blocked_reviewers": r.get("_blocked_reviewers", []),
         })
     page = PAGE.replace("__ITEMS__", json.dumps(payload, ensure_ascii=False).replace("</", "<\\/"))
     page = page.replace("__KIT__", html.escape(kit))
+    page = page.replace("__ROLE__", role)
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(page, encoding="utf-8")
     print(f"{len(items)} items -> {out} ({out.stat().st_size / 1e6:.1f} MB)")

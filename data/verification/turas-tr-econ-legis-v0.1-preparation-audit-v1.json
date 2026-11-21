@@ -1,0 +1,142 @@
+{
+  "M1_reported_test_pilot": {
+    "clips": 25,
+    "corrected": 10,
+    "evidence": "derived from supplied M1 reference-origin tags; original decision payloads not available",
+    "fraction": 0.4,
+    "wilson_95_interval": [
+      0.23403302377747973,
+      0.5926054264103301
+    ]
+  },
+  "M6_approval_claimed": false,
+  "actual_review_records_received": 0,
+  "audio_files_hashed_and_format_checked": 5450,
+  "chronology": "Prepared 2026-11-21 after working test evaluation; no blind-before-all-evaluation claim",
+  "cross_split_exact_intersections": {
+    "train--test": {
+      "audio_sha256": 0,
+      "leakage_group_id": 0,
+      "normalized_text": 0
+    },
+    "train--validation": {
+      "audio_sha256": 0,
+      "leakage_group_id": 0,
+      "normalized_text": 0
+    },
+    "validation--test": {
+      "audio_sha256": 0,
+      "leakage_group_id": 0,
+      "normalized_text": 0
+    }
+  },
+  "dataset_release": "turas-tr-econ-legis-v0.1",
+  "frozen_audio_or_split_files_modified": false,
+  "near_duplicate_audio_audit": "not performed; singleton duplicate_cluster_id values are not evidence of clustering",
+  "new_test_clips": 199,
+  "owner_reference_variant": "working only; human evidence and independent M6 approval pending",
+  "pilot_test_ids_in_target": 25,
+  "reference_status_tags_are_not_new_listening_evidence": true,
+  "repository_audit": {
+    "M1_PR2_latest_review": "CHANGES_REQUESTED",
+    "PRs_checked": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10
+    ],
+    "all_10_merged": true,
+    "base_main_sha": "1ad2d7c74ebb55df5222be8a7f305cd73c39a9b7",
+    "date": "2026-11-21",
+    "later_M1_resolution_branch_found": false,
+    "related_history": "all remote M1 commits are ancestors of main; other unmerged branches contain no M1 review exports/corrected validation files",
+    "remote_branches_checked": 16
+  },
+  "required_primary_evidence": 249,
+  "review_pages": [
+    {
+      "file": "review-kits/test-new-01.html",
+      "items": 32,
+      "sha256": "d45c9864c7454e27c4da207f3e30d4f970e0d1dd19b797a183f50c62d71a4063"
+    },
+    {
+      "file": "review-kits/test-new-02.html",
+      "items": 32,
+      "sha256": "de1c6cbeb16c796f1b3a439474c5f498235a96ca5508e313637becea592311b2"
+    },
+    {
+      "file": "review-kits/test-new-03.html",
+      "items": 32,
+      "sha256": "cb1c8ee97afafc18ec1ca562500073e61ed8ded892116de83966da9a96a914f0"
+    },
+    {
+      "file": "review-kits/test-new-04.html",
+      "items": 32,
+      "sha256": "0c6eac0d402c2aada26ae1693989fe66ee5f4977f7440edfa57e60f9e117f016"
+    },
+    {
+      "file": "review-kits/test-new-05.html",
+      "items": 32,
+      "sha256": "902bd231e8a5ee5ebac9de15dcd000f2d302263eed99c3991c56e2ee3b034513"
+    },
+    {
+      "file": "review-kits/test-new-06.html",
+      "items": 32,
+      "sha256": "6f641cf8447870b7c7c7bf84a365ddddd0a7ef3dcc2b3b35559c8ffe66033445"
+    },
+    {
+      "file": "review-kits/test-new-07.html",
+      "items": 7,
+      "sha256": "43c366c0f18609faac9782d485dc34ab5c086bcf659b406b34fe7942da6ef6dd"
+    },
+    {
+      "file": "review-kits/pilot-evidence-01.html",
+      "items": 32,
+      "sha256": "019048d0c265cbfcecea9913eaedcc2cbecb449faf744927c0d324cee37a61f0"
+    },
+    {
+      "file": "review-kits/pilot-evidence-02.html",
+      "items": 18,
+      "sha256": "dc54366c8bac0bfb744c95f38746fa6cc13c611cbd8bdd65895753ed254a37c4"
+    }
+  ],
+  "speakers": "unknown; recording fallback, not speaker-disjointness",
+  "splits": {
+    "test": {
+      "hours": 3.0040237125,
+      "recordings": 28,
+      "source_reported_verification_tags": {
+        "unreviewed": 611,
+        "verified": 25
+      },
+      "utterances": 636
+    },
+    "train": {
+      "hours": 20.002334845,
+      "recordings": 129,
+      "source_reported_verification_tags": {
+        "unreviewed": 4366,
+        "verified": 10
+      },
+      "utterances": 4376
+    },
+    "validation": {
+      "hours": 2.002126822777778,
+      "recordings": 15,
+      "source_reported_verification_tags": {
+        "unreviewed": 438
+      },
+      "utterances": 438
+    }
+  },
+  "status": "preparation_complete_human_evidence_pending",
+  "test_ids_sha256": "6408b04a1e079dcb0aca40667e744d678f6129fdea04fd40ecdae65e4d3b5cb2",
+  "verification_plan_sha256": "474b0f979c056e4bd726c864e4c9b3632b760aaad41c5cdda6c7dc80bd20b464",
+  "verification_test_target": 224
+}

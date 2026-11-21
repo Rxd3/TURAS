@@ -1,0 +1,121 @@
+{
+  "base_split_manifest_sha256": "a8fff65b99fcf11d9452685e438e250207032ecfe11152741562147126d095b8",
+  "bundle_verification": {
+    "bundles": [
+      {
+        "audio_members": 5450,
+        "file": "turas-tr-econ-legis-v0.1-INFERENCE-CLEAN.tar",
+        "inference_rows": 5450,
+        "members_verified": 5459,
+        "reference_splits": [],
+        "sha256": "c7047acd1404610f738a1a465830d0a369e4707e4b6692cd51180c669960182a"
+      },
+      {
+        "audio_members": 0,
+        "file": "turas-tr-econ-legis-v0.1-TRAIN-REFERENCES.tar",
+        "inference_rows": 0,
+        "members_verified": 11,
+        "reference_splits": [
+          "train"
+        ],
+        "sha256": "caa387b3bec5076440d852de4190bdf00ea918ba2eae50b4d00a9035ca2d03b8"
+      },
+      {
+        "audio_members": 0,
+        "file": "turas-tr-econ-legis-v0.1-VALIDATION-WORKING.tar",
+        "inference_rows": 0,
+        "members_verified": 7,
+        "reference_splits": [
+          "validation"
+        ],
+        "sha256": "602a957273c03486ee0dfc4e021500b02c6e8cee05a84700ca40ed52232f1c72"
+      },
+      {
+        "audio_members": 0,
+        "file": "turas-tr-econ-legis-v0.1-EVALUATOR-WORKING.tar",
+        "inference_rows": 0,
+        "members_verified": 13,
+        "reference_splits": [
+          "test",
+          "train",
+          "validation"
+        ],
+        "sha256": "763f278cbfb3b16d7be8a1f0b29efea5c79a5bbad6114b398e5f2efdc53691ab"
+      }
+    ],
+    "cloud_acl_checked_or_changed": false,
+    "human_listening_or_delivery_proved": false,
+    "status": "all_working_bundle_bytes_and_roles_verified"
+  },
+  "bundles": [
+    {
+      "bytes": 1991147520,
+      "file": "turas-tr-econ-legis-v0.1-INFERENCE-CLEAN.tar",
+      "macos_appledouble_members": 0,
+      "members": 5460,
+      "recipients": [
+        "M2",
+        "M3",
+        "M4",
+        "M5",
+        "M6"
+      ],
+      "scope": "reference-free inference and audio",
+      "sha256": "c7047acd1404610f738a1a465830d0a369e4707e4b6692cd51180c669960182a"
+    },
+    {
+      "bytes": 12226560,
+      "file": "turas-tr-econ-legis-v0.1-TRAIN-REFERENCES.tar",
+      "macos_appledouble_members": 0,
+      "members": 12,
+      "recipients": [
+        "M3",
+        "M4",
+        "M5"
+      ],
+      "scope": "train references; never inference input",
+      "sha256": "caa387b3bec5076440d852de4190bdf00ea918ba2eae50b4d00a9035ca2d03b8"
+    },
+    {
+      "bytes": 747520,
+      "file": "turas-tr-econ-legis-v0.1-VALIDATION-WORKING.tar",
+      "macos_appledouble_members": 0,
+      "members": 8,
+      "recipients": [
+        "validation evaluators/model selectors"
+      ],
+      "scope": "validation references; never inference input",
+      "sha256": "602a957273c03486ee0dfc4e021500b02c6e8cee05a84700ca40ed52232f1c72"
+    },
+    {
+      "bytes": 9154560,
+      "file": "turas-tr-econ-legis-v0.1-EVALUATOR-WORKING.tar",
+      "macos_appledouble_members": 0,
+      "members": 14,
+      "recipients": [
+        "M6/evaluator only"
+      ],
+      "scope": "available train/test snapshots plus explicitly recovered validation; not the missing original M6 archive",
+      "sha256": "763f278cbfb3b16d7be8a1f0b29efea5c79a5bbad6114b398e5f2efdc53691ab"
+    }
+  ],
+  "cloud_sharing_permissions_changed": false,
+  "dataset_release": "turas-tr-econ-legis-v0.1",
+  "distribution": "owner must deliver through restricted recipient channels",
+  "human_acknowledgments": {},
+  "missing_components": [
+    "original 50 pilot review-record payloads and adjudication evidence",
+    "original corrected validation-only bundle and its three private corrections",
+    "original upstream exclusion ledger",
+    "listed original M6 full archive (7a721b6b...)",
+    "independent M6 release approval and consumer ACKs"
+  ],
+  "reference_variants": {
+    "test": "M1-v0.1-source-snapshot",
+    "train": "M1-v0.1-source-snapshot",
+    "validation": "owner-recovered-validation-minutes-v1"
+  },
+  "status": "working_exports_ready_listening_and_release_approval_pending",
+  "test_ids_sha256": "6408b04a1e079dcb0aca40667e744d678f6129fdea04fd40ecdae65e4d3b5cb2",
+  "verification_plan_sha256": "474b0f979c056e4bd726c864e4c9b3632b760aaad41c5cdda6c7dc80bd20b464"
+}

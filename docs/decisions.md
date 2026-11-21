@@ -41,3 +41,20 @@ versions, compatibility/migration effects and supporting PR/evidence. Preserve t
 old decision history. A working decision cannot become approved solely because
 implementation started. Record hardware-blocked full tuning explicitly with
 measured feasibility evidence; do not delete the full tuning track from scope.
+
+## M1 closeout and contamination boundary (2026-11-21, D42)
+
+Owner adopted the [D42 working verification/publication policy](owner_decisions.md)
+and [data contract 0.3](contracts/data.md). This follows the M6 PR #2 Option C
+request; independent release approval remains pending. The new plan is after
+working test exposure and cannot be claimed blind before all evaluation.
+
+613/636 TURAS test clips are public WorldSpeech train rows. Externally
+WorldSpeech-fine-tuned parents/baselines and unfiltered WorldSpeech train are
+prohibited. The group's own fine-tuning on frozen TURAS **train** IDs is allowed.
+No text from held-out test-session dates (2026-01-06 through 2026-04-22) may enter
+training, graph evidence, an LM or prompts. Record checkpoint revisions and
+training-data evidence; publication dates alone do not prove all pretraining
+is disjoint. The ASR-agreement CER filter may favour Whisper-family outputs;
+edited minutes can bias models differently. Exact group/hash/text checks do not
+establish speaker or near-duplicate disjointness.

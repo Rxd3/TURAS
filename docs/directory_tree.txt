@@ -21,7 +21,7 @@ TURAS/
 |   |-- README.md
 |   |-- member_1.md
 |   |-- member_2.md
-|   |-- member_3.md
+|   |-- Abdullah_Gamal_2309015819_abdu3061.md
 |   |-- member_4.md
 |   |-- Rasit_Isaoglu_2309015397_Rxd3.md
 |   `-- member_6.md

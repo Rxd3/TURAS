@@ -14,7 +14,7 @@ marking a TEAM_TASKS item complete; ownership and specifications do not prove wo
 | --- | --- |
 | [Member 1](member_1.md) | Dataset and Relational Schema |
 | [Member 2](member_2.md) | Seq2Seq and Speech-LLM Baselines |
-| [Member 3](member_3.md) | CTC and Classical Baselines |
+| [Member 3](Abdullah_Gamal_2309015819_abdu3061.md) | CTC and Classical Baselines |
 | [Member 4](member_4.md) | Whisper Fine-Tuning |
 | [Member 5](Rasit_Isaoglu_2309015397_Rxd3.md) | CTC Fine-Tuning and RDL — Raşit isaoğlu (`2309015397`, `@Rxd3`) |
 | [Member 6](member_6.md) | Integration, Evaluation, and QA — Abdalraouf Alkabir (`2309015482`, `@afel6`) |

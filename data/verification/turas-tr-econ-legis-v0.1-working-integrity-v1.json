@@ -1,0 +1,18 @@
+{
+  "embedded_audio_hashes_checked": 249,
+  "graph_optimization_performed": false,
+  "graph_train_ids_checked": 4376,
+  "heldout_provenance_in_training": false,
+  "human_decisions_created": 0,
+  "javascript_syntax": "node --check passed",
+  "review_page_ids_checked": 249,
+  "shown_reference_snapshot_matches": true,
+  "status": "passed",
+  "train_only_graph_edges": 31595,
+  "train_only_graph_nodes": {
+    "entity": 90,
+    "quantifier": 1459,
+    "topic": 7,
+    "utterance": 4376
+  }
+}

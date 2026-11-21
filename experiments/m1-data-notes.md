@@ -90,7 +90,8 @@
 
 ## 2026-11-18 — release frozen
 
-- M6 approved sampled verification (D08), as reported to M1. Froze with
+- M1 froze under its own sampled-verification proposal; the historical M6
+  approval claim was incorrect and is withdrawn by the 2026-11-21 erratum. Froze with
   `m1_freeze_release.py --sampled-verification`: 5,450 rows kept, 0 rejected,
   16 references replaced by listening corrections (`local_human`), 50 rows
   `verified`, 1,034 validation/test rows upstream minutes (`unreviewed`).
@@ -104,3 +105,14 @@
   for M3/M4/M5; evaluator-only for M6), hashes in
   `data/manifests/turas-tr-econ-legis-v0.1-handoff.json`. Consumer
   acknowledgments pending.
+
+## 2026-11-21 — technical closeout and chronology correction
+
+The original pilot numbers above are M1-reported history; original decision
+payloads are not available in this workspace or supplied Drive folders. PR #2's
+M6 changes-requested review requires Option C (224 test clips) and independent
+adjudication. The focused closeout implements that workflow and prepares real
+role-separated working bundles. No new human listening or M6 approval is claimed.
+See [current closeout](../docs/m1_closeout.md) for commands and remaining evidence.
+The plan was prepared after existing working test evaluation. Neither the old
+test results nor old frozen reference/manifest bytes are rewritten.

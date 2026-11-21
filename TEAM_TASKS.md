@@ -77,7 +77,9 @@ relational type/graph needs; actual team approval of source rights and working d
 **Objective definition of done:**
 
 - [ ] Source revision/rights and actual reference origin are recorded for every row.
-- [ ] Every frozen validation/test reference has accepted local verification evidence.
+- [ ] D42 working exception: committed 224-test-ID plan and genuine pilot/sample
+  evidence pass independent adjudication; all other minutes are labelled unreviewed.
+  Full-verbatim-release status still requires complete held-out listening.
 - [ ] Unique IDs, disjoint groups, duplicate audits and byte hashes validate without hidden exclusions.
 - [ ] CSV keys/types and provenance access validate; test-derived facts cannot enter training/inference.
 - [ ] M2–M6 acknowledge a single release; a non-author verifies the regeneration/retrieval instructions.
@@ -87,8 +89,12 @@ release/audit PR (M6 and consumers review). Give all model owners inference-only
 exports; give evaluator-only references to M6. Record approvals and actual work in
 [member_1.md](contributions/member_1.md).
 
-**Specific next task:** write the WorldSpeech `tr_tr` source/revision/terms/field
-audit and assess legislative/financial coverage using documentation first.
+**Specific next task:** complete the prepared 199-new-test/50-pilot evidence
+listening pages, ingest genuine exports and have different listeners adjudicate
+the pinned correction/accept scope. Then obtain named-head M6 release re-audit,
+restricted evaluator delivery and real consumer ACKs. Technical preparation,
+hash audit and clean working bundles are documented in [M1 closeout](docs/m1_closeout.md);
+these do not complete the listening/release-review checkboxes.
 
 ## Member 2 — Seq2Seq and Speech-LLM Baselines
 

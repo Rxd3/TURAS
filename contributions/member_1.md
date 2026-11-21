@@ -4,7 +4,9 @@ Name: unassigned (member to add). GitHub username: unassigned (member to add).
 Branch: `feat/m1-data-relational-schema`.
 Ownership/tasks/review routing: [TEAM_TASKS.md](../TEAM_TASKS.md).
 
-**Status (2026-11-18): release `turas-tr-econ-legis-v0.1` frozen and handed off; consumer hash acknowledgments pending.**
+**Status (2026-11-21): frozen by M1; working technical closeout prepared.
+M6 release approval, genuine review/adjudication evidence and consumer ACKs
+remain pending. PR #2 merged with an outstanding changes-requested review.**
 
 ## Actual contributions
 
@@ -85,8 +87,9 @@ artifacts (split files identical) and on a synthetic copy (reject/correct paths)
 
 ### 2026-11-18 — release frozen and handed off
 
-- Froze `turas-tr-econ-legis-v0.1` (split manifest `a8fff65b…`) after M6's
-  approval of sampled verification; merged the 16 listening corrections;
+- Froze `turas-tr-econ-legis-v0.1` (split manifest `a8fff65b…`) under M1's
+  sampled-verification decision; the claimed M6 approval was incorrect (see the
+  2026-11-21 status erratum). M1 reported merging 16 listening corrections;
   regenerated relational evidence; 24 integrity checks passed.
 - Built the three access-separated handoff bundles and recorded their hashes
   (`data/manifests/turas-tr-econ-legis-v0.1-handoff.json`).
@@ -99,16 +102,46 @@ No model runs. Full audio build done 2026-11-18: 5,450 FLAC files (1.9 GB, 16 kH
 
 ## Reviews and handoffs
 
-- M6 approved sampled verification (D08) on 2026-11-18 (reported by M1).
+- M6 requested a larger stratified sample and adjudication in [PR #2](https://github.com/Rxd3/TURAS/pull/2#pullrequestreview-5962363421); the old approval statement is withdrawn.
 - M1 reviewed M6's data/predictions/normalization 0.2 proposals: approve, with
   an audio-root clarification and a raw-text term-matching note (sent to M6).
-- Pending: M5 + M6 code review of PR #2; consumer hash acknowledgments.
+- PR #2 merged; release re-audit against the closeout head and actual consumer hash acknowledgments remain pending.
+
+## 2026-11-21 — owner-requested technical closeout
+
+Repository tooling work performed with coding-agent assistance; this entry
+does not attribute new human listening to Member 1 or any invented reviewer.
+
+- Checked every remote branch and all PRs #1–#10, including reviews and files;
+  rebased the focused `feat/m1-release-closeout` work on current merged `main`.
+- Prepared a seed-2026, eight-per-recording 224-test-ID plan (25 original pilot
+  IDs included), 199-new-test and 50-pilot evidence-recovery listening pages.
+  Preparation is after working test exposure, selected without model errors.
+- Added evidence-bound ingestion/adjudication, actual UTC ordering, immutable
+  publication, rejection blocking and meaningful gate tests. Existing release
+  implementation and frozen model-producing sources stay unchanged.
+- Rechecked all 5,450 audio hashes and 16 kHz mono PCM16 properties; exact
+  recording/audio/shared-normalized-text intersections across splits are zero.
+- Built and independently checked four clean, separately hashed private working
+  archives. No data, audio, references or review pages are committed to Git.
+- Corrected approval and reference-bias claims, recorded D42, preserved frozen
+  source bytes through a separately hashed status erratum.
+
+Evidence/commands: [M1 closeout](../docs/m1_closeout.md),
+[preparation audit](../data/verification/turas-tr-econ-legis-v0.1-preparation-audit-v1.json),
+[working handoff](../data/manifests/turas-tr-econ-legis-v0.1-m1-working-handoff-v1.json).
+These are technical checks; zero new human review decisions were supplied.
 
 ## Remaining work
 
-- Record consumer acknowledgments of split manifest `a8fff65b…` from M2–M6
-  in `data/manifests/turas-tr-econ-legis-v0.1-handoff.json`.
-- M6 acknowledgment of the lexicon hash `8ef903fe…`.
-- M5 + M6 review of PR #2 (https://github.com/Rxd3/TURAS/pull/2); a
-  non-author check of the rebuild instructions.
-- Optional: second-reviewer adjudication of the 16 pilot corrections.
+- Obtain compatible original 50 pilot decision payloads, or have real Turkish
+  listeners review the recovery pages; review the 199 additional test clips.
+- Complete independent adjudication, including corrections and the pinned
+  accept sample. Do not mark reference tags as newly verified without records.
+- Recover the original corrected validation bundle and full exclusion ledger
+  if available. The current working validation minutes are explicitly different.
+- Restrict evaluator Drive access, deliver the appropriate role bundles, and
+  record actual M2–M6 receipt/hash ACKs (never prefilled).
+- Have M6 re-audit the named closeout head/release variant, M5 check relational
+  provenance, and a non-author verify retrieval. Regenerate/version relational
+  evidence and rerun shared comparisons if new listening changes text.

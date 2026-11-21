@@ -32,8 +32,10 @@ and verbatim transcription guidelines; changes require versioned annotation poli
 An upstream `human_transcript` starts as `unreviewed` for TURAS. A verifier listens
 to the full segment, checks timing and fidelity, and records an evidence-linked
 decision. Disagreements or difficult speech go to another reviewer/adjudicator.
-Validation and test references must all be `verified` or `adjudicated` before
-freeze; ambiguous/unintelligible segments are excluded with reasons, never guessed.
+The default policy requires all validation/test references to be `verified` or
+`adjudicated`. The versioned working-release exception below samples test and
+retains unreviewed minutes explicitly. Ambiguous text is never guessed; a rejection
+blocks publication under the frozen-membership policy.
 Train reference status is reported and any weaker supervision is labeled in
 training runs. Do not use ASR output as a human-approved reference by default.
 
@@ -56,19 +58,25 @@ Report limitations from unknown model pretraining contamination.
 
 M1 and M6 review counts, duration, topics, source/speaker overlap, verification,
 exclusions, duplicate statistics, rights and split hashes before approving a
-release. Split manifests and a release card are required; no counts or hours are
-claimed now. See the [data contract](contracts/data.md) for required fields.
+release. Split manifests and a release card are required; the actual working
+release counts are reported below. See the [data contract](contracts/data.md) for required fields.
 
 ## Proposed release `turas-tr-econ-legis-v0.1` (M1, 2026-11-18)
 
-Status: **frozen on 2026-11-18** under the sampled-verification policy
-(D08; sampled-verification freeze reported by M1; independent M6 review of PR #2
-requested metadata/schema fixes and noted that `turas-tr-econ-legis-v0.1` is a
-working release rather than a fully listening-verified verbatim release). Final split manifest sha256
-`a8fff65b99fcf11d9452685e438e250207032ecfe11152741562147126d095b8`; all hashes in
-`data/splits/…/split_manifest.json`, `data/manifests/turas-tr-econ-legis-v0.1.json`
-and the handoff record `data/manifests/turas-tr-econ-legis-v0.1-handoff.json`.
-A correction from now on creates a new release. Source audit: [worldspeech-tr_tr-source-audit](../data/metadata/worldspeech-tr_tr-source-audit.md).
+Status: **frozen by M1; independent M6 release approval pending**. PR #2
+merged on 2026-11-20, but its latest review requests changes; a merge does not
+approve the 50-clip policy. See the [M6 review](https://github.com/Rxd3/TURAS/pull/2#pullrequestreview-5962363421)
+and [closeout instructions](m1_closeout.md).
+
+The original split manifest remains byte-identical at SHA-256
+`a8fff65b99fcf11d9452685e438e250207032ecfe11152741562147126d095b8`.
+Its embedded approval statement is superseded by
+[`status-erratum-v1`](../data/metadata/turas-tr-econ-legis-v0.1-status-erratum-v1.json).
+Never overwrite this manifest, audio, split membership, references or existing
+experiment outputs. New listening corrections create a separately named and
+hashed reference variant; comparisons against it require newly labelled shared
+evaluation for all systems. Source audit:
+[worldspeech-tr_tr-source-audit](../data/metadata/worldspeech-tr_tr-source-audit.md).
 Configuration: [`configs/datasets/turas-tr-econ-legis-v0.1.json`](../configs/datasets/turas-tr-econ-legis-v0.1.json);
 lexicon: [`turas-domain-lexicon-v0.1.json`](../configs/datasets/turas-domain-lexicon-v0.1.json).
 Rebuild: `python scripts/m1_build_release.py --artifact-root <dir outside Git>`.
@@ -143,7 +151,11 @@ FLAC), `<release>.references.jsonl` (full data-contract rows),
 
 - References are TBMM minutes, edited rather than verbatim; validation/test
   need listening verification ([guide](../data/verification/turas-verbatim-v0.1.md)).
-- The CER ≤ 0.25 filter favours segments an upstream ASR system handled well.
+- The upstream ASR-agreement CER ≤ 0.25 filter selects easier/aligned speech
+  and may favour Whisper-family output; it is not a human quality guarantee.
+- Validation includes recordings one day from train sessions in December 2025
+  budget debates. Recording separation does not imply independent topics,
+  speakers or recurring phrasing.
 - Topic labels and relational facts are automatic lexicon matches.
 - Unknown speakers; public YouTube/minutes origin means pretraining
   contamination cannot be excluded for pre-2026 data.
@@ -161,8 +173,12 @@ These need M6 approval with the split policy (D07); none changes split membershi
 - **Contamination through WorldSpeech-trained checkpoints.** 613 of the 636 test
   rows (and most validation rows) are upstream *train* rows. Any checkpoint
   fine-tuned on WorldSpeech `tr_tr` train has therefore seen TURAS test audio
-  and text. No baseline or parent checkpoint may be trained on WorldSpeech.
-  M2–M5 state each checkpoint's training data and release date.
+  and text. Do not use externally WorldSpeech-fine-tuned parents/baselines or the
+  unfiltered WorldSpeech train split. Group-owned training on the frozen TURAS
+  **train** IDs is permitted. No test-session text (2026-01-06 through 2026-04-22)
+  may enter training, graph evidence, an LM or prompts. M2–M5 record each exact
+  checkpoint's training-data evidence and revision; undisclosed pretraining is
+  an uncertainty, not proof of no exposure.
 - **Lexicon frozen by hash.** `turas-domain-lexicon-v0.1` is frozen as sha256
   `8ef903fe…` ([freeze record](../configs/datasets/turas-domain-lexicon-v0.1.freeze.json)).
   The file stays byte-identical, so its inner `status` text still says
@@ -198,43 +214,57 @@ These need M6 approval with the split policy (D07); none changes split membershi
   `--role adjudication` for the second reviewer), and rewrites a cumulative
   audit.
 
-### Commands (artifact root outside Git)
+### Current verification policy (D42; owner adopted 2026-11-21)
 
-| Step | Command |
-| --- | --- |
-| Build release (≈1 h, streams ≈26 GB, keeps ≈2 GB) | `python scripts/m1_build_release.py --artifact-root ../turas-artifacts` |
-| Relational evidence tables | `python scripts/m1_build_relational.py --artifact-root ../turas-artifacts` |
-| Listening pages, 100 clips each, pilot IDs left out | `python scripts/m1_review_kit.py --artifact-root ../turas-artifacts --split test --exclude-ids-file data/verification/turas-tr-econ-legis-v0.1-pilot-ids.txt --part-size 100 --out <dir>/turas-test.html` (same for `validation`) |
-| Pages built from another machine's audio | `python scripts/m1_audio_equivalence.py --artifact-root ../turas-artifacts <page.html>` |
-| Ingest exported decisions | `python scripts/m1_apply_reviews.py --artifact-root ../turas-artifacts <decisions.json> ...` (`--role adjudication` for the second reviewer) |
-| Freeze (refuses while validation/test rows are unreviewed) | `python scripts/m1_freeze_release.py --artifact-root ../turas-artifacts --status "frozen by M1 on <date>; M6 review: <PR>"`, then rerun the relational step |
+The prior M1 proposal to stop at the 50-clip pilot is superseded. The M6 review
+requests **8 test clips per recording**, including the original 25 test pilot
+IDs, seed 2026: 224 test clips across 28 recordings, 199 additional clips.
+The [plan](../data/verification/turas-tr-econ-legis-v0.1-stratified-test-v1.json)
+and sorted LF ID file are pinned in Git before new listening. This preparation
+occurred **after the working test results were opened**; it is not blind before
+all evaluation. Selection uses recording IDs and pilot IDs, never model errors.
 
-### Verification policy: sampled verification (M1 decision 2026-11-18, needs M6 approval, D08)
+The available original test/train references contain reported verification tags,
+but the 50 actual review-record payloads are missing. The recovered validation
+variant contains upstream minutes for all 438 rows, all unreviewed; it does not
+recover M1's three corrections or 15 review records. The primary evidence scope
+is therefore 224 test + 15 validation pilot + 10 train pilot = **249 clips**.
+The prepared pages cover 199 new test clips and 50 pilot evidence-recovery clips.
+If genuine compatible original records arrive, import them instead of inventing
+or re-attributing old decisions. Audio/snapshot mismatches require real evidence
+or listening to the current kit.
 
-M1 stops listening review after the 50-clip pilot. This **replaces** the rule
-above that every validation/test reference must be `verified` or
-`adjudicated` before freeze, and the matching item in M1's definition of done
-in `TEAM_TASKS.md`. M6 must approve it (D08) before the release is frozen.
+A second listener must adjudicate every correction/rejection/conflict, all known
+pilot corrections, and a seed-2026 10% sample of accepts. Because the original
+three validation correction identities are unavailable, all 15 validation pilot
+clips are conservatively in mandatory adjudication scope. Adjudication is pinned
+to exact primary record IDs; the second reviewer must differ from every primary
+listener for that clip. Rejections block publication and enter the check report's
+rejection ledger; no frozen ID disappears or changes split.
 
-- **What the references are.** Validation/test references are the upstream
-  TBMM minutes (`reference_origin = upstream_human`), not verbatim transcripts.
-  The 50 pilot clips were checked by listening, and their status and
-  corrections are merged at freeze.
-- **The sample.** Drawn with seed 2026, one random clip from each of 25 random
-  test recordings (of 28), each of the 15 validation recordings, and 10 train
-  recordings; chosen before any model output existed. IDs:
-  `data/verification/turas-tr-econ-legis-v0.1-pilot-ids.txt`.
-- **Measured reference quality.** 0/50 rejected (95% Wilson CI 0–7.1%);
-  16/50 needed a correction (32%, CI 20.8–45.8%). Upstream minutes vs
-  verified text: WER 2.43% over 1,561 words (20 S, 9 D, 9 I). Most differences
-  are spoken words the minutes omit.
-- **Consequence for results.** Every WER/CER on the full test set includes
-  reference noise of about this size. It is the same for all systems, but
-  absolute WERs are overstated by roughly 2–3 points, and differences between
-  systems smaller than that are not reliable. Reports state this.
-- **Required reporting (M6).** Report full-test metrics on the frozen test
-  (3.0 h, minutes references), plus the same metrics on the 25 verified test
-  clips as a reference-quality check, labelled as a small sample.
-- **Freeze.** `scripts/m1_freeze_release.py --sampled-verification` records
-  this policy and the verified/unreviewed counts in the split manifest.
-  Without the flag the script still refuses unreviewed validation/test rows.
+M1 reported a test pilot correction rate of **10/25 = 40%** (Wilson 95% interval
+23.4–59.3%). The pooled 16/50 is not the test estimate. The historical 38 word
+edits were 20 substitutions, 9 deletions and 9 insertions; substitutions were the
+largest category. These are historical reported diagnostics, not newly reproduced
+listening results. Edited minutes create output-style-dependent WER/CER bias;
+there is no justified common 2–3 point correction or universal ranking threshold.
+Report full-636 scores and separately labelled verified-subset scores with the
+reference variant, coverage, review status and post-test chronology. A newly
+reviewed subset cannot retroactively make the earlier 25 clips adjudicated.
+
+### Commands and access boundaries
+
+Use [M1 closeout](m1_closeout.md) for the exact prepare → ingest → adjudicate →
+check → publish commands. `m1_freeze_release.py` now delegates to the safe
+versioned publisher; its old in-place `--artifact-root` freeze interface is
+retired. A sampled publication requires the committed plan and genuine accepted
+primary/adjudication evidence. It never overwrites the old references or splits.
+
+Separate private working bundles now exist for inference/audio, train references,
+recovered validation references and evaluator-only references/test relational
+evidence. The evaluator working bundle explicitly lists missing review records,
+original validation corrections and exclusion ledger; it is not the unavailable
+original M6 bundle. Whitelisted archives contain no AppleDouble entries.
+See the [current inventory](../data/manifests/turas-tr-econ-legis-v0.1-m1-working-handoff-v1.json).
+Delivery/consumer acknowledgments and restricted Drive permissions still require
+actual evidence; archive creation is not proof of delivery or an ACL change.

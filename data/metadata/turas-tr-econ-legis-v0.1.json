@@ -1,6 +1,6 @@
 {
   "dataset_release": "turas-tr-econ-legis-v0.1",
-  "status": "frozen by M1 on 2026-11-18; sampled verification approved by M6 (D08, as reported by M1)",
+  "status": "frozen by M1; independent M6 approval pending; status erratum v1 and D42 apply",
   "card_written": "2026-11-18",
   "description": "Turkish Grand National Assembly (TBMM) plenary speech about the economy, public finance, tax, wages/pensions, banking, trade and legislation, selected from WorldSpeech tr_tr with a versioned domain lexicon and split by recording.",
   "upstream": {
@@ -67,23 +67,29 @@
     "origin": "upstream_human (TBMM stenographic minutes as aligned by WorldSpeech)",
     "annotation_policy": "data/verification/turas-verbatim-v0.1.md",
     "verification_status": {
-      "policy": "sampled verification, approved by M6 2026-11-18 (D08): docs/dataset.md",
-      "sample": "50 clips by listening (25 test, 15 validation, 10 train), seed 2026, spread over recordings",
-      "result": "34 accept, 16 correct, 0 reject; upstream minutes vs verified text WER 2.43% (1,561 words)",
+      "policy": "D42: pinned 224-test sample plus pilot evidence; independent adjudication and M6 release approval pending",
+      "sample": "Original M1-reported 50-clip pilot; new selection 224 test IDs includes 25 original test pilot IDs; 199 additional test clips",
+      "result": "M1-reported test corrections 10/25=40%, Wilson 95% 23.4-59.3%; original decision payloads unavailable; no new listening claimed",
       "train": "unreviewed except 10 sampled clips (labelled as such in training runs)",
-      "validation": "upstream minutes; 15 clips verified",
-      "test": "upstream minutes; 25 clips verified (report metrics on them separately)"
+      "validation": "Original M1 reported 15 reviewed/3 corrected; that corrected bundle is unavailable. Working recovered variant: all 438 upstream minutes unreviewed",
+      "test": "Original snapshot carries 25 single-reviewer verified tags/611 unreviewed; missing payloads and independent adjudication remain pending"
     },
     "verification_audit": "data/verification/turas-tr-econ-legis-v0.1-audit.md"
   },
   "relational": "data/relational/README.md",
   "speakers": "unknown for every row; speaker-disjointness is not claimed",
   "limitations": [
-    "Validation/test references are edited minutes, not verbatim transcripts; a 50-clip listening sample measured 2.43% WER between minutes and speech, so absolute WERs are overstated by roughly 2-3 points.",
-    "The upstream CER <= 0.25 alignment filter favours segments an upstream ASR system handled well.",
+    "Edited TBMM minutes create output-style-dependent reference bias. The historical pooled pilot diagnostic cannot justify a common WER offset or a system-ranking threshold.",
+    "Upstream ASR-agreement CER <= 0.25 filtering selects easier/aligned speech and may favour Whisper-family outputs; not a human quality guarantee.",
     "Topic labels and relational facts are automatic lexicon matches (lexicon-screening-unverified).",
-    "Pre-2026 audio and minutes are public, so pretraining contamination of baselines cannot be excluded for train/validation; test uses only 2026 sessions."
+    "Pre-2026 audio and minutes are public, so pretraining contamination of baselines cannot be excluded for train/validation; test uses only 2026 sessions.",
+    "Validation sessions can be one day from train sessions in December 2025; recording grouping does not establish speaker or topic independence.",
+    "613/636 test rows were public WorldSpeech train rows. Externally WorldSpeech-fine-tuned parents and unfiltered WorldSpeech train are prohibited; own frozen TURAS-train tuning is permitted. No test-session text in training/graph/LM/prompts.",
+    "Audio near-duplicate audit not performed; duplicate_cluster_id singleton values are placeholders. Exact hashes/groups/text checks do not prove near-duplicate absence.",
+    "The new verification plan was prepared after working test evaluation; no blind-before-all-evaluation claim."
   ],
   "commands": "docs/dataset.md#commands-artifact-root-outside-git",
-  "handoff": "data/manifests/turas-tr-econ-legis-v0.1-handoff.json"
+  "handoff": "data/manifests/turas-tr-econ-legis-v0.1-handoff.json",
+  "status_erratum": "data/metadata/turas-tr-econ-legis-v0.1-status-erratum-v1.json",
+  "card_updated": "2026-11-21"
 }

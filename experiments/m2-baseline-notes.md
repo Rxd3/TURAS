@@ -203,7 +203,7 @@ This checklist organizes the remaining execution steps for Member 2 across four 
 - [ ] **Handoff Boundary to M6:**
   - Deliver prediction bundles, N-best artifacts, and run manifests to M6.
   - Leave official evaluation (raw and normalized WER/CER, Turkish I / apostrophe normalization under `tr-normalized-v1`, domain terminology metrics, and standardized timing evaluation) to Member 6.
-  - Record handoff acknowledgment and artifact hashes in [contributions/member_2.md](member_2.md).
+  - Record handoff acknowledgment and artifact hashes in [contributions/OMAR_ALZYOD_2409015412_Devinci101.md](../contributions/OMAR_ALZYOD_2409015412_Devinci101.md).
 
 ## Workflow Execution Guide & Handoff Sequence
 

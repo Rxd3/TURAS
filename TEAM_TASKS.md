@@ -141,7 +141,7 @@ M4 parent checkpoint/decoder agreement; approved hardware/model access.
 **Handoff/review:** open capability/config PR before model downloads, reviewed by
 M6 and M4 for Whisper. Adapter/result PRs require M6 and the affected consumer.
 Give M4 exact B1/B2 identities and give M6 all three complete bundles. Record
-evidence in [member_2.md](contributions/member_2.md).
+evidence in [OMAR_ALZYOD_2409015412_Devinci101.md](contributions/OMAR_ALZYOD_2409015412_Devinci101.md).
 
 **Specific next task:** document exact candidate model IDs/revisions, Turkish
 capability and real score/N-best support for B1, B2 and B3 without downloading weights.

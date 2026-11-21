@@ -1,7 +1,9 @@
 # Final presentation requirements
 
-No deck or demonstrated model exists. M6 coordinates the final presentation with
-all members after real experiments and an independent reproduction audit.
+See [SLIDE_OUTLINE.md](SLIDE_OUTLINE.md) for the evidence-backed 12-slide deck
+outline grounded in `results/final/M4_M5_FINAL_REPORT.md` and
+`docs/error_analysis.md`. M6 coordinates the final presentation with all members
+after real experiments and an independent reproduction audit.
 
 The future deck should cover the problem/domain and working-to-approved dataset
 decisions; provenance and human verification; frozen split/leakage analysis; all

@@ -1,0 +1,18 @@
+TURAS — Dataset and Third-Party Model Notice
+
+1. Dataset provenance and rights:
+   The TURAS dataset (`turas-tr-econ-legis-v0.1`) is derived from
+   `disco-eth/WorldSpeech` (`tr_tr`), which is distributed under
+   Creative Commons Attribution-NonCommercial 4.0 International (CC BY-NC 4.0).
+   Audio recordings and protected transcripts are not redistributed in this
+   repository; only selection code, split IDs, hashes, exclusion ledgers, and
+   aggregate statistics are committed. Any downstream use of WorldSpeech-derived
+   data must comply with CC BY-NC 4.0 attribution and non-commercial terms.
+
+2. Pretrained model checkpoints:
+   Upstream pretrained models referenced by configs remain subject to their own
+   licenses, including:
+   - `openai/whisper-small` and `openai/whisper-large-v3`: MIT
+   - `mpoyraz/wav2vec2-xls-r-300m-cv7-turkish`: CC BY 4.0 (attribution required)
+   - `mpoyraz/wav2vec2-xls-r-300m-cv8-turkish`: Apache-2.0
+   - `Qwen/Qwen3-ASR-0.6B-hf` and `Qwen/Qwen3-ASR-1.7B-hf`: Apache-2.0

@@ -16,7 +16,7 @@ marking a TEAM_TASKS item complete; ownership and specifications do not prove wo
 | [Member 2](member_2.md) | Seq2Seq and Speech-LLM Baselines |
 | [Member 3](member_3.md) | CTC and Classical Baselines |
 | [Member 4](member_4.md) | Whisper Fine-Tuning |
-| [Member 5](member_5.md) | CTC Fine-Tuning and RDL |
+| [Member 5](member_5.md) | CTC Fine-Tuning and RDL — Raşit isaoğlu (`2309015397`, `@Rxd3`) |
 | [Member 6](member_6.md) | Integration, Evaluation, and QA — Abdalraouf Alkabir (`2309015482`, `@afel6`) |
 
 [Owner-directed integration](owner_integration.md) records cross-workstream

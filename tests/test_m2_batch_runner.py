@@ -20,6 +20,7 @@ import tempfile
 import unittest
 from pathlib import Path
 from typing import Any
+from unittest.mock import MagicMock, patch
 
 import numpy as np
 
@@ -73,7 +74,11 @@ class DummyFeatureExtractor:
     def __call__(self, audio, sampling_rate=16000, return_tensors="pt"):
         class DummyBatch:
             def __init__(self):
-                self.input_features = np.zeros((1, 80, 100), dtype=np.float32)
+                class DummyFeatureArray(np.ndarray):
+                    device = "cpu"
+
+                self.input_features = np.zeros((1, 80, 100), dtype=np.float32).view(DummyFeatureArray)
+                self.input_features.device = "cpu"
 
             def to(self, *args, **kwargs):
                 return self
@@ -557,6 +562,32 @@ class BaselineBatchRunnerTests(unittest.TestCase):
 
     def test_smoke_check_whisper_rank1_real_audio_runner(self):
         """Real-audio smoke check helper executes parity comparison and catches errors without printing transcripts."""
+        # In lean environments without PyTorch installed (e.g. packaging CI),
+        # supply a mock torch so this offline unit test can exercise the
+        # runner, argument passing, and rank-1 parity comparator without heavyweight deps.
+        torch_mod = sys.modules.get("torch")
+        if torch_mod is None:
+            try:
+                import torch as _test_torch
+                torch_mod = _test_torch
+            except ImportError:
+                torch_mod = None
+
+        if torch_mod is None:
+            mock_torch = MagicMock()
+
+            class MockTensor:
+                def __init__(self, data, *args, **kwargs):
+                    self.data = data
+                    self.device = kwargs.get("device", "cpu")
+
+            mock_torch.tensor.side_effect = lambda data, *a, **k: MockTensor(data)
+            mock_torch.inference_mode.return_value.__enter__ = lambda *a: None
+            mock_torch.inference_mode.return_value.__exit__ = lambda *a: None
+            patcher = patch.dict(sys.modules, {"torch": mock_torch})
+            patcher.start()
+            self.addCleanup(patcher.stop)
+
         ckpt_dir, valid_sha = self._create_mock_checkpoint("model.safetensors", b"whisper test bytes")
         cfg = copy.deepcopy(self.b1_config)
         cfg["model"]["weight_sha256"] = valid_sha
@@ -570,8 +601,16 @@ class BaselineBatchRunnerTests(unittest.TestCase):
         def mock_audio_loader(p: Path) -> np.ndarray:
             return dummy_audio
 
+        call_count = 0
+
         def mock_nbest_fn(*args, **kwargs):
-            return [{"text": "dummy text", "token_ids": [10, 20]}], {}
+            nonlocal call_count
+            call_count += 1
+            if call_count == 1:
+                # clip-01: rank-1 matches single-result generation exactly
+                return [{"rank": 1, "text": "[101] [102]", "token_ids": [101, 102, 50257]}], {}
+            # clip-02: rank-1 produces intentional mismatch
+            return [{"rank": 1, "text": "farkli metin", "token_ids": [999]}], {}
 
         outcomes = run_real_audio_smoke_check(
             config_path=cfg_file,
@@ -586,8 +625,25 @@ class BaselineBatchRunnerTests(unittest.TestCase):
         self.assertEqual(len(outcomes), 2)
         self.assertEqual(outcomes[0].clip_id, "clip-01")
         self.assertEqual(outcomes[1].clip_id, "clip-02")
+
+        # clip-01 must match verbatim without error
+        self.assertEqual(outcomes[0].result.status, "match")
+        self.assertTrue(outcomes[0].result.matched)
+        self.assertTrue(outcomes[0].result.text_exact_match)
+        self.assertTrue(outcomes[0].result.tokens_exact_match)
+        self.assertIsNone(outcomes[0].result.error)
+
+        # clip-02 must be an expected mismatch without error
+        self.assertEqual(outcomes[1].result.status, "mismatch")
+        self.assertFalse(outcomes[1].result.matched)
+        self.assertFalse(outcomes[1].result.text_exact_match)
+        self.assertFalse(outcomes[1].result.tokens_exact_match)
+        self.assertIsNone(outcomes[1].result.error)
+
+        # Neither outcome may ever be 'error'
         for outcome in outcomes:
-            self.assertIn(outcome.result.status, ("match", "mismatch", "error"))
+            self.assertIn(outcome.result.status, ("match", "mismatch"))
+            self.assertNotEqual(outcome.result.status, "error")
 
 
 if __name__ == "__main__":

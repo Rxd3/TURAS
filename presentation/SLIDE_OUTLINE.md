@@ -17,10 +17,11 @@ Use the speaker notes for evidence links and additional metrics.
 5. **System coverage.** Five native systems and 15 rescoring conditions ran
    on the frozen test set. B2 Whisper-large-v3 reached 12.32% normalized test
    WER and B3 Qwen3-ASR-1.7B 16.09%, scored by M6 outside the frozen protocol.
-   B5 has synthetic CPU evidence.
-   GMM-HMM and matched transducer evaluation are pending. Link the
+   B5 BiLSTM-CTC reached 47.78%, scored by the `m3_*` scripts outside the
+   frozen protocol. B7 GMM-HMM (99.97%) and B8 Seda RNN-T (29.96%) are in
+   [the completion report](../results/final/BASELINE_COMPLETION_REPORT.md). Link the
    [published-source audit](../docs/asr_language_support_audit.md) for Turkish
-   HuBERT and transducer support.
+   HuBERT support.
 6. **Acoustic results.** Normalized WER changed from 24.512% to 12.368% for
    Whisper LoRA and to 10.371% for full Whisper. XLS-R moved from 37.152% to
    25.150% with fine-tuning and a train-derived vocabulary extension.

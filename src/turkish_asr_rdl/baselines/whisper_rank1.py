@@ -214,19 +214,19 @@ def run_whisper_single_generate(
     prompt_tokens: list[str] | None = None,
 ) -> dict[str, Any]:
     """Execute Whisper standard generate with num_return_sequences=1."""
+    import torch
+
+    prompt_toks = prompt_tokens or DEFAULT_WHISPER_PROMPT_TOKENS
+    prompt = processor.tokenizer.convert_tokens_to_ids(prompt_toks)
+    eos_id = getattr(processor.tokenizer, "eos_token_id", None)
+
+    config = copy.deepcopy(model.generation_config)
+    config.forced_decoder_ids = None
+
+    device = input_features.device
+    decoder_input_ids = torch.tensor([prompt], device=device)
+
     try:
-        import torch
-
-        prompt_toks = prompt_tokens or DEFAULT_WHISPER_PROMPT_TOKENS
-        prompt = processor.tokenizer.convert_tokens_to_ids(prompt_toks)
-        eos_id = getattr(processor.tokenizer, "eos_token_id", None)
-
-        config = copy.deepcopy(model.generation_config)
-        config.forced_decoder_ids = None
-
-        device = getattr(input_features, "device", "cpu")
-        decoder_input_ids = torch.tensor([prompt], device=device)
-
         with torch.inference_mode():
             output = model.generate(
                 input_features=input_features,
@@ -276,11 +276,21 @@ def run_whisper_rank1_comparison(
     Uses beam_width as requested_n for the proposed helper at b6afa13 because
     the helper ties requested_n and num_beams together.
     """
-    if language is not None and language != "tr":
-        raise ValueError(f"Whisper baseline decoding requires language='tr', got {language!r}")
-    if task is not None and task != "transcribe":
-        raise ValueError(f"Whisper baseline decoding requires task='transcribe', got {task!r}")
     prompt_toks = prompt_tokens or DEFAULT_WHISPER_PROMPT_TOKENS
+    if language is not None:
+        lang_token = f"<|{language}|>"
+        if language != "tr" or lang_token not in prompt_toks:
+            raise ValueError(
+                f"Whisper baseline decoding requires language='tr' matching prompt tokens ({prompt_toks}), "
+                f"got language={language!r}"
+            )
+    if task is not None:
+        task_token = f"<|{task}|>"
+        if task != "transcribe" or task_token not in prompt_toks:
+            raise ValueError(
+                f"Whisper baseline decoding requires task='transcribe' matching prompt tokens ({prompt_toks}), "
+                f"got task={task!r}"
+            )
     prompt_ids = processor.tokenizer.convert_tokens_to_ids(prompt_toks)
     eos_id = getattr(processor.tokenizer, "eos_token_id", None)
 

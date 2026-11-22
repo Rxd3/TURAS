@@ -166,7 +166,7 @@ class DeterministicWhisperRank1ComparisonTests(unittest.TestCase):
         self.assertEqual(cleaned_no, [99] + prompt)
 
     def test_run_whisper_rank1_comparison_kwarg_validation(self):
-        """run_whisper_rank1_comparison accepts language and task kwargs and validates them."""
+        """run_whisper_rank1_comparison accepts language and task kwargs and validates them against prompt tokens."""
         # Test invalid language
         with self.assertRaises(ValueError) as ctx:
             run_whisper_rank1_comparison(
@@ -180,6 +180,30 @@ class DeterministicWhisperRank1ComparisonTests(unittest.TestCase):
                 None, None, None, nbest_fn=lambda *a, **k: [], language="tr", task="translate"
             )
         self.assertIn("task='transcribe'", str(ctx.exception))
+
+        # Test language missing from prompt_tokens
+        with self.assertRaises(ValueError) as ctx:
+            run_whisper_rank1_comparison(
+                None,
+                None,
+                None,
+                nbest_fn=lambda *a, **k: [],
+                prompt_tokens=["<|startoftranscript|>", "<|transcribe|>"],
+                language="tr",
+            )
+        self.assertIn("matching prompt tokens", str(ctx.exception))
+
+        # Test task missing from prompt_tokens
+        with self.assertRaises(ValueError) as ctx:
+            run_whisper_rank1_comparison(
+                None,
+                None,
+                None,
+                nbest_fn=lambda *a, **k: [],
+                prompt_tokens=["<|startoftranscript|>", "<|tr|>"],
+                task="transcribe",
+            )
+        self.assertIn("matching prompt tokens", str(ctx.exception))
 
 
 

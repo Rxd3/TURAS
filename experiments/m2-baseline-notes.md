@@ -1,6 +1,6 @@
 # Member 2: Seq2Seq and Speech-LLM Baselines (B1, B2, B3)
 
-Status: Baseline B2 (Whisper-large-v3) validation (438/438 OK) and D43 working-test (636/636 OK) reference-free batch inference complete and verified. Portable handoff package turas-b2-whisper-large-v3-m2-handoff.zip generated and sent to Member 6. Unmodified B1 baseline integrated via shared M4/M6 benchmark block. B3 Qwen3-ASR candidates remain unselected pending Decision D05 resolution. Updated 2026-11-22.
+Status: Independent reproduction of Baseline B2 (Whisper-large-v3) validation (438/438 OK) and D43 working-test (636/636 OK) reference-free batch inference complete and verified. Portable handoff package turas-b2-whisper-large-v3-m2-handoff.zip generated and sent to Member 6 (scored by M6 in results/m6 as B2-whisper-large-v3-m2repro alongside M6's official RTX 5070 Ti B2 experiment; see PR #23). Unmodified B1 baseline integrated via owner-assisted M4/M5 benchmark (PR #5, 62fadf5; recomputed and reviewed by M6 in results/final/m45_metrics.csv). B3 Qwen3-ASR-1.7B-hf selected on validation by M6 with weights verified identical to January 2026 original (PR #23). Updated 2026-11-22.
 
 ## Track Scope and Checkpoint Audit
 
@@ -337,31 +337,40 @@ Validation OK:      True
 
 All 76 Member 2 tests pass under `$env:LOCALAPPDATA\TURAS\venv-313\Scripts\python.exe`:
 - **Default Offline Suite (no shared decoder checkout):**
-  `Ran 76 tests in 7.820s — OK (52 passed, 24 skipped)`
-- **Opt-in Integration Suite (with shared decoder from `src/`):**
-  `Ran 76 tests in 10.185s — OK (76 passed, 0 failures, 0 errors, 0 skipped)`
+  `Ran 76 tests in 7.326s — OK (52 passed, 24 skipped in lean CI without PyTorch; 58 passed, 18 skipped in full offline venv)`
+- **Opt-in Integration Suite (with shared decoder from `src/` via `$env:TURAS_SHARED_DECODER_PATH="src"`):**
+  `Ran 76 tests in 11.056s — OK (76 passed, 0 failures, 0 errors, 0 skipped)`
+
+Opt-in integration test output:
+```text
+[Real Framework Synthetic Rank-1 Check Outcome] Status: match | Text Match: True | Tokens Match: True
+  Single result text: '[31344] [31344] [31344] [31344] [31344] [31344] [31344] [31507] [31507] [31507]' | Tokens: [31344, 31344, 31344, 31344, 31344, 31344, 31344, 31507, 31507, 31507]
+  N-best rank-1 text: '[31344] [31344] [31344] [31344] [31344] [31344] [31344] [31507] [31507] [31507]' | Tokens: [31344, 31344, 31344, 31344, 31344, 31344, 31344, 31507, 31507, 31507]
+```
 
 Breakdown by test module:
 1. `tests/test_m2_baseline_configs.py` (6 tests): JSON parsing, revision match, unselected status for both Qwen candidates, unset dataset bindings, model/processor IDs, and decoding parameter internal consistency.
-2. `tests/test_m2_whisper_adapter.py` (25 tests): B1/B2 config binding, 16 kHz check, sampling/decoding override rejections, SHA-256 and pinned LFS OID validation, prompt token exclusion, empty/error handling, explicit checkpoint loading with `local_files_only=True` and Hub isolation, hash mismatch rejection before loader execution, and shared decoder integration.
-3. `tests/test_m2_qwen_adapter.py` (29 tests): Candidate 1 & 2 config binding, 16 kHz check, transition scoring prompt/padding exclusion, EOS inclusion, exception handling for missing inputs/decoding methods, tiny random-init in-memory decode path matching independent teacher-forced sum (< 1e-3), explicit checkpoint loading with `local_files_only=True` and Hub isolation, hash mismatch rejection before loader execution, and shared decoder integration.
-4. `tests/test_m2_whisper_rank1.py` (8 tests): Deterministic exact match, mismatch, whitespace preservation, missing candidate, prompt token stripping, decode failure, language/task kwarg validation regression test, and real-framework synthetic rank-1 integration with independent teacher-forced recompute.
+2. `tests/test_m2_whisper_adapter.py` (24 tests): B1/B2 config binding, 16 kHz check, sampling/decoding override rejections, SHA-256 and pinned LFS OID validation, prompt token exclusion, empty/error handling, explicit checkpoint loading with `local_files_only=True` and Hub isolation, hash mismatch rejection before loader execution, and shared decoder integration.
+3. `tests/test_m2_qwen_adapter.py` (30 tests): Candidate 1 & 2 config binding, 16 kHz check, transition scoring prompt/padding exclusion, EOS inclusion, exception handling for missing inputs/decoding methods, tiny random-init in-memory decode path matching independent teacher-forced sum (< 1e-3), explicit checkpoint loading with `local_files_only=True` and Hub isolation, hash mismatch rejection before loader execution, and shared decoder integration.
+4. `tests/test_m2_whisper_rank1.py` (8 tests): Deterministic exact match, mismatch, whitespace preservation, missing candidate, prompt token stripping, decode failure, language/task kwarg validation against prompt tokens, and real-framework synthetic rank-1 integration with independent teacher-forced recompute.
 5. `tests/test_m2_batch_runner.py` (8 tests): Checkpoint verification (success, mismatch, missing, remote, unresolved shards), reference-bearing manifest rejection in reader and batch runner, end-to-end Whisper export, end-to-end Qwen export, per-clip error preservation, and real-audio smoke runner.
 
 ---
 
-## 4. Execution of Baseline B2 (Whisper-large-v3) Batch Inference (2026-11-22)
+## 4. Independent Reproduction of Baseline B2 (Whisper-large-v3) Batch Inference (2026-11-22)
+
+> **Attribution Note:** Official Baseline B2 benchmark decode was executed by Member 6 on the NVIDIA GeForce RTX 5070 Ti platform (`results/m6/`, PR #23; see `docs/reproducibility.md`). The runs documented below represent Member 2's independent reproduction on NVIDIA GeForce RTX 3060 hardware, evaluated by Member 6 as `B2-whisper-large-v3-m2repro.json`.
 
 ### A. Preflight and Environment Verification
 - **Model Checkpoint:** `openai/whisper-large-v3` at revision `06f233fe06e710322aca913c1bc4249a0d71fce1`.
-- **Weight Verification:** Local file `model.safetensors` verified (3,087,130,976 bytes, SHA-256: `a8e94b85976e5864ba3e9525c7e6c83b2a1eca42d4b797a0c7c24d778e40fd95`).
+- **Weight Verification:** Local file `<M2_MODELS_DIR>/whisper-large-v3/model.safetensors` verified (3,087,130,976 bytes, SHA-256: `a8e94b85976e5864ba3e9525c7e6c83b2a1eca42d4b797a0c7c24d778e40fd95`).
 - **Hardware:** NVIDIA GeForce RTX 3060 (12 GB VRAM, compute capability 8.6), Windows 10 (10.0.19045-SP0), Python 3.13.17 (`CPython`).
 - **VRAM Utilization:** Peak allocated 4.236 GiB, peak reserved 4.631 GiB (zero OOM events).
 - **Frozen Protocol Parity:** Preserved frozen protocol settings: `bfloat16` precision on CUDA, `num_beams=5`, `requested_n=5`, `num_return_sequences=5`, `max_new_tokens=440`, `language="tr"`, `task="transcribe"`, `length_penalty=1.0`, `do_sample=False`. Forced prefix: `<|startoftranscript|> <|tr|> <|transcribe|> <|notimestamps|>`. Score convention: `whisper-original-logits-generated-plus-eos-v1`.
 
 ### B. Validation Split Batch Inference (`validation`)
 - **Run ID:** `run-baseline-whisper-large-v3-20261122-082829`
-- **Output Directory:** `D:\isntinye\_Istenye uni_\TERM 7\Natural Language Processing\turas_runs\b2_whisper_large_v3_validation`
+- **Output Directory:** `<M2_RUN_DIR>/b2_whisper_large_v3_validation`
 - **Utterances:** 438 total (438 OK, 0 empty, 0 error).
 - **Batch Wall Time:** 2,827.74 s (~47.13 min, ~6.46 s/utterance).
 - **Artifacts:**
@@ -372,7 +381,7 @@ Breakdown by test module:
 
 ### C. D43 Working-Test Split Batch Inference (`test`)
 - **Run ID:** `run-baseline-whisper-large-v3-20261122-094140`
-- **Output Directory:** `D:\isntinye\_Istenye uni_\TERM 7\Natural Language Processing\turas_runs\b2_whisper_large_v3_test_working`
+- **Output Directory:** `<M2_RUN_DIR>/b2_whisper_large_v3_test_working`
 - **Utterances:** 636 total (636 OK, 0 empty, 0 error).
 - **Batch Wall Time:** 4,299.93 s (~71.67 min, ~6.76 s/utterance).
 - **Artifacts:**
@@ -382,11 +391,11 @@ Breakdown by test module:
 - **Validation:** Both `validate_predictions` and `validate_nbest` passed with 0 errors.
 
 ### D. Portable Handoff Package Creation
-- **File:** `D:\isntinye\_Istenye uni_\TERM 7\Natural Language Processing\turas_runs\turas-b2-whisper-large-v3-m2-handoff.zip`
+- **File:** `<M2_RUN_DIR>/turas-b2-whisper-large-v3-m2-handoff.zip`
 - **Size:** 942,095 bytes (0.90 MB)
 - **SHA-256:** `fd8471e9084a369684f87cccd92e2d0fde1550a725e5dc0f6f854669ffa7e41b`
 - **Contents:** Contains the six verified JSONL/JSON artifacts organized in `validation/` and `test/` subdirectories, accompanied by `README.md` and `SHA256SUMS.txt`. Strictly sanitized to exclude audio, gold references, model weights, and secrets.
 
 ### E. Fix of Smoke CLI Signature Defect
 - **Issue:** `scripts/smoke_check_whisper_rank1.py` passed `language="tr"` and `task="transcribe"` into `run_whisper_rank1_comparison()`, raising `TypeError` because the function definition did not accept these kwargs.
-- **Resolution:** Added `language: str | None = None` and `task: str | None = None` to `run_whisper_rank1_comparison()` in `src/turkish_asr_rdl/baselines/whisper_rank1.py` with validation enforcing `"tr"` and `"transcribe"`. Added unit regression test in `tests/test_m2_whisper_rank1.py` and updated batch runner test. All 76 tests pass.
+- **Resolution:** Added `language: str | None = None` and `task: str | None = None` to `run_whisper_rank1_comparison()` in `src/turkish_asr_rdl/baselines/whisper_rank1.py` with validation against prompt tokens enforcing `"tr"` and `"transcribe"`. Added unit regression test in `tests/test_m2_whisper_rank1.py` and updated batch runner test. All 76 tests pass.

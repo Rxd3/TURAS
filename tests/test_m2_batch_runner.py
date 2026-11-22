@@ -74,7 +74,11 @@ class DummyFeatureExtractor:
     def __call__(self, audio, sampling_rate=16000, return_tensors="pt"):
         class DummyBatch:
             def __init__(self):
-                self.input_features = np.zeros((1, 80, 100), dtype=np.float32)
+                class DummyFeatureArray(np.ndarray):
+                    device = "cpu"
+
+                self.input_features = np.zeros((1, 80, 100), dtype=np.float32).view(DummyFeatureArray)
+                self.input_features.device = "cpu"
 
             def to(self, *args, **kwargs):
                 return self
@@ -575,6 +579,7 @@ class BaselineBatchRunnerTests(unittest.TestCase):
             class MockTensor:
                 def __init__(self, data, *args, **kwargs):
                     self.data = data
+                    self.device = kwargs.get("device", "cpu")
 
             mock_torch.tensor.side_effect = lambda data, *a, **k: MockTensor(data)
             mock_torch.inference_mode.return_value.__enter__ = lambda *a: None

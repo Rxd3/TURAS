@@ -112,3 +112,29 @@ index, so only the `+cu130` packages (torch, torchcodec) come from the PyTorch i
 **Mac/Linux:** the lock is resolved for Windows only. On Linux, compile your own copy
 with the header command, changing it to `--python-platform x86_64-unknown-linux-gnu
 -o linux.txt`. Macs have no CUDA; train on a teammate's Windows machine or a cloud GPU.
+
+## M6 baseline scoring and timing (B2/B3)
+
+Both scripts are outside the frozen protocol (not in its `critical_code_sha256` list).
+B1 parity is pending bundle 05; until then their numbers are labelled "M6 scorer, B1
+parity pending". Run them from the repository root; hashes are lowercase hex.
+
+**Scoring:** `scripts/m6_score_baselines.py` makes the shared calls of
+`scripts/m45_final_evaluate.py` (ID and contract checks, join, raw-v1 and
+tr-normalized-v1 WER/CER, term F1, jiwer cross-check, paired recording-group bootstrap)
+on run folders that hold `predictions.jsonl`, `nbest.jsonl` and `manifest.json`:
+
+    python scripts/m6_score_baselines.py --protocol configs/evaluation/m45_final_protocol.json --protocol-sha256 <PROTOCOL_SHA256> --split test --references <REFERENCES_JSONL> --references-sha256 <REFERENCES_SHA256> --run B2=<B2_RUN_DIR> --run B2-M2=<M2_RUN_DIR> --run B3=<B3_RUN_DIR> --pair B2-M2=B2 --pair B3=B2 --output <NEW_OUTPUT_DIR>
+
+On test the references hash must equal the protocol's `test_reference.payload_sha256`; on
+validation the IDs come from `data/splits/<release>/validation.txt`, the caller gives the
+bundle's hash and `reference_variant` is null. A failed check prints one stderr line, exits 1
+and writes nothing. The new output folder gets `<SYSTEM_ID>.json` per run and `summary.json`
+(pairs, bootstrap intervals, one-best agreement), aggregates only; each file's sha256 is printed.
+
+**Timing:** `scripts/m6_b23_harness_run.py` runs B2/B3 through M2's adapters and `run_timed`;
+any inference error row (warm-up, timed repeat or prediction) gives `failed_error_rows` and a non-zero exit:
+
+    python scripts/m6_b23_harness_run.py --protocol configs/evaluation/m45_final_protocol.json --protocol-sha256 <PROTOCOL_SHA256> --config configs/baselines/<CONFIG_JSON> --checkpoint <MODEL_DIR> --mode timing --output <NEW_OUTPUT_DIR>
+
+The official B2 test run is M6's 5070 Ti decode; M2's handoff is an independent reproduction.

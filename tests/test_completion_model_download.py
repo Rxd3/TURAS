@@ -58,3 +58,18 @@ def test_self_consistent_inventory_cannot_bypass_publisher_pins(tmp_path, field,
     else:
         inventory[field] = value
     assert not download.inventory_is_verified(directory, inventory, "test/pinned-model", "test-revision", expected)
+
+
+def test_downloaded_weight_with_wrong_hash_is_rejected(tmp_path, monkeypatch):
+    directory, inventory, weights = metadata_only(tmp_path)
+    expected_sha = hashlib.sha256(weights).hexdigest()
+
+    def fake_snapshot(**kwargs):
+        (Path(kwargs["local_dir"]) / "model.safetensors").write_bytes(b"tampered weights")
+
+    monkeypatch.setitem(sys.modules, "huggingface_hub", SimpleNamespace(snapshot_download=fake_snapshot))
+    monkeypatch.setattr(download, "ROOT", tmp_path)
+    monkeypatch.setattr(download, "MODELS", {"b2": ("test/pinned-model", "test-revision", expected_sha)})
+    monkeypatch.setattr(sys, "argv", ["download_completion_models.py", "--models", "b2"])
+    with pytest.raises(ValueError, match="Pinned weight hash mismatch"):
+        download.main()

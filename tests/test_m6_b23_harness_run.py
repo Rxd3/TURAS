@@ -190,3 +190,15 @@ def test_wrong_protocol_hash_refused(frozen):
     with pytest.raises(ValueError):
         tool.main(args, fake_factory)
     assert not (frozen[0] / "x").exists()
+
+
+@pytest.mark.parametrize("cfg_name", CONFIGS)
+def test_repeat_one_error_is_counted_once(frozen, cfg_name):
+    """predictions.jsonl repeats the repeat-1 rows, so they must not be added twice."""
+    root, _, _, protocol = frozen
+    out = root / "out-r1"
+    result, _ = run_tool(argv(frozen, cfg_name, "timing", out), failing_factory(WARMUP_BATCHES + 1))
+    assert isinstance(result, ValueError) and str(result) == ERROR_TEXT
+    done = json.loads((out / "completed.json").read_text(encoding="utf-8"))
+    assert done["error_rows"] == 1
+    assert done["error_rows_split"]["per_repeat"][0] == 1

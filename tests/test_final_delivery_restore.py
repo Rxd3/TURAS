@@ -60,3 +60,45 @@ def test_m45_restore_preserves_current_report_and_sealed_archive_copy(tmp_path):
     assert (root / "results/final/report.md").read_bytes() == b"current report"
     assert (root / "artifacts/owner-m45/delivery-metadata/results/final/report.md").read_bytes() == b"sealed report"
     assert (root / "artifacts/model.bin").read_bytes() == b"weights"
+
+
+def test_archive_target_outside_workspace_is_rejected(tmp_path):
+    root = tmp_path / "workspace"
+    root.mkdir()
+    archive = tmp_path / "ok.zip"
+    with zipfile.ZipFile(archive, "w") as z:
+        z.writestr("model.bin", b"weights")
+    record = {"restore_action": "archive", "restore_target": "../escaped", "restore_role": "gmm"}
+    with pytest.raises(ValueError, match="Unsafe archive path"):
+        restore.restore_record(root, record, archive)
+    assert not (tmp_path / "escaped").exists()
+
+
+def test_unknown_restore_action_is_rejected(tmp_path):
+    source = tmp_path / "payload.bin"
+    source.write_bytes(b"data")
+    record = {"restore_action": "move", "restore_target": "artifacts/payload.bin", "restore_role": "gmm"}
+    with pytest.raises(ValueError, match="Unknown restore_action"):
+        restore.restore_record(tmp_path, record, source)
+    assert not (tmp_path / "artifacts").exists()
+
+
+def test_tar_non_regular_member_is_rejected(tmp_path):
+    archive = tmp_path / "link.tar"
+    with tarfile.open(archive, "w") as t:
+        info = tarfile.TarInfo("artifacts/link")
+        info.type = tarfile.SYMTYPE
+        info.linkname = "../../outside"
+        t.addfile(info)
+    with pytest.raises(ValueError, match="Only regular files"):
+        restore.unpack(archive, tmp_path / "workspace")
+
+
+def test_zip_symlink_is_rejected(tmp_path):
+    archive = tmp_path / "link.zip"
+    with zipfile.ZipFile(archive, "w") as z:
+        info = zipfile.ZipInfo("artifacts/link")
+        info.external_attr = (0o120777 << 16)
+        z.writestr(info, "../../outside")
+    with pytest.raises(ValueError, match="Symbolic links"):
+        restore.unpack(archive, tmp_path / "workspace")

@@ -79,6 +79,25 @@ def find_payload(root, relative):
     raise FileNotFoundError(relative)
 
 
+RESTORE_ACTIONS = {"archive", "copy"}
+
+
+def check_record(root, record):
+    """Reject an unknown action or a target outside the workspace before anything is written."""
+    if record.get("restore_action") not in RESTORE_ACTIONS:
+        raise ValueError(f"Unknown restore_action: {record.get('restore_action')!r}")
+    return safe_target(root, record["restore_target"])
+
+
+def restore_record(root, record, source):
+    target = check_record(root, record)
+    if record["restore_action"] == "archive":
+        unpack(source, target, preserve_m45_metadata=record["restore_role"] == "m45")
+    else:
+        with source.open("rb") as f:
+            write_member(root, record["restore_target"], f)
+
+
 def main():
     p = argparse.ArgumentParser(__doc__)
     p.add_argument("--packages", type=Path, required=True)
@@ -102,16 +121,12 @@ def main():
     # Verify all requested payloads before the first write.
     located = [(r, find_payload(args.packages, r["path"])) for r in selected]
     for record, source in located:
+        check_record(root, record)
         if source.stat().st_size != record["bytes"] or sha(source) != record["sha256"]:
             raise ValueError(f"Package checksum mismatch: {source.name}")
     private = root / "data/private" / RELEASE
     for record, source in located:
-        action = record.get("restore_action")
-        if action == "archive":
-            unpack(source, root / record["restore_target"], preserve_m45_metadata=record["restore_role"] == "m45")
-        elif action == "copy":
-            with source.open("rb") as f:
-                write_member(root, record["restore_target"], f)
+        restore_record(root, record, source)
         print(f"Restored {source.name}")
     if "validation" in roles:
         source = private / "validation-import" / RELEASE / f"{RELEASE}.references.validation.jsonl"

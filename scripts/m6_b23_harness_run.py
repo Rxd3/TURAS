@@ -101,7 +101,8 @@ def main(argv=None, adapter_factory=make_adapter):
     if not validate_predictions(predictions, ids).ok or not validate_nbest(read_jsonl(args.output / 'nbest.jsonl'), ids).ok:
         raise ValueError('output contract violation')
     split = error_rows_split(run, repeats, predictions)
-    errors = sum(r.error_rows for r in run.records) + split['predictions']
+    # predictions.jsonl holds the repeat-1 hypotheses, so its error rows are already in run.records.
+    errors = sum(r.error_rows for r in run.records)
     status = 'completed' if not errors else 'failed_error_rows'
     write_json(args.output / 'completed.json', {
         'status': status, 'mode': args.mode,

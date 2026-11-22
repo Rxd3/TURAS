@@ -1,13 +1,15 @@
 TURAS two-minute technical presentation
 
-Slide 1: 0:00-0:15
-TURAS studies Turkish parliamentary speech recognition. We compare Whisper LoRA and full fine-tuning, XLS-R CTC adaptation, and a train-only relational graph that reranks model-generated transcripts.
+Slide 1: 0:00-0:25
+TURAS improves Turkish speech recognition for parliamentary economic and legislative debates. We use 25 hours from the Turkish Grand National Assembly, split by recording, and hold out every 2026 session as the test set: 636 unseen clips. We fine-tune Whisper-small and XLS-R CTC, then rerank each model's five best transcripts with a graph learned only from training data.
 
-Slide 2: 0:15-0:40
-The frozen split contains 4,376 training, 438 validation and 636 test clips, with 28 test recording groups. We select settings on validation. The references are edited parliamentary minutes, and 611 test references remain unreviewed. We apply the same Turkish-aware normalizer and corpus-level word error metric to every system.
+Slide 2: 0:25-1:00
+Here are all systems on the same test clips. Fine-tuning roughly halves Whisper-small's error, from 24.5 to 12.4 percent with LoRA and 10.4 with full fine-tuning, the best result overall. XLS-R CTC improves from 37.2 to 25.2. Zero-shot Whisper-large-v3 reaches 12.3, only tying the small model we adapted, while running three times slower. Qwen3-ASR reaches 16.1, and a BiLSTM-CTC trained from scratch on 20 hours reaches 47.8.
 
-Slide 3: 0:40-1:25
-Acoustic adaptation gives the clearest improvement. Whisper-small word error falls from 24.51 percent to 12.37 with LoRA and 10.37 with full tuning. XLS-R improves from 37.15 to 25.15 percent, combining fine-tuning with a train-derived vocabulary extension. Zero-shot Whisper-large-v3 reaches 12.32 percent, level with LoRA, and Qwen3-ASR reaches 16.09. The additional BiLSTM-CTC baseline reaches 47.78 percent. The supplied single-Gaussian character HMM reaches approximately 100 percent, so it provides a weak classical reference.
+Slide 3: 1:00-1:25
+Where do the gains come from? Fine-tuning removes three quarters of Whisper's inserted words and halves substitutions. Domain terms improve sharply: the social security agency SGK goes from 36 to 95 percent F1, and spoken numbers from 32 to 95. All three gains have paired 95 percent intervals well below zero.
 
-Slide 4: 1:25-2:00
-A two-layer heterogeneous GNN learns typed bilinear relation scores from train-only graph evidence. We hold N-best lists fixed and select rescoring weights on validation. Learned graph rescoring does not reliably improve any adapted model: all three recording-group confidence intervals include zero. We preserve that negative result. The study uses one training seed per model. Independent review and reference adjudication remain open. The submission includes hashed artifacts and reproduction commands.
+Slide 4: 1:25-1:50
+Finally, relational rescoring. A two-layer heterogeneous graph network rescores each five-best list. It changes error rates by at most six hundredths of a point, and every confidence interval includes zero, although better candidates exist. We report this null result, with our limits: one seed and mostly unreviewed references.
+
+Slides 5-8 are backup slides for questions; their notes hold discussion points and sources.

@@ -16,11 +16,16 @@ with a train-derived vocabulary extension. Learned RDL rescoring yielded no
 improvement over original one-best on any of the three adapted models.
 [Final report](results/final/M4_M5_FINAL_REPORT.md)
 
-The frozen working study and aggregate results are on `main`. B2 and B3 have
-smoke evidence. B5 has a BiLSTM-CTC model and adapter with synthetic CPU checks.
-Full benchmark runs for these three tracks, a GMM-HMM baseline, a matched
-Turkish transducer run, reference review, and independent sign-off remain
-pending. [Submission status](SUBMISSION.md#scope-and-remaining-work) ·
+The frozen working study and aggregate results are on `main`. Additional
+completed runs cover B2 Whisper-large-v3 (**12.387%** normalized test WER),
+B3 Qwen3-ASR-1.7B (**16.172%**), B5 BiLSTM-CTC (**47.776%**), Seda Turkish
+RNN-T (**29.958%**) and a four-mixture grapheme HMM (**99.971%**). These archived
+runs have full frozen evaluation and three-repeat timing; their scores were
+rechecked with the current shared evaluator. They are separate follow-up
+experiments, with their original runtime source preserved in artifact packages.
+Reference review and independent sign-off remain pending.
+[Completed baseline results](results/final/BASELINE_COMPLETION_REPORT.md) ·
+[Submission status](SUBMISSION.md#scope-and-remaining-work) ·
 [HuBERT and transducer support audit](docs/asr_language_support_audit.md)
 
 ## Repository map

@@ -11,6 +11,7 @@ and rescoring conditions on the same frozen 636 clips against working references
 | [Two-minute presentation](presentation/TURAS-2-minute.pptx) and [full deck](presentation/TURAS.pptx) | Four timed slides for delivery and 12 slides for questions |
 | [Final report](results/final/M4_M5_FINAL_REPORT.md) | Raw and normalized WER/CER, terminology, timing, controls and paired uncertainty |
 | [Metrics CSV](results/final/m45_metrics.csv) and [evaluation summary](results/final/m45_test_summary.json) | Per-system aggregates, edit counts and evaluation provenance |
+| [Additional baseline report](results/final/BASELINE_COMPLETION_REPORT.md), [CSV](results/final/baseline_completion_metrics.csv) and [summary](results/final/baseline_completion_summary.json) | Completed B2/B3/B5, transducer and classical runs, rechecked with the current evaluator; separate archived-runtime provenance |
 | [Error analysis](docs/error_analysis.md) | Error profiles, terminology and quantity diagnostics, and the RDL null result |
 | [Frozen protocol](configs/evaluation/m45_final_protocol.json) and [decoder erratum](docs/m45_decoding_erratum.md) | Pre-test protocol, effective decoder settings, and validation-only selection |
 | [Dataset handoff](docs/m1_deadline_handoff.md) and [contribution records](contributions/README.md) | Working reference status, artifact boundaries and team ownership |
@@ -69,16 +70,25 @@ remain pending.
 | Track | Evidence and status |
 | --- | --- |
 | B1 (Whisper-small) and B4 (XLS-R Turkish CV7) | Full matched test evaluation and repeated timing |
-| B2 (Whisper-large-v3) and B3 (Qwen3-ASR) | Adapters and smoke evidence. Full frozen test runs and official repeated timing are pending |
-| B5 (BiLSTM-CTC) | Model, adapter and configuration with a synthetic three-step CPU probe and checkpoint reload check. Corpus training and frozen evaluation are pending |
+| B2 (Whisper-large-v3) | Completed local GPU rerun: normalized test WER 12.387%, CER 5.461%; three-repeat end-to-end RTF 0.15110. This is separate from M2's originally reported handoff. |
+| B3 (Qwen3-ASR) | Both candidates evaluated on all 438 validation clips; 1.7B selected by minimum normalized CER before test inference. Test WER 16.172%, CER 5.620%; three-repeat RTF 0.11824. |
+| B5 (BiLSTM-CTC) | Continued supplied epoch-13 weights with fresh AdamW at `3e-4`; epoch 22 selected on validation, early stop at 28. Test WER 47.776%, CER 13.503%; full validation/test exports and repeated timing checked. |
 | F1–F3 (Whisper LoRA, full Whisper and adapted CTC) and R1 (learned relational rescoring) | Complete working test results, adapted checkpoints, graph controls and timing |
-| Additional course requirements | Turkish support audited from published HuBERT and transducer sources. A matched transducer run and the GMM-HMM baseline are pending. [Support audit](docs/asr_language_support_audit.md) |
+| Additional baseline coverage | Seda Turkish RNN-T: test WER 29.958%, CER 12.812%. Genuine four-mixture grapheme HMM: WER 99.971%, CER 64.549%. Both have full frozen evaluation and CPU repeated timing, without an external LM. The earlier single-Gaussian HMM negative result is preserved separately. [Support audit](docs/asr_language_support_audit.md) |
 
 M6's dated GPU smoke report covers a reference-free sample of 20 timed clips.
 The four beam systems passed N-best validation after shared-export deduplication.
 The matched results above come from the frozen test protocol, with separate
 three-repeat timing for eight conditions. [Smoke report](docs/m6-smoke-results.md) ·
 [Final report](results/final/M4_M5_FINAL_REPORT.md)
+
+The additional baseline records describe completed archived runs, with 438
+validation clips, 636 test clips and a frozen 107-clip timing subset repeated
+three times. Their prediction/N-best contracts and raw/normalized scores were
+rechecked with this repository's shared evaluator. They do not alter the original
+20-condition study or claim that every archived implementation is present in
+the current source. Exact run-source packages and limitations are documented in
+[reproduction](docs/reproducibility.md#additional-completed-baseline-runs).
 
 The test references are edited parliamentary minutes. The working set contains
 611 unreviewed test clips and 25 clips with historical single-reviewer tags.

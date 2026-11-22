@@ -103,3 +103,29 @@ index, so only the `+cu130` packages (torch, torchcodec) come from the PyTorch i
 **Mac/Linux:** the lock is resolved for Windows only. On Linux, compile your own copy
 with the header command, changing it to `--python-platform x86_64-unknown-linux-gnu
 -o linux.txt`. Macs have no CUDA; train on a teammate's Windows machine or a cloud GPU.
+
+## Additional completed baseline runs
+
+The [baseline completion report](../results/final/BASELINE_COMPLETION_REPORT.md)
+and [machine-readable summary](../results/final/baseline_completion_summary.json)
+record six completed archived runs. All validation/test prediction and supported
+N-best exports were checked against the frozen ID order, and the current shared
+evaluator reproduced their raw/normalized edit counts and terminology micro
+metrics exactly. Inference was not rerun on this updated checkout. The original
+20-condition M4/M5 study and its frozen source hashes remain unchanged.
+
+For original-runtime replay, use the existing role-separated artifact delivery
+`TURAS-FINAL-DELIVERY-2026-11-22-v2`. Folder 06 contains the M3 results/model ZIP
+and `m3-runtime-source.zip` for B5 and the supplied single-Gaussian HMM. Folders
+10–13 contain B2, Qwen, Seda and the four-mixture HMM outputs/models. The public
+`00-START-HERE/TURAS-submission-source.zip` preserves their exact follow-up
+runtime and replay commands. Extract archived source into a separate directory;
+do not overwrite current repository files with it. Large pretrained B2/Qwen
+weights are separate pinned downloads; Seda acoustic and trained HMM weights
+are included in their model packages. The summary records exact package hashes.
+
+Owner-assisted restoration in newly installed isolated Python environments
+matched three archived validation transcripts per new evaluated model; all four
+complete saved-test score reports also reproduced exactly. This is distinct
+from full-test inference replay, a fresh OS installation or independent review.
+Actual Drive upload/access and a public download URL are not claimed here.

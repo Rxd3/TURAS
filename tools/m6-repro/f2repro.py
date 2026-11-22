@@ -1,22 +1,23 @@
-"""M6 F2 reproduction helper: preflight, configs, derived protocols, epoch selection, status, comparison.
+"""M6 reproduction helper for F1/F2/F3: preflight, configs, derived protocols, epoch selection, status, comparison.
 
 Run with the GPU Python from the main clone (cwd) with PYTHONPATH=<main>\\src.
 Prints aggregates only; never reference or hypothesis text.
 """
 import argparse
+import csv
 import hashlib
 import json
 import math
 import subprocess
 import sys
 import time
+from datetime import datetime, timezone
 from pathlib import Path
 
 RELEASE = 'turas-tr-econ-legis-v0.1'
 MAIN_COMMIT = 'ee1f3e4ab215dd6449365b6012684d57a27e3cb9'
 PROTOCOL = Path('configs/evaluation/m45_final_protocol.json')
 PROTOCOL_SHA256 = '288aebd71d8a3574e13d436748d4161bc258a487e65066f1c3508bc8e835bec1'
-CONFIG = Path('configs/fine-tuning/whisper_small_full.json')
 SPLIT = Path('data/splits') / RELEASE
 SPLIT_MANIFEST_SHA256 = 'a8fff65b99fcf11d9452685e438e250207032ecfe11152741562147126d095b8'
 DATA_SHA256 = {
@@ -34,6 +35,13 @@ SMOKE_ROWS = 16
 SMOKE_ACCUMULATION = 4
 KEEP_AWAKE = 0x80000001  # ES_CONTINUOUS | ES_SYSTEM_REQUIRED
 RELEASE_AWAKE = 0x80000000
+# system -> (config, family, committed system id, committed selection model, committed validation normalized CER %)
+SYSTEMS = {
+    'F1': ('configs/fine-tuning/whisper_small_lora.json', 'whisper', 'F1-whisper-lora', 'whisper-lora-seed17', 3.971),
+    'F2': ('configs/fine-tuning/whisper_small_full.json', 'whisper', 'F2-whisper-full', 'whisper-full-seed17', 3.447),
+    'F3': ('configs/fine-tuning/ctc_xlsr_turkish_vocab_extension.json', 'ctc', 'F3-ctc-vocab', 'ctc-extended-seed17', 7.637),
+}
+FROZEN_TRAINING = {'epochs': 3, 'accumulation': 16, 'seed': 17, 'device': 'cuda', 'precision': 'bf16'}
 
 
 def sha256(path):
@@ -45,7 +53,7 @@ def sha256(path):
 
 
 def read_json(path):
-    return json.loads(Path(path).read_text(encoding='utf-8'))
+    return json.loads(Path(path).read_text(encoding='utf-8-sig'))
 
 
 def write_json(path, value):
@@ -60,6 +68,10 @@ def data_file(data, kind):
 
 def checkpoint_sha(checkpoint):
     return sha256(Path(checkpoint) / 'checkpoint-manifest.json')
+
+
+def system_config(system):
+    return read_json(SYSTEMS[system][0])
 
 
 # ---------------------------------------------------------------- preflight
@@ -83,9 +95,10 @@ def _repo_checks(results):
     _check(results, 'lexicon sha256', sha256(Path(protocol['lexicon']['path'])) == protocol['lexicon']['sha256'])
     bad = [p for p, d in protocol['critical_code_sha256'].items() if not Path(p).is_file() or sha256(p) != d]
     _check(results, 'frozen critical code (56 files) unchanged', not bad, f'{len(bad)} mismatched: {bad[:3]}')
-    config = read_json(CONFIG)
-    _check(results, 'F2 config model/budget', config['mode'] == 'full' and config['training'] == {
-        'epochs': 3, 'accumulation': 16, 'learning_rate': 1e-05, 'seed': 17, 'device': 'cuda', 'precision': 'bf16'})
+    for system in SYSTEMS:
+        training = system_config(system)['training']
+        _check(results, f'{system} config budget', {k: training[k] for k in FROZEN_TRAINING} == FROZEN_TRAINING,
+               json.dumps(training))
 
 
 def _data_checks(results, data, test_refs):
@@ -96,11 +109,23 @@ def _data_checks(results, data, test_refs):
     _check(results, 'audio FLAC count', count == AUDIO_FILES, str(count))
 
 
+def parent_cached(system):
+    """True when the pinned parent weight is in the offline cache with the pinned sha256."""
+    from huggingface_hub import hf_hub_download
+    model = system_config(system)['model']
+    try:
+        weight = hf_hub_download(model['id'], model['weight_file'], revision=model['revision'])
+    except Exception as exc:  # offline cache miss raises a hub-specific error type
+        print(json.dumps({'info': f'{system} parent not cached', 'error': type(exc).__name__}), flush=True)
+        return False
+    return sha256(weight) == model['weight_sha256']
+
+
 def _gpu_checks(results):
     import importlib.metadata as md
     import os
     versions = {}
-    for name in ('torch', 'transformers', 'huggingface_hub', 'safetensors', 'soundfile', 'soxr', 'pandas', 'jiwer', 'numpy'):
+    for name in ('torch', 'transformers', 'peft', 'huggingface_hub', 'safetensors', 'soundfile', 'soxr', 'pandas', 'jiwer', 'numpy'):
         try:
             versions[name] = md.version(name)
         except md.PackageNotFoundError:
@@ -113,13 +138,13 @@ def _gpu_checks(results):
     if cuda:
         free, total = torch.cuda.mem_get_info()
         print(json.dumps({'info': 'GPU memory GiB', 'free': round(free / 2**30, 2), 'total': round(total / 2**30, 2)}), flush=True)
-    from huggingface_hub import hf_hub_download
-    model = read_json(CONFIG)['model']
-    weight = hf_hub_download(model['id'], model['weight_file'], revision=model['revision'])
-    _check(results, 'cached whisper-small weight sha256', sha256(weight) == model['weight_sha256'])
+    _check(results, 'cached whisper-small weight sha256 (F1, F2)', parent_cached('F2'))
     from transformers import WhisperProcessor
+    model = system_config('F2')['model']
     WhisperProcessor.from_pretrained(model['id'], revision=model['revision'], language='turkish', task='transcribe')
-    _check(results, 'cached processor loads offline', True)
+    _check(results, 'cached whisper processor loads offline', True)
+    f3 = parent_cached('F3')
+    print(json.dumps({'info': 'F3 XLS-R parent cached with pinned sha256 (F3 job is skipped when false)', 'cached': f3}), flush=True)
 
 
 def cmd_preflight(args):
@@ -136,10 +161,16 @@ def cmd_preflight(args):
     return 0 if all(results) else 1
 
 
+def cmd_cached(args):
+    ok = parent_cached(args.system)
+    print(json.dumps({'system': args.system, 'parent_cached': ok}))
+    return 0 if ok else 1
+
+
 # ---------------------------------------------------------------- configs and protocols
 
 def cmd_config(args):
-    config = read_json(CONFIG)
+    config = system_config(args.system)
     data = Path(args.data)
     config['inputs'] = {**config['inputs'],
         'inference': str(data_file(data, 'inference.train')), 'references': str(data_file(data, 'references.train')),
@@ -151,7 +182,7 @@ def cmd_config(args):
         config['training'] = {**config['training'], 'epochs': 1, 'accumulation': SMOKE_ACCUMULATION}
         config['m6_note'] = f'SMOKE ONLY: first {SMOKE_ROWS} train rows, 1 epoch; never scored'
     write_json(args.output, config)
-    print(json.dumps({'config': str(args.output), 'seed': args.seed, 'smoke': args.smoke}))
+    print(json.dumps({'config': str(args.output), 'system': args.system, 'seed': args.seed, 'smoke': args.smoke}))
     return 0
 
 
@@ -180,7 +211,7 @@ def cmd_protocol(args):
         subset.write_bytes(('\n'.join(ids) + '\n').encode('ascii'))
         inputs = {**inputs, 'test_ids': str(subset), 'test_ids_sha256': sha256(subset)}
     checkpoint = Path(args.checkpoint).resolve()
-    system = {'system_id': args.system_id, 'kind': 'adapted', 'family': 'whisper', 'checkpoint': str(checkpoint),
+    system = {'system_id': args.system_id, 'kind': 'adapted', 'family': args.family, 'checkpoint': str(checkpoint),
               'checkpoint_manifest_sha256': checkpoint_sha(checkpoint), 'selected_epoch': args.epoch}
     derived = {**protocol, 'inputs': inputs, 'systems': [system],
                'm6_derived_from': {'protocol_sha256': PROTOCOL_SHA256, 'changed': [
@@ -199,136 +230,191 @@ def cmd_sha(args):
 
 # ---------------------------------------------------------------- selection
 
-def _metrics(report, view):
-    return report['metrics'][view]
-
-
 def select_epoch(summary, prefix):
-    """Lowest normalized WER; ties by raw WER, then earlier epoch (configs/fine-tuning/whisper_small_full.json)."""
+    """Lowest normalized WER; ties by raw WER, then earlier epoch (the configs' selection rule)."""
     reports = {r['system_id']: r for r in summary['systems']}
     candidates = []
     for epoch in EPOCHS:
         report = reports[f'{prefix}-e{epoch}']
         if report['error_rows']:
             raise ValueError(f'epoch {epoch} has error rows')
-        candidates.append({'epoch': epoch, 'normalized_wer': _metrics(report, NORM)['wer'],
-                           'raw_wer': _metrics(report, RAW)['wer'], 'normalized_cer': _metrics(report, NORM)['cer'],
-                           'raw_cer': _metrics(report, RAW)['cer']})
+        metrics = report['metrics']
+        candidates.append({'epoch': epoch, 'normalized_wer': metrics[NORM]['wer'], 'raw_wer': metrics[RAW]['wer'],
+                           'normalized_cer': metrics[NORM]['cer'], 'raw_cer': metrics[RAW]['cer']})
     best = min(candidates, key=lambda c: (c['normalized_wer'], c['raw_wer'], c['epoch']))
     return candidates, best
 
 
 def cmd_select(args):
-    seed_dir = Path(args.seed_dir)
-    summary = read_json(seed_dir / 'score-val' / 'summary.json')
-    candidates, best = select_epoch(summary, f'F2-m6repro-s{args.seed}')
-    checkpoint = seed_dir / 'train' / f"epoch-{best['epoch']}"
-    write_json(seed_dir / 'selection.json', {
-        'seed': args.seed, 'criterion': 'lowest validation normalized WER; raw WER, then earlier epoch',
+    job_dir = Path(args.job_dir)
+    summary = read_json(job_dir / 'score-val' / 'summary.json')
+    candidates, best = select_epoch(summary, args.prefix)
+    checkpoint = job_dir / 'train' / f"epoch-{best['epoch']}"
+    write_json(job_dir / 'selection.json', {
+        'system_prefix': args.prefix, 'criterion': 'lowest validation normalized WER; raw WER, then earlier epoch',
         'reference_sha256': summary['reference_sha256'], 'candidates': candidates, 'selected_epoch': best['epoch'],
         'checkpoint': str(checkpoint.resolve()), 'checkpoint_manifest_sha256': checkpoint_sha(checkpoint),
-        'selected_before_test_decode': True})
-    print(json.dumps({'seed': args.seed, 'selected_epoch': best['epoch'],
+        'selected_at_utc': datetime.now(timezone.utc).isoformat(), 'selected_before_test_decode': True})
+    print(json.dumps({'system': args.prefix, 'selected_epoch': best['epoch'],
                       'validation_normalized_wer_pct': round(100 * best['normalized_wer'], 4)}))
     return 0
 
 
 # ---------------------------------------------------------------- comparison and status
 
-def committed_values():
-    """Committed F2 numbers, read from the repo (percent)."""
-    import csv
+KEYS = ('raw_wer', 'normalized_wer', 'raw_cer', 'normalized_cer')
+
+
+def committed_values(system):
+    """Committed numbers for one system, read from the repo (percent)."""
+    _, _, row_id, selection_model, val_norm_cer = SYSTEMS[system]
     with Path('results/final/m45_metrics.csv').open(encoding='utf-8', newline='') as stream:
-        row = next(r for r in csv.DictReader(stream) if r['system'] == 'F2-whisper-full')
-    test = {k: float(row[f'{k}_pct']) for k in ('raw_wer', 'normalized_wer', 'raw_cer', 'normalized_cer')}
+        row = next(r for r in csv.DictReader(stream) if r['system'] == row_id)
     sel = next(s for s in read_json('results/evaluation/m45_working_checkpoint_selection.json')['selections']
-               if s['model'] == 'whisper-full-seed17')['selected']
-    val = {'raw_wer': 100 * sel['raw_wer'], 'normalized_wer': 100 * sel['normalized_wer'], 'raw_cer': None,
-           'normalized_cer': 3.447}  # docs/m45_validation_complete.md table (rounded there)
-    return {'test': test, 'validation': val, 'selected_epoch': sel['epoch']}
+               if s['model'] == selection_model)['selected']
+    return {'system_id': row_id, 'selected_epoch': sel['epoch'],
+            'test': {k: float(row[f'{k}_pct']) for k in KEYS},
+            'validation': {'raw_wer': 100 * sel['raw_wer'], 'normalized_wer': 100 * sel['normalized_wer'],
+                           'raw_cer': None, 'normalized_cer': val_norm_cer}}  # CER: docs/m45_validation_complete.md
 
 
 def _pct(report):
-    return {'raw_wer': 100 * report['metrics'][RAW]['wer'], 'normalized_wer': 100 * report['metrics'][NORM]['wer'],
-            'raw_cer': 100 * report['metrics'][RAW]['cer'], 'normalized_cer': 100 * report['metrics'][NORM]['cer']}
+    m = report['metrics']
+    return {'raw_wer': 100 * m[RAW]['wer'], 'normalized_wer': 100 * m[NORM]['wer'],
+            'raw_cer': 100 * m[RAW]['cer'], 'normalized_cer': 100 * m[NORM]['cer']}
 
 
-def _spread(values):
-    if not values:
-        return {}
+def _stats(values):
     mean = sum(values) / len(values)
     sd = math.sqrt(sum((v - mean) ** 2 for v in values) / (len(values) - 1)) if len(values) > 1 else None
-    return {'n': len(values), 'mean': mean, 'sd': sd, 'min': min(values), 'max': max(values)}
+    return {'n': len(values), 'mean': mean, 'sd': sd, 'range': max(values) - min(values)}
+
+
+def _fmt(v):
+    return 'n/a' if v is None else f'{v:8.4f}'
+
+
+def _line(label, values):
+    print(f'{label:<30}' + ''.join(f'{_fmt(values.get(k)):>16}' for k in KEYS))
+
+
+def job_result(job_dir, prefix):
+    test = job_dir / 'score-test' / f'{prefix}.json'
+    if not test.is_file() or not (job_dir / 'selection.json').is_file():
+        return None
+    selection = read_json(job_dir / 'selection.json')
+    val = next(c for c in selection['candidates'] if c['epoch'] == selection['selected_epoch'])
+    result = {'selected_epoch': selection['selected_epoch'], 'test': _pct(read_json(test)),
+              'validation': {k: 100 * val[k] for k in KEYS}}
+    oracle = job_dir / 'test' / 'oracle.json'
+    if oracle.is_file():
+        o = read_json(oracle)['systems'][prefix]
+        result['oracle'] = {k: o[k] for k in ('one_best_wer_pct', 'oracle_wer_pct', 'one_best_cer_pct', 'oracle_cer_pct',
+                                              'oracle_beats_rank1_count')}
+    return result
+
+
+def _compare_system(system, runs, committed):
+    for split in ('test', 'validation'):
+        print(f'\n{system + " " + split.upper() + " (percent)":<30}' + ''.join(f'{k:>16}' for k in KEYS))
+        _line(f"committed {committed['system_id']} (e{committed['selected_epoch']})", committed[split])
+        for seed, r in runs.items():
+            _line(f"M6 repro seed {seed} (e{r['selected_epoch']})", r[split])
+        if len(runs) > 1:
+            stats = {k: _stats([r[split][k] for r in runs.values()]) for k in KEYS}
+            _line(f'mean over {len(runs)} seeds', {k: s['mean'] for k, s in stats.items()})
+            _line('sample SD', {k: s['sd'] for k, s in stats.items()})
+            _line('range (max-min)', {k: s['range'] for k, s in stats.items()})
+        if 17 in runs:
+            _line('seed 17 - committed', {k: None if committed[split][k] is None else runs[17][split][k] - committed[split][k]
+                                          for k in KEYS})
+    for seed, r in runs.items():
+        if 'oracle' in r:
+            print(json.dumps({'system': system, 'seed': seed, 'test_nbest_oracle_tr_normalized': r['oracle']}))
 
 
 def cmd_compare(args):
     root = Path(args.root)
-    committed = committed_values()
-    rows = {}
-    for seed in args.seeds:
-        seed_dir = root / f'seed{seed}'
-        test = seed_dir / 'score-test' / f'F2-m6repro-s{seed}.json'
-        if not test.is_file() or not (seed_dir / 'selection.json').is_file():
-            print(json.dumps({'seed': seed, 'status': 'not finished; left out'}))
-            continue
-        selection = read_json(seed_dir / 'selection.json')
-        val = next(c for c in selection['candidates'] if c['epoch'] == selection['selected_epoch'])
-        rows[seed] = {'selected_epoch': selection['selected_epoch'], 'test': _pct(read_json(test)),
-                      'validation': {k: 100 * val[k] for k in ('raw_wer', 'normalized_wer', 'raw_cer', 'normalized_cer')}}
-    keys = ('raw_wer', 'normalized_wer', 'raw_cer', 'normalized_cer')
-    fmt = lambda v: 'n/a' if v is None else f'{v:8.4f}'
-    for split in ('test', 'validation'):
-        print(f'\n{split.upper()} (percent)      ' + ''.join(f'{k:>16}' for k in keys))
-        print(f"{'committed F2 (seed 17, e' + str(committed['selected_epoch']) + ')':<26}" + ''.join(f'{fmt(committed[split][k]):>16}' for k in keys))
-        for seed, row in rows.items():
-            print(f"{'M6 repro seed ' + str(seed) + ' (e' + str(row['selected_epoch']) + ')':<26}" + ''.join(f'{fmt(row[split][k]):>16}' for k in keys))
-        stats = {k: _spread([row[split][k] for row in rows.values()]) for k in keys}
-        if rows:
-            print(f"{'mean over ' + str(len(rows)) + ' seed(s)':<26}" + ''.join(f"{fmt(stats[k]['mean']):>16}" for k in keys))
-            print(f"{'sample SD':<26}" + ''.join(f"{fmt(stats[k]['sd']):>16}" for k in keys))
-            print(f"{'range (max-min)':<26}" + ''.join(f"{fmt(stats[k]['max'] - stats[k]['min']):>16}" for k in keys))
-        if 17 in rows:
-            print(f"{'seed 17 - committed':<26}" + ''.join(
-                f"{fmt(None if committed[split][k] is None else rows[17][split][k] - committed[split][k]):>16}" for k in keys))
-    write_json(root / 'compare.json', {'committed_f2': committed, 'reproduction': {str(k): v for k, v in rows.items()},
-        'units': 'percent', 'note': 'M6 scorer (reproduction) vs frozen scorer (committed test); cross-scorer'})
+    report = {'units': 'percent', 'note': 'M6 scorer (reproduction) vs frozen scorer (committed test); cross-scorer',
+              'systems': {}}
+    for system, seeds in parse_jobs(args.jobs).items():
+        committed = committed_values(system)
+        runs = {}
+        for seed in seeds:
+            result = job_result(job_dir(root, system, seed), f'{system}-m6repro-s{seed}')
+            if result is None:
+                print(json.dumps({'system': system, 'seed': seed, 'status': 'not finished; left out'}))
+            else:
+                runs[seed] = result
+        _compare_system(system, runs, committed)
+        report['systems'][system] = {'committed': committed, 'reproduction': {str(k): v for k, v in runs.items()}}
+    write_json(root / 'compare.json', report)
     print(json.dumps({'written': str(root / 'compare.json')}))
     return 0
 
 
-def _seed_status(seed_dir):
-    state = {'seed': seed_dir.name}
-    run = seed_dir / 'train' / 'run.json'
-    progress = seed_dir / 'train' / 'progress.json'
-    if run.is_file():
-        try:
-            data = read_json(run)
-            state.update(train=data['status'], epochs_saved=len(data['checkpoints']))
-        except (ValueError, KeyError):
-            state['train'] = 'run.json being written'
-    if progress.is_file():
-        try:
-            p = read_json(progress)
-            state.update(epoch=p['epoch'], step=p['optimizer_steps'], loss=round(p['mean_train_loss_so_far'], 4),
-                         minutes=round(p['elapsed_optimization_s'] / 60, 1),
-                         peak_reserved_gib=round(p.get('peak_cuda_reserved_bytes', 0) / 2**30, 2))
-        except (ValueError, KeyError):
-            pass
-    state['val_decoded'] = [e for e in EPOCHS if (seed_dir / f'val-e{e}.ok.json').is_file()]
-    for name in ('score-val/summary.json', 'selection.json', 'test/completed.json', 'score-test/summary.json'):
-        state[name.split('/')[0]] = (seed_dir / name).is_file()
+def parse_jobs(text):
+    jobs = {}
+    for item in text.split(','):
+        system, seed = item.split(':')
+        if system not in SYSTEMS:
+            raise ValueError(f'unknown system {system}')
+        jobs.setdefault(system, []).append(int(seed))
+    return jobs
+
+
+def job_dir(root, system, seed):
+    return Path(root) / (f'seed{seed}' if system == 'F2' else f'{system.lower()}-seed{seed}')
+
+
+def _train_state(job):
+    state = {}
+    try:
+        run = read_json(job / 'train' / 'run.json')
+        state.update(train=run['status'], epochs_saved=len(run['checkpoints']))
+    except (OSError, ValueError, KeyError):
+        pass
+    try:
+        p = read_json(job / 'train' / 'progress.json')
+        state.update(epoch=p['epoch'], step=p['optimizer_steps'], loss=round(p['mean_train_loss_so_far'], 4),
+                     train_minutes=round(p['elapsed_optimization_s'] / 60, 1),
+                     peak_reserved_gib=round(p.get('peak_cuda_reserved_bytes', 0) / 2**30, 2))
+    except (OSError, ValueError, KeyError):
+        pass
     return state
+
+
+def _job_state(job):
+    state = {'job': job.name, **_train_state(job)}
+    state['val_decoded'] = [e for e in EPOCHS if (job / f'val-e{e}.ok.json').is_file()]
+    for name in ('score-val/summary.json', 'selection.json', 'test/completed.json', 'score-test/summary.json', 'test/oracle.json'):
+        state[name.replace('/summary.json', '').replace('/completed.json', '').replace('test/', '')] = (job / name).is_file()
+    return state
+
+
+def _last_line(path):
+    try:
+        lines = [l for l in Path(path).read_text(encoding='utf-8', errors='replace').splitlines() if l.strip()]
+    except OSError:
+        return None
+    return lines[-1][:200] if lines else None
 
 
 def cmd_status(args):
     root = Path(args.root)
-    for seed_dir in sorted(root.glob('seed*')) + [root / 'smoke']:
-        if seed_dir.is_dir():
-            print(json.dumps(_seed_status(seed_dir)))
-    for name in ('pipeline.log', 'trainloop.done', 'evalloop.done'):
-        path = root / name
-        if path.is_file():
-            print(json.dumps({name: path.read_text(encoding='utf-8').strip().splitlines()[-1:]}))
+    chain = root / 'status.json'
+    if chain.is_file():
+        s = read_json(chain)
+        started = s.get('step_started_utc')
+        if started:
+            s['step_elapsed_min'] = round((datetime.now(timezone.utc) - datetime.fromisoformat(started)).total_seconds() / 60, 1)
+        current = root / s.get('job_dir', '') / 'train'
+        if s.get('step') == 'train' and current.is_dir():
+            s.update(_train_state(current.parent))
+        s['last_log_line'] = _last_line(s.get('log_out', ''))
+        print(json.dumps({'chain': s}))
+    for job in sorted(p for p in root.iterdir() if p.is_dir() and (p.name.startswith('seed') or '-seed' in p.name or p.name == 'smoke')):
+        print(json.dumps(_job_state(job)))
     return 0
 
 
@@ -355,26 +441,33 @@ def cmd_keepawake(args):
     return 0
 
 
-def main(argv=None):
+def build_parser():
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     sub = parser.add_subparsers(dest='command', required=True)
     p = sub.add_parser('preflight'); p.add_argument('--data'); p.add_argument('--test-refs'); p.add_argument('--gpu', action='store_true')
-    p = sub.add_parser('config'); p.add_argument('--data', required=True); p.add_argument('--baseline', required=True)
+    p = sub.add_parser('cached'); p.add_argument('--system', choices=sorted(SYSTEMS), required=True)
+    p = sub.add_parser('config'); p.add_argument('--system', choices=sorted(SYSTEMS), required=True)
+    p.add_argument('--data', required=True); p.add_argument('--baseline', required=True)
     p.add_argument('--seed', type=int, required=True); p.add_argument('--output', required=True); p.add_argument('--smoke', action='store_true')
     p = sub.add_parser('smoke-train'); p.add_argument('--config', required=True); p.add_argument('--output', required=True)
     p = sub.add_parser('protocol'); p.add_argument('--data', required=True); p.add_argument('--checkpoint', required=True)
-    p.add_argument('--system-id', required=True); p.add_argument('--epoch', type=int, required=True)
+    p.add_argument('--system-id', required=True); p.add_argument('--family', choices=['whisper', 'ctc'], required=True)
+    p.add_argument('--epoch', type=int, required=True)
     p.add_argument('--output', required=True); p.add_argument('--test-ids-subset', type=int, default=0)
     p = sub.add_parser('sha'); p.add_argument('path')
-    p = sub.add_parser('select'); p.add_argument('--seed-dir', required=True); p.add_argument('--seed', type=int, required=True)
-    p = sub.add_parser('compare'); p.add_argument('--root', required=True); p.add_argument('--seeds', type=int, nargs='+', default=[17, 18, 19])
+    p = sub.add_parser('select'); p.add_argument('--job-dir', required=True); p.add_argument('--prefix', required=True)
+    p = sub.add_parser('compare'); p.add_argument('--root', required=True); p.add_argument('--jobs', default='F2:17,F3:17,F2:18,F1:17,F2:19')
     p = sub.add_parser('status'); p.add_argument('--root', required=True)
     p = sub.add_parser('peak'); p.add_argument('progress')
     p = sub.add_parser('keepawake'); p.add_argument('--until-file', required=True); p.add_argument('--hours', type=float, default=5.5)
-    args = parser.parse_args(argv)
-    handler = {'preflight': cmd_preflight, 'config': cmd_config, 'smoke-train': cmd_smoke_train, 'protocol': cmd_protocol,
-               'sha': cmd_sha, 'select': cmd_select, 'compare': cmd_compare, 'status': cmd_status, 'peak': cmd_peak,
-               'keepawake': cmd_keepawake}[args.command]
+    return parser
+
+
+def main(argv=None):
+    args = build_parser().parse_args(argv)
+    handler = {'preflight': cmd_preflight, 'cached': cmd_cached, 'config': cmd_config, 'smoke-train': cmd_smoke_train,
+               'protocol': cmd_protocol, 'sha': cmd_sha, 'select': cmd_select, 'compare': cmd_compare,
+               'status': cmd_status, 'peak': cmd_peak, 'keepawake': cmd_keepawake}[args.command]
     try:
         return handler(args)
     except (OSError, ValueError, KeyError, StopIteration, ImportError) as exc:

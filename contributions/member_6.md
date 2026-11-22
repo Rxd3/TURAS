@@ -32,7 +32,7 @@ Ownership/tasks/review routing: [TEAM_TASKS.md](../TEAM_TASKS.md).
 
 * **RTX 5070 Ti smoke verification (`docs/m6-smoke-results.md`):** verified 20-clip smoke runs for Whisper-small, Whisper-large-v3, Qwen3-ASR-0.6B-hf, and Qwen3-ASR-1.7B-hf (all 20/20 `ok`).
 * **Score checks in the [PR #6](https://github.com/Rxd3/TURAS/pull/6) round-3 review (not recorded in `docs/m6-smoke-results.md`):** verified Whisper rank-1 equivalence (5/5 clips) and exact teacher-forced acoustic score match; verified Qwen3-ASR-0.6B fp32 generation vs teacher-forced log-prob agreement within `0.00016` nats (bf16 drift up to `0.16` nats).
-* **B2/B3 baseline results ([`results/m6/`](../results/m6/README.md)):** test normalized WER 12.3192 (B2), 12.3922 (Member 2's reproduction), and 16.0943 (B3); same-session end-to-end RTF 0.05757 (B1), 0.17537 (B2), and 0.13843 (B3).
+* **B2/B3 baseline results ([`results/m6/`](../results/m6/README.md)):** test normalized WER 12.3192 (B2), 12.3922 (Member 2's reproduction), and 16.0943 (B3); same-session end-to-end RTF 0.05757 (B1), 0.17537 (B2), and 0.13843 (B3) (same-session RTX 5070 Ti laptop numbers, not comparable to the frozen-block RTFs; compare through the B1 ratio).
 * **Official RTF timing:** accepted PR #5's frozen repeated timing block for the eight M4/M5 conditions (`docs/m6-smoke-results.md`).
 
 ## Reviews and handoffs

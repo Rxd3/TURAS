@@ -3,7 +3,7 @@
 Reviewed JSON configurations are committed; the frozen protocol is
 `evaluation/m45_final_protocol.json`. Owners per directory are below.
 
-| Directory | Required future content | Owner |
+| Directory | Contents | Owner |
 | --- | --- | --- |
 | `datasets/` | Exact candidate revision, rights, curation/verification policy, grouping, seed, frozen release/hash | M1 |
 | `baselines/` | Five distinct track identities, processor/tokenizer, generation, B5 training protocol | M2 Whisper/Qwen; M3 CTC/BiLSTM |

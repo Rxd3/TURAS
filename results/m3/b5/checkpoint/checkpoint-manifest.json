@@ -1,0 +1,15 @@
+{
+  "architecture": "BiLSTM-CTC",
+  "files": {
+    "bilstm_ctc.pt": "0b304a93e9aabc204bd4b1be0c49e06870f744b9aa8edf2652a7e20a137efce3",
+    "vocab.json": "613c33d354997064c310b8602e0f5865a74595bd5cad859d15cc129438a2837c"
+  },
+  "metadata": {
+    "best_epoch": 22,
+    "best_val_norm_cer": 0.13258870590680036,
+    "best_val_norm_wer": 0.4739556086989014,
+    "parent_manifest_sha256": "3ce85052d0e2b8ad63c07647d9911ccdb2cb4264baa1737e95c38a514d38a683",
+    "reference_variant": "owner-recovered-validation-minutes-v1",
+    "run_manifest": "../run-manifest.json"
+  }
+}

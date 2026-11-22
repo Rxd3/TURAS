@@ -1,0 +1,13 @@
+{
+  "state": "completed",
+  "rows": 107,
+  "files": {
+    "predictions.jsonl": "a8cbc24f226fa851c1dbdd4310cfd05a8331bc94b5c447955b1320c8719e7423",
+    "timing.jsonl": "f5afad160d1ab6bd3e79d9ed1aeab3ebe4e96d60687c4f29f17e627f1250d88c",
+    "manifest.json": "308d55e867748ddc401871bcda3c6e8d1453015fe485344f7dd92d2adb47ddbf"
+  },
+  "rtf": 0.001699136859859138,
+  "repeats": 3,
+  "requested_n": 0,
+  "timing_claim": "CPU serial 30-minute subset"
+}

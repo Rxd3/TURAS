@@ -20,6 +20,7 @@ audit reports, and the frozen M4/M5 final test study for `turas-tr-econ-legis-v0
 | `training/m45_seed17_completion.json` | Seed-17 acoustic training completion summary (F1, F2, F3) |
 | `rdl/m45_seed17_internal.json` | Seed-17 heterogeneous RDL graph training summary |
 | [`m6/`](m6/README.md) | B2 and B3 validation and test scores and same-session timing, outside the frozen protocol |
+| [`m3/`](m3/README.md) | B5 BiLSTM-CTC and single-Gaussian HMM: checkpoints, validation/test predictions and N-best, metrics, timing, training history |
 
 Full per-utterance prediction/N-best JSONLs, model checkpoints, and private
 references are external hashed artifacts (`results/predictions/` and

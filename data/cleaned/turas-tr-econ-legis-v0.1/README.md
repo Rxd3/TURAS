@@ -17,8 +17,9 @@ attribution only.
 | `audio/<utterance_id>.flac` | 5,450 clips, 16 kHz mono FLAC, 10–20 s each |
 | `turas-tr-econ-legis-v0.1.inference.{train,validation,test}.jsonl` | Model inputs in split-file order: IDs, audio path and hash, duration; no transcript text |
 | `turas-tr-econ-legis-v0.1.references.train.jsonl` | 4,376 train references (official TBMM minutes) with source, timing, session, verification and topic fields |
+| `turas-tr-econ-legis-v0.1.references.validation.jsonl` | 438 validation references: the working variant used for every reported validation number (`owner-recovered-validation-minutes-v1`, SHA-256 `d0c8519c…`, described in `references.validation.VARIANT.json`). All are the raw minutes, unreviewed |
 | `turas-tr-econ-legis-v0.1.references.test.jsonl` | 636 test references, same fields. Use for final scoring only |
-| `relational/train/`, `relational/test/` | Relational tables extracted from the references (utterances, quantities, relationships, provenance). Only `train/` may enter the RDL training graph |
+| `relational/train/`, `relational/validation/`, `relational/test/` | Relational tables extracted from the references (utterances, quantities, relationships, provenance). Only `train/` may enter the RDL training graph |
 | `exclusion_ledger.jsonl.gz` | Removal log: one line for each of the 239,654 upstream rows with its TURAS split or the first reason it was removed, plus matched domain terms and issue codes. Rebuilt from the [raw data](../../raw/worldspeech-tr_tr-b76b8539/README.md) by `scripts/m1_export_raw.py`; its SHA-256 (uncompressed) equals the frozen `exclusion_ledger_sha256` |
 | `SHA256SUMS` | SHA-256 of every file in this folder (`sha256sum -c SHA256SUMS`) |
 
@@ -31,10 +32,10 @@ matched the SHA-256 values published at the freeze (2026-11-18); all 5,457 bundl
 checksums passed; all 5,012 train and test reference rows match the hash of their
 audio file; the bundle split files are byte-identical to `data/splits/`.
 
-**Validation references are not in this folder yet.** The reported validation
-numbers use the separately hashed working validation variant
-(`owner-recovered-validation-minutes-v1`, payload `d0c8519c…`), which was not part
-of the shared release bundles.
+The validation references and `relational/validation/` come from the working
+validation bundles of the 2026-11-22 handoff (their SHA-256 values matched the
+handoff checksums). The handoff's evaluator bundle holds byte-identical train and
+test references and test relational tables.
 
 References are the upstream minutes (edited, not verbatim), except 13 clips (3
 train, 10 test) corrected after listening; 35 reference rows are `verified`. The listening review

@@ -1,0 +1,125 @@
+{
+  "state": "completed",
+  "completed_at_utc": "2026-11-22T11:00:13.193122+00:00",
+  "system_id": "baseline-bilstm-ctc",
+  "best_epoch": 22,
+  "checkpoint_manifest_sha256": "f5d98c4e64c793c1c48e2a8aca70f9a6a503663fc5ffda5ff3c374f41aab8917",
+  "scores": {
+    "validation": {
+      "rows": 438,
+      "reference_sha256": "d0c8519ca6aed053f89786bc733541a70faee09cf8d8bdb6cc12065d97dbd958",
+      "metrics": {
+        "raw-v1": {
+          "view": "raw-v1",
+          "utterances": 438,
+          "zero_reference_utterances": 0,
+          "error_rows": 0,
+          "words": {
+            "substitutions": 7255,
+            "deletions": 570,
+            "insertions": 556,
+            "hits": 5283
+          },
+          "chars": {
+            "substitutions": 7843,
+            "deletions": 6199,
+            "insertions": 2736,
+            "hits": 84391
+          },
+          "wer": 0.6393805309734514,
+          "cer": 0.1704509666473642,
+          "wacc": 0.3606194690265486
+        },
+        "tr-normalized-v1": {
+          "view": "tr-normalized-v1",
+          "utterances": 438,
+          "zero_reference_utterances": 0,
+          "error_rows": 0,
+          "words": {
+            "substitutions": 5198,
+            "deletions": 715,
+            "insertions": 428,
+            "hits": 7468
+          },
+          "chars": {
+            "substitutions": 5564,
+            "deletions": 4256,
+            "insertions": 2940,
+            "hits": 86425
+          },
+          "wer": 0.47388087586876915,
+          "cer": 0.13257831575666268,
+          "wacc": 0.5261191241312309
+        }
+      }
+    },
+    "test": {
+      "rows": 636,
+      "reference_sha256": "31e372f0e35f504de59b49f1e0e1f3ed6fcc2772138c591a2cf2b054a4e7ef3f",
+      "metrics": {
+        "raw-v1": {
+          "view": "raw-v1",
+          "utterances": 636,
+          "zero_reference_utterances": 0,
+          "error_rows": 0,
+          "words": {
+            "substitutions": 11166,
+            "deletions": 819,
+            "insertions": 902,
+            "hits": 8150
+          },
+          "chars": {
+            "substitutions": 12151,
+            "deletions": 9946,
+            "insertions": 4222,
+            "hits": 127738
+          },
+          "wer": 0.6400297988577105,
+          "cer": 0.17565321854039442,
+          "wacc": 0.3599702011422895
+        },
+        "tr-normalized-v1": {
+          "view": "tr-normalized-v1",
+          "utterances": 636,
+          "zero_reference_utterances": 0,
+          "error_rows": 0,
+          "words": {
+            "substitutions": 8087,
+            "deletions": 1016,
+            "insertions": 705,
+            "hits": 11426
+          },
+          "chars": {
+            "substitutions": 8428,
+            "deletions": 6736,
+            "insertions": 4580,
+            "hits": 131056
+          },
+          "wer": 0.4777631643041551,
+          "cer": 0.135029407741759,
+          "wacc": 0.5222368356958449
+        }
+      }
+    }
+  },
+  "headline_timing": {
+    "state": "completed",
+    "rows": 107,
+    "files": {
+      "nbest.jsonl": "d7bcabf71b150768f3100c9c576b895eede53ce7c2a1fc16857cb91fdf095b47",
+      "predictions.jsonl": "23293e3fa1a4a5df5a720c9d2ed6bfaecd19473d1bc4fb34c2dd93a0ce531777",
+      "timing.jsonl": "3bc8f57d37a97b1bb9f83dd3459ee132796a0c684aa2d194e3b72e918e540736",
+      "manifest.json": "a8068659763cc923f837c6411627fd4269574e0e5fbbc453826e7e78fbede28e"
+    },
+    "rtf": 0.009317066966573504,
+    "repeats": 3,
+    "thermal_flags": 0,
+    "vram_spill_suspected": false,
+    "timing_claim": "headline 30-minute subset"
+  },
+  "limitations": [
+    "Single training seed",
+    "Working parliamentary minutes, not fully verified verbatim gold",
+    "GMM-HMM is a separate stage; no B5 settings selected from test scores"
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "history": [
+    {
+      "iteration": 1,
+      "mean_frame_log_likelihood": -56.11462470559041
+    },
+    {
+      "iteration": 2,
+      "mean_frame_log_likelihood": -55.465411333189515
+    },
+    {
+      "iteration": 3,
+      "mean_frame_log_likelihood": -55.283286624195306
+    }
+  ],
+  "checkpoint_sha256": "f9b0f02ab98a32a63d43df01e1aebf985d39caf6dd8a6d886a77d97f53669b7f"
+}

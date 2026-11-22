@@ -1,0 +1,83 @@
+{
+  "identity": {
+    "schema_version": "0.1",
+    "run_id": "m3-b5-epoch22-validation-20261122",
+    "system_id": "baseline-bilstm-ctc",
+    "written_utc": "2026-11-22T10:57:16+00:00"
+  },
+  "code": {
+    "command": "scripts/m3_finalize_b5.py",
+    "commit": "d2bdf5e9701aa502a349a10348041673acc727c2",
+    "dirty": true
+  },
+  "environment": {
+    "python": "3.13.14",
+    "platform": "Windows-11-10.0.26300-SP0",
+    "numpy": "2.5.5",
+    "soundfile": "0.14.0",
+    "soxr": "1.1.0",
+    "gpu_name": "NVIDIA GeForce RTX 5070",
+    "gpu_driver": "617.42",
+    "torch": "2.14.1+cu130",
+    "cuda": "13.0",
+    "transformers": "5.23.0"
+  },
+  "inputs": {
+    "dataset_release": "turas-tr-econ-legis-v0.1",
+    "split": "validation",
+    "split_manifest_sha256": "a8fff65b99fcf11d9452685e438e250207032ecfe11152741562147126d095b8"
+  },
+  "configuration": {
+    "decoder_config_sha256": "f0e9c544344c8713e6ada84764ddca250fd243d50f7c8c9a2c33daa541374df3",
+    "resolved": {
+      "system_id": "baseline-bilstm-ctc",
+      "model": {
+        "architecture": "BiLSTM-CTC",
+        "n_mels": 80,
+        "hidden_size": 320,
+        "num_layers": 4,
+        "dropout": 0.2,
+        "precision": "float32",
+        "device": "cuda"
+      },
+      "decoding": {
+        "primary_decode_mode": "greedy_ctc",
+        "requested_n": 1,
+        "beam_size": 10,
+        "lm_rescoring": false,
+        "strip_leading_trailing_whitespace_in_raw": false,
+        "score_convention_id": "ctc-greedy-v1"
+      }
+    }
+  },
+  "randomness": {},
+  "model_knowledge": {
+    "model_artifact_sha256": "f5d98c4e64c793c1c48e2a8aca70f9a6a503663fc5ffda5ff3c374f41aab8917"
+  },
+  "selection": {},
+  "outputs": {
+    "nbest.jsonl": "78f11f3bd2f0db3a48c672b5d091f58521d9729fc32a2666bef10ba2c697b311",
+    "predictions.jsonl": "08e1a2a5ff42d2e1ce9d47723e86b423117fffd9051d56dcc09e673fe119da6c",
+    "timing.jsonl": "55e0be59d896e11c0c120912b2496018c472e0682ec217b329ce666dcc8c19f0"
+  },
+  "evaluation_timing": {
+    "normalization_version": "tr-normalized-v1",
+    "primary_rtf": "end_to_end_rtf",
+    "end_to_end_rtf": 0.009689129482565019,
+    "core_model_rtf": 0.009030709584389967,
+    "per_repeat_end_to_end_rtf": [
+      0.009689129482565019
+    ],
+    "cold_load_s": 0.15747759999067057,
+    "warmup_batches": 3,
+    "repeats": 1,
+    "batch_size": 1,
+    "thermal_flags": 0,
+    "sync_method": "torch.cuda.synchronize",
+    "scope": {
+      "end_to_end": "audio read, decode and resample through result serialization",
+      "core_model": "adapter.transcribe only"
+    }
+  },
+  "limitations": []
+}

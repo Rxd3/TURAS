@@ -1,0 +1,28 @@
+{
+  "state": "checkpoint_frozen",
+  "frozen_at_utc": "2026-11-22T10:58:14.510299+00:00",
+  "dataset_release": "turas-tr-econ-legis-v0.1",
+  "split_manifest_sha256": "a8fff65b99fcf11d9452685e438e250207032ecfe11152741562147126d095b8",
+  "feature_recipe": "m3-dct-normalized-logmel-first40-every2-delta39-fp16-v1",
+  "em_passes": 3,
+  "states_per_unit": 3,
+  "gaussians_per_state": 1,
+  "external_lm": false,
+  "script_sha256": "2ee8f10f79532abf0c8cbc790bb6e9c7cc8c6212172b7eb8d4d623280b962fbd",
+  "model_code_sha256": "1802b423168b595ecced77ab8bb23d92e64684a3354ca60a399d9fe3819a68b1",
+  "source_script_sha256": "192a8c5775da39948b2a837d7932862e1642f4f46e74526f36539ed02272eaff",
+  "feature_threads_during_preparation": 4,
+  "cpu_threads_during_training_inference": 1,
+  "training_reference_sha256": "f4992d2951389ac243c281d2875511cfa0669d026d8698993db48b30b09a4508",
+  "normalizer": "tr-normalized-v1",
+  "limitations": [
+    "Supplied stage is named GMM-HMM but implements one Gaussian per character state",
+    "DCT of normalized log-Mel features is the supplied recipe, not standard MFCC computation",
+    "Infeasible training clips are explicitly counted; evaluation retains all frozen IDs",
+    "Gaussian quadratic expansion can introduce float32 rounding differences from the source difference tensor",
+    "No supported scored N-best; requested_n=0",
+    "Working minutes are not fully verified verbatim references"
+  ],
+  "checkpoint_sha256": "f9b0f02ab98a32a63d43df01e1aebf985d39caf6dd8a6d886a77d97f53669b7f",
+  "checkpoint_frozen_at_utc": "2026-11-22T11:02:38.664472+00:00"
+}

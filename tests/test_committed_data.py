@@ -44,7 +44,7 @@ def test_removal_log_counts_match_the_manifest():
     assert kept == {s: len(split_ids(s)) for s in ("train", "validation", "test")}
 
 
-@pytest.mark.parametrize("split", ["train", "test"])
+@pytest.mark.parametrize("split", ["train", "validation", "test"])
 def test_references_cover_exactly_the_split(split):
     path = CLEANED / f"{RELEASE}.references.{split}.jsonl"
     rows = [json.loads(line) for line in path.read_text(encoding="utf-8").splitlines()]
@@ -60,6 +60,12 @@ def test_every_split_clip_has_audio_and_a_checksum():
         for uid in split_ids(split):
             assert f"audio/{uid}.flac" in sums
             assert (CLEANED / "audio" / f"{uid}.flac").exists()
+
+
+def test_validation_references_are_the_reported_variant():
+    path = CLEANED / f"{RELEASE}.references.validation.jsonl"
+    digest = hashlib.sha256(path.read_bytes()).hexdigest()
+    assert digest == "d0c8519ca6aed053f89786bc733541a70faee09cf8d8bdb6cc12065d97dbd958"
 
 
 def test_no_test_sentence_appears_in_train():

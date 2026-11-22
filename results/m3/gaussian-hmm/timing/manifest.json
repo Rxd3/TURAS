@@ -1,0 +1,75 @@
+{
+  "identity": {
+    "schema_version": "0.1",
+    "run_id": "m3-gaussian-hmm-timing-20261122",
+    "system_id": "baseline-m3-single-gaussian-character-hmm",
+    "written_utc": "2026-11-22T11:03:29+00:00"
+  },
+  "code": {
+    "command": "scripts/m3_run_gaussian_hmm.py",
+    "commit": "d2bdf5e9701aa502a349a10348041673acc727c2",
+    "dirty": true
+  },
+  "environment": {
+    "python": "3.13.14",
+    "platform": "Windows-11-10.0.26300-SP0",
+    "numpy": "2.5.5",
+    "soundfile": "0.14.0",
+    "soxr": "1.1.0",
+    "gpu_name": "NVIDIA GeForce RTX 5070",
+    "gpu_driver": "617.42",
+    "torch": "2.14.1+cu130",
+    "cuda": "13.0",
+    "transformers": "5.23.0"
+  },
+  "inputs": {
+    "dataset_release": "turas-tr-econ-legis-v0.1",
+    "split": "test",
+    "split_manifest_sha256": "a8fff65b99fcf11d9452685e438e250207032ecfe11152741562147126d095b8"
+  },
+  "configuration": {
+    "decoder_config_sha256": "526dff2cebe2ebf97ac797883b3fb1343a1b20d97b818faa9558c27652a87737",
+    "resolved": {
+      "model": "single diagonal Gaussian per character state",
+      "states_per_unit": 3,
+      "feature_recipe": "m3-dct-normalized-logmel-first40-every2-delta39-fp16-v1",
+      "decoder": "ergodic_character_viterbi",
+      "lm_rescoring": false,
+      "device": "cpu",
+      "precision": "float32",
+      "whitespace_policy": "supplied decoder collapses and strips whitespace",
+      "requested_n": 0
+    }
+  },
+  "randomness": {},
+  "model_knowledge": {
+    "model_artifact_sha256": "f9b0f02ab98a32a63d43df01e1aebf985d39caf6dd8a6d886a77d97f53669b7f"
+  },
+  "selection": {},
+  "outputs": {
+    "predictions.jsonl": "a8cbc24f226fa851c1dbdd4310cfd05a8331bc94b5c447955b1320c8719e7423",
+    "timing.jsonl": "f5afad160d1ab6bd3e79d9ed1aeab3ebe4e96d60687c4f29f17e627f1250d88c"
+  },
+  "evaluation_timing": {
+    "normalization_version": "tr-normalized-v1",
+    "primary_rtf": "end_to_end_rtf",
+    "end_to_end_rtf": 0.001699136859859138,
+    "core_model_rtf": 0.0015003143921019024,
+    "per_repeat_end_to_end_rtf": [
+      0.0017172732961240626,
+      0.001684059897466541,
+      0.0016960773859868098
+    ],
+    "cold_load_s": 0.0027962000021943823,
+    "warmup_batches": 3,
+    "repeats": 3,
+    "batch_size": 1,
+    "thermal_flags": 0,
+    "sync_method": "cpu_sync",
+    "scope": {
+      "end_to_end": "audio read, decode and resample through result serialization",
+      "core_model": "adapter.transcribe only"
+    }
+  },
+  "limitations": []
+}

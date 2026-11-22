@@ -74,8 +74,8 @@ also appear in its train split.
 
 - **Raw:** all 239,654 upstream rows (transcripts and metadata, no audio) in
   [`data/raw/worldspeech-tr_tr-b76b8539/`](data/raw/worldspeech-tr_tr-b76b8539/README.md).
-- **Cleaned:** 5,450 FLAC clips, train and test references, inference inputs,
-  relational tables and checksums in
+- **Cleaned:** 5,450 FLAC clips, train, validation and test references, inference
+  inputs, relational tables and checksums in
   [`data/cleaned/turas-tr-econ-legis-v0.1/`](data/cleaned/turas-tr-econ-legis-v0.1/README.md).
 - **Removal log:** the reason every upstream row was kept or removed, in
   [`exclusion_ledger.jsonl.gz`](data/cleaned/turas-tr-econ-legis-v0.1/exclusion_ledger.jsonl.gz).
@@ -127,7 +127,8 @@ B1 and B4 come from the frozen protocol ([metrics](results/final/m45_metrics.csv
 B2 and B3 are scored with the same library calls by
 [`scripts/m6_score_baselines.py`](scripts/m6_score_baselines.py), outside the frozen
 protocol ([B2/B3 results](results/m6/README.md)). B5 and B6:
-[M3 summary](results/final/m3_test_summary.json). The test references were kept by
+[M3 summary](results/final/m3_test_summary.json), with checkpoints, predictions,
+N-best lists, timing and training history in [`results/m3/`](results/m3/README.md). The test references were kept by
 agreement with an upstream ASR transcript (CER ≤ 0.25), which can favour
 Whisper-family systems.
 
@@ -184,7 +185,7 @@ benchmark), `m6_score_baselines.py` (B2/B3), `m3_*.py` and `train_mixture_hmm.py
 | [`scripts/`](scripts/) | Command-line entry points for each step |
 | [`configs/`](configs/) | Dataset, baseline, fine-tuning, decoding and evaluation settings |
 | [`data/`](data/) | Cleaned dataset (audio and references), metadata, frozen split IDs, relational tables and verification records |
-| [`results/`](results/) | Test results, B2/B3 scores, validation and ablation summaries |
+| [`results/`](results/) | Test results, B2/B3 scores, B5/HMM checkpoints and outputs, validation and ablation summaries |
 | [`experiments/`](experiments/) | Experiment protocol and per-workstream notes |
 | [`tests/`](tests/) | Offline unit and integration tests for data, evaluation, models and scoring |
 | [`docs/`](docs/) | Dataset card, evaluation, architecture, contracts and run records |

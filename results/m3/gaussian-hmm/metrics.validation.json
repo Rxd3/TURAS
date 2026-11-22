@@ -1,0 +1,48 @@
+{
+  "rows": 438,
+  "reference_sha256": "d0c8519ca6aed053f89786bc733541a70faee09cf8d8bdb6cc12065d97dbd958",
+  "metrics": {
+    "raw-v1": {
+      "view": "raw-v1",
+      "utterances": 438,
+      "zero_reference_utterances": 0,
+      "error_rows": 0,
+      "words": {
+        "substitutions": 895,
+        "deletions": 12213,
+        "insertions": 0,
+        "hits": 0
+      },
+      "chars": {
+        "substitutions": 50388,
+        "deletions": 37181,
+        "insertions": 94,
+        "hits": 10864
+      },
+      "wer": 1.0,
+      "cer": 0.8905854743835908,
+      "wacc": 0.0
+    },
+    "tr-normalized-v1": {
+      "view": "tr-normalized-v1",
+      "utterances": 438,
+      "zero_reference_utterances": 0,
+      "error_rows": 0,
+      "words": {
+        "substitutions": 894,
+        "deletions": 12486,
+        "insertions": 0,
+        "hits": 1
+      },
+      "chars": {
+        "substitutions": 50275,
+        "deletions": 35038,
+        "insertions": 139,
+        "hits": 10932
+      },
+      "wer": 0.9999252671698677,
+      "cer": 0.8878591095641332,
+      "wacc": 7.47328301322625e-05
+    }
+  }
+}

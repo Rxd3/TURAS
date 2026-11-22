@@ -5462,3 +5462,9 @@ a19749be0cfd45cda191d488cb4695755dc98d892ac003021476a015a56b4c50 *./relational/t
 31e372f0e35f504de59b49f1e0e1f3ed6fcc2772138c591a2cf2b054a4e7ef3f *./turas-tr-econ-legis-v0.1.references.test.jsonl
 f4992d2951389ac243c281d2875511cfa0669d026d8698993db48b30b09a4508 *./turas-tr-econ-legis-v0.1.references.train.jsonl
 78940ad0d50cb44e14a037c486116f3bd82575be7043cdccad880110ede37086 *./exclusion_ledger.jsonl.gz
+d0c8519ca6aed053f89786bc733541a70faee09cf8d8bdb6cc12065d97dbd958 *./turas-tr-econ-legis-v0.1.references.validation.jsonl
+f0192b125bd8b4bc54de74e39ffd22c3ca3693ba88566c46a369da00af139808 *./references.validation.VARIANT.json
+30fa110a12319072055b5c33b9ca62575b921edd93f0022bd7c81711d19e396c *./relational/validation/provenance.csv
+e296f08cb85bf0edd57c49b6f45210c833b392ee43e953a974091f1251891f4d *./relational/validation/quantifiers.csv
+e7d3c716bb5c0b54250804d96a06fd99c2659df4c6806d671f293db0abaa90c0 *./relational/validation/relationships.csv
+e6b58cd4e95da92a273d5adf4cf2f8f13444d0b8ff693b4b8d1ad7fe86582dfd *./relational/validation/utterances.csv

@@ -99,3 +99,7 @@ Desktop.ini
 *.tmp
 *.swp
 *.errorbars.json
+
+# Committed on purpose: small checkpoints of reported baselines (B5 BiLSTM-CTC 37 MB, HMM 40 KB).
+!results/m3/b5/checkpoint/bilstm_ctc.pt
+!results/m3/gaussian-hmm/gaussian_hmm_character.npz

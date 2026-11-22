@@ -1,0 +1,275 @@
+quantifier_id,surface_form,quantifier_type,numeric_value,unit,provenance_id
+q__amount__EUR__100000000000,100 milyar avroluk,amount,100000000000,EUR,prov_validation_references
+q__amount__TRY__1,1 lira,amount,1,TRY,prov_validation_references
+q__amount__TRY__10,10 lirayı,amount,10,TRY,prov_validation_references
+q__amount__TRY__100,100 tl,amount,100,TRY,prov_validation_references
+q__amount__TRY__10000,10 bin lira,amount,10000,TRY,prov_validation_references
+q__amount__TRY__100000,100.000 tl,amount,100000,TRY,prov_validation_references
+q__amount__TRY__1000000000,1 milyar tl,amount,1000000000,TRY,prov_validation_references
+q__amount__TRY__102000000000,102 milyar lira,amount,102000000000,TRY,prov_validation_references
+q__amount__TRY__106000000,106 milyon tl,amount,106000000,TRY,prov_validation_references
+q__amount__TRY__1080000000000,1 trilyon 80 milyar lira,amount,1080000000000,TRY,prov_validation_references
+q__amount__TRY__11000,11 bin lira,amount,11000,TRY,prov_validation_references
+q__amount__TRY__1150000000000,1 trilyon 150 milyar lirayı,amount,1150000000000,TRY,prov_validation_references
+q__amount__TRY__117000000000,117 milyar lira,amount,117000000000,TRY,prov_validation_references
+q__amount__TRY__12,12 liraydı,amount,12,TRY,prov_validation_references
+q__amount__TRY__12.5,"12,5 liraydı",amount,12.5,TRY,prov_validation_references
+q__amount__TRY__12000,12 bin lira,amount,12000,TRY,prov_validation_references
+q__amount__TRY__12000000000,12 milyar tl,amount,12000000000,TRY,prov_validation_references
+q__amount__TRY__12600000000,"12,6 milyar lirayı",amount,12600000000,TRY,prov_validation_references
+q__amount__TRY__133000000000,133 milyar tl,amount,133000000000,TRY,prov_validation_references
+q__amount__TRY__140000,140 bin tl,amount,140000,TRY,prov_validation_references
+q__amount__TRY__1425000000000,1 trilyon 425 milyar lira,amount,1425000000000,TRY,prov_validation_references
+q__amount__TRY__14500,14.500 lira,amount,14500,TRY,prov_validation_references
+q__amount__TRY__1475000000000,1 trilyon 475 milyar lira,amount,1475000000000,TRY,prov_validation_references
+q__amount__TRY__150,150 tl,amount,150,TRY,prov_validation_references
+q__amount__TRY__15000,15 bin lira,amount,15000,TRY,prov_validation_references
+q__amount__TRY__150000,150 bin lira,amount,150000,TRY,prov_validation_references
+q__amount__TRY__15000000000,15 milyar liralık,amount,15000000000,TRY,prov_validation_references
+q__amount__TRY__15200000,"15,2 milyon lirayı",amount,15200000,TRY,prov_validation_references
+q__amount__TRY__16000,16 bin lira,amount,16000,TRY,prov_validation_references
+q__amount__TRY__1600000000,1 milyar 600 milyon lira,amount,1600000000,TRY,prov_validation_references
+q__amount__TRY__165000000000,165 milyar lira,amount,165000000000,TRY,prov_validation_references
+q__amount__TRY__16681,16.681 lira,amount,16681,TRY,prov_validation_references
+q__amount__TRY__16881,16.881 liraya,amount,16881,TRY,prov_validation_references
+q__amount__TRY__17000,17 bin tl,amount,17000,TRY,prov_validation_references
+q__amount__TRY__1700000000,"1,7 milyar lirayı",amount,1700000000,TRY,prov_validation_references
+q__amount__TRY__1725,1.725 lira,amount,1725,TRY,prov_validation_references
+q__amount__TRY__177000000000,177 milyar tl,amount,177000000000,TRY,prov_validation_references
+q__amount__TRY__180000,180 bin liralık,amount,180000,TRY,prov_validation_references
+q__amount__TRY__180000000,180 milyon liralık,amount,180000000,TRY,prov_validation_references
+q__amount__TRY__19000000000000,19 trilyon lira,amount,19000000000000,TRY,prov_validation_references
+q__amount__TRY__1943965000000,1 trilyon 943 milyar 965 milyon lira,amount,1943965000000,TRY,prov_validation_references
+q__amount__TRY__20.86,"20,86 lirasını",amount,20.86,TRY,prov_validation_references
+q__amount__TRY__200,200 liralık,amount,200,TRY,prov_validation_references
+q__amount__TRY__2000,2 bin lirayı,amount,2000,TRY,prov_validation_references
+q__amount__TRY__20000,20 bin liraya,amount,20000,TRY,prov_validation_references
+q__amount__TRY__200000,200 bin lira,amount,200000,TRY,prov_validation_references
+q__amount__TRY__2000000000,2 milyar tl,amount,2000000000,TRY,prov_validation_references
+q__amount__TRY__204000000000,204 milyar lira,amount,204000000000,TRY,prov_validation_references
+q__amount__TRY__2200,2.200 liralık,amount,2200,TRY,prov_validation_references
+q__amount__TRY__22000,22 bin lira,amount,22000,TRY,prov_validation_references
+q__amount__TRY__22104,22.104 lira,amount,22104,TRY,prov_validation_references
+q__amount__TRY__2280,2.280 tl,amount,2280,TRY,prov_validation_references
+q__amount__TRY__23500000000,"23,5 milyar tl",amount,23500000000,TRY,prov_validation_references
+q__amount__TRY__236000000000,236 milyar lira,amount,236000000000,TRY,prov_validation_references
+q__amount__TRY__2388000000,2 milyar 388 milyon lira,amount,2388000000,TRY,prov_validation_references
+q__amount__TRY__245000000000,245 milyar lira,amount,245000000000,TRY,prov_validation_references
+q__amount__TRY__247000000000,247 milyar lira,amount,247000000000,TRY,prov_validation_references
+q__amount__TRY__25000,25 bin tl,amount,25000,TRY,prov_validation_references
+q__amount__TRY__250000,250 bin lira,amount,250000,TRY,prov_validation_references
+q__amount__TRY__2500000000,"2,5 milyar liralık",amount,2500000000,TRY,prov_validation_references
+q__amount__TRY__25000000000,25 milyar liralık,amount,25000000000,TRY,prov_validation_references
+q__amount__TRY__252000000000,252 milyar lira,amount,252000000000,TRY,prov_validation_references
+q__amount__TRY__2532000000000,2 trilyon 532 milyar tl,amount,2532000000000,TRY,prov_validation_references
+q__amount__TRY__26000,26 bin tl,amount,26000,TRY,prov_validation_references
+q__amount__TRY__27000,27 bin tl,amount,27000,TRY,prov_validation_references
+q__amount__TRY__2713000000000,2 trilyon 713 milyar tl,amount,2713000000000,TRY,prov_validation_references
+q__amount__TRY__2718000000000,2 trilyon 718 milyar lira,amount,2718000000000,TRY,prov_validation_references
+q__amount__TRY__273600000000,"273,6 milyar liradır",amount,273600000000,TRY,prov_validation_references
+q__amount__TRY__2741000000000,2 trilyon 741 milyar lirayla,amount,2741000000000,TRY,prov_validation_references
+q__amount__TRY__28,28 lira,amount,28,TRY,prov_validation_references
+q__amount__TRY__28000,28 bin lira,amount,28000,TRY,prov_validation_references
+q__amount__TRY__28075,28.075 liraya,amount,28075,TRY,prov_validation_references
+q__amount__TRY__29828,29.828 lira,amount,29828,TRY,prov_validation_references
+q__amount__TRY__3000,3 bin lirayı,amount,3000,TRY,prov_validation_references
+q__amount__TRY__30000,30 bin lirayken,amount,30000,TRY,prov_validation_references
+q__amount__TRY__3000000,3 milyon lira,amount,3000000,TRY,prov_validation_references
+q__amount__TRY__300000000000,300 milyar lira,amount,300000000000,TRY,prov_validation_references
+q__amount__TRY__3100,3.100 liralık,amount,3100,TRY,prov_validation_references
+q__amount__TRY__325000000000,325 milyar liralık,amount,325000000000,TRY,prov_validation_references
+q__amount__TRY__33000,33 bin tl,amount,33000,TRY,prov_validation_references
+q__amount__TRY__332000,332 bin tl,amount,332000,TRY,prov_validation_references
+q__amount__TRY__335000000000,335 milyar tl,amount,335000000000,TRY,prov_validation_references
+q__amount__TRY__35,35 liralara,amount,35,TRY,prov_validation_references
+q__amount__TRY__3500000000000,"3,5 trilyon tl",amount,3500000000000,TRY,prov_validation_references
+q__amount__TRY__36000,36.000 tl,amount,36000,TRY,prov_validation_references
+q__amount__TRY__3600000000000,"3,6 trilyon lira",amount,3600000000000,TRY,prov_validation_references
+q__amount__TRY__37000,37 bin lira,amount,37000,TRY,prov_validation_references
+q__amount__TRY__370000,370 bin lira,amount,370000,TRY,prov_validation_references
+q__amount__TRY__38000000000,38 milyar tl,amount,38000000000,TRY,prov_validation_references
+q__amount__TRY__38200000000,"38,2 milyar lira",amount,38200000000,TRY,prov_validation_references
+q__amount__TRY__39000,39 bin liraya,amount,39000,TRY,prov_validation_references
+q__amount__TRY__39000000,39 milyon lira,amount,39000000,TRY,prov_validation_references
+q__amount__TRY__397000000000,397 milyar lira,amount,397000000000,TRY,prov_validation_references
+q__amount__TRY__4,4 liraya,amount,4,TRY,prov_validation_references
+q__amount__TRY__40,40 lira,amount,40,TRY,prov_validation_references
+q__amount__TRY__400,400 lira,amount,400,TRY,prov_validation_references
+q__amount__TRY__40000,40 bin lira,amount,40000,TRY,prov_validation_references
+q__amount__TRY__42,42 liralara,amount,42,TRY,prov_validation_references
+q__amount__TRY__436827,436.827 liradır,amount,436827,TRY,prov_validation_references
+q__amount__TRY__45000,45 bin liraya,amount,45000,TRY,prov_validation_references
+q__amount__TRY__46000,46 bin lira,amount,46000,TRY,prov_validation_references
+q__amount__TRY__460000000000,460 milyar lira,amount,460000000000,TRY,prov_validation_references
+q__amount__TRY__47000,47 bin lira,amount,47000,TRY,prov_validation_references
+q__amount__TRY__478000000000,478 milyar tl,amount,478000000000,TRY,prov_validation_references
+q__amount__TRY__48000000000,48 milyar lira,amount,48000000000,TRY,prov_validation_references
+q__amount__TRY__49000000000,49 milyar lira,amount,49000000000,TRY,prov_validation_references
+q__amount__TRY__496200000000,"496,2 milyar tl",amount,496200000000,TRY,prov_validation_references
+q__amount__TRY__5,5 lirayla,amount,5,TRY,prov_validation_references
+q__amount__TRY__50000,50 bin tl,amount,50000,TRY,prov_validation_references
+q__amount__TRY__500000000000,500 milyar lira,amount,500000000000,TRY,prov_validation_references
+q__amount__TRY__529000000000,529 milyar liraya,amount,529000000000,TRY,prov_validation_references
+q__amount__TRY__55000000000,55 milyar liralık,amount,55000000000,TRY,prov_validation_references
+q__amount__TRY__5600,5.600 tl,amount,5600,TRY,prov_validation_references
+q__amount__TRY__560000000000,560 milyar liralık,amount,560000000000,TRY,prov_validation_references
+q__amount__TRY__58,58 lira,amount,58,TRY,prov_validation_references
+q__amount__TRY__580,580 lira,amount,580,TRY,prov_validation_references
+q__amount__TRY__595000000000,595 milyar lira,amount,595000000000,TRY,prov_validation_references
+q__amount__TRY__6000,6 bin lira,amount,6000,TRY,prov_validation_references
+q__amount__TRY__6454,6.454 lira,amount,6454,TRY,prov_validation_references
+q__amount__TRY__6700,6.700 lira,amount,6700,TRY,prov_validation_references
+q__amount__TRY__70000,70 bin lira,amount,70000,TRY,prov_validation_references
+q__amount__TRY__7000000,7 milyon tl,amount,7000000,TRY,prov_validation_references
+q__amount__TRY__722000000000,722 milyar lira,amount,722000000000,TRY,prov_validation_references
+q__amount__TRY__73000,73 bin lira,amount,73000,TRY,prov_validation_references
+q__amount__TRY__7326,7.326 lira,amount,7326,TRY,prov_validation_references
+q__amount__TRY__7500,7.500 liradan,amount,7500,TRY,prov_validation_references
+q__amount__TRY__76,76 lira,amount,76,TRY,prov_validation_references
+q__amount__TRY__760000000000,760 milyar lira,amount,760000000000,TRY,prov_validation_references
+q__amount__TRY__8,8 lira,amount,8,TRY,prov_validation_references
+q__amount__TRY__8.5,"8,5 tl",amount,8.5,TRY,prov_validation_references
+q__amount__TRY__800,800 tl,amount,800,TRY,prov_validation_references
+q__amount__TRY__8000,8 bin lira,amount,8000,TRY,prov_validation_references
+q__amount__TRY__80000000,80 milyon lira,amount,80000000,TRY,prov_validation_references
+q__amount__TRY__83,83 tl,amount,83,TRY,prov_validation_references
+q__amount__TRY__8500000000,"8,5 milyar tl",amount,8500000000,TRY,prov_validation_references
+q__amount__TRY__900,900 lira,amount,900,TRY,prov_validation_references
+q__amount__TRY__9000,9 bin lira,amount,9000,TRY,prov_validation_references
+q__amount__TRY__9000000000,9 milyar lira,amount,9000000000,TRY,prov_validation_references
+q__amount__TRY__905040206000,905 milyar 40 milyon 206 bin tl,amount,905040206000,TRY,prov_validation_references
+q__amount__TRY__91000,91 bin lirayı,amount,91000,TRY,prov_validation_references
+q__amount__TRY__92000,92 bin lira,amount,92000,TRY,prov_validation_references
+q__amount__TRY__9500000000,"9,5 milyar tl",amount,9500000000,TRY,prov_validation_references
+q__amount__TRY__98000,98 bin lira,amount,98000,TRY,prov_validation_references
+q__amount__USD__1.5,"1,5 dolar",amount,1.5,USD,prov_validation_references
+q__amount__USD__10000,10 bin doların,amount,10000,USD,prov_validation_references
+q__amount__USD__100000,100 bin dolarlık,amount,100000,USD,prov_validation_references
+q__amount__USD__1000000000,1 milyar dolar,amount,1000000000,USD,prov_validation_references
+q__amount__USD__100000000000,100 milyar dolar,amount,100000000000,USD,prov_validation_references
+q__amount__USD__11000000000,11 milyar dolarlık,amount,11000000000,USD,prov_validation_references
+q__amount__USD__1124000000,1 milyar 124 milyon doları,amount,1124000000,USD,prov_validation_references
+q__amount__USD__11500000000,"11,5 milyar dolar",amount,11500000000,USD,prov_validation_references
+q__amount__USD__1200000000,"1,2 milyar dolar",amount,1200000000,USD,prov_validation_references
+q__amount__USD__13600,13.600 dolar,amount,13600,USD,prov_validation_references
+q__amount__USD__15000,15 bin dolar,amount,15000,USD,prov_validation_references
+q__amount__USD__1500000000,"1,5 milyar dolar",amount,1500000000,USD,prov_validation_references
+q__amount__USD__15000000000,15 milyar doları,amount,15000000000,USD,prov_validation_references
+q__amount__USD__1500000000000,"1,5 trilyon dolara",amount,1500000000000,USD,prov_validation_references
+q__amount__USD__15463,15.463 dolar,amount,15463,USD,prov_validation_references
+q__amount__USD__160000000000,160 milyar dolar,amount,160000000000,USD,prov_validation_references
+q__amount__USD__17,17 dolara,amount,17,USD,prov_validation_references
+q__amount__USD__179000000000,179 milyar dolara,amount,179000000000,USD,prov_validation_references
+q__amount__USD__18400000000,"18,4 milyar dolar",amount,18400000000,USD,prov_validation_references
+q__amount__USD__19000000000,19 milyar dolarlık,amount,19000000000,USD,prov_validation_references
+q__amount__USD__191,191 dolar,amount,191,USD,prov_validation_references
+q__amount__USD__2,2 dolara,amount,2,USD,prov_validation_references
+q__amount__USD__2.5,"2,5 dolarlık",amount,2.5,USD,prov_validation_references
+q__amount__USD__20,20 dolar,amount,20,USD,prov_validation_references
+q__amount__USD__200,200 dolar,amount,200,USD,prov_validation_references
+q__amount__USD__200000,200 bin dolara,amount,200000,USD,prov_validation_references
+q__amount__USD__2000000000000,2 trilyon dolarlık,amount,2000000000000,USD,prov_validation_references
+q__amount__USD__22000000000,22 milyar dolarlık,amount,22000000000,USD,prov_validation_references
+q__amount__USD__229777000,229 milyon 777 bin dolarlık,amount,229777000,USD,prov_validation_references
+q__amount__USD__2300000000,"2,3 milyar dolar",amount,2300000000,USD,prov_validation_references
+q__amount__USD__257600000000,"257,6 milyar dolar",amount,257600000000,USD,prov_validation_references
+q__amount__USD__25800000000,"25,8 milyar dolar",amount,25800000000,USD,prov_validation_references
+q__amount__USD__2640000000,"2,64 milyar dolardır",amount,2640000000,USD,prov_validation_references
+q__amount__USD__269000000000,269 milyar doları,amount,269000000000,USD,prov_validation_references
+q__amount__USD__3.5,"3,5 dolara",amount,3.5,USD,prov_validation_references
+q__amount__USD__3000000000,3 milyar dolarlık,amount,3000000000,USD,prov_validation_references
+q__amount__USD__350,350 dolar,amount,350,USD,prov_validation_references
+q__amount__USD__3500000000,"3,5 milyar dolarlık",amount,3500000000,USD,prov_validation_references
+q__amount__USD__361800000000,"361,8 milyar dolar",amount,361800000000,USD,prov_validation_references
+q__amount__USD__36590,36.590 dolarken,amount,36590,USD,prov_validation_references
+q__amount__USD__4,4 dolardı,amount,4,USD,prov_validation_references
+q__amount__USD__40000000,40 milyon dolar,amount,40000000,USD,prov_validation_references
+q__amount__USD__400000000,400 milyon dolar,amount,400000000,USD,prov_validation_references
+q__amount__USD__450000000,450 milyon dolar,amount,450000000,USD,prov_validation_references
+q__amount__USD__480,480 dolar,amount,480,USD,prov_validation_references
+q__amount__USD__48000000,48 milyon dolar,amount,48000000,USD,prov_validation_references
+q__amount__USD__50,50 dolara,amount,50,USD,prov_validation_references
+q__amount__USD__50000,50 bin dolar,amount,50000,USD,prov_validation_references
+q__amount__USD__50000000000,50 milyar dolara,amount,50000000000,USD,prov_validation_references
+q__amount__USD__53100000000,"53,1 milyar dolar",amount,53100000000,USD,prov_validation_references
+q__amount__USD__54000000,54 milyon dolar,amount,54000000,USD,prov_validation_references
+q__amount__USD__550000000000,550 milyar dolarlık,amount,550000000000,USD,prov_validation_references
+q__amount__USD__5600000000,"5,6 milyar dolar",amount,5600000000,USD,prov_validation_references
+q__amount__USD__5600000000000,"5,6 trilyon dolar",amount,5600000000000,USD,prov_validation_references
+q__amount__USD__6000000000,6 milyar dolara,amount,6000000000,USD,prov_validation_references
+q__amount__USD__6200000000,"6,2 milyar dolardır",amount,6200000000,USD,prov_validation_references
+q__amount__USD__626,626 dolarlık,amount,626,USD,prov_validation_references
+q__amount__USD__64000000000,64 milyar doları,amount,64000000000,USD,prov_validation_references
+q__amount__USD__7,7 dolar,amount,7,USD,prov_validation_references
+q__amount__USD__7000000000,7 milyar dolarlık,amount,7000000000,USD,prov_validation_references
+q__amount__USD__75000000000,75 milyar dolar,amount,75000000000,USD,prov_validation_references
+q__amount__USD__8000000000,8 milyar dolar,amount,8000000000,USD,prov_validation_references
+q__amount__USD__80000000000,80 milyar dolar,amount,80000000000,USD,prov_validation_references
+q__amount__USD__82200000000,"82,2 milyar dolar",amount,82200000000,USD,prov_validation_references
+q__amount__USD__9000000000,9 milyar dolarlık,amount,9000000000,USD,prov_validation_references
+q__amount__USD__90000000000,90 milyar dolar,amount,90000000000,USD,prov_validation_references
+q__percentage__percent__1,yüzde 1,percentage,1,percent,prov_validation_references
+q__percentage__percent__1.4,"yüzde 1,4",percentage,1.4,percent,prov_validation_references
+q__percentage__percent__10,yüzde 10,percentage,10,percent,prov_validation_references
+q__percentage__percent__100,yüzde 100,percentage,100,percent,prov_validation_references
+q__percentage__percent__11,yüzde 11,percentage,11,percent,prov_validation_references
+q__percentage__percent__12.5,"yüzde 12,5",percentage,12.5,percent,prov_validation_references
+q__percentage__percent__125,yüzde 125,percentage,125,percent,prov_validation_references
+q__percentage__percent__13,yüzde 13,percentage,13,percent,prov_validation_references
+q__percentage__percent__145.8,"yüzde 145,8",percentage,145.8,percent,prov_validation_references
+q__percentage__percent__148,yüzde 148,percentage,148,percent,prov_validation_references
+q__percentage__percent__15,yüzde 15,percentage,15,percent,prov_validation_references
+q__percentage__percent__16.8,"yüzde 16,8",percentage,16.8,percent,prov_validation_references
+q__percentage__percent__163,yüzde 163,percentage,163,percent,prov_validation_references
+q__percentage__percent__17,yüzde 17,percentage,17,percent,prov_validation_references
+q__percentage__percent__17.18,"yüzde 17,18",percentage,17.18,percent,prov_validation_references
+q__percentage__percent__17.6,"yüzde 17,6",percentage,17.6,percent,prov_validation_references
+q__percentage__percent__17.8,"yüzde 17,8",percentage,17.8,percent,prov_validation_references
+q__percentage__percent__18,yüzde 18,percentage,18,percent,prov_validation_references
+q__percentage__percent__19,yüzde 19,percentage,19,percent,prov_validation_references
+q__percentage__percent__2.55,"yüzde 2,55",percentage,2.55,percent,prov_validation_references
+q__percentage__percent__20,yüzde 20,percentage,20,percent,prov_validation_references
+q__percentage__percent__23.4,"yüzde 23,4",percentage,23.4,percent,prov_validation_references
+q__percentage__percent__25,yüzde 25,percentage,25,percent,prov_validation_references
+q__percentage__percent__27,yüzde 27,percentage,27,percent,prov_validation_references
+q__percentage__percent__28,yüzde 28,percentage,28,percent,prov_validation_references
+q__percentage__percent__3,yüzde 3,percentage,3,percent,prov_validation_references
+q__percentage__percent__3.3,"yüzde 3,3",percentage,3.3,percent,prov_validation_references
+q__percentage__percent__3.5,"yüzde 3,5",percentage,3.5,percent,prov_validation_references
+q__percentage__percent__3.6,"yüzde 3,6",percentage,3.6,percent,prov_validation_references
+q__percentage__percent__30,yüzde 30,percentage,30,percent,prov_validation_references
+q__percentage__percent__31,yüzde 31,percentage,31,percent,prov_validation_references
+q__percentage__percent__32,yüzde 32,percentage,32,percent,prov_validation_references
+q__percentage__percent__33,yüzde 33,percentage,33,percent,prov_validation_references
+q__percentage__percent__34,yüzde 34,percentage,34,percent,prov_validation_references
+q__percentage__percent__35,yüzde 35,percentage,35,percent,prov_validation_references
+q__percentage__percent__36,yüzde 36,percentage,36,percent,prov_validation_references
+q__percentage__percent__4,yüzde 4,percentage,4,percent,prov_validation_references
+q__percentage__percent__4.2,"yüzde 4,2",percentage,4.2,percent,prov_validation_references
+q__percentage__percent__40,yüzde 40,percentage,40,percent,prov_validation_references
+q__percentage__percent__43,yüzde 43,percentage,43,percent,prov_validation_references
+q__percentage__percent__45,yüzde 45,percentage,45,percent,prov_validation_references
+q__percentage__percent__5,yüzde 5,percentage,5,percent,prov_validation_references
+q__percentage__percent__50,yüzde 50,percentage,50,percent,prov_validation_references
+q__percentage__percent__55,yüzde 55,percentage,55,percent,prov_validation_references
+q__percentage__percent__6,yüzde 6,percentage,6,percent,prov_validation_references
+q__percentage__percent__60,yüzde 60,percentage,60,percent,prov_validation_references
+q__percentage__percent__61,yüzde 61,percentage,61,percent,prov_validation_references
+q__percentage__percent__68,yüzde 68,percentage,68,percent,prov_validation_references
+q__percentage__percent__69,yüzde 69,percentage,69,percent,prov_validation_references
+q__percentage__percent__7,yüzde 7,percentage,7,percent,prov_validation_references
+q__percentage__percent__70,yüzde 70,percentage,70,percent,prov_validation_references
+q__percentage__percent__73.9,"yüzde 73,9",percentage,73.9,percent,prov_validation_references
+q__percentage__percent__75,yüzde 75,percentage,75,percent,prov_validation_references
+q__percentage__percent__76,yüzde 76,percentage,76,percent,prov_validation_references
+q__percentage__percent__8,yüzde 8,percentage,8,percent,prov_validation_references
+q__percentage__percent__8.8,"yüzde 8,8",percentage,8.8,percent,prov_validation_references
+q__percentage__percent__80,yüzde 80,percentage,80,percent,prov_validation_references
+q__percentage__percent__83,yüzde 83,percentage,83,percent,prov_validation_references
+q__percentage__percent__85,yüzde 85,percentage,85,percent,prov_validation_references
+q__percentage__percent__9,yüzde 9,percentage,9,percent,prov_validation_references
+q__percentage__percent__9.2,"yüzde 9,2",percentage,9.2,percent,prov_validation_references
+q__percentage__percent__90,yüzde 90,percentage,90,percent,prov_validation_references
+q__percentage__percent__91,yüzde 91,percentage,91,percent,prov_validation_references
+q__percentage__percent__99.7,"yüzde 99,7",percentage,99.7,percent,prov_validation_references
+q__percentage__percent__99.8,"yüzde 99,8",percentage,99.8,percent,prov_validation_references

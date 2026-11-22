@@ -1,0 +1,466 @@
+{
+  "history": [
+    {
+      "epoch": 13,
+      "parent_re_evaluation": true,
+      "validation": {
+        "view": "tr-normalized-v1",
+        "utterances": 438,
+        "zero_reference_utterances": 0,
+        "error_rows": 0,
+        "words": {
+          "substitutions": 5633,
+          "deletions": 791,
+          "insertions": 420,
+          "hits": 6957
+        },
+        "chars": {
+          "substitutions": 5986,
+          "deletions": 4864,
+          "insertions": 2979,
+          "hits": 85395
+        },
+        "wer": 0.5114714894253045,
+        "cer": 0.14368538625383137,
+        "wacc": 0.4885285105746955
+      }
+    },
+    {
+      "epoch": 14,
+      "train_loss": 0.25126777861240135,
+      "validation": {
+        "view": "tr-normalized-v1",
+        "utterances": 438,
+        "zero_reference_utterances": 0,
+        "error_rows": 0,
+        "words": {
+          "substitutions": 5457,
+          "deletions": 727,
+          "insertions": 385,
+          "hits": 7197
+        },
+        "chars": {
+          "substitutions": 5680,
+          "deletions": 4593,
+          "insertions": 2903,
+          "hits": 85972
+        },
+        "wer": 0.49091996113892833,
+        "cer": 0.13690061821393318,
+        "wacc": 0.5090800388610717
+      },
+      "epoch_seconds": 220.28562549999333,
+      "peak_vram_gib": 1.079725742340088,
+      "lr_next_epoch": 0.0003,
+      "improved": true
+    },
+    {
+      "epoch": 15,
+      "train_loss": 0.22003869785770883,
+      "validation": {
+        "view": "tr-normalized-v1",
+        "utterances": 438,
+        "zero_reference_utterances": 0,
+        "error_rows": 0,
+        "words": {
+          "substitutions": 5346,
+          "deletions": 703,
+          "insertions": 439,
+          "hits": 7332
+        },
+        "chars": {
+          "substitutions": 5618,
+          "deletions": 4395,
+          "insertions": 2960,
+          "hits": 86232
+        },
+        "wer": 0.4848666018982139,
+        "cer": 0.1347914177359863,
+        "wacc": 0.515133398101786
+      },
+      "epoch_seconds": 53.03540379999322,
+      "peak_vram_gib": 1.0797271728515625,
+      "lr_next_epoch": 0.0003,
+      "improved": true
+    },
+    {
+      "epoch": 16,
+      "train_loss": 0.2022370624825032,
+      "validation": {
+        "view": "tr-normalized-v1",
+        "utterances": 438,
+        "zero_reference_utterances": 0,
+        "error_rows": 0,
+        "words": {
+          "substitutions": 5360,
+          "deletions": 762,
+          "insertions": 360,
+          "hits": 7259
+        },
+        "chars": {
+          "substitutions": 5609,
+          "deletions": 4649,
+          "insertions": 2834,
+          "hits": 85987
+        },
+        "wer": 0.4844182049174202,
+        "cer": 0.13602784560236894,
+        "wacc": 0.5155817950825798
+      },
+      "epoch_seconds": 51.13287700001092,
+      "peak_vram_gib": 1.079726219177246,
+      "lr_next_epoch": 0.0003,
+      "improved": false
+    },
+    {
+      "epoch": 17,
+      "train_loss": 0.18900475697252003,
+      "validation": {
+        "view": "tr-normalized-v1",
+        "utterances": 438,
+        "zero_reference_utterances": 0,
+        "error_rows": 0,
+        "words": {
+          "substitutions": 5441,
+          "deletions": 693,
+          "insertions": 446,
+          "hits": 7247
+        },
+        "chars": {
+          "substitutions": 5689,
+          "deletions": 4500,
+          "insertions": 2962,
+          "hits": 86056
+        },
+        "wer": 0.4917420222703834,
+        "cer": 0.13664086446049145,
+        "wacc": 0.5082579777296166
+      },
+      "epoch_seconds": 50.12088539999968,
+      "peak_vram_gib": 1.0797119140625,
+      "lr_next_epoch": 0.0003,
+      "improved": false
+    },
+    {
+      "epoch": 18,
+      "train_loss": 0.1754219705089383,
+      "validation": {
+        "view": "tr-normalized-v1",
+        "utterances": 438,
+        "zero_reference_utterances": 0,
+        "error_rows": 0,
+        "words": {
+          "substitutions": 5318,
+          "deletions": 700,
+          "insertions": 434,
+          "hits": 7363
+        },
+        "chars": {
+          "substitutions": 5605,
+          "deletions": 4458,
+          "insertions": 2948,
+          "hits": 86182
+        },
+        "wer": 0.4821762200134519,
+        "cer": 0.1351862434412177,
+        "wacc": 0.5178237799865482
+      },
+      "epoch_seconds": 50.137176300006104,
+      "peak_vram_gib": 1.079726219177246,
+      "lr_next_epoch": 0.00015,
+      "improved": false
+    },
+    {
+      "epoch": 19,
+      "train_loss": 0.15849408051882782,
+      "validation": {
+        "view": "tr-normalized-v1",
+        "utterances": 438,
+        "zero_reference_utterances": 0,
+        "error_rows": 0,
+        "words": {
+          "substitutions": 5268,
+          "deletions": 682,
+          "insertions": 443,
+          "hits": 7431
+        },
+        "chars": {
+          "substitutions": 5571,
+          "deletions": 4394,
+          "insertions": 2955,
+          "hits": 86280
+        },
+        "wer": 0.4777669830356476,
+        "cer": 0.1342407397786898,
+        "wacc": 0.5222330169643524
+      },
+      "epoch_seconds": 50.241111700001056,
+      "peak_vram_gib": 1.0797123908996582,
+      "lr_next_epoch": 0.00015,
+      "improved": true
+    },
+    {
+      "epoch": 20,
+      "train_loss": 0.14994068884283956,
+      "validation": {
+        "view": "tr-normalized-v1",
+        "utterances": 438,
+        "zero_reference_utterances": 0,
+        "error_rows": 0,
+        "words": {
+          "substitutions": 5241,
+          "deletions": 735,
+          "insertions": 419,
+          "hits": 7405
+        },
+        "chars": {
+          "substitutions": 5577,
+          "deletions": 4407,
+          "insertions": 2868,
+          "hits": 86261
+        },
+        "wer": 0.4779164486959121,
+        "cer": 0.13353420956932827,
+        "wacc": 0.5220835513040879
+      },
+      "epoch_seconds": 50.25648579999688,
+      "peak_vram_gib": 1.079725742340088,
+      "lr_next_epoch": 0.00015,
+      "improved": true
+    },
+    {
+      "epoch": 21,
+      "train_loss": 0.14413887331683706,
+      "validation": {
+        "view": "tr-normalized-v1",
+        "utterances": 438,
+        "zero_reference_utterances": 0,
+        "error_rows": 0,
+        "words": {
+          "substitutions": 5262,
+          "deletions": 741,
+          "insertions": 402,
+          "hits": 7378
+        },
+        "chars": {
+          "substitutions": 5519,
+          "deletions": 4459,
+          "insertions": 2914,
+          "hits": 86267
+        },
+        "wer": 0.4786637769972349,
+        "cer": 0.13394981557483507,
+        "wacc": 0.5213362230027652
+      },
+      "epoch_seconds": 50.14042989999871,
+      "peak_vram_gib": 1.0797266960144043,
+      "lr_next_epoch": 0.00015,
+      "improved": false
+    },
+    {
+      "epoch": 22,
+      "train_loss": 0.1385539097942575,
+      "validation": {
+        "view": "tr-normalized-v1",
+        "utterances": 438,
+        "zero_reference_utterances": 0,
+        "error_rows": 0,
+        "words": {
+          "substitutions": 5198,
+          "deletions": 716,
+          "insertions": 428,
+          "hits": 7467
+        },
+        "chars": {
+          "substitutions": 5566,
+          "deletions": 4255,
+          "insertions": 2940,
+          "hits": 86424
+        },
+        "wer": 0.4739556086989014,
+        "cer": 0.13258870590680036,
+        "wacc": 0.5260443913010986
+      },
+      "epoch_seconds": 50.33259179999004,
+      "peak_vram_gib": 1.0797133445739746,
+      "lr_next_epoch": 0.00015,
+      "improved": true
+    },
+    {
+      "epoch": 23,
+      "train_loss": 0.1336253730539423,
+      "validation": {
+        "view": "tr-normalized-v1",
+        "utterances": 438,
+        "zero_reference_utterances": 0,
+        "error_rows": 0,
+        "words": {
+          "substitutions": 5239,
+          "deletions": 724,
+          "insertions": 428,
+          "hits": 7418
+        },
+        "chars": {
+          "substitutions": 5496,
+          "deletions": 4360,
+          "insertions": 2953,
+          "hits": 86389
+        },
+        "wer": 0.477617517375383,
+        "cer": 0.13308743311340848,
+        "wacc": 0.5223824826246171
+      },
+      "epoch_seconds": 50.06608609999239,
+      "peak_vram_gib": 1.0797133445739746,
+      "lr_next_epoch": 0.00015,
+      "improved": false
+    },
+    {
+      "epoch": 24,
+      "train_loss": 0.12857713185957748,
+      "validation": {
+        "view": "tr-normalized-v1",
+        "utterances": 438,
+        "zero_reference_utterances": 0,
+        "error_rows": 0,
+        "words": {
+          "substitutions": 5198,
+          "deletions": 746,
+          "insertions": 406,
+          "hits": 7437
+        },
+        "chars": {
+          "substitutions": 5538,
+          "deletions": 4423,
+          "insertions": 2899,
+          "hits": 86284
+        },
+        "wer": 0.4745534713399596,
+        "cer": 0.13361733077042964,
+        "wacc": 0.5254465286600404
+      },
+      "epoch_seconds": 50.088990900010685,
+      "peak_vram_gib": 1.079725742340088,
+      "lr_next_epoch": 0.00015,
+      "improved": false
+    },
+    {
+      "epoch": 25,
+      "train_loss": 0.12452835298693964,
+      "validation": {
+        "view": "tr-normalized-v1",
+        "utterances": 438,
+        "zero_reference_utterances": 0,
+        "error_rows": 0,
+        "words": {
+          "substitutions": 5221,
+          "deletions": 713,
+          "insertions": 403,
+          "hits": 7447
+        },
+        "chars": {
+          "substitutions": 5545,
+          "deletions": 4350,
+          "insertions": 2926,
+          "hits": 86350
+        },
+        "wer": 0.47358194454824004,
+        "cer": 0.13321211491506052,
+        "wacc": 0.5264180554517599
+      },
+      "epoch_seconds": 50.07701039999665,
+      "peak_vram_gib": 1.0797271728515625,
+      "lr_next_epoch": 7.5e-05,
+      "improved": false
+    },
+    {
+      "epoch": 26,
+      "train_loss": 0.11845060352263224,
+      "validation": {
+        "view": "tr-normalized-v1",
+        "utterances": 438,
+        "zero_reference_utterances": 0,
+        "error_rows": 0,
+        "words": {
+          "substitutions": 5224,
+          "deletions": 708,
+          "insertions": 403,
+          "hits": 7449
+        },
+        "chars": {
+          "substitutions": 5536,
+          "deletions": 4355,
+          "insertions": 2915,
+          "hits": 86354
+        },
+        "wer": 0.47343247888797546,
+        "cer": 0.13305626266299547,
+        "wacc": 0.5265675211120245
+      },
+      "epoch_seconds": 50.1706017999968,
+      "peak_vram_gib": 1.079725742340088,
+      "lr_next_epoch": 7.5e-05,
+      "improved": false
+    },
+    {
+      "epoch": 27,
+      "train_loss": 0.11531228850167381,
+      "validation": {
+        "view": "tr-normalized-v1",
+        "utterances": 438,
+        "zero_reference_utterances": 0,
+        "error_rows": 0,
+        "words": {
+          "substitutions": 5214,
+          "deletions": 685,
+          "insertions": 426,
+          "hits": 7482
+        },
+        "chars": {
+          "substitutions": 5555,
+          "deletions": 4283,
+          "insertions": 2962,
+          "hits": 86407
+        },
+        "wer": 0.4726851505866527,
+        "cer": 0.13299392176216945,
+        "wacc": 0.5273148494133473
+      },
+      "epoch_seconds": 50.08145769999828,
+      "peak_vram_gib": 1.0797271728515625,
+      "lr_next_epoch": 7.5e-05,
+      "improved": false
+    },
+    {
+      "epoch": 28,
+      "train_loss": 0.11170321458909852,
+      "validation": {
+        "view": "tr-normalized-v1",
+        "utterances": 438,
+        "zero_reference_utterances": 0,
+        "error_rows": 0,
+        "words": {
+          "substitutions": 5239,
+          "deletions": 712,
+          "insertions": 406,
+          "hits": 7430
+        },
+        "chars": {
+          "substitutions": 5534,
+          "deletions": 4389,
+          "insertions": 2925,
+          "hits": 86322
+        },
+        "wer": 0.47507660115088557,
+        "cer": 0.1334926489687776,
+        "wacc": 0.5249233988491144
+      },
+      "epoch_seconds": 50.093269300006796,
+      "peak_vram_gib": 1.0797114372253418,
+      "lr_next_epoch": 3.75e-05,
+      "improved": false
+    }
+  ],
+  "best_epoch": 22,
+  "best_val_norm_cer": 0.13258870590680036
+}

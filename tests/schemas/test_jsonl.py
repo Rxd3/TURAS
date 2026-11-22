@@ -98,10 +98,26 @@ def test_invalid_json_rejected_with_line(tmp_path):
         read_jsonl(path)
 
 
-def test_deep_nesting_is_a_jsonl_error(tmp_path):
-    path = _write(tmp_path, b'{"a": ' + b"[" * 100_000 + b"]" * 100_000 + b"}\n")
-    with pytest.raises(JsonlError, match="line 1"):
+def test_deep_nesting_is_a_jsonl_error(tmp_path, monkeypatch):
+    # Python 3.14's json parser accepts deep nesting that older versions reject with
+    # RecursionError, so force that error to test the wrapping on every version.
+    def too_deep(*args, **kwargs):
+        raise RecursionError("maximum recursion depth exceeded")
+
+    monkeypatch.setattr(json, "loads", too_deep)
+    path = _write(tmp_path, b'{"a": [[[1]]]}\n')
+    with pytest.raises(JsonlError, match="line 1.*nested too deeply"):
         read_jsonl(path)
+
+
+def test_very_deep_nesting_never_escapes_as_another_error(tmp_path):
+    path = _write(tmp_path, b'{"a": ' + b"[" * 100_000 + b"]" * 100_000 + b"}\n")
+    try:
+        rows = read_jsonl(path)
+    except JsonlError as exc:
+        assert "line 1" in str(exc)
+    else:
+        assert len(rows) == 1
 
 
 @pytest.mark.parametrize("data", [b'{"a":1}\n\n{"a":2}\n', b'{"a":1}\n   \n{"a":2}\n', b'{"a":1}\n\n'])

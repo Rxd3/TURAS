@@ -1,8 +1,7 @@
 # Configuration areas
 
-No executable settings are supplied yet: model revisions, data release, hardware
-budgets and split policies require review. The six subdirectories are reserved
-with `.gitkeep` until real reviewed configuration files are added.
+Reviewed JSON configurations are committed; the frozen protocol is
+`evaluation/m45_final_protocol.json`. Owners per directory are below.
 
 | Directory | Required future content | Owner |
 | --- | --- | --- |
@@ -15,5 +14,5 @@ with `.gitkeep` until real reviewed configuration files are added.
 
 Use portable paths and explicit immutable revisions; do not add placeholder
 checkpoint paths or runnable configs that silently select unapproved data.
-Resolved configurations and hashes accompany every real experiment. Serialization
-format is chosen in the first implementation PR; no parser dependency is needed now.
+Resolved configurations and hashes accompany every real experiment. Configurations
+are JSON.

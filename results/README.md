@@ -19,8 +19,10 @@ audit reports, and the frozen M4/M5 final test study for `turas-tr-econ-legis-v0
 | `evaluation/` | Validation baselines, checkpoint selection, RDL grid, corrected-linker ablations, and independent audit JSONs |
 | `training/m45_seed17_completion.json` | Seed-17 acoustic training completion summary (F1, F2, F3) |
 | `rdl/m45_seed17_internal.json` | Seed-17 heterogeneous RDL graph training summary |
+| [`m6/`](m6/README.md) | B2 and B3 validation and test scores and same-session timing, outside the frozen protocol |
 
 Full per-utterance prediction/N-best JSONLs, model checkpoints, and private
 references are external hashed artifacts (`results/predictions/` and
-`results/nbest/` are gitignored). Unrun baselines (B2, B3, B5) are not included
-in the test tables and remain explicitly marked as not run.
+`results/nbest/` are gitignored). B2 and B3 are scored in `m6/`, not in the
+frozen test tables. The unrun B5 baseline is not included and remains explicitly
+marked as not run.

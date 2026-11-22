@@ -1,26 +1,29 @@
 # Reproducibility plan
 
-Packaging and the environment check can be verified now. No ASR experiment is
-reproducible from this repository yet because implementations, approved data, checkpoints
-and results do not exist. The Windows CUDA environment is pinned in
+Packaging and the environment check can be verified now. Metrics recompute offline
+with `python scripts/verify_submission.py`. Full reruns need private bundles
+([M4/M5 reproduction](m45_final_reproduction.md)). The Windows CUDA environment is pinned in
 `requirements/windows-cu130.txt` (see [Environment setup](#environment-setup-windows)).
 CI checks packaging and runs the unit tests on Python 3.11 and 3.13.
 
 ## Scaffold inspection
 
 Use Python 3.11+ to parse `pyproject.toml` with `tomllib`; use `PYTHONPATH=src`
-or install the package to import the package and its subpackages (all empty apart
-from `utils.env_check`, which imports torch only when the check runs). Check
+or install the package to import it; `utils.env_check` imports torch only when
+the check runs. Check
 whitespace with `git diff --check`. These checks require no data/model/ML
 dependencies and do not demonstrate inference or training. Initialization-specific
 checks and remote state are recorded in [repository setup](repository_setup.md).
 
-## Future evidence levels
+## Evidence levels
 
-1. **Recalculate metrics:** obtain hashed predictions and evaluator-only references,
-   verify release/ID alignment, run the pinned evaluator/normalizer and compare
-   edit counts, aggregate reports and figure inputs.
-2. **Rerun inference:** add the exact model/processor/tokenizer, decoder, graph/LM
+1. **Recalculate metrics:** `python scripts/verify_submission.py` (stdlib only)
+   recomputes the published WER/CER from stored edit counts. A full recalculation
+   obtains hashed predictions and evaluator-only references, verifies release/ID
+   alignment, runs the pinned evaluator/normalizer and compares edit counts,
+   aggregate reports and figure inputs.
+2. **Rerun inference:** the [M4/M5 reproduction guide](m45_final_reproduction.md),
+   which needs private bundles. Add the exact model/processor/tokenizer, decoder, graph/LM
    artifacts, compatible locked environment and audio; verify candidate scores,
    selected hypotheses, coverage, timing scope and artifact hashes.
 3. **Retrain:** add train/validation data, training configuration, initialization,
@@ -28,9 +31,10 @@ checks and remote state are recorded in [repository setup](repository_setup.md).
    Report stochastic tolerances; byte-identical GPU training is not assumed.
 
 All levels require the [artifact/experiment contract](contracts/artifacts.md).
-Keep separate framework environment locks where compatibility demands it; record
-exact dependency versions and hashes at the implementation PR, not guessed pins
-in this scaffold. Do not install heavyweight dependencies for initialization.
+Keep separate framework environment locks where compatibility demands it. Exact
+versions are pinned in `requirements/windows-cu130.txt` (team) and
+`requirements/owner-m45-windows-cu130.txt` (frozen M4/M5 runs, decision D31).
+Do not install heavyweight dependencies for initialization.
 
 ## Release audit checklist
 
@@ -47,13 +51,17 @@ in this scaffold. Do not install heavyweight dependencies for initialization.
 - [ ] Negative findings, unsupported tracks and resource limits are explicit.
 - [ ] Presentation figures and contribution records point to reviewed evidence.
 
-None of these application-release items is complete at initialization.
+For the frozen M4/M5 study, validation-only selection and the timing scope are met
+([final report](../results/final/M4_M5_FINAL_REPORT.md)). B5, B1 parity of the M6
+B2/B3 scorer, non-author reproduction and release approval remain open
+([status](../SUBMISSION.md#scope-and-remaining-work)).
 
 ## Environment setup (Windows)
 
-Every teammate and the training machine install the same pinned packages from
-`requirements/windows-cu130.txt`: Python 3.13, torch 2.14.1 with CUDA 13.0
-(`+cu130`) and the Hugging Face stack. Follow the steps in order, then share the
+Teammates install the pinned packages from `requirements/windows-cu130.txt`:
+Python 3.13, torch 2.14.1 with CUDA 13.0 (`+cu130`) and the Hugging Face stack.
+Reproducing the frozen M4/M5 runs uses `requirements/owner-m45-windows-cu130.txt`
+(decision D31). Follow the steps in order, then share the
 output of `python scripts/check_env.py` with the team.
 
 1. **NVIDIA driver 580 or newer.** The CUDA 13.0 build of torch needs driver
@@ -93,7 +101,8 @@ writable folder outside `AppData` first.
 
 **Unit tests only (CPU, no torch):** `pip install -r requirements/dev.txt`,
 `pip install --no-deps -e .`, then `python -m pytest --cov=turkish_asr_rdl
---cov-report=term-missing`. This is what CI runs.
+--cov-report=term-missing`. This is the packaging CI test job. `adaptation.yml`
+also runs the suite on Python 3.13 with CPU torch 2.15.0.
 
 **Changing the packages:** edit `requirements/requirements.in`, then, from the
 `requirements/` folder, run the `uv pip compile` command printed in the header of

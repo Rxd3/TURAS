@@ -67,8 +67,8 @@ The table below is the 2026-11-17 run with the smoke kit at `793ff9c`.
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | whisper-small | B1 | float16 | beam 10, 10 returned | 1.37 | 1.94 | 0.049 | 0.049 | invalid, duplicate text only (24 errors); 8/20 lists all distinct | measured |
 | whisper-large-v3 | B2 | float16 | beam 10, 10 returned | 5.67 | 6.50 | 0.167 | 0.166 | invalid, duplicate text only (5 errors); 16/20 lists all distinct | measured |
-| qwen3-asr-1.7b | B3 | bfloat16 | beam 5, 5 returned | 4.56 | 5.63 | 0.098 | 0.097 | invalid, duplicate text only (16 errors); 8/20 lists all distinct | measured |
-| qwen3-asr-0.6b | B3 | bfloat16 | beam 5, 5 returned | 2.22 | 3.30 | 0.090 | 0.090 | invalid, duplicate text only (15 errors); 9/20 lists all distinct | measured |
+| qwen3-asr-1.7b | B3 (selected on validation) | bfloat16 | beam 5, 5 returned | 4.56 | 5.63 | 0.098 | 0.097 | invalid, duplicate text only (16 errors); 8/20 lists all distinct | measured |
+| qwen3-asr-0.6b | B3 candidate, not selected | bfloat16 | beam 5, 5 returned | 2.22 | 3.30 | 0.090 | 0.090 | invalid, duplicate text only (15 errors); 9/20 lists all distinct | measured |
 | xlsr-tr-cv7 | B4 | float32 | greedy, 1 returned | 1.62 | 2.77 | 0.006 | 0.006 | valid (1-best only) | measured |
 | xlsr-tr-cv8 | B4 | float32 | greedy, 1 returned | 1.62 | 2.77 | 0.006 | 0.005 | valid (1-best only) | measured |
 
@@ -94,8 +94,10 @@ repeat. RTFs also shift between sessions: see
 [Timing varies between sessions](#timing-varies-between-sessions). The
 official RTF for B1, B4, F1–F3 and the `--rdl-full` joint systems of F1–F3
 comes from the [frozen timing results](../results/final/M4_M5_FINAL_REPORT.md#repeated-timing).
-The [evaluation timing protocol](evaluation.md#real-time-factor-and-latency)
-applies to future official runs for the remaining systems. Batch > 1 inference
+B1, B2 and B3 were re-timed in one RTX 5070 Ti laptop session on 2026-11-22
+with the frozen timing block settings
+([evaluation timing protocol](evaluation.md#real-time-factor-and-latency); end-to-end RTF 0.05757, 0.17537 and 0.13843); compare those RTFs only within
+that session or through the B1 ratio ([B2 and B3 results](../results/m6/README.md)). Batch > 1 inference
 and three-repeat timing are UNMEASURED by the smoke kit.
 
 All seq2seq baselines fit at batch 1 in these precisions. The heaviest,
@@ -393,15 +395,16 @@ together. [Timing varies between sessions](#timing-varies-between-sessions)
 
 | Member | Tracks | Next actions |
 | --- | --- | --- |
-| Member 2 | B1, B2, B3 | Build Whisper N-best on the core `GenerationMixin` path and never call `WhisperForConditionalGeneration.generate` with `num_return_sequences > 1`; one process per system. Return the raw candidate list; the shared export deduplicates. Run the rank-1 check on a few clips. Qwen3-ASR: use the `-hf` checkpoints, label the score joint, keep `qwen-asr` out of the main environment. Return text exactly as decoded. Decode B1 like the frozen protocol's `B1-whisper-small` (bf16 on CUDA, `num_beams` = requested N = 5, `num_return_sequences` 5, `max_new_tokens` 440), and B2 the same way; the smoke run's fp16 beam 10 is not the frozen setting. Beam width alone is not enough (`docs/m45_decoding_erratum.md`): also match B1's checkpoint, the pinned `openai/whisper-small` at `973afd24` (weight SHA-256 `1d7734884874…` in the frozen protocol; decision D23), and the frozen `decoding/whisper.py` scoring and decoding policy (and the score convention `whisper-original-logits-generated-plus-eos-v1` that `decoding/adapted.py` assigns): the Turkish forced prompt of the [Whisper N-best rule](#whisper-n-best-rule) with `forced_decoder_ids` cleared, EOS kept in `token_ids` and `token_count`, a teacher-forced score from the original logits (no suppression or temperature in the score; the search itself uses a copy of the checkpoint's `generation_config` with only `forced_decoder_ids` cleared) over the generated tokens plus EOS with the prompt excluded, `length_penalty` 1.0, no sampling. B3's beam is your validation choice. Freeze beam size and requested N in each decoder config before the timed re-run. |
+| Member 2 | B1, B2, B3 | Build Whisper N-best on the core `GenerationMixin` path and never call `WhisperForConditionalGeneration.generate` with `num_return_sequences > 1`; one process per system. Return the raw candidate list; the shared export deduplicates. Run the rank-1 check on a few clips. Qwen3-ASR: use the `-hf` checkpoints, label the score joint, keep `qwen-asr` out of the main environment. Return text exactly as decoded. Decode B1 like the frozen protocol's `B1-whisper-small` (bf16 on CUDA, `num_beams` = requested N = 5, `num_return_sequences` 5, `max_new_tokens` 440), and B2 the same way; the smoke run's fp16 beam 10 is not the frozen setting. Beam width alone is not enough (`docs/m45_decoding_erratum.md`): also match B1's checkpoint, the pinned `openai/whisper-small` at `973afd24` (weight SHA-256 `1d7734884874…` in the frozen protocol; decision D23), and the frozen `decoding/whisper.py` scoring and decoding policy (and the score convention `whisper-original-logits-generated-plus-eos-v1` that `decoding/adapted.py` assigns): the Turkish forced prompt of the [Whisper N-best rule](#whisper-n-best-rule) with `forced_decoder_ids` cleared, EOS kept in `token_ids` and `token_count`, a teacher-forced score from the original logits (no suppression or temperature in the score; the search itself uses a copy of the checkpoint's `generation_config` with only `forced_decoder_ids` cleared) over the generated tokens plus EOS with the prompt excluded, `length_penalty` 1.0, no sampling. B3 is Qwen3-ASR-1.7B-hf, selected on validation (bf16, beam 5, N 5). B2 and B3 decodes, same-session timing and scoring are done ([B2 and B3 results](../results/m6/README.md)). |
 | Member 3 | B4, B5 | B4 uses cv7 at `708639f5` with the frozen B4/F3 decoding settings (bf16 on CUDA, prefix beam 10, requested N 5, rank 1 as one-best). Label cv8 and fp32 greedy as secondary and report the cv7 head's missing digits. Reuse the hash-pinned [CTC decoder](../src/turkish_asr_rdl/decoding/ctc.py) and keep extensions in a separate module. See [CTC, B4 and B5](#ctc-b4-and-b5) for the exact `CTCLoss` cross-check. B5 still needs a 3-step memory probe, a timed epoch on the training machine and train-only vocabulary. |
 | Member 4 | F1, F2 | The frozen working benchmark trained both from Whisper-small and compared them with `B1-whisper-small`. See the separate [M4/M5 training-memory probes](m45_gpu_profile.md). M6 did not measure Whisper-small LoRA memory. M6 estimated 4.2–5.2 GiB at batch 8 for full fine-tuning with fp32 master weights. Large-v3 LoRA fit at batch 2 (4.05 GiB reserved, measured), and reporting its quality would require a B2-matched experiment. Record the measured hardware block for the probed large-v3 full fine-tuning recipe and follow the [Whisper N-best rule](#whisper-n-best-rule). |
 | Member 5 | F3, R1 | See the [F3 training record](m45_execution_2026-11-19.md) for the 52-token head, train-target length-feasibility check and `ctc_zero_infinity=False` recipe. Run the 3-step memory probe for a new F3 recipe and apply the length safeguards in [CTC, B4 and B5](#ctc-b4-and-b5). The frozen [Whisper](../src/turkish_asr_rdl/decoding/whisper.py) and [CTC](../src/turkish_asr_rdl/decoding/ctc.py) R1 lists passed shared N-best validation in the M4/M5 run. The smoke wrappers' separate lists validated on 20 clips after export deduplication (measured 2026-11-18). The [frozen protocol](../configs/evaluation/m45_final_protocol.json) pins decoder settings, test inputs and validation selection reports. |
 
 ## Open questions
 
-1. **Who has a GPU, and how much VRAM?** Members 2 and 3 (B1–B5): please say
-   which GPU, how much VRAM and which OS. The M4/M5 runs used an RTX 5070
+1. **Who has a GPU, and how much VRAM?** Member 3 (B5): please say which GPU,
+   how much VRAM and which OS will train B5. Hardware for B1–B4 is recorded.
+   The M4/M5 runs used an RTX 5070
    and completed 3 epochs for F1–F3. GPU steps only, from 3-step probes and a
    20–30 h train set: about 21–32 minutes for 3 epochs of
    whisper-small full fine-tuning, and about 1.7–2.6 h for 3 epochs of
@@ -421,7 +424,8 @@ together. [Timing varies between sessions](#timing-varies-between-sessions)
    10 and `max_new_tokens` 440. Whisper (B1, F1, F2) uses `num_beams` 5 with 5
    returned; the beam size 10 applies only to CTC (B4, F3), as prefix beam 10
    with rank 1 as the one-best. B2 and B3 are outside the frozen protocol.
-   The smoke follow-up proposes B1-matched decoding for B2 and
-   validation-based beam selection for B3. [Decoder erratum](m45_decoding_erratum.md)
+   B2 decodes like B1 (bf16, beam 5, N 5); B3 is Qwen3-ASR-1.7B-hf, selected on
+   validation, at bf16, beam 5, N 5. Both are scored in
+   [B2 and B3 results](../results/m6/README.md). [Decoder erratum](m45_decoding_erratum.md)
    Each owner freezes beam size and requested N in the decoder config before
    timing, so the re-run times the configuration that is reported.

@@ -94,7 +94,7 @@ relational type/graph needs; actual team approval of source rights and working d
 **Handoff/review:** submit source/schema policy PR first (M5+M6 review), then
 release/audit PR (M6 and consumers review). Give all model owners inference-only
 exports; give evaluator-only references to M6. Record approvals and actual work in
-[member_1.md](contributions/member_1.md).
+[Almutesim_alakili_220911336_Sam-Ali23.md](contributions/Almutesim_alakili_220911336_Sam-Ali23.md).
 
 **Specific next task:** complete the prepared 199-new-test/50-pilot evidence
 listening pages, ingest genuine exports and have different listeners adjudicate

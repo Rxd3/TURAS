@@ -1,5 +1,8 @@
 # Member 4: Whisper adaptation implementation
 
+Workstream owner: Member 4 — Mohamed Kamaleldin Eliwa (`2309015740`, [`@mokamaleldin`](https://github.com/mokamaleldin)).
+Contribution record: [Mohamed_Kamaleldin_Eliwa_2309015740_mokamaleldin.md](../contributions/Mohamed_Kamaleldin_Eliwa_2309015740_mokamaleldin.md).
+
 Current measured status: seed-17 LoRA and full Whisper training, validation-only
 checkpoint selection, all 636 frozen test predictions, genuine scored N-best,
 terminology, paired intervals and repeated timing are complete. LoRA epoch 3

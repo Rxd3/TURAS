@@ -235,11 +235,13 @@ class BaselineBatchRunnerTests(unittest.TestCase):
 
         # 1. Successful verification
         resolved = verify_checkpoint_inventory(ckpt_dir, "model.safetensors", valid_sha)
-        self.assertEqual(resolved, ckpt_dir / "model.safetensors")
+        # resolve() on both sides: Windows may report the temp folder by its 8.3 short name.
+        self.assertEqual(Path(resolved).resolve(), (ckpt_dir / "model.safetensors").resolve())
 
         # 2. Direct file path success
         resolved_file = verify_checkpoint_inventory(ckpt_dir / "model.safetensors", "model.safetensors", valid_sha)
-        self.assertEqual(resolved_file, ckpt_dir / "model.safetensors")
+        # resolve() on both sides: Windows may report the temp folder by its 8.3 short name.
+        self.assertEqual(Path(resolved_file).resolve(), (ckpt_dir / "model.safetensors").resolve())
 
         # 3. Hash mismatch
         wrong_sha = "f" * 64

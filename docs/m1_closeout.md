@@ -52,8 +52,10 @@ bind the actual hashes and counts. Protected references and pages stay outside G
 On this machine, the private directory is:
 
 ```text
-C:\Users\USER\Downloads\NLP-3\data\private\turas-tr-econ-legis-v0.1\m1-closeout-2026-11-21
+<repo-root>\data\private\turas-tr-econ-legis-v0.1\m1-closeout-2026-11-21
 ```
+
+`<repo-root>` is the repository checkout folder.
 
 Open `review-kits/index.html`. The page links the seven `test-new-*.html` pages
 and two `pilot-evidence-*.html` pages. A Turkish-speaking listener enters their
@@ -68,9 +70,9 @@ environment for these commands. The protected owner workspace remains in place.
 
 ```powershell
 # Run from the current repository checkout.
-$py = 'C:\Users\USER\Downloads\NLP-3\.venv\Scripts\python.exe'
+$py = '<repo-root>\.venv\Scripts\python.exe'
 $env:PYTHONUTF8 = '1'
-$m1 = 'C:\Users\USER\Downloads\NLP-3\data\private\turas-tr-econ-legis-v0.1\m1-closeout-2026-11-21'
+$m1 = '<repo-root>\data\private\turas-tr-econ-legis-v0.1\m1-closeout-2026-11-21'
 
 # Import genuine primary exports; choose fresh output names for each import.
 & $py scripts/m1_verification.py ingest --workspace $m1 `
@@ -130,7 +132,7 @@ directory; it neither downloads data nor creates transcripts.
 
 ```powershell
 & $py scripts/m1_verification.py prepare `
-  --inputs-root 'C:\Users\USER\Downloads\NLP-3' `
+  --inputs-root '<repo-root>' `
   --private-root <fresh-private-output-directory>
 & $py scripts/m1_verification.py verify-bundles --workspace $m1
 & $py scripts/m1_verification.py check --workspace $m1

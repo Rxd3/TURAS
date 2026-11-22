@@ -21,6 +21,9 @@ def require(condition, message="Follow-up aggregate check failed"):
 
 def verify(root=ROOT):
     path = root / "results/final/completion_test_summary.json"
+    if not path.is_file():
+        raise SystemExit("PENDING: results/final/completion_test_summary.json is not in the repository. "
+                         "The committed follow-up results are results/final/baseline_completion_summary.json.")
     report = json.loads(path.read_text(encoding="utf-8"))
     protocol_path = root / "configs/evaluation/completion_followup_2026-11-22.json"
     protocol = json.loads(protocol_path.read_text(encoding="utf-8"))

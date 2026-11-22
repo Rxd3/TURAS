@@ -129,7 +129,7 @@ ${SRC}README.md`);
 
   label(s, "Clips left after each filter (WorldSpeech tr_tr)", 0.6, 1.8, 7.4);
   const steps = ["All Turkish clips", "Parliament (TBMM) only", "Spoken text only", "No duplicate text",
-    "Text matches audio", "Economic or legal domain", "No upstream-test overlap", "Kept, capped per recording"];
+    "Text matches audio", "Economic or legal domain", "No upstream-test rows in train", "Kept, capped per recording"];
   const left = [239654, 237203, 220435, 217260, 213374, 28807, 27738, 5450];
   const fill = [HEX.slate, HEX.slate, HEX.slate, HEX.slate, HEX.slate, HEX.navy, HEX.navy, HEX.teal];
   chart(s, pres.charts.BAR, [{ name: "Clips left", labels: [...steps].reverse(), values: [...left].reverse() }],
@@ -140,7 +140,7 @@ ${SRC}README.md`);
   const cards = [
     ["90 terms", "Economic and legal word list. A clip needs 2 economic terms, or 1 plus a law term or a number."],
     ["2026 test", "Split by recording; every 2026 session held out. 4,376 / 438 / 636 clips, 20 / 2 / 3 h. Leakage checks: zero."],
-    ["50 clips", "Team listening check of a sample. On its 25 test clips, fine-tuning still cuts WER 22.1% → 10.8%."],
+    ["249 clips", "Team listening review (224 test clips) after a 50-clip pilot. On the 25 pilot test clips, fine-tuning cuts WER 22.1% → 10.8%."],
   ];
   cards.forEach(([big, body], i) => {
     const y = 1.85 + i * 1.38;
@@ -153,7 +153,7 @@ ${SRC}README.md`);
   takeaway(s, "We kept 2% of the source: 5,450 clips of Turkish economic and legislative speech.", 6.1);
   footnote(s, "Then: fine-tune Whisper-small and XLS-R CTC on train; rerank 5-best lists with a train-only graph. Source: WorldSpeech tr_tr (CC BY-NC 4.0).", 6.55);
   s.addNotes(`TALK (30 seconds)
-TURAS is Turkish speech recognition for parliamentary debates on the economy and legislation, and we built the dataset ourselves. From about 240 thousand Turkish clips we kept 5,450. We removed speaker headers, duplicates and badly aligned text, and kept only clips matching our 90-term economic and legal word list. We split by recording, held out every 2026 session as the test set, and listened to a 50-clip sample to check the transcripts.
+TURAS is Turkish speech recognition for parliamentary debates on the economy and legislation, and we built the dataset ourselves. From about 240 thousand Turkish clips we kept 5,450. We removed speaker headers, duplicates and badly aligned text, and kept only clips matching our 90-term economic and legal word list. We split by recording, held out every 2026 session as the test set, and reviewed 249 clips by listening, after a 50-clip pilot, to check the transcripts.
 
 SOURCES
 ${SRC}docs/dataset.md
@@ -191,7 +191,7 @@ ${SRC}data/splits/turas-tr-econ-legis-v0.1/split_manifest.json`);
   takeaway(s, "Full fine-tuning gives the best system: 10.37% WER, down from 24.51% before tuning.");
   footnote(s, "RTF = compute time / audio time (RTX 5070 Ti, 3 repeats). Large-v3, Qwen: M6 scorer, outside the frozen protocol. GMM-HMMs: ~100% WER (not shown).");
   s.addNotes(`TALK (30 seconds)
-We fine-tune Whisper-small and XLS-R CTC on the training split. Full fine-tuning cuts Whisper's error from 24.5 to 10.4 percent, the best result; LoRA reaches 12.4, and XLS-R improves from 37.2 to 25.2. Zero-shot Whisper-large-v3 only ties our LoRA model at 12.3 while running three times slower; Qwen3-ASR reaches 16.1 and a Turkish transducer 30.
+We fine-tune Whisper-small and XLS-R CTC on the training split. Full fine-tuning cuts Whisper's error from 24.5 to 10.4 percent, the best result; LoRA reaches 12.4, and XLS-R improves from 37.2 to 25.1. Zero-shot Whisper-large-v3 only ties our LoRA model at 12.3 while running three times slower; Qwen3-ASR reaches 16.1 and a Turkish transducer 30.
 
 SOURCES
 ${SRC}results/final/m45_metrics.csv

@@ -74,3 +74,9 @@ def test_no_test_sentence_appears_in_train():
         return {" ".join(json.loads(line)["reference_text"].split()) for line in
                 path.read_text(encoding="utf-8").splitlines()}
     assert not texts("test") & texts("train")
+
+
+def test_published_test_references_are_the_scored_ones():
+    protocol = json.loads((ROOT / "configs/evaluation/m45_final_protocol.json").read_text(encoding="utf-8"))
+    path = CLEANED / f"{RELEASE}.references.test.jsonl"
+    assert hashlib.sha256(path.read_bytes()).hexdigest() == protocol["test_reference"]["payload_sha256"]

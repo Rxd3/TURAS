@@ -115,8 +115,8 @@ Normalized test WER/CER (%) on the 636 test clips.
 | ID | Family | Exact model and revision | WER | CER |
 | --- | --- | --- | ---: | ---: |
 | B1 | Attention encoder-decoder (Whisper) | `openai/whisper-small` @ `973afd24` | 24.51 | 10.08 |
-| B2 | Attention encoder-decoder (Whisper) | `openai/whisper-large-v3` @ `06f233fe` | 12.32 | 5.45 |
-| B3 | Speech LLM | `Qwen/Qwen3-ASR-1.7B-hf` @ `bcd2b5b7` (0.6B rejected on validation) | 16.09 | 5.60 |
+| B2 | Attention encoder-decoder (Whisper) | `openai/whisper-large-v3` @ `06f233fe` (M6 scorer, B1 parity pending) | 12.32 | 5.45 |
+| B3 | Speech LLM | `Qwen/Qwen3-ASR-1.7B-hf` @ `bcd2b5b7` (0.6B rejected on validation; M6 scorer, B1 parity pending) | 16.09 | 5.60 |
 | B4 | wav2vec 2.0 + CTC head, fine-tuned for Turkish by its publisher | `mpoyraz/wav2vec2-xls-r-300m-cv7-turkish` @ `708639f5` | 37.15 | 13.17 |
 | B5 | CTC encoder (BiLSTM-CTC), trained by us from scratch | [`configs/baselines/bilstm_ctc.json`](configs/baselines/bilstm_ctc.json) | 47.78 | 13.50 |
 | B6 | Classical HMM, single diagonal Gaussian per character state, trained by us | [`scripts/m3_run_gaussian_hmm.py`](scripts/m3_run_gaussian_hmm.py) | 100.00 | 88.76 |
@@ -127,7 +127,7 @@ B1 and B4 come from the frozen protocol ([metrics](results/final/m45_metrics.csv
 B2 and B3 are scored with the same library calls by
 [`scripts/m6_score_baselines.py`](scripts/m6_score_baselines.py), outside the frozen
 protocol ([B2/B3 results](results/m6/README.md)). B5 and B6:
-[M3 summary](results/final/m3_test_summary.json), with checkpoints, predictions,
+[M3 summary](results/final/m3_test_summary.json), scored by the `m3_*` scripts outside the frozen protocol with the shared evaluation library, with checkpoints, predictions,
 N-best lists, timing and training history in [`results/m3/`](results/m3/README.md).
 B7 and B8: [baseline completion report](results/final/BASELINE_COMPLETION_REPORT.md)
 ([CSV](results/final/baseline_completion_metrics.csv), [summary](results/final/baseline_completion_summary.json)).

@@ -33,5 +33,5 @@ the methods, ablations, timing and reproduction details for questions. The
 for reproducing the experiment with authorized artifacts.
 
 The updated English deck includes B5 and the supplied single-Gaussian HMM.
-Use [the roughly 200-word speaker script](TURAS-two-minute-speaker-script.txt) for the
+Use [the 238-word speaker script](TURAS-two-minute-speaker-script.txt) for the
 strict two-minute slot. The older full deck retains its historical M4/M5 scope.

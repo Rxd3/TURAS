@@ -52,7 +52,8 @@ Do not install heavyweight dependencies for initialization.
 - [ ] Presentation figures and contribution records point to reviewed evidence.
 
 For the frozen M4/M5 study, validation-only selection and the timing scope are met
-([final report](../results/final/M4_M5_FINAL_REPORT.md)). B5, B1 parity of the M6
+([final report](../results/final/M4_M5_FINAL_REPORT.md)). B5, B7 and B8 are complete
+([completion report](../results/final/BASELINE_COMPLETION_REPORT.md)). B1 parity of the M6
 B2/B3 scorer, non-author reproduction and release approval remain open
 ([status](../SUBMISSION.md#scope-and-remaining-work)).
 

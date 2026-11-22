@@ -29,6 +29,10 @@ confidence intervals include zero. The study uses a single training seed.
 
 ## Verify from a fresh clone
 
+**Clone size:** the repository holds the dataset (about 2.1 GB, mostly 5,450 FLAC
+clips, without Git LFS), so `git clone` downloads about 2.1 GB and CI checkout
+takes 2–3 minutes. `git clone --depth 1` still includes the data.
+
 The first command uses only the Python standard library. The full public offline
 suite uses Python 3.11+ and the lean development dependencies. Run from the
 repository root.
@@ -76,7 +80,7 @@ review or full-test parity for every system.
 | B5 (BiLSTM-CTC) | Epoch 22 selected after GPU continuation; full test WER 47.776%, CER 13.503%; checked predictions/N-best and 3-repeat timing |
 | Supplied single-Gaussian character HMM | Three EM passes; full test WER 99.995%, CER 88.760%; a weak classical baseline, not a conventional mixture-Gaussian phoneme HMM |
 | F1–F3 (Whisper LoRA, full Whisper and adapted CTC) and R1 (learned relational rescoring) | Complete working test results, adapted checkpoints, graph controls and timing |
-| B7 four-mixture MFCC GMM-HMM and B8 Seda Turkish RNN-T | Complete validation/test results and three-repeat timing: B8 29.96% WER / 12.81% CER, B7 99.97% / 64.55%. The earlier single-Gaussian HMM is kept separately. [Completion report](results/final/BASELINE_COMPLETION_REPORT.md) |
+| B7 four-mixture MFCC GMM-HMM and B8 Seda Turkish RNN-T | Aggregate validation/test results, edit counts, export hashes and three-repeat timing are committed (B8 29.96% WER / 12.81% CER, B7 99.97% / 64.55%); the per-utterance exports and the B7 model file are external and not verified in this repository. The earlier single-Gaussian HMM is kept separately. [Completion report](results/final/BASELINE_COMPLETION_REPORT.md) |
 
 M6's dated GPU smoke report covers a reference-free sample of 20 timed clips.
 The four beam systems passed N-best validation after shared-export deduplication.
@@ -96,4 +100,4 @@ recorded. Independent adjudication of 55 items and release approval are pending.
 
 See the [final review](docs/final_review_2026-11-22.md), [M3 results](results/final/m3_test_summary.json),
 and [final reproduction commands](docs/final_reproduction.md).
-The new local deliverables still require PR publication and genuine non-author review.
+PR #26 is open, awaiting non-author review.

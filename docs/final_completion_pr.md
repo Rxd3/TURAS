@@ -4,9 +4,8 @@ Branch: `feat/final-baseline-completion`
 
 Proposed title: `feat(baselines): complete follow-up evaluation and reproducible submission`
 
-This draft remains a work in progress until all four follow-up score/timing
-reports and the refreshed delivery pass their checks. No remote PR, push,
-independent approval or merge is claimed.
+PR #26 is open, awaiting non-author review. The four follow-up results are in
+`results/final/BASELINE_COMPLETION_REPORT.md`.
 
 ## Problem and resulting behavior
 
@@ -42,7 +41,8 @@ editable English slides for a two-minute slot.
 
 ## Evidence and validation
 
-- `python -X utf8 -m pytest -q`: **1,200 passed, 19 skipped**, four upstream
+- `python -X utf8 -m pytest -q`: at the current head **1,256 passed, 43 skipped** in a
+  lean environment without torch (earlier record: 1,200 passed, 19 skipped), four upstream
   deprecation warnings, 51 passing subtests. Optional integration skips are not
   claims of full benchmark execution.
 - `python scripts/verify_submission.py`: original 56 critical code pins,

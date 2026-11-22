@@ -50,6 +50,6 @@ Ownership/tasks/review routing: [TEAM_TASKS.md](../TEAM_TASKS.md).
 
 ## Remaining work
 
-* B5 (BiLSTM-CTC) full test-set run remains unexecuted and is marked accordingly in `README.md`.
+* B5 (BiLSTM-CTC) is complete (47.776% normalized test WER, `results/final/m3_test_summary.json`); B7 and B8 results are in `results/final/BASELINE_COMPLETION_REPORT.md`.
 * B2 and B3 are scored outside the frozen protocol; B1 parity of the M6 scorer and paired intervals against F1/F2 are pending the private M4/M5 handoff bundle.
-* Public release of fine-tuned model weights or per-utterance test hypotheses remains pending team/owner decision under WorldSpeech CC BY-NC 4.0 terms.
+* Data publication decided under the course rule (D44 in `docs/owner_decisions.md`): audio, references and the removal log are in the repository under CC BY-NC 4.0. Fine-tuned M4/M5 weights remain external.

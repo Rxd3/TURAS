@@ -82,13 +82,13 @@ The saved aggregate checks require no ML dependencies:
 
 ```powershell
 python scripts/verify_submission.py
-python scripts/verify_completion_submission.py
 ```
 
-The first checks the original 20-condition study. The second checks the four
-follow-up systems, validation-only B3 choice, timing coverage and fresh-restore
-evidence. Neither substitutes for independently downloading and executing the
-actual artifacts.
+It checks the original 20-condition study. The follow-up results are recorded in
+`results/final/baseline_completion_summary.json`. `scripts/verify_completion_submission.py`
+needs `results/final/completion_test_summary.json`, which is not in the repository;
+without it the script stops with a "pending" message and exit code 1. Neither
+substitutes for independently downloading and executing the actual artifacts.
 
 ## Retrain the new GMM-HMM
 

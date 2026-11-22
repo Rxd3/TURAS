@@ -52,7 +52,7 @@ traversal/link entries and refuses different existing file bytes. It restores:
 | Reference-free audio/indexes | `data/private/turas-tr-econ-legis-v0.1/inference/turas-tr-econ-legis-v0.1/` |
 | Training references/tables | `data/private/turas-tr-econ-legis-v0.1/train/turas-tr-econ-legis-v0.1/` |
 | Working validation references | `data/private/turas-tr-econ-legis-v0.1/validation-recovered-minutes-v1/references.validation.jsonl` |
-| Working test references, evaluator only | `data/private/turas-tr-econ-legis-v0.1/evaluator-final/references.test.jsonl` |
+| Working test references (final scoring only; committed in the repository, see D44) | `data/cleaned/turas-tr-econ-legis-v0.1/turas-tr-econ-legis-v0.1.references.test.jsonl`, copied to `data/private/turas-tr-econ-legis-v0.1/evaluator-final/references.test.jsonl` for the restore commands |
 | M3 predictions/reports | `artifacts/m3-final-2026-11-22/` |
 | B5 selected model/training evidence | `artifacts/b5-gpu-resume-2026-11-22/` |
 | M4/M5 models/runs | Original TAR's `artifacts/owner-m45/...` paths |
@@ -191,12 +191,14 @@ and output hashes.
 
 The refreshed delivery uses restore roles `b2`, `b3`, `transducer` and `gmm`
 for folders 10 through 13. These roles restore exact paths under
-`artifacts/completion-2026-11-22/`. Its preparer requires completed, checked
-accuracy/timing outputs before creating the packages. The earlier delivery is
+`artifacts/completion-2026-11-22/`. The package preparer is not in this
+repository; it required completed, checked accuracy/timing outputs before
+creating the packages. The earlier delivery is
 preserved as a separate snapshot.
 
 Use [follow-up replay commands](completion_replay_commands.md) to install the
 neural or CPU transducer environment, download pinned upstream B2/Qwen weights,
-and rerun into a fresh output directory. The delivered Seda and four-mixture HMM
-packages include their model weights. Their inference commands read no gold
+and rerun into a fresh output directory. The Seda and four-mixture HMM packages
+are described as including their model weights; they are external deliveries
+and are not verified in this repository. Their inference commands read no gold
 references; authorized offline scoring uses `reproduce_saved_scores.py`.

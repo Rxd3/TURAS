@@ -8,9 +8,15 @@ derived from [`disco-eth/WorldSpeech`](https://huggingface.co/datasets/disco-eth
 steps and counts are in the [main README](../../../README.md#dataset) and the
 [dataset card](../../../docs/dataset.md).
 
-License: CC BY-NC 4.0 (WorldSpeech), source recordings from the Turkish Grand
-National Assembly (<https://www.tbmm.gov.tr/>). Non-commercial use with
-attribution only.
+**Licence of this data (separate from the MIT licence of the code).** This
+folder redistributes audio, text and metadata derived from WorldSpeech
+(`disco-eth/WorldSpeech`, config `tr_tr`; WorldSpeech, arXiv:2605.09167), licensed
+under [CC BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/). The
+recordings come from the Turkish Grand National Assembly (TBMM,
+<https://www.tbmm.gov.tr/>). Changes made by TURAS: selection and filtering,
+conversion to 16 kHz mono FLAC, 13 transcript corrections after listening, and
+added split and relational fields. Use is non-commercial only, with attribution
+to WorldSpeech and TBMM. The [NOTICE](../../../NOTICE) applies.
 
 | Path | Contents |
 | --- | --- |
@@ -18,7 +24,7 @@ attribution only.
 | `turas-tr-econ-legis-v0.1.inference.{train,validation,test}.jsonl` | Model inputs in split-file order: IDs, audio path and hash, duration; no transcript text |
 | `turas-tr-econ-legis-v0.1.references.train.jsonl` | 4,376 train references (official TBMM minutes) with source, timing, session, verification and topic fields |
 | `turas-tr-econ-legis-v0.1.references.validation.jsonl` | 438 validation references: the working variant used for every reported validation number (`owner-recovered-validation-minutes-v1`, SHA-256 `d0c8519c…`, described in `references.validation.VARIANT.json`). All are the raw minutes, unreviewed |
-| `turas-tr-econ-legis-v0.1.references.test.jsonl` | 636 test references, same fields. Use for final scoring only |
+| `turas-tr-econ-legis-v0.1.references.test.jsonl` | 636 test references, same fields. Use for final scoring only. SHA-256 `31e372f0e35f504de59b49f1e0e1f3ed6fcc2772138c591a2cf2b054a4e7ef3f`, byte-identical to the scored test reference payload in `configs/evaluation/m45_final_protocol.json` (`test_reference.payload_sha256`) |
 | `relational/train/`, `relational/validation/`, `relational/test/` | Relational tables extracted from the references (utterances, quantities, relationships, provenance). Only `train/` may enter the RDL training graph |
 | `exclusion_ledger.jsonl.gz` | Removal log: one line for each of the 239,654 upstream rows with its TURAS split or the first reason it was removed, plus matched domain terms and issue codes. Rebuilt from the [raw data](../../raw/worldspeech-tr_tr-b76b8539/README.md) by `scripts/m1_export_raw.py`; its SHA-256 (uncompressed) equals the frozen `exclusion_ledger_sha256` |
 | `SHA256SUMS` | SHA-256 of every file in this folder (`sha256sum -c SHA256SUMS`) |

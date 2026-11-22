@@ -268,12 +268,18 @@ def run_whisper_rank1_comparison(
     beam_width: int = 5,
     max_new_tokens: int = 440,
     prompt_tokens: list[str] | None = None,
+    language: str | None = None,
+    task: str | None = None,
 ) -> Rank1ComparisonResult:
     """Run both decoding paths and compare rank 1 against single-result generation.
 
     Uses beam_width as requested_n for the proposed helper at b6afa13 because
     the helper ties requested_n and num_beams together.
     """
+    if language is not None and language != "tr":
+        raise ValueError(f"Whisper baseline decoding requires language='tr', got {language!r}")
+    if task is not None and task != "transcribe":
+        raise ValueError(f"Whisper baseline decoding requires task='transcribe', got {task!r}")
     prompt_toks = prompt_tokens or DEFAULT_WHISPER_PROMPT_TOKENS
     prompt_ids = processor.tokenizer.convert_tokens_to_ids(prompt_toks)
     eos_id = getattr(processor.tokenizer, "eos_token_id", None)

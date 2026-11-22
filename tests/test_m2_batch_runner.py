@@ -570,8 +570,16 @@ class BaselineBatchRunnerTests(unittest.TestCase):
         def mock_audio_loader(p: Path) -> np.ndarray:
             return dummy_audio
 
+        call_count = 0
+
         def mock_nbest_fn(*args, **kwargs):
-            return [{"text": "dummy text", "token_ids": [10, 20]}], {}
+            nonlocal call_count
+            call_count += 1
+            if call_count == 1:
+                # clip-01: rank-1 matches single-result generation exactly
+                return [{"rank": 1, "text": "[101] [102]", "token_ids": [101, 102, 50257]}], {}
+            # clip-02: rank-1 produces intentional mismatch
+            return [{"rank": 1, "text": "farkli metin", "token_ids": [999]}], {}
 
         outcomes = run_real_audio_smoke_check(
             config_path=cfg_file,
@@ -586,8 +594,25 @@ class BaselineBatchRunnerTests(unittest.TestCase):
         self.assertEqual(len(outcomes), 2)
         self.assertEqual(outcomes[0].clip_id, "clip-01")
         self.assertEqual(outcomes[1].clip_id, "clip-02")
+
+        # clip-01 must match verbatim without error
+        self.assertEqual(outcomes[0].result.status, "match")
+        self.assertTrue(outcomes[0].result.matched)
+        self.assertTrue(outcomes[0].result.text_exact_match)
+        self.assertTrue(outcomes[0].result.tokens_exact_match)
+        self.assertIsNone(outcomes[0].result.error)
+
+        # clip-02 must be an expected mismatch without error
+        self.assertEqual(outcomes[1].result.status, "mismatch")
+        self.assertFalse(outcomes[1].result.matched)
+        self.assertFalse(outcomes[1].result.text_exact_match)
+        self.assertFalse(outcomes[1].result.tokens_exact_match)
+        self.assertIsNone(outcomes[1].result.error)
+
+        # Neither outcome may ever be 'error'
         for outcome in outcomes:
-            self.assertIn(outcome.result.status, ("match", "mismatch", "error"))
+            self.assertIn(outcome.result.status, ("match", "mismatch"))
+            self.assertNotEqual(outcome.result.status, "error")
 
 
 if __name__ == "__main__":

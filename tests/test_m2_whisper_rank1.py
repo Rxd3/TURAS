@@ -165,6 +165,23 @@ class DeterministicWhisperRank1ComparisonTests(unittest.TestCase):
         cleaned_no = strip_known_prompt(tokens_no_prompt, prompt_token_ids=prompt)
         self.assertEqual(cleaned_no, [99] + prompt)
 
+    def test_run_whisper_rank1_comparison_kwarg_validation(self):
+        """run_whisper_rank1_comparison accepts language and task kwargs and validates them."""
+        # Test invalid language
+        with self.assertRaises(ValueError) as ctx:
+            run_whisper_rank1_comparison(
+                None, None, None, nbest_fn=lambda *a, **k: [], language="en"
+            )
+        self.assertIn("language='tr'", str(ctx.exception))
+
+        # Test invalid task
+        with self.assertRaises(ValueError) as ctx:
+            run_whisper_rank1_comparison(
+                None, None, None, nbest_fn=lambda *a, **k: [], language="tr", task="translate"
+            )
+        self.assertIn("task='transcribe'", str(ctx.exception))
+
+
 
 class RealFrameworkSyntheticRank1Check(unittest.TestCase):
     """Exercise rank-1 comparison on a synthetic Whisper model using genuine packages."""
@@ -252,7 +269,7 @@ class RealFrameworkSyntheticRank1Check(unittest.TestCase):
         processor = LocalProcessor()
         input_features = torch.randn(1, 80, 3000)
 
-        # Run comparison with beam_width=2
+        # Run comparison with beam_width=2, language="tr", task="transcribe"
         result = run_whisper_rank1_comparison(
             model,
             processor,
@@ -260,6 +277,8 @@ class RealFrameworkSyntheticRank1Check(unittest.TestCase):
             nbest_fn=whisper_nbest,
             beam_width=2,
             max_new_tokens=10,
+            language="tr",
+            task="transcribe",
         )
 
         # Check that the comparison returned a valid result object without crashing

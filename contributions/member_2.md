@@ -9,9 +9,23 @@ Ownership/tasks/review routing: [TEAM_TASKS.md](../TEAM_TASKS.md).
 > **Canonical Individual Contribution Record:**
 > The primary named record for university submission is [`OMAR_ALZYOD_2409015412_Devinci101.md`](OMAR_ALZYOD_2409015412_Devinci101.md). This file (`member_2.md`) is maintained for backward compatibility with repository documentation and historical links.
 
-**Status: PR #6 approved and merged to `main` (`cbdc07c`); baseline adapters (B1, B2, B3), smoke runner, batch exporter workflow, and all review fixes merged and verified offline (75 tests passing).** Checkpoint 2 baseline adapters (B1, B2, B3), smoke runners, batch exporters, and decoding contracts implemented, reviewed by Member 6, and merged; no pretrained models executed on dataset splits.
+**Status: PR #6 merged (`cbdc07c`), PR #20 merged (`1dade5b`); Baseline B2 (Whisper-large-v3) validation (438/438 OK) and D43 working-test (636/636 OK) reference-free batch inference complete, verified, packaged (`turas-b2-whisper-large-v3-m2-handoff.zip`), and handed off to Member 6; smoke CLI keyword argument mismatch fixed with regression test (76 tests passing). B1 baseline integrated via shared M4/M6 benchmark; B3 Qwen3-ASR candidates remain unselected pending Decision D05 resolution.**
 
 ## Actual contributions
+
+### 2026-11-22: Baseline B2 (Whisper-large-v3) validation and D43 working-test batch execution, portable handoff package creation, and smoke CLI bug fix
+
+- **Scope:** Execution and verification of Baseline B2 (`openai/whisper-large-v3`) reference-free batch inference on validation (438 clips) and D43-authorized working-test (636 clips) sets, generation and cryptographic verification of portable handoff bundle `turas-b2-whisper-large-v3-m2-handoff.zip`, fix of keyword argument mismatch in `scripts/smoke_check_whisper_rank1.py` / `src/turkish_asr_rdl/baselines/whisper_rank1.py`, and regression test additions (76 tests passing).
+- **Owned paths:** `src/turkish_asr_rdl/baselines/whisper_rank1.py`, `scripts/smoke_check_whisper_rank1.py`, `tests/test_m2_whisper_rank1.py`, `tests/test_m2_batch_runner.py`, `experiments/m2-baseline-notes.md`, `contributions/member_2.md`, `contributions/OMAR_ALZYOD_2409015412_Devinci101.md`.
+- **Completed B2 Runs & Verification:**
+  1. *Validation Split (`run-baseline-whisper-large-v3-20261122-082829`):* 438/438 OK (0 empty, 0 error). Wall time: 2,827.74 s (~6.46 s/utterance). Exported `predictions.jsonl` (SHA-256: `2a228d4d4d79a133ad29d5fec7cc541b759a45e9e68b8ae2f1f49c496f5d9496`, 507,758 bytes), `nbest.jsonl` (SHA-256: `0628c8afbbd03c5708fafadbadb21e4685baf5c9bc77ff92fc881d5524f7e555`, 3,962,370 bytes), and `manifest.json` (SHA-256: `feaeb4abd0f35daef319544dec10de25b04c73d8803e286d8ccc76e59b6c7e02`, 4,455 bytes). Schema contracts verified with `validate_predictions` and `validate_nbest` (0 errors).
+  2. *Working-Test Split (`run-baseline-whisper-large-v3-20261122-094140`):* Authorized under Decision D43 working study; 636/636 OK (0 empty, 0 error). Wall time: 4,299.93 s (~6.76 s/utterance). Exported `predictions.jsonl` (SHA-256: `a90268a9a7f0af2f42d461b7e0b239e830f8f2a1577ec304398c63e126fd38b4`, 738,450 bytes), `nbest.jsonl` (SHA-256: `a9d921796b0c78dc88e11e4181773126aaa87e4816b2d766f48c6872b9f01166`, 5,834,129 bytes), and `manifest.json` (SHA-256: `ea76fe1cbb3142a8a5bf3a0419700eed8edc535e8cc8e73588df9d5c4a25fa9f`, 4,439 bytes). Schema contracts verified with `validate_predictions` and `validate_nbest` (0 errors).
+  3. *Provenance & Hardware:* Local checkpoint `D:\isntinye\_Istenye uni_\TERM 7\Natural Language Processing\turas_models\whisper-large-v3` (`model.safetensors`, SHA-256 `a8e94b85976e5864ba3e9525c7e6c83b2a1eca42d4b797a0c7c24d778e40fd95`, 3,087,130,976 bytes). Inference executed on NVIDIA GeForce RTX 3060 (12 GB VRAM, compute capability 8.6) in `bfloat16`, peak allocated VRAM 4.236 GiB, peak reserved 4.631 GiB.
+  4. *Portable Handoff Bundle:* Assembled portable, reference-free ZIP `turas-b2-whisper-large-v3-m2-handoff.zip` (942,095 bytes, SHA-256: `fd8471e9084a369684f87cccd92e2d0fde1550a725e5dc0f6f854669ffa7e41b`) containing both sets of predictions, N-best lists, run manifests, README, and SHA256SUMS. Strictly sanitized to exclude audio, gold references, weights, and credentials.
+- **Smoke CLI Keyword Argument Fix:**
+  - Diagnosed signature mismatch where `scripts/smoke_check_whisper_rank1.py` passed `language="tr"` and `task="transcribe"` to `run_whisper_rank1_comparison()` in `src/turkish_asr_rdl/baselines/whisper_rank1.py`.
+  - Added optional `language: str | None = None` and `task: str | None = None` kwargs with validation to `run_whisper_rank1_comparison()`, added kwarg validation regression test in `tests/test_m2_whisper_rank1.py`, and updated `tests/test_m2_batch_runner.py`.
+  - All 76 Member 2 unit and integration tests pass cleanly.
 
 ### 2026-11-19: Response to Member 6 round-two review on PR #6 (commit 54ec128) and CI test fixes (PR #6 merged as cbdc07c)
 
@@ -110,25 +124,21 @@ Ownership/tasks/review routing: [TEAM_TASKS.md](../TEAM_TASKS.md).
 
 ## Experiments and artifacts
 
-- No pretrained baseline inference runs or benchmark evaluations completed.
-- Pinned configuration audit and decoding protocols documented in `experiments/m2-baseline-notes.md`.
-- Reusable baseline adapters implemented for B1, B2, and B3 in `src/turkish_asr_rdl/baselines/`.
-- Reusable rank-1 smoke runner implemented in `scripts/smoke_check_whisper_rank1.py`.
-- Reusable baseline batch inference and shared export workflow implemented in `src/turkish_asr_rdl/baselines/runner.py` and `scripts/run_baseline_batch.py`.
-- Full integration and unit test coverage in `tests/test_m2_*.py` (75 tests).
+- Baseline B2 (`openai/whisper-large-v3`) reference-free batch inference complete for both validation (438/438 OK, `run-baseline-whisper-large-v3-20261122-082829`) and D43-authorized working-test (636/636 OK, `run-baseline-whisper-large-v3-20261122-094140`).
+- Exported B2 artifacts verified and contract-compliant: `predictions.jsonl`, `nbest.jsonl`, and `manifest.json` for both splits match Schema 0.1 (`validate_predictions` and `validate_nbest` pass with 0 errors).
+- Portable B2 handoff package `turas-b2-whisper-large-v3-m2-handoff.zip` (942,095 bytes, SHA-256 `fd8471e9084a369684f87cccd92e2d0fde1550a725e5dc0f6f854669ffa7e41b`) created outside Git and delivered to Member 6.
+- Baseline B1 (`openai/whisper-small`): Unmodified baseline control evaluated within the frozen M4/M5 benchmark block (`results/final/m45_metrics.csv`, `results/final/M4_M5_FINAL_REPORT.md`) by Members 4 & 6 using the matched protocol (`configs/evaluation/m45_final_protocol.json`); attributed accordingly without duplicate execution.
+- Baseline B3: Qwen3-ASR adapter implemented; both candidates (1.7B and 0.6B) unselected pending Decision D05 resolution.
+- Full unit and integration test coverage in `tests/test_m2_*.py` (76 tests passing).
 
 ## Reviews and handoffs
 
-- PR #6 updated with Whisper and Qwen adapters, baseline runners, exporter workflows, and Member 6 round-two review fixes. Approved by Member 6 (`@afel6`) and merged into `main` at commit `cbdc07cf869c03dd2561554eae0734c3884d7b4d` (`cbdc07c`) on 2026-11-20T21:19:03Z.
-- Reusable runners and exporter workflows tested locally with temporary fixtures, synthetic inputs, and mock loaders; ready for execution as soon as official dataset manifests and approved checkpoints arrive.
-- **Handoff Sequence:** The first real run is B1/B2 rank-1 smoke check on approved local clips and verified weights, followed by validation decoding and parameter freeze (B1 and B2 aligned to beam 5, requested_n 5 following M4's PR #5 protocol; B3 beam search selection deferred to validation), followed by official test export using the frozen setting. Both Qwen candidates remain strictly unselected.
+- PR #6 merged into `main` (`cbdc07c`); PR #20 merged into `main` (`1dade5b`).
+- Portable B2 handoff package `turas-b2-whisper-large-v3-m2-handoff.zip` delivered to Member 6 for independent reference-anchored WER/CER evaluation and standardized 3-repeat RTF benchmarking on the RTX 5070 Ti platform.
+- B1 baseline results verified in `results/final/` and acknowledged as satisfying the shared baseline requirement.
+- B3 candidate comparison and eligibility analysis prepared for Member 6 review to close Decision D05.
 
 ## Remaining work & Unresolved prerequisites
 
-Executing actual pretrained baseline inference runs and handing off official prediction bundles to Member 6 is blocked by the following unresolved prerequisites:
-1. **Approval of PR #6 Review (RESOLVED):** PR #6 was approved by Member 6 (`@afel6`) and merged into `main` at commit `cbdc07c` (merge commit `cbdc07cf869c03dd2561554eae0734c3884d7b4d`) with all 75 tests passing.
-2. **Official Dataset Release & Split Manifests (Owners: Member 1 & Member 6):** Release of official `dataset_release` name and `split_manifest_sha256` for the test and validation splits to bind into baseline configs and input manifests.
-3. **Local Weight Checkpoint Downloads & SHA-256 Verification (Owner: Member 2 / Runner Operator):** Local download of safetensors files to destination outside repository and verification of the 64-character lowercase hex SHA-256 artifact hashes and pinned LFS OIDs.
-4. **Validation Beam / N Confirmation (Owners: Member 2 & Member 4):** Validation run confirmation of the matched beam 5 / requested_n 5 protocol on validation set before freezing settings for official test runs; selection of B3 beam width.
-5. **B3 Checkpoint Eligibility Verification (Owners: Member 6 & Member 2):** Resolve timeline and pretraining contamination audit for `-hf` checkpoints (confirming whether June 2026 weights are tensor-identical to January 28, 2026 release or obtaining conversion statement) before official B3 execution. Both candidates remain strictly unselected.
-6. **B3 Scoring Convention Status (RESOLVED):** Transition score convention `qwen3-asr-generation-logprob-sum-v1` (computed via generation step transition log-prob scores through EOS) formally approved by Member 6 for B3. Numerical equivalence and bf16 precision drift documented.
+1. **B2 Official Evaluation & Timing (Owner: Member 6):** Independent evaluation of B2 predictions against released, adjudicated references (WER/CER, canonical terminology) and standardized 3-repeat timing on RTX 5070 Ti under `run_timed`.
+2. **Decision D05 Closure & Candidate Selection for B3 (Owners: Member 6 & Member 2):** Formal agreement on `Qwen/Qwen3-ASR-1.7B-hf` (Candidate 1) pretraining timeline disclosure / acceptance under declared limitations, followed by download authorization, validation run, and working-test inference.

@@ -1,8 +1,16 @@
 # Member 4 — Whisper Fine-Tuning
 
-Name: unassigned. GitHub username: unassigned.
+Name: Mohamed Kamaleldin Eliwa. Student ID: `2309015740`. GitHub username: [`mokamaleldin`](https://github.com/mokamaleldin).
+Role: Member 4 — Whisper Fine-Tuning.
 Branch convention: `feat/m4-whisper-finetuning` (focused topic suffixes allowed).
 Ownership/tasks/review routing: [TEAM_TASKS.md](../TEAM_TASKS.md).
+
+> [!NOTE]
+> **Canonical individual contribution record:** the named record for university
+> submission is [`Mohamed_Kamaleldin_Eliwa_2309015740_mokamaleldin.md`](Mohamed_Kamaleldin_Eliwa_2309015740_mokamaleldin.md).
+> It separates Member 4's own identity/verification commits from the earlier
+> owner-assisted M4 workstream deliverables. This file (`member_4.md`) is kept
+> unchanged below for backward compatibility with historical links.
 
 **Status (2026-11-19): owner-assisted implementation, seed-17 corpus training and
 working validation, frozen final test/timing and private handoff completed;

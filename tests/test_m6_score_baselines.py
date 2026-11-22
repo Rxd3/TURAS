@@ -248,11 +248,15 @@ def test_error_rows_reported(mod, tmp_path, capsys):
         "requested_n": REQUESTED_N, "actual_n_distribution": {"0": 1, "2": 3}, "hypotheses": 6}
 
 
-def test_jiwer_disagreement_refuses(mod, tmp_path, capsys, monkeypatch):
+@pytest.mark.parametrize("func, field", [("process_words", "wer"), ("process_characters", "cer")])
+def test_jiwer_disagreement_refuses(mod, tmp_path, capsys, monkeypatch, func, field):
     case = build(tmp_path)
-    real = mod.jiwer.process_words
-    monkeypatch.setattr(mod.jiwer, "process_words",
-                        lambda *a, **k: SimpleNamespace(wer=real(*a, **k).wer + 0.01))
+    real = getattr(mod.jiwer, func)
+
+    def shifted(*args, **kwargs):  # within 1e-6 or math.isclose, beyond the scorer's 1e-12
+        return SimpleNamespace(**{field: getattr(real(*args, **kwargs), field) + 1e-10})
+
+    monkeypatch.setattr(mod.jiwer, func, shifted)
     refused(mod, case.argv(), capsys, case, "cross-check")
 
 
@@ -307,6 +311,19 @@ def test_paired_interval_matches_group_bootstrap(mod, tmp_path, capsys):
     assert pair["paired_recording_bootstrap_95_interval_percentage_points"] == pytest.approx(expected)
     boot = summary(case)["bootstrap"]
     assert (boot["seed"], boot["replicates"], boot["groups"]) == (SEED, REPLICATES, 2)
+
+
+def test_reversed_pair_mirrors_interval(mod, tmp_path, capsys):
+    # One group per utterance: with two groups every draw gives the same interval.
+    refs = ref_rows(refs=[(uid, uid, text, status) for uid, _, text, status in REFS])
+    case = build(tmp_path, refs=refs, runs={"B2": ONE_SUB, "B3": {**PERFECT, "utt_01": "kuşkonmaz"}})
+    assert run(mod, case.argv("--pair", "B2=B3", "--pair", "B3=B2"), capsys)[0] == 0
+    first, second = summary(case)["pairs"]
+    assert (second["system"], second["control"]) == ("B3", "B2")
+    assert second["normalized_wer_difference_percentage_points"] == pytest.approx(
+        -first["normalized_wer_difference_percentage_points"])
+    lo, hi = first["paired_recording_bootstrap_95_interval_percentage_points"]
+    assert second["paired_recording_bootstrap_95_interval_percentage_points"] == pytest.approx([-hi, -lo])
 
 
 def test_agreement_counts(mod, tmp_path, capsys):
@@ -404,11 +421,12 @@ def test_refuses_references_with_bom(mod, tmp_path, capsys):
     refused(mod, case.argv(), capsys, case, "references.jsonl")
 
 
-def test_refuses_stale_manifest_output(mod, tmp_path, capsys):
+@pytest.mark.parametrize("name", ["predictions.jsonl", "nbest.jsonl"])
+def test_refuses_stale_manifest_output(mod, tmp_path, capsys, name):
     case = build(tmp_path)
-    path = case.runs["B2"] / "predictions.jsonl"
+    path = case.runs["B2"] / name
     path.write_bytes(path.read_bytes().replace("kuşkonmaz".encode(), "çekirge".encode()))
-    refused(mod, case.argv(), capsys, case, "changed after its manifest")
+    refused(mod, case.argv(), capsys, case, f"{name} changed after its manifest")
 
 
 def test_refuses_missing_id_in_run(mod, tmp_path, capsys):
@@ -452,6 +470,7 @@ def test_refuses_missing_manifest(mod, tmp_path, capsys):
 
 def test_refuses_existing_output(mod, tmp_path, capsys):
     case = build(tmp_path)
+    (case.runs["B2"] / "manifest.json").unlink()  # scoring would fail on this first
     case.output.mkdir()
     code, _, err = run(mod, case.argv(), capsys)
     assert code == 1 and "already exists" in err and err.count("\n") == 1

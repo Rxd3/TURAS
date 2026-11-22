@@ -2,8 +2,8 @@
 
 **Status: initialized 2026-11-17; M4/M5 implementation and working validation
 completed by 2026-11-19, including the frozen final working benchmark and verified
-private handoff; independent reviews remain pending.** Names and GitHub usernames are unassigned. Members add their
-own identities to contribution records after assignment; reference-repository
+private handoff; independent reviews remain pending.** Member identities and contribution records are listed in [contributions/README.md](contributions/README.md). Members maintain their
+own identities in contribution records; reference-repository
 identities must not be reused by assumption. A checked task must cite a reviewed
 PR, commit, or real artifact/run evidence. Specifications alone do not complete
 training, data curation, model evaluation, integration or reproducibility work.
@@ -191,6 +191,8 @@ and propose the BiLSTM-CTC train-only baseline protocol and resource budget.
 
 ## Member 4 — Whisper Fine-Tuning
 
+**Assigned member:** Mohamed Kamaleldin Eliwa (`2309015740`, [`@mokamaleldin`](https://github.com/mokamaleldin)).
+
 **Branch:** `feat/m4-whisper-finetuning`.
 
 **File ownership:** package `models/whisper*`, `training/whisper*`,
@@ -230,7 +232,7 @@ M5 candidate/score consumption; M6 evaluation/timing/provenance; hardware access
 
 **Handoff/review:** protocol/config PR reviewed by M2+M6; N-best contract/export PR
 by M5+M6; trained-artifact report by M2+M6. Record actual evidence and hardware
-blocks in [member_4.md](contributions/member_4.md).
+blocks in [Mohamed_Kamaleldin_Eliwa_2309015740_mokamaleldin.md](contributions/Mohamed_Kamaleldin_Eliwa_2309015740_mokamaleldin.md).
 
 **Specific next task:** have the required non-author reviewers inspect the
 [completed final report](results/final/M4_M5_FINAL_REPORT.md), reproduce the

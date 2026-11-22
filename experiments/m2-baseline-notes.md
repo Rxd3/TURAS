@@ -1,6 +1,6 @@
 # Member 2: Seq2Seq and Speech-LLM Baselines (B1, B2, B3)
 
-Status: Independent reproduction of Baseline B2 (Whisper-large-v3) validation (438/438 OK) and D43 working-test (636/636 OK) reference-free batch inference complete and verified. Portable handoff package turas-b2-whisper-large-v3-m2-handoff.zip generated and sent to Member 6 (scored by M6 in results/m6 as B2-whisper-large-v3-m2repro alongside M6's official RTX 5070 Ti B2 experiment; see PR #23). Unmodified B1 baseline integrated via owner-assisted M4/M5 benchmark (PR #5, 62fadf5; recomputed and reviewed by M6 in results/final/m45_metrics.csv). B3 Qwen3-ASR-1.7B-hf selected on validation by M6 with weights verified identical to January 2026 original (PR #23). Updated 2026-11-22.
+Status: Independent reproduction of Baseline B2 (Whisper-large-v3) validation (438/438 OK) and D43 working-test (636/636 OK) reference-free batch inference complete and verified. Portable handoff package turas-b2-whisper-large-v3-m2-handoff.zip generated and sent to Member 6; scored by M6 in PR #24 as results/m6/test/B2-whisper-large-v3-m2repro.json at 12.3922% normalized test WER alongside M6's official RTX 5070 Ti B2 experiment at 12.3192% normalized test WER, delta ~+0.07 percentage points. Unmodified B1 baseline integrated via owner-assisted M4/M5 benchmark (PR #5, 62fadf5; recomputed and reviewed by M6 in results/final/m45_metrics.csv). B3 Qwen3-ASR-1.7B-hf selected on validation by M6 with weights verified identical to January 2026 original (PR #24). Updated 2026-11-22.
 
 ## Track Scope and Checkpoint Audit
 
@@ -399,3 +399,26 @@ Breakdown by test module:
 ### E. Fix of Smoke CLI Signature Defect
 - **Issue:** `scripts/smoke_check_whisper_rank1.py` passed `language="tr"` and `task="transcribe"` into `run_whisper_rank1_comparison()`, raising `TypeError` because the function definition did not accept these kwargs.
 - **Resolution:** Added `language: str | None = None` and `task: str | None = None` to `run_whisper_rank1_comparison()` in `src/turkish_asr_rdl/baselines/whisper_rank1.py` with validation against prompt tokens enforcing `"tr"` and `"transcribe"`. Added unit regression test in `tests/test_m2_whisper_rank1.py` and updated batch runner test. All 76 tests pass.
+
+### F. Verified Scoring Results from Member 6 (PR #24)
+Member 6 scored the test predictions using the frozen evaluation protocol (`configs/evaluation/m45_final_protocol.json`, test reference SHA-256 `31e372f0e35f504de59b49f1e0e1f3ed6fcc2772138c591a2cf2b054a4e7ef3f`).
+
+- **M2 Independent Reproduction (`results/m6/test/B2-whisper-large-v3-m2repro.json`):**
+  - Normalized WER (`tr-normalized-v1`): **12.3922%** (substitutions: 1,575, deletions: 426, insertions: 543, hits: 18,528)
+  - Normalized CER: **5.4391%**, WAcc: **87.6078%**
+  - Raw WER (`raw-v1`): **24.6039%**, Raw CER: **8.0135%**, WAcc: **75.3961%**
+  - Utterances: 636, Error rows: 0, Reference words: 20,529
+  - Independent jiwer cross-check: passed both views
+- **M6 Official Benchmark (`results/m6/test/B2-whisper-large-v3.json`, RTX 5070 Ti):**
+  - Normalized WER (`tr-normalized-v1`): **12.3192%** (substitutions: 1,567, deletions: 422, insertions: 540, hits: 18,540)
+  - Normalized CER: **5.4473%**, WAcc: **87.6808%**
+  - Raw WER (`raw-v1`): **24.5443%**, Raw CER: **8.0222%**, WAcc: **75.4557%**
+  - Utterances: 636, Error rows: 0, Reference words: 20,529
+  - Independent jiwer cross-check: passed both views
+- **Reproducibility Analysis:**
+  - Delta: **+0.0730 percentage points** (+0.07 pp) normalized WER between RTX 3060 reproduction and RTX 5070 Ti benchmark run.
+  - S/D/I breakdown confirms near-identical alignment counts: substitutions differ by +8, deletions by +4, insertions by +3.
+  - Manifest and schema audit: M6 confirmed identical model/processor/decoding parameters and SHA-256 matches in `results/m6/provenance/m2_handoff_check.json`.
+- **Attribution & Separation of Responsibilities:**
+  - Inference: Executed by Member 2 on RTX 3060 under reference-free conditions.
+  - Scoring: Executed by Member 6 against private ground-truth references under the frozen evaluation protocol.

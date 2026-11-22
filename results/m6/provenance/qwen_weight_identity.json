@@ -1,0 +1,97 @@
+{
+  "purpose": "byte-level identity of Qwen3-ASR-1.7B original weights and the -hf conversion used as B3",
+  "original": {
+    "repo_id": "Qwen/Qwen3-ASR-1.7B",
+    "revision": "7278e1e70fe206f11671096ffdd38061171dd6e5",
+    "files": [
+      {
+        "file": "model-00001-of-00002.safetensors",
+        "bytes": 4220320824,
+        "sha256": "a4cd1f1a04d90b757dc7f7dd26254e69a013b19e80efe590a83c6a3bde8608d6",
+        "lfs_oid": "a4cd1f1a04d90b757dc7f7dd26254e69a013b19e80efe590a83c6a3bde8608d6",
+        "git_oid": "1522f6592ff361cdc8b95692bbd8c513d68fc40a",
+        "sha256_equals_lfs_oid": true
+      },
+      {
+        "file": "model-00002-of-00002.safetensors",
+        "bytes": 478200688,
+        "sha256": "6e0b9d9e09e2e0238e7ef3cc8a484ab387e91b90f1900bedf88bc92d7929ccfc",
+        "lfs_oid": "6e0b9d9e09e2e0238e7ef3cc8a484ab387e91b90f1900bedf88bc92d7929ccfc",
+        "git_oid": "5a13bd2988d1368745384b4acb6e8bab73f98a75",
+        "sha256_equals_lfs_oid": true
+      },
+      {
+        "file": "model.safetensors.index.json",
+        "bytes": 64821,
+        "sha256": "f994739fe38e5210b9e3e8ce6c6307315e2ceac3cb630e7b7414d69dce520f60",
+        "lfs_oid": null,
+        "git_oid": "1048a4eb4f21fef9aea06d8568a784b2b5595689",
+        "sha256_equals_lfs_oid": true
+      },
+      {
+        "file": "config.json",
+        "bytes": 6194,
+        "sha256": "2e74a751548b8ad7d7526d29365ad8144c345d8b412b1152d25dc6698452712f",
+        "lfs_oid": null,
+        "git_oid": "2bc16c9d4ca08963715cfb94d879799b9adbd0e9",
+        "sha256_equals_lfs_oid": true
+      }
+    ]
+  },
+  "hf": {
+    "repo_id": "Qwen/Qwen3-ASR-1.7B-hf",
+    "revision": "bcd2b5b7f32b480ab5790554cfa8347f246a14f3",
+    "files": [
+      {
+        "file": "model.safetensors",
+        "bytes": 4076193080,
+        "sha256": "2db53c7d81bd9b8cbc6a074e89be2c968a0d373fb4ee68bb1b1e14f7042dfee1",
+        "lfs_oid": "2db53c7d81bd9b8cbc6a074e89be2c968a0d373fb4ee68bb1b1e14f7042dfee1",
+        "sha256_equals_lfs_oid": true
+      }
+    ]
+  },
+  "method": "safetensors header (u64 length N + JSON); sha256 of each tensor byte range [8+N+start, 8+N+end); no deserialisation",
+  "name_mapping_original_to_hf": [
+    [
+      "thinker.model.",
+      "model.language_model."
+    ],
+    [
+      "thinker.audio_tower.proj1.",
+      "model.multi_modal_projector.linear_1."
+    ],
+    [
+      "thinker.audio_tower.proj2.",
+      "model.multi_modal_projector.linear_2."
+    ],
+    [
+      "thinker.audio_tower. (other)",
+      "model.audio_tower."
+    ],
+    [
+      "thinker.lm_head.weight",
+      "unmapped; checked against thinker.model.embed_tokens.weight (tied)"
+    ]
+  ],
+  "tensor_counts": {
+    "original": 708,
+    "hf": 707
+  },
+  "mapped_pairs_equal_dtype_shape_sha256": 707,
+  "mapped_pairs": 707,
+  "mismatches": 0,
+  "hf_tensors_unmatched": 0,
+  "unmapped_original": [
+    "thinker.lm_head.weight"
+  ],
+  "lm_head_equals_embed_tokens": true,
+  "total_bytes_compared": 8152209920,
+  "verdict": "IDENTICAL",
+  "per_tensor_list": {
+    "file": "qwen_weight_tensors.json",
+    "sha256": "37f93710794b410df01a94190dcbfca5a1343404ed21fd8422755be6a7578534",
+    "rows": 707,
+    "tie_rows": 1
+  }
+}

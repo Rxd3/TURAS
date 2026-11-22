@@ -1,0 +1,105 @@
+{
+  "zip_sha256": "fd8471e9084a369684f87cccd92e2d0fde1550a725e5dc0f6f854669ffa7e41b",
+  "zip_sha256_matches_sender": true,
+  "zip_entries": 8,
+  "unsafe_entries": 0,
+  "sha256sums": {
+    "lines": 7,
+    "ok": 7,
+    "files_not_covered": [
+      "SHA256SUMS.txt"
+    ]
+  },
+  "schema_checks": {
+    "validation": {
+      "predictions": {
+        "rows": 438,
+        "error_rows": 0,
+        "valid": true,
+        "sha256": "2a228d4d4d79a133ad29d5fec7cc541b759a45e9e68b8ae2f1f49c496f5d9496"
+      },
+      "nbest": {
+        "rows": 438,
+        "valid": true,
+        "sha256": "0628c8afbbd03c5708fafadbadb21e4685baf5c9bc77ff92fc881d5524f7e555"
+      },
+      "manifest_sha256": "feaeb4abd0f35daef319544dec10de25b04c73d8803e286d8ccc76e59b6c7e02"
+    },
+    "test": {
+      "predictions": {
+        "rows": 636,
+        "error_rows": 0,
+        "valid": true,
+        "sha256": "a90268a9a7f0af2f42d461b7e0b239e830f8f2a1577ec304398c63e126fd38b4"
+      },
+      "nbest": {
+        "rows": 636,
+        "valid": true,
+        "sha256": "a9d921796b0c78dc88e11e4181773126aaa87e4816b2d766f48c6872b9f01166"
+      },
+      "manifest_sha256": "ea76fe1cbb3142a8a5bf3a0419700eed8edc535e8cc8e73588df9d5c4a25fa9f"
+    }
+  },
+  "manifest_diff_vs_official_b2": {
+    "identity_keys_equal": [
+      "model id/revision/weight_file/weight_sha256",
+      "processor",
+      "precision",
+      "device",
+      "all decoding params (num_beams, requested_n, num_return_sequences, max_new_tokens, language, task, length_penalty, ...)",
+      "decoder_config_sha256",
+      "model_artifact_sha256",
+      "dataset_release",
+      "split_manifest_sha256",
+      "normalization_version",
+      "nbest dedup policy and score convention"
+    ],
+    "code_commit": {
+      "m2": "24d3762ec2d3e6fc4a8f05160d03bb132bf16f2a",
+      "official": "1dade5b17a6e3cd5d3b40901e2883a6a08e41969",
+      "m2_is_ancestor": true,
+      "decode_path_diff_empty": true
+    },
+    "run_only_differences": {
+      "python_version": [
+        "3.13.17",
+        "3.13.15"
+      ],
+      "platform": [
+        "Windows-10-10.0.19045-SP0",
+        "Windows-11-10.0.26300-SP0"
+      ],
+      "other": [
+        "command",
+        "run_id",
+        "written_utc",
+        "elapsed_seconds",
+        "output hashes"
+      ]
+    },
+    "not_recorded_in_manifest": [
+      "torch/transformers versions",
+      "GPU"
+    ]
+  },
+  "agreement_with_official_b2": {
+    "test": {
+      "utterances": 636,
+      "one_best_byte_equal": 577,
+      "differ": 59,
+      "selected_candidate_id_equal": 636,
+      "candidate_list_equal": 307,
+      "actual_n_differs": 3,
+      "max_abs_score_diff": 0.7077
+    },
+    "validation": {
+      "utterances": 438,
+      "one_best_byte_equal": 402,
+      "differ": 36,
+      "selected_candidate_id_equal": 438,
+      "candidate_list_equal": 213,
+      "actual_n_differs": 1,
+      "max_abs_score_diff": 0.5553
+    }
+  }
+}

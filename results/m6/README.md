@@ -48,7 +48,7 @@ by about 2 pp. F1 is better on raw WER (21.50 vs 24.54) and runs at about B1's R
 These comparisons are unpaired and cross scorers: B2 is scored by the M6 scorer, whose B1 parity check is pending,
 and F1/F2 by the frozen scorer. There is no paired interval against F1 or F2 yet: their per-utterance outputs are
 in the private M4/M5 handoff bundle, which M6 has not received. 611 of the 636 test references are unreviewed
-edited TBMM minutes, whose style fine-tuned F1 and F2 learn.
+edited TBMM minutes, the style F1 and F2 are fine-tuned on.
 
 ## Timing and caveats
 
@@ -62,8 +62,9 @@ B1's per-repeat spread was 8.7% (repeat 3 slower).
 - B1 parity of the M6 scorer and the paired intervals against F1/F2 are pending the private M4/M5 bundle.
 - 8 of the 28 test recordings (176 of 636 clips, sessions 6–22 January 2026) and all validation sessions
   (2025-10-01 to 2025-12-24), on which B3 was selected, predate the 2026-01-28 Qwen3-ASR release, so they may be in
-  its training data. The other 20 test recordings (460 clips) are later. Whisper-large-v3 (B2) predates all data.
-  Session dates: `data/metadata/turas-tr-econ-legis-v0.1-source-registry.csv` with
+  its training data. The other 20 test recordings (460 clips) are later. Whisper-large-v3 (B2, released
+  2023-11-06) predates all validation and test sessions. Session dates:
+  `data/metadata/turas-tr-econ-legis-v0.1-source-registry.csv` with
   `data/metadata/m45-test-recording-groups.csv`.
 
 Scoring command (run folders hold `predictions.jsonl`, `nbest.jsonl` and `manifest.json`; for validation, pass

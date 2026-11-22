@@ -51,7 +51,7 @@ B1 parity is pending, and F1/F2 by the frozen scorer. There is no paired
 interval against F1 or F2 yet: their per-utterance outputs are in the private
 M4/M5 handoff bundle, which M6 has not received, and the B1 parity check needs
 the same bundle. 611 of the 636 test references are unreviewed edited TBMM
-minutes, whose style fine-tuned F1 and F2 learn. [B2 and B3 results](results/m6/README.md)
+minutes, the style F1 and F2 are fine-tuned on. [B2 and B3 results](results/m6/README.md)
 
 ## Repository map
 

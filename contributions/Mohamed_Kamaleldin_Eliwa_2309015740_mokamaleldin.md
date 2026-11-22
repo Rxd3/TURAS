@@ -32,7 +32,7 @@ Assigned workstream from [TEAM_TASKS.md](../TEAM_TASKS.md) (Whisper Fine-Tuning)
 | Acoustic training and Whisper collation | `src/turkish_asr_rdl/training/whisper.py`, `src/turkish_asr_rdl/training/acoustic.py`, `scripts/m4_train_whisper.py` | Train-only manifest/hash validation, LoRA (r=16, alpha=32) and full fine-tuning, checkpoint export; owner-assisted (PR #3 `2f20f92`) |
 | Scored Whisper N-best decoding | `src/turkish_asr_rdl/decoding/whisper.py` | Genuine beam N-best (`num_beams=5`, `requested_n=5`) and original-logit teacher-forced scoring consumed by M5; owner-assisted (PR #3 `2f20f92`) |
 | Offline unit tests and notes | `tests/test_m4_training.py`, `experiments/m4-whisper-notes.md` | Random-model offline tests and dated adaptation notes; owner-assisted (PR #3 `2f20f92`, PR #5 `62fadf5`) |
-| Contribution identity and verification | `contributions/Mohamed_Kamaleldin_Eliwa_2309015740_mokamaleldin.md`, `contributions/member_4.md`, `contributions/README.md`, `TEAM_TASKS.md`, `docs/directory_tree.txt` | Committed from `@mokamaleldin` on 2026-11-22; verified locally with `scripts/verify_submission.py` |
+| Contribution identity and verification | `contributions/Mohamed_Kamaleldin_Eliwa_2309015740_mokamaleldin.md`, `contributions/member_4.md`, `contributions/README.md`, `TEAM_TASKS.md`, `docs/directory_tree.txt`, `experiments/m4-whisper-notes.md` | Committed from `@mokamaleldin` on 2026-11-22 (PR #28 `2fb96a0` + notes/board sync); verified locally with `scripts/verify_submission.py` |
 
 ## Actual contributions
 
@@ -40,12 +40,13 @@ Assigned workstream from [TEAM_TASKS.md](../TEAM_TASKS.md) (Whisper Fine-Tuning)
 
 - Recorded Member 4 full name (`Mohamed Kamaleldin Eliwa`), student ID
   (`2309015740`), and GitHub handle (`@mokamaleldin`) from Member 4's own
-  GitHub account.
+  GitHub account in [PR #28](https://github.com/Rxd3/TURAS/pull/28) (merged
+  `2fb96a0`).
 - Added canonical named record
   `contributions/Mohamed_Kamaleldin_Eliwa_2309015740_mokamaleldin.md`, updated
   `contributions/member_4.md` with identity and canonical pointer for backward
-  compatibility, and updated links in `contributions/README.md`,
-  `TEAM_TASKS.md`, and `docs/directory_tree.txt`.
+  compatibility, and updated links/identity entries in `contributions/README.md`,
+  `TEAM_TASKS.md`, `docs/directory_tree.txt`, and `experiments/m4-whisper-notes.md`.
 - Ran `python3 scripts/verify_submission.py` locally against `main` (`bc3c533`),
   verifying frozen protocol SHA-256
   `288aebd71d8a3574e13d436748d4161bc258a487e65066f1c3508bc8e835bec1`, all 56

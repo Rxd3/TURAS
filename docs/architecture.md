@@ -1,7 +1,7 @@
 # Intended architecture
 
-**Specification only.** The ten subpackages currently contain empty
-`__init__.py` files. There are no executable stages or shared Python interfaces.
+Nine of the ten subpackages now hold code (`reporting/` has only an empty `__init__.py`); the
+[repository map](../README.md#repository-map) lists what each area contains.
 
 ```mermaid
 flowchart TD
@@ -63,4 +63,4 @@ build the shared evaluator and adapters; evaluate all five baselines; fine-tune
 Whisper/CTC; train and validate RDL without test access; freeze selection;
 produce final test comparisons, ablations, reproducibility evidence and slides.
 Interface design and small offline checks may proceed before dataset release.
-This initialization stops before every implementation stage.
+The [repository map](../README.md#repository-map) shows where each implemented stage now lives.

@@ -1,8 +1,10 @@
 # Relational CSV and trainable heterogeneous graph contract — 0.1
 
 M1 owns the relational source schema; M5 owns graph construction, learning, and
-rescoring. M1's relational CSV tables and lexicon extractor exist (see
-"Populated by M1" below); no database or graph model exists yet. CSVs use UTF-8, a header, RFC 4180 quoting, stable
+rescoring. M1's relational CSV tables (in [`data/relational/`](../../data/relational/)) and lexicon
+extractor exist (see "Populated by M1" below), and M5's heterogeneous graph model,
+training and rescoring are in [`src/turkish_asr_rdl/rdl/`](../../src/turkish_asr_rdl/rdl/); there is no database.
+CSVs use UTF-8, a header, RFC 4180 quoting, stable
 string keys, and empty fields for declared nullable values. All foreign keys,
 enum values, duplicates and split access must be validated before graph building.
 

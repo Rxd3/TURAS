@@ -1,13 +1,16 @@
 TURAS two-minute technical presentation
 
-Slide 1: 0:00-0:30
+Slide 1: 0:00-0:02
+This is TURAS, our Turkish speech recognition project.
+
+Slide 2: 0:02-0:32
 TURAS is Turkish speech recognition for parliamentary debates on the economy and legislation, and we built the dataset ourselves. From about 240 thousand Turkish clips we kept 5,450. We removed speaker headers, duplicates and badly aligned text, and kept only clips matching our 90-term economic and legal word list. We split by recording, held out every 2026 session as the test set, and listened to a 50-clip sample to check the transcripts.
 
-Slide 2: 0:30-1:00
+Slide 3: 0:32-1:02
 We fine-tune Whisper-small and XLS-R CTC on the training split. Full fine-tuning cuts Whisper's error from 24.5 to 10.4 percent, the best result; LoRA reaches 12.4, and XLS-R improves from 37.2 to 25.2. Zero-shot Whisper-large-v3 only ties our LoRA model at 12.3 while running three times slower, and Qwen3-ASR reaches 16.1.
 
-Slide 3: 1:00-1:25
+Slide 4: 1:02-1:27
 Where do the gains come from? Fine-tuning removes three quarters of Whisper's inserted words and halves substitutions. Domain terms improve sharply: the social security agency SGK goes from 36 to 95 percent F1, and spoken numbers from 32 to 95. All three gains have paired 95 percent intervals well below zero.
 
-Slide 4: 1:25-1:50
+Slide 5: 1:27-1:52
 Finally, relational rescoring. A two-layer heterogeneous graph network rescores each five-best list. It changes error rates by at most six hundredths of a point, and every confidence interval includes zero, although better candidates exist. We report this null result, with our limits: one seed and mostly unreviewed references.

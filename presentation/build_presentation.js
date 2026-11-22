@@ -1,4 +1,4 @@
-// Build the TURAS two-minute deck: 4 timed slides (add --backup for 4 extra Q&A slides).
+// Build the TURAS two-minute deck: title + 4 timed slides (add --backup for 4 extra Q&A slides).
 // Every number comes from files in the TURAS repository; see each slide's SOURCES note.
 // Usage: npm install pptxgenjs@3.12.0
 //        node presentation/build_presentation.js presentation/TURAS-final-2-minute.pptx
@@ -45,6 +45,9 @@ pres.defineSlideMaster({
   slideNumber: { x: 12.2, y: 7.0, w: 0.5, h: 0.3, fontSize: 11, color: HEX.muted, align: "right" },
 });
 
+// Title layout: dark background, no footer or slide number.
+pres.defineSlideMaster({ title: "TURAS_TITLE", background: { color: "13233A" }, objects: [] });
+
 let chartCount = 0;
 const errorBars = {}; // chart index -> [[minus], [plus]]
 function chart(slide, type, data, opts, bars) {
@@ -82,6 +85,39 @@ function legend(slide, items, x, y) {
     slide.addText(text, { x: cx + 0.22, y, w, h: 0.3, fontSize: 12, color: C.text1, margin: 0, isTextBox: true });
     cx += w + 0.55;
   }
+}
+
+// ---------- Title slide (about 2 seconds) ----------
+{
+  const s = pres.addSlide({ masterName: "TURAS_TITLE" });
+  // Speech waveform motif: rounded bars mirrored around a centre line.
+  const heights = [0.35, 0.7, 1.2, 0.8, 1.8, 2.6, 1.6, 3.2, 2.2, 1.3, 2.8, 3.6, 2.4, 1.5, 2.9, 2.0, 1.1, 1.7, 0.9, 1.4, 0.6, 0.9, 0.4];
+  heights.forEach((h, i) => {
+    const x = 8.25 + i * 0.2;
+    s.addShape(pres.shapes.ROUNDED_RECTANGLE, { x, y: 3.55 - h / 2, w: 0.13, h, rectRadius: 0.065,
+      fill: { color: i === 7 || i === 14 ? HEX.gold : HEX.teal, transparency: i === 7 || i === 14 ? 0 : 10 + (i % 3) * 18 },
+      line: { type: "none" }, objectName: `wave-${i + 1}` });
+  });
+  s.addText("TURAS", { x: 0.7, y: 1.55, w: 6.6, h: 1.4, fontSize: 88, bold: true, color: C.background1, margin: 0, isTextBox: true });
+  s.addText("Turkish Unified Recognition Adaptation System", { x: 0.72, y: 2.95, w: 7.3, h: 0.5, fontSize: 20,
+    color: HEX.gold, bold: true, margin: 0, isTextBox: true });
+  s.addText("Domain-specific Turkish speech recognition for parliamentary debates on the economy and legislation",
+    { x: 0.72, y: 3.6, w: 7.0, h: 0.95, fontSize: 18, color: "C9D3DF", margin: 0, valign: "top", isTextBox: true });
+  const tags = ["Turkish", "Economy + legislation", "Fine-tuning + graph rescoring"];
+  let tx = 0.72;
+  tags.forEach((t) => {
+    const w = 0.09 * t.length + 0.45;
+    s.addShape(pres.shapes.ROUNDED_RECTANGLE, { x: tx, y: 4.85, w, h: 0.44, rectRadius: 0.22,
+      fill: { color: HEX.navy }, line: { color: HEX.teal, width: 1.25 }, objectName: `tag-${t}` });
+    s.addText(t, { x: tx, y: 4.85, w, h: 0.44, fontSize: 13, color: C.background1, align: "center", valign: "middle", margin: 0, isTextBox: true });
+    tx += w + 0.2;
+  });
+  s.addText("Project 3", { x: 0.72, y: 6.6, w: 4, h: 0.35, fontSize: 13, color: "8FA0B5", margin: 0, isTextBox: true });
+  s.addNotes(`TALK (2 seconds)
+This is TURAS, our Turkish speech recognition project.
+
+SOURCES
+${SRC}README.md`);
 }
 
 // ---------- Slide 1: the domain-specific Turkish dataset ----------

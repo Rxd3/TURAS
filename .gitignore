@@ -90,5 +90,6 @@ results/nbest/
 .DS_Store
 Thumbs.db
 Desktop.ini
+~$*.pptx
 *.tmp
 *.swp

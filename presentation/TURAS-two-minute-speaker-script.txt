@@ -1,0 +1,13 @@
+TURAS two-minute technical presentation
+
+Slide 1: 0:00-0:15
+TURAS studies Turkish parliamentary speech recognition. We compare Whisper LoRA and full fine-tuning, XLS-R CTC adaptation, and a train-only relational graph that reranks model-generated transcripts.
+
+Slide 2: 0:15-0:40
+The frozen split contains 4,376 training, 438 validation and 636 test clips, with 28 test recording groups. We select settings on validation. The references are edited parliamentary minutes, and 611 test references remain unreviewed. We apply the same Turkish-aware normalizer and corpus-level word error metric to every system.
+
+Slide 3: 0:40-1:25
+Acoustic adaptation gives the clearest improvement. Whisper-small word error falls from 24.51 percent to 12.37 with LoRA and 10.37 with full tuning. XLS-R improves from 37.15 to 25.15 percent, combining fine-tuning with a train-derived vocabulary extension. The additional BiLSTM-CTC baseline reaches 47.78 percent. The supplied single-Gaussian character HMM reaches approximately 100 percent, so it provides a weak classical reference.
+
+Slide 4: 1:25-2:00
+A two-layer heterogeneous GNN learns typed bilinear relation scores from train-only graph evidence. We hold N-best lists fixed and select rescoring weights on validation. Learned graph rescoring does not reliably improve any adapted model: all three recording-group confidence intervals include zero. We preserve that negative result. The study uses one training seed per model. Qwen B3, independent review and reference adjudication remain open. The submission includes hashed artifacts and reproduction commands.

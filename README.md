@@ -16,11 +16,17 @@ with a train-derived vocabulary extension. Learned RDL rescoring yielded no
 improvement over original one-best on any of the three adapted models.
 [Final report](results/final/M4_M5_FINAL_REPORT.md)
 
-The frozen working study and aggregate results are on `main`. B2 and B3 have
-smoke evidence. B5 has a BiLSTM-CTC model and adapter with synthetic CPU checks.
-Full benchmark runs for these three tracks, a GMM-HMM baseline, a matched
-Turkish transducer run, reference review, and independent sign-off remain
-pending. [Submission status](SUBMISSION.md#scope-and-remaining-work) ·
+The M4/M5 working study is on `main`. The 2026-11-22 local closeout adds B5
+BiLSTM-CTC (47.776% normalized test WER) and the supplied single-Gaussian
+character HMM (99.995%). Their exports and metrics are validated; local changes
+still need repository review/publication. A separate follow-up has completed
+local Whisper-large validation/test exports and validation of both Qwen candidates; Qwen
+1.7B was selected by the fixed minimum-CER rule. Full validation/test exports
+are also available for Seda RNN-T and a genuine four-mixture grapheme HMM.
+The selected-Qwen test run, repeated timing and final follow-up reports are
+in progress. Reference adjudication and independent sign-off remain pending.
+[Follow-up protocol and validation selection](docs/baseline_completion_followup.md) ·
+[Submission status](SUBMISSION.md#scope-and-remaining-work) ·
 [HuBERT and transducer support audit](docs/asr_language_support_audit.md)
 
 ## Repository map
@@ -50,3 +56,12 @@ transcripts are held outside Git. [License](LICENSE) · [Third-party notice](NOT
 
 Architecture references and adaptation boundaries are documented for
 NALTRA and RECAP. [Reference review](docs/reference_review.md)
+
+<!-- TURAS_ARTIFACT_LINKS_START -->
+## Reproduction downloads
+
+Drive upload is pending. Use the [organized package map](docs/drive_packages.md),
+[reproduction guide](docs/final_reproduction.md), and
+[final review checklist](docs/final_review_2026-11-22.md). After uploading the
+public submission folder, run `python scripts/update_artifact_links.py --public-drive-url "ACTUAL_FOLDER_URL"`.
+<!-- TURAS_ARTIFACT_LINKS_END -->

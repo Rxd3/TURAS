@@ -1,0 +1,255 @@
+{
+  "schema_version": "0.1",
+  "state": "followup_protocol_before_new_test_scoring",
+  "created_at_utc": "2026-11-22T14:06:58.436383+00:00",
+  "authority": "User explicitly requested completion of B2, B3, transducer, genuine mixture GMM-HMM, fresh-environment reproduction and PR-ready submission",
+  "dataset_release": "turas-tr-econ-legis-v0.1",
+  "split_manifest_sha256": "a8fff65b99fcf11d9452685e438e250207032ecfe11152741562147126d095b8",
+  "systems": {
+    "b2": {
+      "schema_version": "0.1",
+      "track_id": "B2",
+      "system_id": "baseline-whisper-large-v3",
+      "status": "proposed-baseline-protocol",
+      "dataset_release": null,
+      "split_manifest_sha256": null,
+      "model": {
+        "id": "openai/whisper-large-v3",
+        "revision": "06f233fe06e710322aca913c1bc4249a0d71fce1",
+        "weight_file": "model.safetensors",
+        "weight_sha256": "a8e94b85976e5864ba3e9525c7e6c83b2a1eca42d4b797a0c7c24d778e40fd95",
+        "weight_sha256_kind": "Hub LFS oid; bytes verified at download",
+        "tokenizer_file": "tokenizer.json",
+        "tokenizer_file_sha256": null,
+        "preprocessor_file": "preprocessor_config.json",
+        "preprocessor_file_sha256": null,
+        "generation_config_file": "generation_config.json",
+        "generation_config_file_sha256": null,
+        "precision": "bfloat16",
+        "device": "cuda"
+      },
+      "processor": {
+        "id": "openai/whisper-large-v3",
+        "revision": "06f233fe06e710322aca913c1bc4249a0d71fce1",
+        "sampling_rate_hz": 16000
+      },
+      "audio": {
+        "sampling_rate_hz": 16000,
+        "clip_duration_constraint": "10-20 s clips from TURAS (M1 source audit: data/metadata/worldspeech-tr_tr-source-audit.md:52); max 480,000 samples (30 s limit), no chunking needed"
+      },
+      "inputs": {
+        "inference": null,
+        "audio_root": null,
+        "split_manifest": null,
+        "test_ids": null,
+        "validation_ids": null
+      },
+      "decoding": {
+        "status": "proposed",
+        "algorithm": "beam",
+        "num_beams": 5,
+        "requested_n": 5,
+        "max_new_tokens": 440,
+        "language": "tr",
+        "task": "transcribe",
+        "do_sample": false,
+        "temperature": null,
+        "length_penalty": 1.0,
+        "early_stopping": false,
+        "repetition_penalty": 1.0,
+        "no_repeat_ngram_size": 0,
+        "num_return_sequences": 5,
+        "forced_prefix_tokens": [
+          "<|startoftranscript|>",
+          "<|tr|>",
+          "<|transcribe|>",
+          "<|notimestamps|>"
+        ]
+      },
+      "nbest": {
+        "score_convention_id": "whisper-original-logits-generated-plus-eos-v1",
+        "acoustic_score_kind": "seq2seq_token_log_prob_sum",
+        "implementation_path": "core GenerationMixin.generate; bypass WhisperForConditionalGeneration",
+        "deduplication_policy": "exact raw-text match; first (lowest-rank) occurrence kept; removed IDs listed in dedup_map"
+      },
+      "reviews_required": "Matches B1 decoding setting (bf16, beam 5, N 5); dataset binding pending approved release"
+    },
+    "qwen17": {
+      "schema_version": "0.1",
+      "track_id": "B3-candidate-1",
+      "system_id": "baseline-qwen3-asr-1.7b",
+      "candidate_status": "unselected-candidate",
+      "status": "proposed-baseline-protocol",
+      "dataset_release": null,
+      "split_manifest_sha256": null,
+      "model": {
+        "id": "Qwen/Qwen3-ASR-1.7B-hf",
+        "revision": "bcd2b5b7f32b480ab5790554cfa8347f246a14f3",
+        "weight_file": "model.safetensors",
+        "weight_sha256": "2db53c7d81bd9b8cbc6a074e89be2c968a0d373fb4ee68bb1b1e14f7042dfee1",
+        "weight_sha256_kind": "Hub LFS oid; bytes verified at download",
+        "tokenizer_file": "tokenizer.json",
+        "tokenizer_file_sha256": null,
+        "processor_file": "processor_config.json",
+        "processor_file_sha256": null,
+        "chat_template_file": "chat_template.jinja",
+        "chat_template_file_sha256": null,
+        "generation_config_file": "generation_config.json",
+        "generation_config_file_sha256": null,
+        "precision": "bfloat16",
+        "device": "cuda"
+      },
+      "processor": {
+        "id": "Qwen/Qwen3-ASR-1.7B-hf",
+        "revision": "bcd2b5b7f32b480ab5790554cfa8347f246a14f3",
+        "sampling_rate_hz": 16000
+      },
+      "audio": {
+        "sampling_rate_hz": 16000,
+        "clip_duration_constraint": "10-20 s clips from TURAS (M1 source audit: data/metadata/worldspeech-tr_tr-source-audit.md:52); well within Qwen3-ASR 20-minute (1,200 s) input limit (arXiv:2601.21337)"
+      },
+      "inputs": {
+        "inference": null,
+        "audio_root": null,
+        "split_manifest": null,
+        "test_ids": null,
+        "validation_ids": null
+      },
+      "decoding": {
+        "status": "proposed",
+        "algorithm": "beam",
+        "num_beams": 5,
+        "requested_n": 5,
+        "max_new_tokens": 440,
+        "language": "tr",
+        "prompt_format": "AutoProcessor.apply_transcription_request(language='tr')",
+        "do_sample": false,
+        "temperature": null,
+        "length_penalty": 1.0,
+        "early_stopping": false,
+        "repetition_penalty": 1.0,
+        "no_repeat_ngram_size": 0,
+        "num_return_sequences": 5
+      },
+      "nbest": {
+        "score_convention_id": "qwen3-asr-generation-logprob-sum-v1",
+        "acoustic_score_kind": "speech_llm_joint_token_log_prob_sum",
+        "library_beam_score_target": "decoder_sequence_score",
+        "implementation_path": "native transformers AutoModelForMultimodalLM; qwen-asr package forbidden",
+        "deduplication_policy": "exact raw-text match; first (lowest-rank) occurrence kept; removed IDs listed in dedup_map"
+      },
+      "reviews_required": "M6 review of candidate trade-off against 0.6B (validation WER/CER and M6 timing session RTF; both fit in VRAM); dataset binding pending approved release"
+    },
+    "qwen06": {
+      "schema_version": "0.1",
+      "track_id": "B3-candidate-2",
+      "system_id": "baseline-qwen3-asr-0.6b",
+      "candidate_status": "unselected-candidate",
+      "status": "proposed-baseline-protocol",
+      "dataset_release": null,
+      "split_manifest_sha256": null,
+      "model": {
+        "id": "Qwen/Qwen3-ASR-0.6B-hf",
+        "revision": "7f1569a48a89f3e3f4dc3a5c9d28bddd903bc76c",
+        "weight_file": "model.safetensors",
+        "weight_sha256": "d3f212dd20abecd315d830bc54ae3865e56ebfc3276484e57b771288ba27fd35",
+        "weight_sha256_kind": "Hub LFS oid; bytes verified at download",
+        "tokenizer_file": "tokenizer.json",
+        "tokenizer_file_sha256": null,
+        "processor_file": "processor_config.json",
+        "processor_file_sha256": null,
+        "chat_template_file": "chat_template.jinja",
+        "chat_template_file_sha256": null,
+        "generation_config_file": "generation_config.json",
+        "generation_config_file_sha256": null,
+        "precision": "bfloat16",
+        "device": "cuda"
+      },
+      "processor": {
+        "id": "Qwen/Qwen3-ASR-0.6B-hf",
+        "revision": "7f1569a48a89f3e3f4dc3a5c9d28bddd903bc76c",
+        "sampling_rate_hz": 16000
+      },
+      "audio": {
+        "sampling_rate_hz": 16000,
+        "clip_duration_constraint": "10-20 s clips from TURAS (M1 source audit: data/metadata/worldspeech-tr_tr-source-audit.md:52); well within Qwen3-ASR 20-minute (1,200 s) input limit (arXiv:2601.21337)"
+      },
+      "inputs": {
+        "inference": null,
+        "audio_root": null,
+        "split_manifest": null,
+        "test_ids": null,
+        "validation_ids": null
+      },
+      "decoding": {
+        "status": "proposed",
+        "algorithm": "beam",
+        "num_beams": 5,
+        "requested_n": 5,
+        "max_new_tokens": 440,
+        "language": "tr",
+        "prompt_format": "AutoProcessor.apply_transcription_request(language='tr')",
+        "do_sample": false,
+        "temperature": null,
+        "length_penalty": 1.0,
+        "early_stopping": false,
+        "repetition_penalty": 1.0,
+        "no_repeat_ngram_size": 0,
+        "num_return_sequences": 5
+      },
+      "nbest": {
+        "score_convention_id": "qwen3-asr-generation-logprob-sum-v1",
+        "acoustic_score_kind": "speech_llm_joint_token_log_prob_sum",
+        "library_beam_score_target": "decoder_sequence_score",
+        "implementation_path": "native transformers AutoModelForMultimodalLM; qwen-asr package forbidden",
+        "deduplication_policy": "exact raw-text match; first (lowest-rank) occurrence kept; removed IDs listed in dedup_map"
+      },
+      "reviews_required": "M6 review of candidate trade-off against 1.7B (validation WER/CER and M6 timing session RTF; both fit in VRAM); dataset binding pending approved release"
+    }
+  },
+  "transducer": {
+    "model": "atasoglu/seda-v0.1",
+    "revision": "5cbbda1b34bde5e3004e79b137dc3871587ea282",
+    "decoder": "greedy_search",
+    "external_lm": false,
+    "cpu_threads": 1,
+    "requested_n": 0
+  },
+  "gmm_hmm": {
+    "mixtures_per_state": 4,
+    "states_per_grapheme": 3,
+    "mfcc_dimensions": 39,
+    "fixed_viterbi_em_passes": 5,
+    "external_lm": false,
+    "requested_n": 0
+  },
+  "b3_selection": {
+    "candidates": [
+      "qwen17",
+      "qwen06"
+    ],
+    "criterion": "validation normalized CER, then normalized WER, then stable system key",
+    "test_inference": "selected candidate only"
+  },
+  "timing": {
+    "ids": "data/splits/turas-tr-econ-legis-v0.1/m45-timing-30min.txt",
+    "repeats": 3,
+    "batch_size": 1,
+    "warmup_train_clips": 3,
+    "concurrency": "serial; wait for downloads and training to finish"
+  },
+  "source_sha256": {
+    "scripts/run_completion_baseline.py": "cd33da54af29c107a6b501940a09b3b2679bd1b5628637c088f14372f50ee98c",
+    "scripts/score_completion_study.py": "834ea24d7b4f47123719567b48ea1c25ef2559bd3a689182488c5f534388563d",
+    "scripts/train_mixture_hmm.py": "bee531a346ef5ddd48d2d382c5eaa0b77e3e1ec20d97892221c04145d1f78c70",
+    "src/turkish_asr_rdl/baselines/seda_transducer.py": "735b7fabedab0d8b81684086a4f755508b582b3d48586c6d9c76ebcd03e8daea",
+    "src/turkish_asr_rdl/baselines/mixture_hmm.py": "1eb1d9dc5dbe5f7390afc11372a6b66e1ffbee6e04d385929f80d7dafcab5b2f"
+  },
+  "limitations": [
+    "Follow-up after prior project working-test exposure; no blind preregistration claim",
+    "Seda uses an individual per-run freeze for already-started reference-free accuracy exports",
+    "Qwen and transducer training-data overlap remains unresolved beyond publisher disclosures",
+    "Working edited-minutes reference variants are unchanged",
+    "No independent human peer approval claimed"
+  ]
+}

@@ -1,4 +1,4 @@
-// Build the TURAS two-minute deck (4 timed slides + 4 backup slides).
+// Build the TURAS two-minute deck: 4 timed slides (add --backup for 4 extra Q&A slides).
 // Every number comes from files in the TURAS repository; see each slide's SOURCES note.
 // Usage: npm install pptxgenjs@3.12.0
 //        node presentation/build_presentation.js presentation/TURAS-final-2-minute.pptx
@@ -30,6 +30,8 @@ pres.title = "TURAS two-minute presentation";
 pres.author = "TURAS team";
 const C = pres.SchemeColor;
 const SRC = "https://github.com/Rxd3/TURAS/blob/main/";
+// Backup slides (paired CIs, ablations, entity types, data/limits) only with --backup.
+const BACKUP = process.argv.includes("--backup");
 
 // One content layout: title placeholder, footer text and slide number.
 pres.defineSlideMaster({
@@ -82,55 +84,46 @@ function legend(slide, items, x, y) {
   }
 }
 
-// ---------- Slide 1: task, data and pipeline ----------
+// ---------- Slide 1: the domain-specific Turkish dataset ----------
 {
   const s = pres.addSlide({ masterName: "TURAS_CONTENT" });
-  s.addText("TURAS", { placeholder: "title" });
-  s.addText("Turkish parliamentary speech recognition: acoustic adaptation and relational rescoring",
-    { x: 0.6, y: 1.2, w: 12.1, h: 0.5, fontSize: 22, color: C.text1, margin: 0, isTextBox: true });
+  s.addText("A domain-specific Turkish dataset we built", { placeholder: "title" });
+  s.addText("TURAS: speech recognition for Turkish parliamentary debates on the economy and legislation",
+    { x: 0.6, y: 1.2, w: 12.1, h: 0.4, fontSize: 18, color: C.text2, margin: 0, isTextBox: true });
 
-  label(s, "Pipeline", 0.6, 1.95, 4);
-  const steps = [
-    ["TBMM audio", "economic and legislative debates, 2017–2026", HEX.tint, C.text1],
-    ["ASR model", "Whisper-small or XLS-R CTC, fine-tuned on train", HEX.teal, C.background1],
-    ["5-best list", "candidate transcripts with acoustic scores", HEX.tint, C.text1],
-    ["RDL rescoring", "train-only graph, heterogeneous GNN", HEX.navy, C.background1],
-    ["Transcript", "scored with one Turkish normalizer", HEX.tint, C.text1],
+  label(s, "Clips left after each filter (WorldSpeech tr_tr)", 0.6, 1.8, 7.4);
+  const steps = ["All Turkish clips", "Parliament (TBMM) only", "Spoken text only", "No duplicate text",
+    "Text matches audio", "Economic or legal domain", "No upstream-test overlap", "Kept, capped per recording"];
+  const left = [239654, 237203, 220435, 217260, 213374, 28807, 27738, 5450];
+  const fill = [HEX.slate, HEX.slate, HEX.slate, HEX.slate, HEX.slate, HEX.navy, HEX.navy, HEX.teal];
+  chart(s, pres.charts.BAR, [{ name: "Clips left", labels: [...steps].reverse(), values: [...left].reverse() }],
+    barOpts({ x: 0.45, y: 2.15, w: 7.5, h: 3.75, chartColors: [...fill].reverse(), barGapWidthPct: 35,
+      valAxisMinVal: 0, valAxisMaxVal: 290000, valAxisHidden: true, valGridLine: { style: "none" },
+      dataLabelFormatCode: "#,##0", catAxisLabelFontSize: 13, objectName: "dataset-funnel" }));
+
+  const cards = [
+    ["90 terms", "Economic and legal word list. A clip needs 2 economic terms, or 1 plus a law term or a number."],
+    ["2026 test", "Split by recording; every 2026 session held out. 4,376 / 438 / 636 clips, 20 / 2 / 3 h. Leakage checks: zero."],
+    ["50 clips", "Team listening check of a sample. On its 25 test clips, fine-tuning still cuts WER 22.1% → 10.8%."],
   ];
-  const bw = 2.15, gap = 0.34;
-  steps.forEach(([head, body, fill, text], i) => {
-    const x = 0.6 + i * (bw + gap);
-    s.addShape(pres.shapes.ROUNDED_RECTANGLE, { x, y: 2.4, w: bw, h: 1.25, rectRadius: 0.08,
-      fill: { color: fill }, line: { color: fill }, objectName: `step-${i + 1}` });
-    s.addText([{ text: head, options: { bold: true, fontSize: 16, breakLine: true } },
-      { text: body, options: { fontSize: 12 } }],
-      { x: x + 0.12, y: 2.45, w: bw - 0.24, h: 1.15, color: text, valign: "middle", margin: 0, isTextBox: true });
-    if (i < steps.length - 1) {
-      s.addShape(pres.shapes.RIGHT_ARROW, { x: x + bw + 0.06, y: 2.88, w: 0.22, h: 0.3,
-        fill: { color: HEX.slate }, line: { color: HEX.slate } });
-    }
+  cards.forEach(([big, body], i) => {
+    const y = 1.85 + i * 1.38;
+    s.addShape(pres.shapes.ROUNDED_RECTANGLE, { x: 8.3, y, w: 4.5, h: 1.22, rectRadius: 0.08,
+      fill: { color: HEX.tint }, line: { color: HEX.tint }, objectName: `dataset-card-${i + 1}` });
+    s.addText([{ text: big, options: { fontSize: 24, bold: true, color: C.accent1, breakLine: true } },
+      { text: body, options: { fontSize: 13, color: C.text1 } }],
+      { x: 8.48, y: y + 0.06, w: 4.2, h: 1.1, valign: "middle", margin: 0, isTextBox: true });
   });
-
-  label(s, "Frozen split, grouped by recording", 0.6, 4.0, 6);
-  const stats = [["4,376", "train clips", "20.0 h · 129 recordings"], ["438", "validation clips", "2.0 h · 15 recordings"],
-    ["636", "test clips", "3.0 h · 28 recordings"], ["2026", "test sessions only", "temporal hold-out"]];
-  stats.forEach(([big, small, detail], i) => {
-    const x = 0.6 + i * 3.1;
-    s.addShape(pres.shapes.ROUNDED_RECTANGLE, { x, y: 4.45, w: 2.85, h: 1.45, rectRadius: 0.08,
-      fill: { color: HEX.tint }, line: { color: HEX.tint }, objectName: `stat-${i + 1}` });
-    s.addText([{ text: big, options: { fontSize: 32, bold: true, color: C.accent1, breakLine: true } },
-      { text: small, options: { fontSize: 14, bold: true, color: C.text1, breakLine: true } },
-      { text: detail, options: { fontSize: 12, color: C.text2 } }],
-      { x: x + 0.2, y: 4.5, w: 2.5, h: 1.35, valign: "middle", margin: 0, isTextBox: true });
-  });
-  takeaway(s, "Every system is scored on the same 636 unseen clips with one Turkish normalizer.", 6.15);
-  footnote(s, "Source: WorldSpeech tr_tr (CC BY-NC 4.0). Selection uses validation only. Speakers are unknown, so speaker disjointness is not claimed.");
-  s.addNotes(`TALK (25 seconds)
-TURAS improves Turkish speech recognition for parliamentary economic and legislative debates. We use 25 hours from the Turkish Grand National Assembly, split by recording, and hold out every 2026 session as the test set: 636 unseen clips. We fine-tune Whisper-small and XLS-R CTC, then rerank each model's five best transcripts with a graph learned only from training data.
+  takeaway(s, "We kept 2% of the source: 5,450 clips of Turkish economic and legislative speech.", 6.1);
+  footnote(s, "Then: fine-tune Whisper-small and XLS-R CTC on train; rerank 5-best lists with a train-only graph. Source: WorldSpeech tr_tr (CC BY-NC 4.0).", 6.55);
+  s.addNotes(`TALK (30 seconds)
+TURAS is Turkish speech recognition for parliamentary debates on the economy and legislation, and we built the dataset ourselves. From about 240 thousand Turkish clips we kept 5,450. We removed speaker headers, duplicates and badly aligned text, and kept only clips matching our 90-term economic and legal word list. We split by recording, held out every 2026 session as the test set, and listened to a 50-clip sample to check the transcripts.
 
 SOURCES
 ${SRC}docs/dataset.md
-${SRC}configs/evaluation/m45_final_protocol.json
+${SRC}configs/datasets/turas-domain-lexicon-v0.1.json
+${SRC}docs/m1_deadline_handoff.md
+${SRC}docs/error_analysis.md
 ${SRC}data/splits/turas-tr-econ-legis-v0.1/split_manifest.json`);
 }
 
@@ -161,8 +154,8 @@ ${SRC}data/splits/turas-tr-econ-legis-v0.1/split_manifest.json`);
     { x: 8.6, y: 4.2, w: 4.2, h: 1.6, valign: "top", margin: 0, isTextBox: true });
   takeaway(s, "Full fine-tuning gives the best system: 10.37% WER, down from 24.51% before tuning.");
   footnote(s, "RTF = compute time / audio time (RTX 5070 Ti, 3 repeats). Large-v3 and Qwen: M6 scorer, outside the frozen protocol. HMM: 100% (not shown).");
-  s.addNotes(`TALK (35 seconds)
-Here are all systems on the same test clips. Fine-tuning roughly halves Whisper-small's error, from 24.5 to 12.4 percent with LoRA and 10.4 with full fine-tuning, the best result overall. XLS-R CTC improves from 37.2 to 25.2. Zero-shot Whisper-large-v3 reaches 12.3, only tying the small model we adapted, while running three times slower. Qwen3-ASR reaches 16.1, and a BiLSTM-CTC trained from scratch on 20 hours reaches 47.8.
+  s.addNotes(`TALK (30 seconds)
+We fine-tune Whisper-small and XLS-R CTC on the training split. Full fine-tuning cuts Whisper's error from 24.5 to 10.4 percent, the best result; LoRA reaches 12.4, and XLS-R improves from 37.2 to 25.2. Zero-shot Whisper-large-v3 only ties our LoRA model at 12.3 while running three times slower, and Qwen3-ASR reaches 16.1.
 
 SOURCES
 ${SRC}results/final/m45_metrics.csv
@@ -244,7 +237,7 @@ ${SRC}results/m6/provenance/test_oracle.json`);
 }
 
 // ---------- Backup 5: paired gains and CER ----------
-{
+if (BACKUP) {
   const s = pres.addSlide({ masterName: "TURAS_CONTENT" });
   s.addText("Backup: paired gains and character errors", { placeholder: "title" });
   label(s, "Paired WER change (points, 95% CI)", 0.6, 1.4, 6);
@@ -277,7 +270,7 @@ ${SRC}results/final/m3_test_summary.json`);
 }
 
 // ---------- Backup 6: RDL ablations ----------
-{
+if (BACKUP) {
   const s = pres.addSlide({ masterName: "TURAS_CONTENT" });
   s.addText("Backup: graph ablations and controls", { placeholder: "title" });
   label(s, "WER change vs full RDL (points)", 0.6, 1.4, 7);
@@ -307,7 +300,7 @@ ${SRC}results/evaluation/m45_rdl_and_ablation_summary.json`);
 }
 
 // ---------- Backup 7: entity types ----------
-{
+if (BACKUP) {
   const s = pres.addSlide({ masterName: "TURAS_CONTENT" });
   s.addText("Backup: terminology by entity type", { placeholder: "title" });
   label(s, "Term F1 (%) by entity type", 0.6, 1.4, 8);
@@ -338,7 +331,7 @@ ${SRC}docs/error_analysis.md`);
 }
 
 // ---------- Backup 8: data and protocol ----------
-{
+if (BACKUP) {
   const s = pres.addSlide({ masterName: "TURAS_CONTENT" });
   s.addText("Backup: data, protocol and limits", { placeholder: "title" });
   label(s, "Splits (grouped by recording)", 0.6, 1.4, 6);
@@ -372,7 +365,7 @@ ${SRC}scripts/verify_submission.py`);
 }
 
 (async () => {
-  const out = process.argv[2] || "TURAS-2-minute-v2.pptx";
+  const out = process.argv.slice(2).find((a) => !a.startsWith("--")) || "TURAS-final-2-minute.pptx";
   await pres.writeFile({ fileName: out });
   await applyTheme(out, THEME);
   fs.writeFileSync(out + ".errorbars.json", JSON.stringify(errorBars));

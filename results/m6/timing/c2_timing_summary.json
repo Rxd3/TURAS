@@ -1,0 +1,72 @@
+{
+  "kind": "same-session serial timing via M6 helper",
+  "note": "RTX 5070 Ti laptop numbers; not comparable to frozen desktop RTFs",
+  "session": {
+    "date": "2026-11-22",
+    "protocol_sha256": "288aebd71d8a3574e13d436748d4161bc258a487e65066f1c3508bc8e835bec1",
+    "helper_sha256": "5e96633a34df43b1f03b3e7fe3f2653b88ad8099b37d21971fd95e95ba6f9b28",
+    "gpu": "NVIDIA GeForce RTX 5070 Ti Laptop GPU",
+    "driver": "591.84",
+    "torch": "2.14.1+cu130",
+    "transformers": "5.23.0",
+    "cuda_runtime": "13.0",
+    "python": "3.13.15",
+    "timing_ids": 107,
+    "repeats": 3,
+    "batch_size": 1,
+    "cooldown_between_systems_s": 30
+  },
+  "systems": {
+    "B1-whisper-small": {
+      "end_to_end_rtf": 0.05756911240803171,
+      "core_model_rtf": 0.05736392820097564,
+      "per_repeat_end_to_end_rtf": [
+        0.05609901095223672,
+        0.055874541795772704,
+        0.0607337844760857
+      ],
+      "cold_load_s": 4.184190100000706,
+      "thermal_flags": 0,
+      "peak_reserved_mib": 1254.0,
+      "vram_spill_suspected": false,
+      "status": "completed",
+      "rows": 107,
+      "repeats": 3,
+      "manifest_sha256": "3ecfd68a82e2a1e450c7dc0553dcd482d1ea0b68491d921ab7a2bb871d4b5376"
+    },
+    "B2-whisper-large-v3": {
+      "end_to_end_rtf": 0.17536908401406434,
+      "core_model_rtf": 0.17515506777336418,
+      "per_repeat_end_to_end_rtf": [
+        0.17640562906447763,
+        0.1725606084028413,
+        0.17714101457487408
+      ],
+      "cold_load_s": 9.535339699999895,
+      "thermal_flags": 0,
+      "peak_reserved_mib": 4934.0,
+      "vram_spill_suspected": false,
+      "status": "completed",
+      "rows": 107,
+      "repeats": 3,
+      "manifest_sha256": "5e5622c7ba9f880fb4bfa4260253ea12e51321818b74a025c7107974511f0fdf"
+    },
+    "B3-qwen3-asr-1.7b": {
+      "end_to_end_rtf": 0.13842859999311183,
+      "core_model_rtf": 0.1382152684240728,
+      "per_repeat_end_to_end_rtf": [
+        0.1382917698268719,
+        0.1376508587934357,
+        0.13934317135902782
+      ],
+      "cold_load_s": 10.39512309996644,
+      "thermal_flags": 0,
+      "peak_reserved_mib": 6310.0,
+      "vram_spill_suspected": false,
+      "status": "completed",
+      "rows": 107,
+      "repeats": 3,
+      "manifest_sha256": "a2cd2e1a8270b6af64bfcac356d549fb4eb6f09c31dc12d3edde76dd16d86ef9"
+    }
+  }
+}

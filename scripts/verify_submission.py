@@ -15,6 +15,7 @@ import csv
 import hashlib
 import json
 import math
+import sys
 from collections.abc import Mapping
 from pathlib import Path
 
@@ -27,6 +28,19 @@ EXPECTED_PIN_COUNT = 56
 EXPECTED_SYSTEM_COUNT = 20
 HANDOFF_MANIFEST_PATH = Path("results/final/m45_handoff_manifest.json")
 HASH_PREFIX_LENGTH = 12
+# Failures a malformed or tampered input file can cause; reported on one line.
+REPORTED_ERRORS = (
+    AssertionError,
+    OSError,
+    ValueError,
+    KeyError,
+    IndexError,
+    TypeError,
+    AttributeError,
+    ArithmeticError,
+    RecursionError,
+    csv.Error,
+)
 
 
 def _sha256(path: Path) -> str:
@@ -66,7 +80,7 @@ def verify_protocol_hashes(root: Path = ROOT) -> int:
         raise AssertionError(f"Expected {EXPECTED_PIN_COUNT} code pins, got {len(pins)}")
     mismatches = _hash_mismatches(root, pins)
     if mismatches:
-        raise AssertionError("Pinned code hash mismatches:\n" + "\n".join(mismatches))
+        raise AssertionError("Pinned code hash mismatches: " + "; ".join(mismatches))
     return len(pins)
 
 
@@ -178,7 +192,7 @@ def _read_handoff_pins(root: Path) -> dict[str, object]:
         raise AssertionError(f"Missing handoff manifest: {label}")
     try:
         manifest = json.loads(manifest_path.read_bytes())
-    except (OSError, ValueError) as exc:
+    except (OSError, ValueError, RecursionError) as exc:
         raise AssertionError(f"Unreadable handoff manifest {label}: {exc}") from exc
     pins = manifest.get("public_files_sha256") if isinstance(manifest, dict) else None
     if not isinstance(pins, dict) or not pins:
@@ -192,16 +206,16 @@ def verify_handoff_manifest(root: Path = ROOT) -> int:
     repo_pins = {(public_dir / name).as_posix(): expected for name, expected in pins.items()}
     mismatches = _hash_mismatches(root, repo_pins)
     if mismatches:
-        raise AssertionError("Handoff manifest file hash mismatches:\n" + "\n".join(mismatches))
+        raise AssertionError("Handoff manifest file hash mismatches: " + "; ".join(mismatches))
     return len(pins)
 
 
 def main(root: Path = ROOT) -> int:
     n_pins = verify_protocol_hashes(root)
+    n_public = verify_handoff_manifest(root)
     n_systems = verify_metrics_consistency(root)
     split_counts = verify_splits_disjoint(root)
     n_files = verify_required_files(root)
-    n_public = verify_handoff_manifest(root)
     total_clips = sum(split_counts.values())
     print(
         f"OK: frozen protocol and split hashes, {n_pins} pinned code hashes, "
@@ -213,5 +227,28 @@ def main(root: Path = ROOT) -> int:
     return 0
 
 
+def _repo_relative(filename: str, root: Path) -> str:
+    path = Path(filename)
+    return path.relative_to(root).as_posix() if path.is_relative_to(root) else filename
+
+
+def _failure_message(exc: Exception, root: Path) -> str:
+    if isinstance(exc, OSError) and isinstance(exc.filename, str):
+        reason = exc.strerror or type(exc).__name__
+        return f"{reason}: {_repo_relative(exc.filename, root)}"
+    if isinstance(exc, AssertionError):
+        return str(exc)
+    return f"{type(exc).__name__}: {exc}"
+
+
+def _cli(root: Path = ROOT) -> int:
+    try:
+        return main(root)
+    except REPORTED_ERRORS as exc:
+        message = " ".join(_failure_message(exc, root).splitlines())
+        print(f"Verification failed: {message}", file=sys.stderr)
+        return 1
+
+
 if __name__ == "__main__":
-    raise SystemExit(main())
+    raise SystemExit(_cli())

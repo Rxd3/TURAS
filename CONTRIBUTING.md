@@ -11,8 +11,9 @@ requests from the member branches in [TEAM_TASKS.md](TEAM_TASKS.md).
    `feat/m<N>-...` branch. Merge current `origin/main` regularly.
 3. Edit primarily owned paths. Shared paths require the owner and affected
    consumers to review; ownership is a coordination duty, not unilateral control.
-4. Keep logic in `src/turkish_asr_rdl/`; future `scripts/` entries must be thin
-   wrappers. Put adjustable settings in the appropriate `configs/` directory.
+4. Keep logic in `src/turkish_asr_rdl/`; new `scripts/` entries must be thin
+   wrappers, except the stdlib-only `verify_submission.py`, which is standalone by
+   design. Put adjustable settings in the appropriate `configs/` directory.
 5. Add focused offline tests when real behavior is introduced. See [test
    policy](tests/README.md). Never fetch models, data, or live APIs in unit tests.
 6. Inspect `git status` and `git diff`. Stage named paths with `git add <paths>`,
@@ -83,5 +84,4 @@ Actual initialization settings and limitations belong in
 [repository setup](docs/repository_setup.md). CODEOWNERS will be added only after
 real GitHub identities and access are confirmed; invented handles are forbidden.
 
-No software license is selected in this scaffold. The team must explicitly choose
-one before licensed distribution; dataset/source terms require separate review.
+Code is MIT ([LICENSE](LICENSE)). Data and model terms are in [NOTICE](NOTICE).

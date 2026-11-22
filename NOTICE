@@ -12,9 +12,10 @@ TURAS — Dataset and Third-Party Model Notice
 2. Pretrained model checkpoints:
    Upstream pretrained models referenced by configs remain subject to their own
    licenses, including:
-   - The upstream OpenAI Whisper code/weights release uses MIT. The pinned
-     Hugging Face `openai/whisper-large-v3` card declares Apache-2.0 metadata;
-     retain that artifact's publisher card alongside the upstream notices.
+   - `openai/whisper-small` and `openai/whisper-large-v3`: Apache-2.0 (Hugging Face model
+     license field at the pinned revisions). The upstream OpenAI Whisper
+     code/weights release on GitHub uses MIT; retain the pinned publisher cards
+     alongside the upstream notices.
    - `mpoyraz/wav2vec2-xls-r-300m-cv7-turkish`: CC BY 4.0 (attribution required)
    - `mpoyraz/wav2vec2-xls-r-300m-cv8-turkish`: Apache-2.0
    - `Qwen/Qwen3-ASR-0.6B-hf` and `Qwen/Qwen3-ASR-1.7B-hf`: Apache-2.0

@@ -1,0 +1,15 @@
+{
+  "test_reference_sha256": "31e372f0e35f504de59b49f1e0e1f3ed6fcc2772138c591a2cf2b054a4e7ef3f",
+  "test_reference_variant": "m1-test-minutes-archive-01ad5878-v1",
+  "official_b2_decision_recorded": "2026-11-22T14:28:14+03:00",
+  "opened_for_m6_scoring_utc": "2026-11-22T12:33:41Z",
+  "scorer_commit": "684d35d4c6d3b89d4355783375076458e8263559",
+  "oracle_diagnostics_utc": "2026-11-22T13:52:16Z",
+  "freeze_record_lines": [
+    "Official B2 test run (user decision relayed by Advisor fork, recorded 2026-11-22T14:28:14.4432803+03:00, before any test reference opened for scoring): our 5070 Ti run <path> (predictions a5b1f31c..., manifest d80a787d...). M2's B2 (turas-b2-whisper-large-v3-m2-handoff.zip sha fd8471e9..., test predictions a90268a9...) is the reproduction. Fixed rule: both scored; ours = official B2 row; M2's reported as reproduction with agreement and WER delta.",
+    "test references opened for M6 scoring at 2026-11-22T12:33:41Z, scorer 684d35d",
+    "oracle diagnostics on test at 2026-11-22T13:52:16Z"
+  ],
+  "freeze_record_note": "lines copied verbatim except local filesystem paths replaced by <path>",
+  "order_check": "official B2 decision (11:28:14Z) precedes test reference opening (12:33:41Z)"
+}

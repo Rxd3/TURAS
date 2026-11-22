@@ -2,6 +2,9 @@
 import itertools
 
 import numpy as np
+import pytest
+
+pytest.importorskip("torch")
 
 from turkish_asr_rdl.baselines.m3_gaussian_hmm import decode_path, emissions, forced_path
 

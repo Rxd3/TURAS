@@ -15,7 +15,7 @@ the shared evaluator govern every full-ID export and metric.
 
 | Track | Pinned candidate and evidence | Experiment |
 | --- | --- | --- |
-| B2 | `openai/whisper-large-v3` at `06f233fe06e710322aca913c1bc4249a0d71fce1`; Turkish listed, Apache-2.0. [Publisher card](https://huggingface.co/openai/whisper-large-v3/blob/06f233fe06e710322aca913c1bc4249a0d71fce1/README.md) | Re-run locally because the reported M2 ZIP is absent. bf16, Turkish prompt, beam/N=5 and max 440 generated tokens, using the existing core GenerationMixin implementation. |
+| B2 | `openai/whisper-large-v3` at `06f233fe06e710322aca913c1bc4249a0d71fce1`; Turkish listed, Apache-2.0. [Publisher card](https://huggingface.co/openai/whisper-large-v3/blob/06f233fe06e710322aca913c1bc4249a0d71fce1/README.md) | Re-run locally as an owner reproduction; the reported M2 ZIP was not available locally at the time (M6 later scored it, see `results/m6/`). bf16, Turkish prompt, beam/N=5 and max 440 generated tokens, using the existing core GenerationMixin implementation. |
 | B3 | `Qwen/Qwen3-ASR-1.7B-hf` at `bcd2b5b7f32b480ab5790554cfa8347f246a14f3`, and `Qwen/Qwen3-ASR-0.6B-hf` at `7f1569a48a89f3e3f4dc3a5c9d28bddd903bc76c`; Turkish and native Transformers support listed. Apache-2.0. [Publisher card](https://huggingface.co/Qwen/Qwen3-ASR-1.7B-hf/blob/bcd2b5b7f32b480ab5790554cfa8347f246a14f3/README.md) | Evaluate both candidates on all 438 validation IDs. Select minimum normalized CER, then WER, then stable key. Run only the selected candidate on test. No hotwords or external context. Joint speech-language scores remain labeled joint. |
 | Transducer | `atasoglu/seda-v0.1` at `5cbbda1b34bde5e3004e79b137dc3871587ea282`. Turkish Zipformer2 RNN-T, int8 encoder/joiner and fp32 decoder; publisher names Common Voice 27 and ISSAI acoustic data, not WorldSpeech. Acoustic files list Apache-2.0. [Publisher card](https://huggingface.co/atasoglu/seda-v0.1/blob/5cbbda1b34bde5e3004e79b137dc3871587ea282/README.md) | sherpa-onnx 2.0.2 CPU, one thread, greedy decoding. Optional Wikipedia-trained LM files are not downloaded or used. Raw spoken-form output; no inverse text normalization. |
 
@@ -35,6 +35,11 @@ Both Qwen candidates completed all 438 frozen validation IDs with zero inference
 | --- | ---: | ---: | --- |
 | Qwen3-ASR-1.7B | 15.343% | 5.423% | yes |
 | Qwen3-ASR-0.6B | 22.345% | 7.067% | no |
+
+> **Official B2/B3 numbers:** M6's [B2 and B3 results](../results/m6/README.md) are the
+> reported B2/B3 scores and timing. They include M2's B2 handoff as an independent
+> reproduction. M6 selected Qwen 1.7B on validation WER; this follow-up's CER rule
+> picked the same model. The B2/B3 runs below are an owner reproduction.
 
 The minimum-CER rule selected **1.7B** at `2026-11-22T15:38:54.554467+00:00`, before its follow-up test inference. The private `b3-selection.json` freezes both validation-report hashes; it is included in the B3 package. The earlier working-test exposure remains disclosed, and no independent peer approval is inferred.
 

@@ -15,8 +15,8 @@ ET.register_namespace("r", "http://schemas.openxmlformats.org/officeDocument/200
 TALKS = [
     ("0:00-0:15", "TURAS studies Turkish parliamentary speech recognition. We compare Whisper LoRA and full fine-tuning, XLS-R CTC adaptation, and a train-only relational graph that reranks model-generated transcripts."),
     ("0:15-0:40", "The frozen split contains 4,376 training, 438 validation and 636 test clips, with 28 test recording groups. We select settings on validation. The references are edited parliamentary minutes, and 611 test references remain unreviewed. We apply the same Turkish-aware normalizer and corpus-level word error metric to every system."),
-    ("0:40-1:25", "Acoustic adaptation gives the clearest improvement. Whisper-small word error falls from 24.51 percent to 12.37 with LoRA and 10.37 with full tuning. XLS-R improves from 37.15 to 25.15 percent, combining fine-tuning with a train-derived vocabulary extension. The additional BiLSTM-CTC baseline reaches 47.78 percent. The supplied single-Gaussian character HMM reaches approximately 100 percent, so it provides a weak classical reference."),
-    ("1:25-2:00", "A two-layer heterogeneous GNN learns typed bilinear relation scores from train-only graph evidence. We hold N-best lists fixed and select rescoring weights on validation. Learned graph rescoring does not reliably improve any adapted model: all three recording-group confidence intervals include zero. We preserve that negative result. The study uses one training seed per model. Qwen B3, independent review and reference adjudication remain open. The submission includes hashed artifacts and reproduction commands."),
+    ("0:40-1:25", "Acoustic adaptation gives the clearest improvement. Whisper-small word error falls from 24.51 percent to 12.37 with LoRA and 10.37 with full tuning. XLS-R improves from 37.15 to 25.15 percent, combining fine-tuning with a train-derived vocabulary extension. Zero-shot Whisper-large-v3 reaches 12.32 percent, level with LoRA, and Qwen3-ASR reaches 16.09. The additional BiLSTM-CTC baseline reaches 47.78 percent. The supplied single-Gaussian character HMM reaches approximately 100 percent, so it provides a weak classical reference."),
+    ("1:25-2:00", "A two-layer heterogeneous GNN learns typed bilinear relation scores from train-only graph evidence. We hold N-best lists fixed and select rescoring weights on validation. Learned graph rescoring does not reliably improve any adapted model: all three recording-group confidence intervals include zero. We preserve that negative result. The study uses one training seed per model. Independent review and reference adjudication remain open. The submission includes hashed artifacts and reproduction commands."),
 ]
 
 
@@ -91,12 +91,12 @@ def main():
             "split-body": "4,376 train / 438 validation clips.\nModel selection uses validation only.",
             "reference-body": "Edited TBMM minutes.\n611/636 test references unreviewed."},
         3: {"caption": "CTC adaptation includes vocabulary extension (38 to 52 tokens).\n"
-                       f"Other baselines: BiLSTM-CTC {metric('b5'):.2f}%; single-Gaussian HMM {metric('gaussian-hmm'):.2f}% WER."},
+                       f"Other baselines: Whisper-large-v3 12.32%; Qwen3-ASR 16.09%; BiLSTM-CTC {metric('b5'):.2f}%; HMM {metric('gaussian-hmm'):.0f}%."},
         4: {"heading": "RDL rescoring and limitations", "key-finding": "All three 95% intervals include zero",
             "comparison-title": "Train-only relational model",
             "comparison-body": "2-layer heterogeneous GNN.\nTyped bilinear relation scores.\nValidation-selected N-best fusion.",
             "limits-title": "Study limits and remaining work",
-            "limits-body": "One seed and edited minutes.\nB3 and independent review pending."},
+            "limits-body": "One seed and edited minutes.\nIndependent review pending."},
     }
     talks = TALKS
     table_rows = []

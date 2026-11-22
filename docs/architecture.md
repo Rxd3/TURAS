@@ -1,7 +1,7 @@
 # Intended architecture
 
-**Specification only.** The ten subpackages currently contain empty
-`__init__.py` files. There are no executable stages or shared Python interfaces.
+Nine of the ten subpackages now hold code (`reporting/` has only an empty `__init__.py`); the
+[repository map](../README.md#repository-map) lists what each area contains.
 
 ```mermaid
 flowchart TD
@@ -20,20 +20,20 @@ flowchart TD
     J --> K[Matched comparisons, ablations and reports]
 ```
 
-| Future package | Responsibility | Primary ownership boundary |
+| Package | Contents | Primary ownership boundary |
 | --- | --- | --- |
-| `data/` | Source/manifest validation, curation, verification, immutable split construction | M1 |
-| `baselines/` | Unmodified pretrained adapters and B5 alternative neural baseline | M2 `whisper*`, `qwen3_asr*`; M3 `ctc*`, `bilstm_ctc*` |
-| `models/` | Future trainable acoustic model integration | M4 `whisper*`; M5 `ctc*`; M3 `bilstm_ctc*` |
-| `training/` | Training routines and checkpoint export, separate from inference | M4 `whisper*`; M5 `ctc*`; M3 `bilstm_ctc*` |
-| `decoding/` | Reference-free inputs, N-best export, scoring adapters and orchestration | M4 `whisper*`; M3 `ctc*` export; M5 `rescoring*`; M6 shared interface |
-| `rdl/` | Relational-to-graph loading, heterogeneous relation learning, graph scores | M5; CSV schema definitions reviewed by M1 |
-| `evaluation/` | ID validation, normalization, WER/CER/terms, timing, comparisons | M6 |
-| `reporting/` | Traceable tables, figures, error analysis | M6 |
-| `schemas/` | Future machine-enforced versions of the written contracts | M6; domain owners review |
-| `utils/` | Only necessary shared provenance/configuration utilities | M6 |
+| `data/` | WorldSpeech screening and selection, listening review and verification, release build, relational tables, validation-minutes recovery | M1 |
+| `baselines/` | Pretrained adapters and batch runner: Whisper and Qwen3-ASR (B1–B3), Wav2Vec2-CTC (B4), BiLSTM-CTC (B5) | M2 `whisper*`, `qwen*`; M3 `ctc*`, `bilstm_ctc*` |
+| `models/` | From-scratch B5 BiLSTM-CTC model and feature extractor | M4 `whisper*`; M5 `ctc*`; M3 `bilstm_ctc*` |
+| `training/` | Whisper LoRA/full and XLS-R CTC adaptation, a train-only acoustic loop, synthetic optimizer probes | M4 `whisper*`; M5 `ctc*`; M3 `bilstm_ctc*` |
+| `decoding/` | Shared adapter interface, audio, export, timing, hardware and memory; Whisper and CTC N-best scoring, adapted checkpoints, rescoring, relational inference | M4 `whisper*`; M3 `ctc*` export; M5 `rescoring*`; M6 shared interface |
+| `rdl/` | Train-only graph snapshots, heterogeneous relation model, training, scoring and N-best rescoring | M5; CSV schema definitions reviewed by M1 |
+| `evaluation/` | Normalization, alignment, strict ID join, WER/CER, frozen-lexicon term metrics | M6 |
+| `reporting/` | Reserved; only an empty `__init__.py` | M6 |
+| `schemas/` | Validators for JSONL, prediction and N-best artifacts and their shared validation report | M6; domain owners review |
+| `utils/` | Environment check and private bundle staging | M6 |
 
-These path patterns reserve future ownership; they do not name existing modules.
+Ownership patterns also reserve files not yet created.
 M6 owns shared `__init__.py`/packaging and all cross-package interface changes.
 Model owners propose named leaf files in a focused PR before creating them.
 
@@ -63,4 +63,4 @@ build the shared evaluator and adapters; evaluate all five baselines; fine-tune
 Whisper/CTC; train and validate RDL without test access; freeze selection;
 produce final test comparisons, ablations, reproducibility evidence and slides.
 Interface design and small offline checks may proceed before dataset release.
-This initialization stops before every implementation stage.
+The [repository map](../README.md#repository-map) shows where each implemented stage now lives.

@@ -8,7 +8,7 @@ and rescoring conditions on the same frozen 636 clips against working references
 
 | Material | What it covers |
 | --- | --- |
-| [Final two-minute presentation](presentation/TURAS-final-2-minute.pptx) and [full deck](presentation/TURAS.pptx) | Title slide and four timed slides (about 1:52) for delivery; 12-slide full deck for questions |
+| [Final two-minute presentation](presentation/TURAS-final-2-minute.pptx) and [full deck](presentation/TURAS.pptx) | Title slide and four timed slides (about 1:15) for delivery; 12-slide full deck for questions |
 | [Final report](results/final/M4_M5_FINAL_REPORT.md) | Raw and normalized WER/CER, terminology, timing, controls and paired uncertainty |
 | [Metrics CSV](results/final/m45_metrics.csv) and [evaluation summary](results/final/m45_test_summary.json) | Per-system aggregates, edit counts and evaluation provenance |
 | [Error analysis](docs/error_analysis.md) | Error profiles, terminology and quantity diagnostics, and the RDL null result |

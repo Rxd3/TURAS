@@ -15,7 +15,7 @@ not an independent team approval or a verified-reference release.
 | B5 | Continued M3's epoch-13 weights with fresh AdamW at `3e-4`; epoch 22 selected on validation; early stop at epoch 28; complete validation/test and three-repeat timing |
 | Supplied classical stage | Three Viterbi EM passes for a **single-diagonal-Gaussian character HMM**; 4,072 feasible training clips, 304 logged infeasible clips; full frozen evaluation |
 | Output integrity | M3 predictions/N-best passed shared validators, raw/normalized metrics independently matched JiWER, archive CRC and model hashes passed |
-| Presentation | A title slide and four content slides with native charts, and a timed English script (238 spoken words, about 1:52) |
+| Presentation | A title slide and four content slides with native charts, and a timed English script (134 spoken words, about 1:15) |
 | Reproduction delivery | Separate role packages, exact runtime source snapshots, restore and scoring commands, file hashes and upload/link instructions |
 | Fresh Python-environment restoration | Archived B5 source/weights/audio matched 3/3 validation transcripts. M4/M5 restoration verified 226 indexed files and passed 3 acoustic, 3 online joint and 15 cached runs on two validation clips, with no references/test audio read. Same-machine owner-assisted check; independent review is not claimed. |
 | Current offline suite | At this head: 1,256 passed and 43 skipped in a lean environment without torch (earlier: 1,200 passed, 19 skipped), four upstream deprecation warnings and 51 passing subtests; controller-lock and metadata-only weight-restoration regressions are covered. |

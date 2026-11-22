@@ -142,7 +142,7 @@ function forest(slide, rows, { x, y, w, h, labelW, min, max, major, fmt, color, 
   });
   s.addText("Project 3", { x: 0.72, y: 6.6, w: 4, h: 0.35, fontSize: 13, color: "8FA0B5", margin: 0, isTextBox: true });
   s.addNotes(`TALK (2 seconds)
-This is TURAS, our Turkish speech recognition project.
+This is TURAS, Turkish speech recognition for parliament.
 
 SOURCES
 ${SRC}README.md`);
@@ -180,8 +180,8 @@ ${SRC}README.md`);
   });
   takeaway(s, "We kept 2% of the source: 5,450 clips of Turkish economic and legislative speech.", 6.1);
   footnote(s, "Then: fine-tune Whisper-small and XLS-R CTC on train; rerank 5-best lists with a train-only graph. Source: WorldSpeech tr_tr (CC BY-NC 4.0).", 6.55);
-  s.addNotes(`TALK (30 seconds)
-TURAS is Turkish speech recognition for parliamentary debates on the economy and legislation, and we built the dataset ourselves. From about 240 thousand Turkish clips we kept 5,450. We removed speaker headers, duplicates and badly aligned text, and kept only clips matching our 90-term economic and legal word list. We split by recording, held out every 2026 session as the test set, and reviewed 249 clips by listening, after a 50-clip pilot, to check the transcripts.
+  s.addNotes(`TALK (20 seconds)
+We built a domain-specific Turkish dataset from parliament recordings. From 240 thousand clips we kept 5,450 about the economy and laws, using a 90-term word list. We test on unseen 2026 sessions and checked samples by listening.
 
 SOURCES
 ${SRC}docs/dataset.md
@@ -218,8 +218,8 @@ ${SRC}data/splits/turas-tr-econ-legis-v0.1/split_manifest.json`);
     { x: 8.6, y: 4.2, w: 4.2, h: 1.6, valign: "top", margin: 0, isTextBox: true });
   takeaway(s, "Full fine-tuning gives the best system: 10.37% WER, down from 24.51% before tuning.");
   footnote(s, "RTF = compute time / audio time (RTX 5070 Ti, 3 repeats). Large-v3, Qwen: M6 scorer, outside the frozen protocol. GMM-HMMs: ~100% WER (not shown).");
-  s.addNotes(`TALK (30 seconds)
-We fine-tune Whisper-small and XLS-R CTC on the training split. Full fine-tuning cuts Whisper's error from 24.5 to 10.4 percent, the best result; LoRA reaches 12.4, and XLS-R improves from 37.2 to 25.1. Zero-shot Whisper-large-v3 only ties our LoRA model at 12.3 while running three times slower; Qwen3-ASR reaches 16.1 and a Turkish transducer 30.
+  s.addNotes(`TALK (20 seconds)
+Fine-tuning Whisper-small cut errors from 24.5 to 10.4 percent, our best result. XLS-R improved from 37 to 25. The much larger Whisper-large-v3, without tuning, only ties our small model and is three times slower.
 
 SOURCES
 ${SRC}results/final/m45_metrics.csv
@@ -261,8 +261,8 @@ ${SRC}results/final/m3_test_summary.json`);
   ], { x: 8.95, y: 1.8, w: 3.95, h: 3.75, labelW: 1.6, min: -16, max: 2, major: 4, fmt: "0", color: HEX.teal, name: "gains-forest" });
   takeaway(s, "Fine-tuning removes 76% of inserted words and learns institution names and numbers.");
   footnote(s, "Right: paired WER change (fine-tuned − pretrained), recording-group bootstrap, 28 recordings, 2,000 replicates. All intervals lie below zero.");
-  s.addNotes(`TALK (25 seconds)
-Where do the gains come from? Fine-tuning removes three quarters of Whisper's inserted words and halves substitutions. Domain terms improve sharply: the social security agency SGK goes from 36 to 95 percent F1, and spoken numbers from 32 to 95. All three gains have paired 95 percent intervals well below zero.
+  s.addNotes(`TALK (17 seconds)
+Fine-tuning removes most extra words and learns domain terms like SGK and spoken numbers. The intervals on the right are far below zero, so the gains are real.
 
 SOURCES
 ${SRC}docs/error_analysis.md
@@ -299,8 +299,8 @@ ${SRC}results/final/m45_test_summary.json`);
     { x: 8.05, y: 4.55, w: 4.65, h: 0.95, valign: "middle", margin: 0, isTextBox: true });
   takeaway(s, "Graph rescoring moves WER by at most 0.06 points; every 95% interval includes zero.", 5.7);
   footnote(s, "Limits: one training seed; 611 of 636 test references are unreviewed edited minutes; speaker overlap unproven.", 6.25);
-  s.addNotes(`TALK (25 seconds)
-Finally, relational rescoring. A two-layer heterogeneous graph network rescores each five-best list. It changes error rates by at most six hundredths of a point, and every confidence interval includes zero, although better candidates exist. We report this null result, with our limits: one seed and mostly unreviewed references.
+  s.addNotes(`TALK (17 seconds)
+Our graph rescoring did not help: every interval crosses zero, even though better candidates exist. We report this honestly. Limits: one training seed and mostly unreviewed transcripts.
 
 SOURCES
 ${SRC}results/final/M4_M5_FINAL_REPORT.md

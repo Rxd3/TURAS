@@ -170,9 +170,9 @@ ${SRC}data/splits/turas-tr-econ-legis-v0.1/split_manifest.json`);
   s.addText("Normalized word error rate (%) on 636 unseen 2026 clips. Lower is better.",
     { x: 0.6, y: 1.2, w: 12.1, h: 0.4, fontSize: 18, color: C.text2, margin: 0, isTextBox: true });
   const names = ["Whisper-small, full fine-tune", "Whisper-large-v3, zero-shot", "Whisper-small, LoRA",
-    "Qwen3-ASR-1.7B, zero-shot", "Whisper-small, pretrained", "XLS-R CTC, fine-tuned", "XLS-R CTC, pretrained", "BiLSTM-CTC, trained here"];
-  const vals = [10.371, 12.319, 12.368, 16.094, 24.512, 25.150, 37.152, 47.776];
-  const colors = [HEX.teal, HEX.orange, HEX.teal, HEX.orange, HEX.slate, HEX.teal, HEX.slate, HEX.light];
+    "Qwen3-ASR-1.7B, zero-shot", "Whisper-small, pretrained", "XLS-R CTC, fine-tuned", "Seda RNN-T transducer", "XLS-R CTC, pretrained", "BiLSTM-CTC, trained here"];
+  const vals = [10.371, 12.319, 12.368, 16.094, 24.512, 25.150, 29.958, 37.152, 47.776];
+  const colors = [HEX.teal, HEX.orange, HEX.teal, HEX.orange, HEX.slate, HEX.teal, HEX.orange, HEX.slate, HEX.light];
   label(s, "All systems", 0.6, 1.8, 6);
   chart(s, pres.charts.BAR, [{ name: "Normalized WER", labels: [...names].reverse(), values: [...vals].reverse() }],
     barOpts({ x: 0.45, y: 2.15, w: 7.75, h: 3.55, chartColors: [...colors].reverse(), valAxisMinVal: 0, valAxisMaxVal: 55, valAxisMajorUnit: 10,
@@ -189,9 +189,9 @@ ${SRC}data/splits/turas-tr-econ-legis-v0.1/split_manifest.json`);
     { text: "slower: zero-shot large-v3 only ties LoRA-tuned Whisper-small (12.32 vs 12.37)", options: { fontSize: 14, color: C.text1 } }],
     { x: 8.6, y: 4.2, w: 4.2, h: 1.6, valign: "top", margin: 0, isTextBox: true });
   takeaway(s, "Full fine-tuning gives the best system: 10.37% WER, down from 24.51% before tuning.");
-  footnote(s, "RTF = compute time / audio time (RTX 5070 Ti, 3 repeats). Large-v3 and Qwen: M6 scorer, outside the frozen protocol. HMM: 100% (not shown).");
+  footnote(s, "RTF = compute time / audio time (RTX 5070 Ti, 3 repeats). Large-v3, Qwen: M6 scorer, outside the frozen protocol. GMM-HMMs: ~100% WER (not shown).");
   s.addNotes(`TALK (30 seconds)
-We fine-tune Whisper-small and XLS-R CTC on the training split. Full fine-tuning cuts Whisper's error from 24.5 to 10.4 percent, the best result; LoRA reaches 12.4, and XLS-R improves from 37.2 to 25.2. Zero-shot Whisper-large-v3 only ties our LoRA model at 12.3 while running three times slower, and Qwen3-ASR reaches 16.1.
+We fine-tune Whisper-small and XLS-R CTC on the training split. Full fine-tuning cuts Whisper's error from 24.5 to 10.4 percent, the best result; LoRA reaches 12.4, and XLS-R improves from 37.2 to 25.2. Zero-shot Whisper-large-v3 only ties our LoRA model at 12.3 while running three times slower; Qwen3-ASR reaches 16.1 and a Turkish transducer 30.
 
 SOURCES
 ${SRC}results/final/m45_metrics.csv
@@ -262,7 +262,7 @@ ${SRC}results/final/m45_test_summary.json`);
     { text: "headroom exists: the best of five large-v3 candidates scores 9.72 vs 12.32 WER", options: { fontSize: 13, color: C.text1 } }],
     { x: 8.05, y: 4.55, w: 4.65, h: 0.95, valign: "middle", margin: 0, isTextBox: true });
   takeaway(s, "Graph rescoring moves WER by at most 0.06 points; every 95% interval includes zero.", 5.7);
-  footnote(s, "Limits: one training seed; 611 of 636 test references are unreviewed edited minutes; speaker overlap unproven. Seda RNN-T and mixture-HMM runs are in progress.", 6.25);
+  footnote(s, "Limits: one training seed; 611 of 636 test references are unreviewed edited minutes; speaker overlap unproven.", 6.25);
   s.addNotes(`TALK (25 seconds)
 Finally, relational rescoring. A two-layer heterogeneous graph network rescores each five-best list. It changes error rates by at most six hundredths of a point, and every confidence interval includes zero, although better candidates exist. We report this null result, with our limits: one seed and mostly unreviewed references.
 
@@ -388,7 +388,7 @@ if (BACKUP) {
     { text: "611 of 636 test references are unreviewed edited minutes; 25 have single-reviewer checks.", options: { bullet: { indent: 18 }, breakLine: true } },
     { text: "Speaker disjointness is not proven.", options: { bullet: { indent: 18 }, breakLine: true } },
     { text: "Large-v3 and Qwen are scored outside the frozen protocol; no paired test against the fine-tuned systems yet.", options: { bullet: { indent: 18 }, breakLine: true } },
-    { text: "Seda RNN-T and 4-mixture GMM-HMM have exports; timing and reports in progress.", options: { bullet: { indent: 18 } } },
+    { text: "Classical GMM-HMMs without a lexicon or LM recognize almost no words (~100% WER).", options: { bullet: { indent: 18 } } },
   ], { x: 7.4, y: 1.85, w: 5.4, h: 4.0, fontSize: 14, color: C.text1, paraSpaceAfter: 8, valign: "top", margin: 0, isTextBox: true });
   footnote(s, "Run python scripts/verify_submission.py from a fresh clone to check the frozen protocol, split hashes and metric arithmetic.", 6.4);
   s.addNotes(`BACKUP DISCUSSION

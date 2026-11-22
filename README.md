@@ -120,15 +120,21 @@ Normalized test WER/CER (%) on the 636 test clips.
 | B4 | wav2vec 2.0 + CTC head, fine-tuned for Turkish by its publisher | `mpoyraz/wav2vec2-xls-r-300m-cv7-turkish` @ `708639f5` | 37.15 | 13.17 |
 | B5 | CTC encoder (BiLSTM-CTC), trained by us from scratch | [`configs/baselines/bilstm_ctc.json`](configs/baselines/bilstm_ctc.json) | 47.78 | 13.50 |
 | B6 | Classical HMM, single diagonal Gaussian per character state, trained by us | [`scripts/m3_run_gaussian_hmm.py`](scripts/m3_run_gaussian_hmm.py) | 100.00 | 88.76 |
-| B7 | Classical MFCC-39 + GMM-HMM (4 diagonal Gaussians, 3-state graphemes), trained by us | [`scripts/train_mixture_hmm.py`](scripts/train_mixture_hmm.py) | in progress | in progress |
-| B8 | Transducer (Zipformer2 RNN-T) | `atasoglu/seda-v0.1` @ `5cbbda1b` | in progress | in progress |
+| B7 | Classical MFCC-39 + GMM-HMM (4 diagonal Gaussians, 3-state graphemes), trained by us | [`scripts/train_mixture_hmm.py`](scripts/train_mixture_hmm.py) | 99.97 | 64.55 |
+| B8 | Transducer (Zipformer2 RNN-T), CPU, greedy, no external LM | `atasoglu/seda-v0.1` @ `5cbbda1b` | 29.96 | 12.81 |
 
 B1 and B4 come from the frozen protocol ([metrics](results/final/m45_metrics.csv)).
 B2 and B3 are scored with the same library calls by
 [`scripts/m6_score_baselines.py`](scripts/m6_score_baselines.py), outside the frozen
 protocol ([B2/B3 results](results/m6/README.md)). B5 and B6:
 [M3 summary](results/final/m3_test_summary.json), with checkpoints, predictions,
-N-best lists, timing and training history in [`results/m3/`](results/m3/README.md). The test references were kept by
+N-best lists, timing and training history in [`results/m3/`](results/m3/README.md).
+B7 and B8: [baseline completion report](results/final/BASELINE_COMPLETION_REPORT.md)
+([CSV](results/final/baseline_completion_metrics.csv), [summary](results/final/baseline_completion_summary.json)).
+That report also has a separate local rerun of B2 (12.39 / 5.46) and B3 (16.17 / 5.62),
+scored with the frozen evaluator; the table keeps M6's runs, chosen before test access.
+B7 is a real GMM-HMM but has no pronunciation lexicon or language model, so it
+recognizes almost no whole words; its CER is reported for that reason. The test references were kept by
 agreement with an upstream ASR transcript (CER ≤ 0.25), which can favour
 Whisper-family systems.
 

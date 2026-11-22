@@ -76,7 +76,7 @@ review or full-test parity for every system.
 | B5 (BiLSTM-CTC) | Epoch 22 selected after GPU continuation; full test WER 47.776%, CER 13.503%; checked predictions/N-best and 3-repeat timing |
 | Supplied single-Gaussian character HMM | Three EM passes; full test WER 99.995%, CER 88.760%; a weak classical baseline, not a conventional mixture-Gaussian phoneme HMM |
 | F1–F3 (Whisper LoRA, full Whisper and adapted CTC) and R1 (learned relational rescoring) | Complete working test results, adapted checkpoints, graph controls and timing |
-| Additional baseline coverage | Seda Turkish RNN-T and a new genuine four-mixture grapheme HMM have completed full validation/test exports. Repeated timing and final offline reports are in progress. The earlier supplied single-Gaussian HMM remains preserved separately. [Follow-up audit](docs/baseline_completion_followup.md) |
+| B7 four-mixture MFCC GMM-HMM and B8 Seda Turkish RNN-T | Complete validation/test results and three-repeat timing: B8 29.96% WER / 12.81% CER, B7 99.97% / 64.55%. The earlier single-Gaussian HMM is kept separately. [Completion report](results/final/BASELINE_COMPLETION_REPORT.md) |
 
 M6's dated GPU smoke report covers a reference-free sample of 20 timed clips.
 The four beam systems passed N-best validation after shared-export deduplication.

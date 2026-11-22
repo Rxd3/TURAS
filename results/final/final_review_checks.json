@@ -34,7 +34,7 @@
  },
  "presentation": {
   "file": "presentation/TURAS-final-2-minute.pptx",
-  "sha256": "9a59d4d414bfefb9c149a6ccbc09cb68f88875e143bce8651641a3e586182c2f",
+  "sha256": "515d70efa21d6a36001998c573052fbc152be56426b698151e2f5285a152e54e",
   "slides": 5,
   "content_slides": 4,
   "title_slide": true,
@@ -42,7 +42,7 @@
   "spoken_seconds": 112,
   "language": "English",
   "slot_seconds": 120,
-  "editable_native_chart_count": 6,
+  "editable_native_chart_count": 7,
   "opened_and_rendered_in_PowerPoint": true,
   "package_validator": "pptx skill office/validate.py: All validations PASSED",
   "generator": "presentation/build_presentation.js + presentation/add_error_bars.py",
@@ -50,7 +50,11 @@
    "sha256": "5a2e7c17644fb890f36cab25de3333f79cda1ce3ee13be17a385f11276eee1cf",
    "slides": 4,
    "spoken_words": 203
-  }
+  },
+  "confidence_interval_plots": [
+   "slide 4: paired fine-tuning gains (dot = estimate, bar = 95% CI)",
+   "slide 5: graph-rescoring WER change (dot = estimate, bar = 95% CI)"
+  ]
  },
  "independent_human_approval": false,
  "clean_environment_reproduction_claimed": false,

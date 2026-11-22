@@ -77,14 +77,42 @@ function barOpts(extra) {
     ...extra,
   };
 }
-function legend(slide, items, x, y) {
+function legend(slide, items, x, y, fontSize = 12) {
+  const k = fontSize / 12;
   let cx = x;
   for (const [text, color] of items) {
     slide.addShape(pres.shapes.RECTANGLE, { x: cx, y: y + 0.07, w: 0.16, h: 0.16, fill: { color }, line: { color } });
-    const w = 0.095 * text.length + 0.15;
-    slide.addText(text, { x: cx + 0.22, y, w, h: 0.3, fontSize: 12, color: C.text1, margin: 0, isTextBox: true });
-    cx += w + 0.55;
+    const w = (0.095 * text.length + 0.15) * k;
+    slide.addText(text, { x: cx + 0.22, y, w, h: 0.3, fontSize, color: C.text1, margin: 0, isTextBox: true });
+    cx += w + 0.55 * k;
   }
+}
+
+// Dot-and-interval ("forest") plot: one row per comparison, the dot is the estimate and the
+// horizontal bar its 95% interval (added by add_error_bars.py). The vertical axis crosses at 0,
+// so it is the "no difference" line. The plot area has a fixed layout, so the row labels
+// (text boxes on the left) line up with the dots.
+function forest(slide, rows, { x, y, w, h, labelW, min, max, major, fmt, color, name }) {
+  const n = rows.length;
+  const L = { x: 0.03, y: 0.03, w: 0.94, h: 0.82 };
+  chart(slide, pres.charts.SCATTER, [
+    { name: "x", values: rows.map((r) => r.est) },
+    { name: "Estimate", values: rows.map((r, i) => n - i) },
+  ], {
+    x: x + labelW, y, w: w - labelW, h, layout: L, objectName: name,
+    chartColors: [color], lineSize: 0, lineDataSymbol: "circle", lineDataSymbolSize: 12, lineDataSymbolLineColor: color,
+    valAxisMinVal: 0.5, valAxisMaxVal: n + 0.5, valAxisLabelPos: "none", valGridLine: { style: "none" },
+    valAxisLineShow: true, valAxisLineColor: HEX.navy,
+    catAxisMinVal: min, catAxisMaxVal: max, catAxisMajorUnit: major, catAxisLabelFormatCode: fmt,
+    catAxisLabelColor: HEX.muted, catAxisLabelFontSize: 11, catAxisLabelFontFace: "+mn-lt",
+    catGridLine: { color: HEX.grid, size: 0.75 }, showLegend: false, showLabel: false,
+  }, [rows.map((r) => +(r.est - r.lo).toFixed(4)), rows.map((r) => +(r.hi - r.est).toFixed(4))]);
+  rows.forEach((r, i) => {
+    const cy = y + h * (L.y + (L.h * (i + 0.5)) / n);
+    slide.addText([{ text: r.label, options: { bold: true, fontSize: 13, color: C.text1, breakLine: true } },
+      { text: r.note, options: { fontSize: 11, color: C.text2 } }],
+      { x, y: cy - 0.3, w: labelW - 0.12, h: 0.6, align: "right", valign: "middle", margin: 0, isTextBox: true });
+  });
 }
 
 // ---------- Title slide (about 2 seconds) ----------
@@ -204,27 +232,35 @@ ${SRC}results/final/m3_test_summary.json`);
 {
   const s = pres.addSlide({ masterName: "TURAS_CONTENT" });
   s.addText("Where the gains come from", { placeholder: "title" });
-  label(s, "Word errors by type (% of reference words)", 0.6, 1.4, 6.5);
+  label(s, "Word errors by type (% of words)", 0.6, 1.4, 4.2);
   chart(s, pres.charts.BAR, [
     { name: "Substitutions", labels: ["Whisper pretrained", "Whisper LoRA", "Whisper full", "XLS-R pretrained", "XLS-R fine-tuned"], values: [16.72, 9.11, 7.61, 27.61, 16.80] },
     { name: "Deletions", labels: ["Whisper pretrained", "Whisper LoRA", "Whisper full", "XLS-R pretrained", "XLS-R fine-tuned"], values: [1.63, 1.51, 1.28, 2.64, 6.57] },
     { name: "Insertions", labels: ["Whisper pretrained", "Whisper LoRA", "Whisper full", "XLS-R pretrained", "XLS-R fine-tuned"], values: [6.16, 1.74, 1.48, 6.90, 1.78] },
-  ], barOpts({ barDir: "col", catAxisOrientation: "minMax", x: 0.45, y: 1.8, w: 6.6, h: 3.75, barGapWidthPct: 60,
+  ], barOpts({ barDir: "col", catAxisOrientation: "minMax", x: 0.45, y: 1.8, w: 4.3, h: 3.75, barGapWidthPct: 50,
     chartColors: [HEX.navy, HEX.orange, HEX.gold], valAxisMaxVal: 30, valAxisMajorUnit: 10, valAxisLabelFormatCode: "0",
-    dataLabelFormatCode: "0.0", dataLabelFontSize: 10, catAxisLabelFontSize: 12, objectName: "sdi-chart" }));
-  legend(s, [["Substitutions", HEX.navy], ["Deletions", HEX.orange], ["Insertions", HEX.gold]], 0.8, 5.6);
+    dataLabelFormatCode: "0.0", dataLabelFontSize: 9, catAxisLabelFontSize: 11, objectName: "sdi-chart" }));
+  legend(s, [["Substitutions", HEX.navy], ["Deletions", HEX.orange], ["Insertions", HEX.gold]], 0.7, 5.6, 11);
 
-  label(s, "Domain-term F1 (%), Whisper-small", 7.5, 1.4, 5.3);
+  label(s, "Domain terms, F1 (%)", 4.95, 1.4, 4.0);
   chart(s, pres.charts.BAR, [
     { name: "Full fine-tune", labels: ["Numbers", "Avro (euro)", "TÜİK", "Bağ-Kur", "SGK"], values: [94.68, 97.1, 96.0, 98.8, 95.3] },
     { name: "Pretrained", labels: ["Numbers", "Avro (euro)", "TÜİK", "Bağ-Kur", "SGK"], values: [32.13, 71.4, 57.1, 46.4, 35.8] },
-  ], barOpts({ x: 7.35, y: 1.8, w: 5.5, h: 3.75, barGapWidthPct: 40, chartColors: [HEX.teal, HEX.slate], valAxisMinVal: 0,
+  ], barOpts({ x: 4.8, y: 1.8, w: 4.0, h: 3.75, barGapWidthPct: 40, chartColors: [HEX.teal, HEX.slate], valAxisMinVal: 0,
     valAxisMaxVal: 100, valAxisMajorUnit: 20, valAxisLabelFormatCode: "0", dataLabelFormatCode: "0.0", dataLabelFontSize: 11,
     dataLabelPosition: "inEnd", dataLabelColor: HEX.white,
     objectName: "terms-chart" }));
-  legend(s, [["Pretrained", HEX.slate], ["Full fine-tune", HEX.teal]], 7.65, 5.6);
+  legend(s, [["Pretrained", HEX.slate], ["Full fine-tune", HEX.teal]], 5.1, 5.6, 11);
+
+  label(s, "WER change, 95% CI (points)", 9.1, 1.4, 3.8);
+  forest(s, [
+    { label: "LoRA − base", note: "−12.1 [−13.5, −10.8]", est: -12.144, lo: -13.463, hi: -10.774 },
+    { label: "Full − base", note: "−14.1 [−15.4, −12.8]", est: -14.141, lo: -15.422, hi: -12.818 },
+    { label: "XLS-R − base", note: "−12.0 [−13.1, −10.9]", est: -12.003, lo: -13.129, hi: -10.900 },
+    { label: "Full − LoRA", note: "−2.0 [−2.4, −1.5]", est: -1.997, lo: -2.420, hi: -1.542 },
+  ], { x: 8.95, y: 1.8, w: 3.95, h: 3.75, labelW: 1.6, min: -16, max: 2, major: 4, fmt: "0", color: HEX.teal, name: "gains-forest" });
   takeaway(s, "Fine-tuning removes 76% of inserted words and learns institution names and numbers.");
-  footnote(s, "Paired recording-group bootstrap, 2,000 replicates, WER change in points: LoRA −12.14 [−13.46, −10.77]; full −14.14 [−15.42, −12.82]; XLS-R −12.00 [−13.13, −10.90].");
+  footnote(s, "Right: paired WER change (fine-tuned − pretrained), recording-group bootstrap, 28 recordings, 2,000 replicates. All intervals lie below zero.");
   s.addNotes(`TALK (25 seconds)
 Where do the gains come from? Fine-tuning removes three quarters of Whisper's inserted words and halves substitutions. Domain terms improve sharply: the social security agency SGK goes from 36 to 95 percent F1, and spoken numbers from 32 to 95. All three gains have paired 95 percent intervals well below zero.
 
@@ -239,12 +275,12 @@ ${SRC}results/final/m45_test_summary.json`);
   const s = pres.addSlide({ masterName: "TURAS_CONTENT" });
   s.addText("Relational rescoring: a clean null result", { placeholder: "title" });
   label(s, "WER change from graph rescoring (points, 95% CI)", 0.6, 1.4, 7);
-  chart(s, pres.charts.BAR, [{ name: "WER change", labels: ["XLS-R tuned  +0.039", "Whisper full  +0.058", "Whisper LoRA  +0.005"],
-    values: [0.039, 0.058, 0.005] }],
-    barOpts({ x: 0.45, y: 1.85, w: 7.0, h: 3.2, chartColors: [HEX.navy], barGapWidthPct: 90,
-      valAxisMinVal: -0.2, valAxisMaxVal: 0.2, valAxisMajorUnit: 0.1, valAxisLabelFormatCode: "+0.0;-0.0;0",
-      showValue: false, catAxisLabelPos: "low", objectName: "rdl-chart" }),
-    [[0.083, 0.092, 0.113], [0.091, 0.103, 0.107]]);
+  forest(s, [
+    { label: "Whisper LoRA", note: "+0.005 [−0.108, +0.112]", est: 0.005, lo: -0.108, hi: 0.112 },
+    { label: "Whisper full", note: "+0.058 [−0.034, +0.161]", est: 0.058, lo: -0.034, hi: 0.161 },
+    { label: "XLS-R fine-tuned", note: "+0.039 [−0.044, +0.130]", est: 0.039, lo: -0.044, hi: 0.130 },
+  ], { x: 0.45, y: 1.85, w: 7.0, h: 3.2, labelW: 2.3, min: -0.2, max: 0.2, major: 0.1, fmt: "+0.0;-0.0;0",
+    color: HEX.navy, name: "rdl-forest" });
   s.addText("Zero = no change. Positive = more errors.", { x: 0.6, y: 5.1, w: 6.8, h: 0.3, fontSize: 12, color: C.text2, margin: 0, isTextBox: true });
 
   label(s, "What the graph does", 7.9, 1.4, 5);

@@ -5461,3 +5461,4 @@ a19749be0cfd45cda191d488cb4695755dc98d892ac003021476a015a56b4c50 *./relational/t
 1c6b12d4a7de3ed5b717d193f07d8194dc7105bd6785305029afef6d9e3ac3f2 *./turas-tr-econ-legis-v0.1.inference.validation.jsonl
 31e372f0e35f504de59b49f1e0e1f3ed6fcc2772138c591a2cf2b054a4e7ef3f *./turas-tr-econ-legis-v0.1.references.test.jsonl
 f4992d2951389ac243c281d2875511cfa0669d026d8698993db48b30b09a4508 *./turas-tr-econ-legis-v0.1.references.train.jsonl
+78940ad0d50cb44e14a037c486116f3bd82575be7043cdccad880110ede37086 *./exclusion_ledger.jsonl.gz

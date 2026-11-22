@@ -70,9 +70,20 @@ also appear in its train split.
   scores use the original references, which are the official edited minutes.
   [Review record](docs/m1_deadline_handoff.md)
 
-**Data in this repository:** the cleaned dataset (5,450 FLAC clips, train and test
-references, inference inputs, relational tables, checksums) is in
-[`data/cleaned/turas-tr-econ-legis-v0.1/`](data/cleaned/turas-tr-econ-legis-v0.1/README.md).
+**Data in this repository:**
+
+- **Raw:** all 239,654 upstream rows (transcripts and metadata, no audio) in
+  [`data/raw/worldspeech-tr_tr-b76b8539/`](data/raw/worldspeech-tr_tr-b76b8539/README.md).
+- **Cleaned:** 5,450 FLAC clips, train and test references, inference inputs,
+  relational tables and checksums in
+  [`data/cleaned/turas-tr-econ-legis-v0.1/`](data/cleaned/turas-tr-econ-legis-v0.1/README.md).
+- **Removal log:** the reason every upstream row was kept or removed, in
+  [`exclusion_ledger.jsonl.gz`](data/cleaned/turas-tr-econ-legis-v0.1/exclusion_ledger.jsonl.gz).
+  [`scripts/m1_export_raw.py`](scripts/m1_export_raw.py) rebuilds it from the raw
+  data and checks that it matches the frozen release byte for byte.
+- **Fixed by listening:** 13 references (3 train, 10 test) were corrected after
+  listening; 35 rows are marked `verified`.
+
 Full details: [dataset card](docs/dataset.md).
 
 ## Metrics and why we use them
@@ -159,6 +170,7 @@ seed 2026). [Final report](results/final/M4_M5_FINAL_REPORT.md) ·
    [follow-up baselines](docs/final_reproduction.md)
 
 Main entry points in [`scripts/`](scripts/README.md): `m1_build_release.py` (dataset),
+`m1_export_raw.py` (raw data and removal log),
 `run_baseline_batch.py` (baselines), `m4_train_whisper.py`, `m5_train_ctc.py`,
 `m5_train_rdl.py` (training), `m45_run_final.py` / `m45_final_evaluate.py` (frozen
 benchmark), `m6_score_baselines.py` (B2/B3), `m3_*.py` and `train_mixture_hmm.py`

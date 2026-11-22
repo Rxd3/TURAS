@@ -19,6 +19,7 @@ attribution only.
 | `turas-tr-econ-legis-v0.1.references.train.jsonl` | 4,376 train references (official TBMM minutes) with source, timing, session, verification and topic fields |
 | `turas-tr-econ-legis-v0.1.references.test.jsonl` | 636 test references, same fields. Use for final scoring only |
 | `relational/train/`, `relational/test/` | Relational tables extracted from the references (utterances, quantities, relationships, provenance). Only `train/` may enter the RDL training graph |
+| `exclusion_ledger.jsonl.gz` | Removal log: one line for each of the 239,654 upstream rows with its TURAS split or the first reason it was removed, plus matched domain terms and issue codes. Rebuilt from the [raw data](../../raw/worldspeech-tr_tr-b76b8539/README.md) by `scripts/m1_export_raw.py`; its SHA-256 (uncompressed) equals the frozen `exclusion_ledger_sha256` |
 | `SHA256SUMS` | SHA-256 of every file in this folder (`sha256sum -c SHA256SUMS`) |
 
 Split membership is fixed by [`data/splits/turas-tr-econ-legis-v0.1/`](../../splits/turas-tr-econ-legis-v0.1/)
@@ -35,6 +36,7 @@ numbers use the separately hashed working validation variant
 (`owner-recovered-validation-minutes-v1`, payload `d0c8519c…`), which was not part
 of the shared release bundles.
 
-References are edited minutes, not verbatim transcripts. The listening review
+References are the upstream minutes (edited, not verbatim), except 13 clips (3
+train, 10 test) corrected after listening; 35 reference rows are `verified`. The listening review
 records are in [`data/verification/`](../../verification/) and
 [`docs/m1_deadline_handoff.md`](../../../docs/m1_deadline_handoff.md).

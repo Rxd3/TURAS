@@ -34,7 +34,8 @@ _netrc
 .git-credentials
 
 # Downloaded or generated data; small reviewed metadata belongs elsewhere
-data/raw/
+data/raw/*
+!data/raw/worldspeech-tr_tr-b76b8539/
 data/downloads/
 data/processed/
 data/private/
@@ -55,6 +56,8 @@ data/audio/
 *.7z
 # The cleaned benchmark audio is committed on purpose (course rule: data in the repo).
 !data/cleaned/**/*.flac
+# Raw WorldSpeech text/metadata (no audio) is committed on purpose as well.
+!data/raw/worldspeech-tr_tr-b76b8539/*.parquet
 
 # Weights, local databases, large predictions, training logs and artifacts
 artifacts/

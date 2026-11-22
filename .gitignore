@@ -53,6 +53,8 @@ data/audio/
 *.tgz
 *.zip
 *.7z
+# The cleaned benchmark audio is committed on purpose (course rule: data in the repo).
+!data/cleaned/**/*.flac
 
 # Weights, local databases, large predictions, training logs and artifacts
 artifacts/

@@ -70,6 +70,9 @@ also appear in its train split.
   scores use the original references, which are the official edited minutes.
   [Review record](docs/m1_deadline_handoff.md)
 
+**Data in this repository:** the cleaned dataset (5,450 FLAC clips, train and test
+references, inference inputs, relational tables, checksums) is in
+[`data/cleaned/turas-tr-econ-legis-v0.1/`](data/cleaned/turas-tr-econ-legis-v0.1/README.md).
 Full details: [dataset card](docs/dataset.md).
 
 ## Metrics and why we use them
@@ -168,7 +171,7 @@ benchmark), `m6_score_baselines.py` (B2/B3), `m3_*.py` and `train_mixture_hmm.py
 | [`src/turkish_asr_rdl/`](src/turkish_asr_rdl/) | Python package: data curation, baseline adapters, training, decoding, RDL and evaluation |
 | [`scripts/`](scripts/) | Command-line entry points for each step |
 | [`configs/`](configs/) | Dataset, baseline, fine-tuning, decoding and evaluation settings |
-| [`data/`](data/) | Dataset metadata, frozen split IDs, relational tables and verification records |
+| [`data/`](data/) | Cleaned dataset (audio and references), metadata, frozen split IDs, relational tables and verification records |
 | [`results/`](results/) | Test results, B2/B3 scores, validation and ablation summaries |
 | [`experiments/`](experiments/) | Experiment protocol and per-workstream notes |
 | [`tests/`](tests/) | Offline unit and integration tests for data, evaluation, models and scoring |

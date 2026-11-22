@@ -1,0 +1,122 @@
+{
+  "tr-normalized-v1": {
+    "schema_version": "0.1",
+    "view": "tr-normalized-v1",
+    "references_sha256": "31e372f0e35f504de59b49f1e0e1f3ed6fcc2772138c591a2cf2b054a4e7ef3f",
+    "utterances": 636,
+    "systems": {
+      "B2-whisper-large-v3": {
+        "view": "tr-normalized-v1",
+        "utterances": 636,
+        "one_best_wer_pct": 12.3192,
+        "oracle_wer_pct": 9.718,
+        "headroom_pp": 2.6012,
+        "one_best_cer_pct": 5.4473,
+        "oracle_cer_pct": 4.1294,
+        "oracle_beats_rank1_count": 252,
+        "oracle_beats_rank1_pct": 39.62,
+        "mean_candidates": 4.959,
+        "mean_unique_normalized_candidates": 2.984,
+        "one_best_words": {
+          "substitutions": 1567,
+          "deletions": 422,
+          "insertions": 540,
+          "reference_words": 20529
+        },
+        "oracle_words": {
+          "substitutions": 1276,
+          "deletions": 331,
+          "insertions": 388,
+          "reference_words": 20529
+        },
+        "nbest_sha256": "f320b2693ffdf7dddeabbab3ee201eea413ba0984110e5058560094747cb1773"
+      },
+      "B3-qwen3-asr-1.7b": {
+        "view": "tr-normalized-v1",
+        "utterances": 636,
+        "one_best_wer_pct": 16.0943,
+        "oracle_wer_pct": 14.5161,
+        "headroom_pp": 1.5783,
+        "one_best_cer_pct": 5.6005,
+        "oracle_cer_pct": 5.1046,
+        "oracle_beats_rank1_count": 234,
+        "oracle_beats_rank1_pct": 36.79,
+        "mean_candidates": 4.187,
+        "mean_unique_normalized_candidates": 3.121,
+        "one_best_words": {
+          "substitutions": 2480,
+          "deletions": 350,
+          "insertions": 474,
+          "reference_words": 20529
+        },
+        "oracle_words": {
+          "substitutions": 2222,
+          "deletions": 328,
+          "insertions": 430,
+          "reference_words": 20529
+        },
+        "nbest_sha256": "d50efa4346c211c8449b4d9ef06e69461b853e9c05b618301308cbdfc55572f2"
+      }
+    }
+  },
+  "raw-v1": {
+    "schema_version": "0.1",
+    "view": "raw-v1",
+    "references_sha256": "31e372f0e35f504de59b49f1e0e1f3ed6fcc2772138c591a2cf2b054a4e7ef3f",
+    "utterances": 636,
+    "systems": {
+      "B2-whisper-large-v3": {
+        "view": "raw-v1",
+        "utterances": 636,
+        "one_best_wer_pct": 24.5443,
+        "oracle_wer_pct": 20.0894,
+        "headroom_pp": 4.4549,
+        "one_best_cer_pct": 8.0222,
+        "oracle_cer_pct": 6.4765,
+        "oracle_beats_rank1_count": 422,
+        "oracle_beats_rank1_pct": 66.35,
+        "mean_candidates": 4.959,
+        "mean_unique_normalized_candidates": 4.959,
+        "one_best_words": {
+          "substitutions": 3981,
+          "deletions": 325,
+          "insertions": 636,
+          "reference_words": 20135
+        },
+        "oracle_words": {
+          "substitutions": 3361,
+          "deletions": 242,
+          "insertions": 442,
+          "reference_words": 20135
+        },
+        "nbest_sha256": "f320b2693ffdf7dddeabbab3ee201eea413ba0984110e5058560094747cb1773"
+      },
+      "B3-qwen3-asr-1.7b": {
+        "view": "raw-v1",
+        "utterances": 636,
+        "one_best_wer_pct": 27.5937,
+        "oracle_wer_pct": 25.0906,
+        "headroom_pp": 2.5031,
+        "one_best_cer_pct": 7.868,
+        "oracle_cer_pct": 7.2253,
+        "oracle_beats_rank1_count": 331,
+        "oracle_beats_rank1_pct": 52.04,
+        "mean_candidates": 4.187,
+        "mean_unique_normalized_candidates": 4.187,
+        "one_best_words": {
+          "substitutions": 4777,
+          "deletions": 232,
+          "insertions": 547,
+          "reference_words": 20135
+        },
+        "oracle_words": {
+          "substitutions": 4348,
+          "deletions": 213,
+          "insertions": 491,
+          "reference_words": 20135
+        },
+        "nbest_sha256": "d50efa4346c211c8449b4d9ef06e69461b853e9c05b618301308cbdfc55572f2"
+      }
+    }
+  }
+}

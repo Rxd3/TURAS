@@ -15,7 +15,9 @@ Use the speaker notes for evidence links and additional metrics.
    the pre-test freeze, 2,000 paired bootstrap draws over 28 recording groups
    and a single training seed.
 5. **System coverage.** Five native systems and 15 rescoring conditions ran
-   on test. B2 and B3 have smoke evidence, and B5 has synthetic CPU evidence.
+   on the frozen test set. B2 Whisper-large-v3 reached 12.32% normalized test
+   WER and B3 Qwen3-ASR-1.7B 16.09%, scored by M6 outside the frozen protocol.
+   B5 has synthetic CPU evidence.
    GMM-HMM and matched transducer evaluation are pending. Link the
    [published-source audit](../docs/asr_language_support_audit.md) for Turkish
    HuBERT and transducer support.

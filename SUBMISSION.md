@@ -69,14 +69,14 @@ remain pending.
 | Track | Evidence and status |
 | --- | --- |
 | B1 (Whisper-small) and B4 (XLS-R Turkish CV7) | Full matched test evaluation and repeated timing |
-| B2 (Whisper-large-v3) and B3 (Qwen3-ASR) | Adapters and smoke evidence. Full frozen test runs and official repeated timing are pending |
+| B2 (Whisper-large-v3) and B3 (Qwen3-ASR-1.7B) | Validation and test scores from the M6 scorer, outside the frozen protocol, and same-session timing on an RTX 5070 Ti laptop. B3 was selected on validation. B1 parity of the scorer and paired intervals against F1/F2 are pending the private M4/M5 bundle. [B2 and B3 results](results/m6/README.md) |
 | B5 (BiLSTM-CTC) | Model, adapter and configuration with a synthetic three-step CPU probe and checkpoint reload check. Corpus training and frozen evaluation are pending |
 | F1–F3 (Whisper LoRA, full Whisper and adapted CTC) and R1 (learned relational rescoring) | Complete working test results, adapted checkpoints, graph controls and timing |
 | Additional course requirements | Turkish support audited from published HuBERT and transducer sources. A matched transducer run and the GMM-HMM baseline are pending. [Support audit](docs/asr_language_support_audit.md) |
 
 M6's dated GPU smoke report covers a reference-free sample of 20 timed clips.
 The four beam systems passed N-best validation after shared-export deduplication.
-The matched results above come from the frozen test protocol, with separate
+The B1, B4, F1–F3 and R1 results above come from the frozen test protocol, with separate
 three-repeat timing for eight conditions. [Smoke report](docs/m6-smoke-results.md) ·
 [Final report](results/final/M4_M5_FINAL_REPORT.md)
 

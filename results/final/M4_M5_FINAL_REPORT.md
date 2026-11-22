@@ -3,7 +3,6 @@
 Frozen protocol SHA-256: `288aebd71d8a3574e13d436748d4161bc258a487e65066f1c3508bc8e835bec1`.
 Test: 636 clips, 28 recording groups; reference `m1-test-minutes-archive-01ad5878-v1`.
 The model choices and all conditions were frozen before test transcript access. All results are one training seed (17).
-For the full S/D/I error breakdown, verified-subset tracking, entity-type and hard-term gains, quantity diagnostics, and mechanistic diagnosis of the RDL null result, see [docs/error_analysis.md](../../docs/error_analysis.md).
 
 ## Main acoustic comparisons
 

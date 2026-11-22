@@ -69,7 +69,6 @@ from these final test results.
 
 - [M3 aggregate results](../results/final/m3_test_summary.json)
 - [M4/M5 frozen report](../results/final/M4_M5_FINAL_REPORT.md)
-- [Drive folder map](drive_packages.md)
 - [Reproduction guide](final_reproduction.md)
 - [M1 working-reference disclosure](m1_deadline_handoff.md)
 - [HuBERT/transducer audit](asr_language_support_audit.md)

@@ -1,4 +1,4 @@
-# Turkish ASR support audit for HuBERT and transducers
+# Turkish ASR support audit for HuBERT, Canary and transducers
 
 Reviewed 2026-11-21 for the course baseline-family coverage noted in the
 [owner decisions](owner_decisions.md#things-approval-cannot-replace). This is
@@ -17,6 +17,12 @@ were downloaded and no candidate was run on TURAS.
 None of the checked HuBERT checkpoints supplies a Turkish-ready transcription
 head. A Turkish head trained for a future comparison would need its own
 checkpoint, vocabulary, data provenance and validation selection.
+
+## Attention encoder-decoder: Canary
+
+| Candidate | Published evidence and decision |
+| --- | --- |
+| `nvidia/canary-1b-v2` | NVIDIA's card lists 25 supported European languages (bg, hr, cs, da, nl, en, et, fi, fr, de, el, hu, it, lv, lt, mt, pl, pt, ro, sk, sl, es, sv, ru, uk). Turkish is not supported. Exclude this revision from Turkish ASR rather than run it with a wrong language setting. The card lists CC BY 4.0. Checked 2026-11-22 at revision `d455706339a6b32e1aa40f82c713a482a0c938e2`. [Pinned card](https://huggingface.co/nvidia/canary-1b-v2/blob/d455706339a6b32e1aa40f82c713a482a0c938e2/README.md) |
 
 ## Transducers
 

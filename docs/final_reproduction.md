@@ -1,8 +1,8 @@
 # Reproducing the final delivery
 
 Use the exact files and full SHA-256 values in `package-manifest.json`, supplied
-in the public `00-START-HERE` folder. Original TARs are unchanged. Keep the role
-boundaries in [the package map](drive_packages.md).
+in the public `00-START-HERE` folder. Original TARs are unchanged. Keep each
+role's package separate.
 
 ## 1. Source and environment
 

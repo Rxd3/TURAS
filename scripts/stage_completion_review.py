@@ -47,7 +47,6 @@ def main():
         for name, python, script, args in [
             ("verify-and-aggregate", BASE / "envs/neural/Scripts/python.exe", "finalize_completion_study.py", []),
             ("public-aggregate-verifier", Path(sys.executable), "verify_completion_submission.py", []),
-            ("build-editable-deck", Path(sys.executable), "build_final_two_minute_deck.py", ["--completion"]),
         ]:
             with (OUT / f"{name}.log").open("a", encoding="utf-8") as log:
                 child = subprocess.Popen([str(python), "-X", "utf8", str(ROOT / "scripts" / script), *args], cwd=ROOT,

@@ -115,7 +115,7 @@ parity pending". Run them from the repository root; hashes are lowercase hex.
 tr-normalized-v1 WER/CER, term F1, jiwer cross-check, paired recording-group bootstrap)
 on run folders that hold `predictions.jsonl`, `nbest.jsonl` and `manifest.json`:
 
-    python scripts/m6_score_baselines.py --protocol configs/evaluation/m45_final_protocol.json --protocol-sha256 <PROTOCOL_SHA256> --split test --references <REFERENCES_JSONL> --references-sha256 <REFERENCES_SHA256> --run B2=<B2_RUN_DIR> --run B2-M2=<M2_RUN_DIR> --run B3=<B3_RUN_DIR> --pair B2=B2-M2 --pair B3=B2 --output <NEW_OUTPUT_DIR>
+    python scripts/m6_score_baselines.py --protocol configs/evaluation/m45_final_protocol.json --protocol-sha256 <PROTOCOL_SHA256> --split test --references <REFERENCES_JSONL> --references-sha256 <REFERENCES_SHA256> --run B2=<B2_RUN_DIR> --run B2-M2=<M2_RUN_DIR> --run B3=<B3_RUN_DIR> --pair B2-M2=B2 --pair B3=B2 --output <NEW_OUTPUT_DIR>
 
 On test the references hash must equal the protocol's `test_reference.payload_sha256`; on
 validation the IDs come from `data/splits/<release>/validation.txt`, the caller gives the

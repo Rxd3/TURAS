@@ -20,6 +20,7 @@ import tempfile
 import unittest
 from pathlib import Path
 from typing import Any
+from unittest.mock import MagicMock, patch
 
 import numpy as np
 
@@ -557,6 +558,31 @@ class BaselineBatchRunnerTests(unittest.TestCase):
 
     def test_smoke_check_whisper_rank1_real_audio_runner(self):
         """Real-audio smoke check helper executes parity comparison and catches errors without printing transcripts."""
+        # In lean environments without PyTorch installed (e.g. packaging CI),
+        # supply a mock torch so this offline unit test can exercise the
+        # runner, argument passing, and rank-1 parity comparator without heavyweight deps.
+        torch_mod = sys.modules.get("torch")
+        if torch_mod is None:
+            try:
+                import torch as _test_torch
+                torch_mod = _test_torch
+            except ImportError:
+                torch_mod = None
+
+        if torch_mod is None:
+            mock_torch = MagicMock()
+
+            class MockTensor:
+                def __init__(self, data, *args, **kwargs):
+                    self.data = data
+
+            mock_torch.tensor.side_effect = lambda data, *a, **k: MockTensor(data)
+            mock_torch.inference_mode.return_value.__enter__ = lambda *a: None
+            mock_torch.inference_mode.return_value.__exit__ = lambda *a: None
+            patcher = patch.dict(sys.modules, {"torch": mock_torch})
+            patcher.start()
+            self.addCleanup(patcher.stop)
+
         ckpt_dir, valid_sha = self._create_mock_checkpoint("model.safetensors", b"whisper test bytes")
         cfg = copy.deepcopy(self.b1_config)
         cfg["model"]["weight_sha256"] = valid_sha

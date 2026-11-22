@@ -214,19 +214,19 @@ def run_whisper_single_generate(
     prompt_tokens: list[str] | None = None,
 ) -> dict[str, Any]:
     """Execute Whisper standard generate with num_return_sequences=1."""
-    import torch
-
-    prompt_toks = prompt_tokens or DEFAULT_WHISPER_PROMPT_TOKENS
-    prompt = processor.tokenizer.convert_tokens_to_ids(prompt_toks)
-    eos_id = getattr(processor.tokenizer, "eos_token_id", None)
-
-    config = copy.deepcopy(model.generation_config)
-    config.forced_decoder_ids = None
-
-    device = input_features.device
-    decoder_input_ids = torch.tensor([prompt], device=device)
-
     try:
+        import torch
+
+        prompt_toks = prompt_tokens or DEFAULT_WHISPER_PROMPT_TOKENS
+        prompt = processor.tokenizer.convert_tokens_to_ids(prompt_toks)
+        eos_id = getattr(processor.tokenizer, "eos_token_id", None)
+
+        config = copy.deepcopy(model.generation_config)
+        config.forced_decoder_ids = None
+
+        device = getattr(input_features, "device", "cpu")
+        decoder_input_ids = torch.tensor([prompt], device=device)
+
         with torch.inference_mode():
             output = model.generate(
                 input_features=input_features,

@@ -21,10 +21,10 @@ Ownership/tasks/review routing: [TEAM_TASKS.md](../TEAM_TASKS.md).
   * Reviewed and verified PR #2 (M1), PR #3 (M4), PR #4 (M5), PR #5 (M4/M5 integration), PR #6 (M2, three rounds including RTX 5070 Ti real-model verification of Whisper-small, Whisper-large-v3, Qwen3-ASR-0.6B, and Qwen3-ASR-1.7B, plus fp32 vs bf16 teacher-forced score verification), and PR #7 (M3, two rounds).
   * Merged PR #1, PR #3 (`2f20f92`), PR #4 (`fbe495d`), PR #5 (`62fadf5`), PR #6 (`cbdc07c`), and PR #7 (`695016f`) into `main`.
   * Added root `LICENSE` (MIT + CC BY-NC 4.0 data notice), removed internal planning/handoff process files, updated stale READMEs, and added the grader quickstart and hash/metric verification workflow on `main`.
-* **2026-11-22 — B2/B3 decodes, scoring, and same-session timing ([PR #23](https://github.com/Rxd3/TURAS/pull/23), open, and the B2/B3 results PR):**
+* **2026-11-22 — B2/B3 decodes, scoring, and same-session timing ([PR #24](https://github.com/Rxd3/TURAS/pull/24), into which PR #23 was folded):**
   * Ran the C2 same-session timing of B1, B2, and B3 on the RTX 5070 Ti laptop (frozen timing block settings, 107 utterances, 3 repeats).
   * Decoded B2 (`openai/whisper-large-v3`, bf16, beam 5, N 5) and B3 on validation and test, and the Qwen3-ASR-0.6B B3 candidate on validation; selected Qwen3-ASR-1.7B-hf as B3 on validation.
-  * Added the M6 scorer `scripts/m6_score_baselines.py` (same library calls as `scripts/m45_final_evaluate.py`) and the timing helper `scripts/m6_b23_harness_run.py` (PR #23), and scored B2, Member 2's reproduction, and B3 ([`results/m6/`](../results/m6/README.md)).
+  * Added the M6 scorer `scripts/m6_score_baselines.py` (same library calls as `scripts/m45_final_evaluate.py`) and the timing helper `scripts/m6_b23_harness_run.py`, and scored B2, Member 2's reproduction, and B3 ([`results/m6/`](../results/m6/README.md)).
   * Checked Member 2's B2 handoff (zip `fd8471e9`) and scored it as an independent reproduction (577/636 test one-best hypotheses byte-equal).
   * Verified that the `Qwen/Qwen3-ASR-1.7B-hf` weights at `bcd2b5b7` are byte-identical (707/707 tensors) to the original `Qwen/Qwen3-ASR-1.7B` at `7278e1e`.
 

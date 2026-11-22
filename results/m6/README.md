@@ -2,8 +2,8 @@
 
 Aggregate scores and timing for B2 (Whisper-large-v3) and B3 (Qwen3-ASR-1.7B) on `turas-tr-econ-legis-v0.1`,
 outside the frozen M4/M5 protocol, with input hashes and no per-utterance text. The M6 scorer,
-`scripts/m6_score_baselines.py` (PR #23), makes the same library calls as `scripts/m45_final_evaluate.py`; it is
-not pinned by the protocol, and its B1 parity check is pending.
+`scripts/m6_score_baselines.py`, makes the same library calls as `scripts/m45_final_evaluate.py`; it is not pinned
+by the protocol, and its B1 parity check is pending.
 
 | Path | Contents |
 | --- | --- |
@@ -50,21 +50,37 @@ and F1/F2 by the frozen scorer. There is no paired interval against F1 or F2 yet
 in the private M4/M5 handoff bundle, which M6 has not received. 611 of the 636 test references are unreviewed
 edited TBMM minutes, the style F1 and F2 are fine-tuned on.
 
+## N-best oracle (test)
+
+Per utterance, the oracle is the candidate (of up to 5) with the fewest word errors; one-best equals the Test rows.
+
+| System, view | One-best → oracle WER | Headroom (pp) | One-best / oracle CER | Utterances where oracle beats rank 1 |
+| --- | --- | --- | --- | --- |
+| B2 (official), normalized | 12.3192 → 9.7180 | 2.6012 | 5.4473 / 4.1294 | 252 / 636 |
+| B2 (official), raw | 24.5443 → 20.0894 | 4.4549 | 8.0222 / 6.4765 | 422 / 636 |
+| B3, normalized | 16.0943 → 14.5161 | 1.5783 | 5.6005 / 5.1046 | 234 / 636 |
+| B3, raw | 27.5937 → 25.0906 | 2.5031 | 7.8680 / 7.2253 | 331 / 636 |
+
+## Provenance
+
+- [`qwen_weight_identity.json`](provenance/qwen_weight_identity.json): B3 `-hf` weights against the original: 707/707 mapped tensors equal, `lm_head` equal to its tied `embed_tokens`, 8,152,209,920 bytes compared, verdict IDENTICAL.
+- [`qwen_weight_tensors.json`](provenance/qwen_weight_tensors.json): name, dtype, shape and sha256 per tensor (707 rows plus the tie row).
+- [`reference_access.json`](provenance/reference_access.json): test references opened for M6 scoring at 2026-11-22T12:33:41Z (scorer `684d35d`), after the official-B2 decision at 11:28:14Z.
+- [`m2_handoff_check.json`](provenance/m2_handoff_check.json): Member 2's B2 handoff (zip `fd8471e9`): checksums, schema checks, manifest diff and agreement with the official B2.
+- [`test_oracle.json`](provenance/test_oracle.json): the N-best oracle above, with word error and candidate counts per system and view.
+
 ## Timing and caveats
 
-One session on 2026-11-22 on an RTX 5070 Ti laptop GPU (12 GB) with the M6 timing helper
-`scripts/m6_b23_harness_run.py` (PR #23) and the frozen timing block settings: 3 repeats, batch 1, 3 warm-up,
-107 utterances, 1,813.765 s of audio. End-to-end RTF: B1 0.05757, B2 0.17537 (3.05x B1), B3 0.13843 (2.40x B1).
-B1's per-repeat spread was 8.7% (repeat 3 slower).
+One session on 2026-11-22 on an RTX 5070 Ti laptop GPU (12 GB) with the timing helper `scripts/m6_b23_harness_run.py`
+and the frozen timing block settings: 3 repeats, batch 1, 3 warm-up, 107 utterances, 1,813.765 s of audio. End-to-end
+RTF: B1 0.05757, B2 0.17537 (3.05x B1), B3 0.13843 (2.40x B1). B1's per-repeat spread was 8.7% (repeat 3 slower).
 
 - Laptop timing: these RTFs are not comparable to the frozen-block RTFs in `results/final`; compare them with
   frozen systems only through the B1 ratio.
-- B1 parity of the M6 scorer and the paired intervals against F1/F2 are pending the private M4/M5 bundle.
-- 8 of the 28 test recordings (176 of 636 clips, sessions 6–22 January 2026) and all validation sessions
-  (2025-10-01 to 2025-12-24), on which B3 was selected, predate the 2026-01-28 Qwen3-ASR release, so they may be in
-  its training data. The other 20 test recordings (460 clips) are later. Whisper-large-v3 (B2, released
-  2023-11-06) predates all validation and test sessions. Session dates:
-  `data/metadata/turas-tr-econ-legis-v0.1-source-registry.csv` with
+- 8 of the 28 test recordings (176 of 636 clips, sessions 6–22 January 2026) and all validation sessions (2025-10-01
+  to 2025-12-24), on which B3 was selected, predate the 2026-01-28 Qwen3-ASR release, so they may be in its training
+  data. The other 20 test recordings (460 clips) are later. Whisper-large-v3 (B2, released 2023-11-06) predates all
+  validation and test sessions. Session dates: `data/metadata/turas-tr-econ-legis-v0.1-source-registry.csv` with
   `data/metadata/m45-test-recording-groups.csv`.
 
 Scoring command (run folders hold `predictions.jsonl`, `nbest.jsonl` and `manifest.json`; for validation, pass

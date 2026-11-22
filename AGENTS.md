@@ -57,7 +57,7 @@ smoke run, with next steps for Members 2–5, are in
 5. Results: `results/final/M4_M5_FINAL_REPORT.md`, `m45_metrics.csv`,
    `m45_test_summary.json` (20 systems); audits in `results/evaluation/`
 6. B2 and B3, outside the frozen protocol: [`results/m6/README.md`](results/m6/README.md),
-   scored with `scripts/m6_score_baselines.py` (PR #23)
+   scored with `scripts/m6_score_baselines.py`
 7. Full rerun needs private bundles: `docs/m45_final_reproduction.md`
 
 Script map (`scripts/`):
@@ -65,6 +65,6 @@ Script map (`scripts/`):
 - `verify_submission.py`: protocol, split and code-hash checks; WER/CER from edit counts
 - `m45_run_final.py`: frozen benchmark run and handoff; `m45_final_infer.py`: gold-free inference and timing
 - `m45_final_evaluate.py`: shared scoring; `m45_final_rescore.py`: cached RDL selections; `m45_final_audit.py`: post-freeze audit
-- `m6_score_baselines.py`: B2/B3 scoring with the shared scoring calls; `m6_b23_harness_run.py`: B2/B3 timing (both PR #23)
+- `m6_score_baselines.py`: B2/B3 scoring with the shared scoring calls; `m6_b23_harness_run.py`: B2/B3 timing
 - `m4_train_whisper.py`, `m5_train_ctc.py`, `m5_train_rdl.py`, `m5_rescore.py`: training and rescoring wrappers
 - `run_baseline_batch.py`: baseline batch inference; `compute_nbest_oracle.py`: N-best oracle; `m1_verification.py`: reference review

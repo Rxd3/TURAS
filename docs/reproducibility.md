@@ -4,7 +4,8 @@ Packaging and the environment check can be verified now. Metrics recompute offli
 with `python scripts/verify_submission.py`. Full reruns need private bundles
 ([M4/M5 reproduction](m45_final_reproduction.md)). The Windows CUDA environment is pinned in
 `requirements/windows-cu130.txt` (see [Environment setup](#environment-setup-windows)).
-CI checks packaging and runs the unit tests on Python 3.11 and 3.13.
+CI builds the package on Ubuntu and runs the unit tests on Ubuntu and Windows, each with
+Python 3.11, 3.13 and 3.14.
 
 ## Scaffold inspection
 

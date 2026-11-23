@@ -29,9 +29,10 @@ confidence intervals include zero. The study uses a single training seed.
 
 ## Verify from a fresh clone
 
-**Clone size:** the repository holds the dataset (about 2.1 GB, mostly 5,450 FLAC
-clips, without Git LFS), so `git clone` downloads about 2.1 GB and CI checkout
-takes 2–3 minutes. `git clone --depth 1` still includes the data.
+**Clone size:** the repository holds the dataset (5,450 FLAC clips, without Git LFS).
+A full `git clone` downloads about 2.1 GB and takes about 3.9 GB on disk (measured:
+182 s, 5,879 files); `git clone --depth 1` still includes the data. CI checkout
+takes 2–3 minutes.
 
 The first command uses only the Python standard library. The full public offline
 suite uses Python 3.11+ and the lean development dependencies. Run from the
@@ -43,7 +44,10 @@ python -m venv .venv
 ```
 
 Activate with `.\.venv\Scripts\Activate.ps1` in PowerShell or
-`source .venv/bin/activate` in bash, then run:
+`source .venv/bin/activate` in bash, then run the commands below. If PowerShell's
+default Restricted policy blocks `Activate.ps1`, run
+`Set-ExecutionPolicy -Scope Process RemoteSigned` first, or call
+`.\.venv\Scripts\python.exe` directly in place of `python`.
 
 ```text
 python -m pip install --no-deps -e .
@@ -51,19 +55,39 @@ python -m pip install -r requirements/dev.txt
 python -m pytest -q
 ```
 
+**Lighter clone without the audio**, for graders who only run the verifier and the
+tests (downloads about 190 MB):
+
+```text
+git clone --filter=blob:none --no-checkout https://github.com/Rxd3/TURAS
+cd TURAS
+git sparse-checkout set --no-cone "/*" "!/data/cleaned/"
+git checkout main
+```
+
+In Git Bash, prefix the `sparse-checkout` line with `MSYS_NO_PATHCONV=1` so the
+patterns are not turned into Windows paths. The tests that need `data/cleaned/` skip
+in this clone (measured: 1,326 passed and 51 skipped, against 1,335 passed and 42
+skipped with the full clone).
+
 The verifier checks the frozen protocol, split files, and all 56 pinned code
 hashes. It recomputes published WER/CER from stored edit counts for all 20
-conditions and checks split-ID uniqueness and disjointness across 5,450 clips.
+conditions, checks split-ID uniqueness and disjointness across 5,450 clips, and
+verifies the SHA-256 of each public result file listed in the
+[handoff manifest](results/final/m45_handoff_manifest.json).
 The lean suite skips tests whose optional dependencies are unavailable. [Verifier](scripts/verify_submission.py)
 
 ## Reproduce with authorized artifacts
 
-Full benchmark reproduction uses the pinned Windows CUDA runtime, the private
-model and run archive, and separate audio and evaluator-only references. Ask the
-project team for the appropriate bundles and access. The documented restore
+Full benchmark reproduction uses the pinned Windows CUDA runtime and the private
+model and run archive. Audio and references are committed under `data/cleaned/`
+([D44](docs/owner_decisions.md)); test references are used only for final scoring.
+Ask the project team for the model and run archive. The documented restore
 exercised three acoustic systems, three joint systems and 15 cached controls on
-validation audio in a fresh checkout using the existing runtime. Independent
-reproduction by a non-author and consumer acknowledgment remain pending.
+validation audio in a fresh checkout using the existing runtime. After the freeze,
+M6 (a non-author) reproduced the F2 training (seeds 17 and 18), the B1 decode, the B5 scores and
+the B8 decode ([M6 reproductions](results/m6/repro-2026-11-23/README.md)). Consumer
+acknowledgment, reproduction from the private M4/M5 bundle, and F1/F3 reproduction remain pending.
 The follow-up installed a fresh isolated Python environment and matched three
 archived B5 validation transcripts after restoring source, weights and audio.
 This owner-assisted same-machine subset check does not establish independent
@@ -76,11 +100,12 @@ review or full-test parity for every system.
 | Track | Evidence and status |
 | --- | --- |
 | B1 (Whisper-small) and B4 (XLS-R Turkish CV7) | Full matched test evaluation and repeated timing |
-| B2 (Whisper-large-v3) and B3 (Qwen3-ASR-1.7B) | Official validation and test scores from the M6 scorer, outside the frozen protocol, and same-session timing on an RTX 5070 Ti laptop. B3 was selected over 0.6B on validation. Member 2's B2 handoff is scored as an independent reproduction. B1 parity of the scorer and paired intervals against F1/F2 are pending the private M4/M5 bundle. The owner's separate local B2/B3 follow-up is a reproduction, not the reported result. [B2 and B3 results](results/m6/README.md) |
+| B2 (Whisper-large-v3) and B3 (Qwen3-ASR-1.7B) | Official validation and test scores from the M6 scorer, outside the frozen protocol, and same-session timing on an RTX 5070 Ti laptop. B3 was selected over 0.6B on validation. Member 2's B2 handoff is scored as an independent reproduction. M6's B1 re-decode matches the frozen B1 normalized WER within 0.04 pp; scorer parity on the frozen B1 predictions and paired intervals against F1/F2 are pending the private M4/M5 bundle. The owner's separate local B2/B3 follow-up is a reproduction, not the reported result. [B2 and B3 results](results/m6/README.md) |
 | B5 (BiLSTM-CTC) | Epoch 22 selected after GPU continuation; full test WER 47.776%, CER 13.503%; checked predictions/N-best and 3-repeat timing |
 | Supplied single-Gaussian character HMM | Three EM passes; full test WER 99.995%, CER 88.760%; a weak classical baseline, not a conventional mixture-Gaussian phoneme HMM |
 | F1–F3 (Whisper LoRA, full Whisper and adapted CTC) and R1 (learned relational rescoring) | Complete working test results, adapted checkpoints, graph controls and timing |
 | B7 four-mixture MFCC GMM-HMM and B8 Seda Turkish RNN-T | Aggregate validation/test results, edit counts, export hashes and three-repeat timing are committed (B8 29.96% WER / 12.81% CER, B7 99.97% / 64.55%); the per-utterance exports and the B7 model file are external and not verified in this repository. The earlier single-Gaussian HMM is kept separately. [Completion report](results/final/BASELINE_COMPLETION_REPORT.md) |
+| Post-freeze M6 reproductions (2026-11-23) | Run after test access and reported apart from the main results: F2 re-trained with seeds 17 and 18 (10.468% and 10.605% normalized test WER against the frozen 10.371%), B1 re-decoded (24.551% against 24.512%), B5 re-scored (identical) and B8 re-decoded (byte-identical exports). A number-invariant WER view cuts the B1 → F2 gain of M6's runs from 14.1 to 6.8 points. F1, F3 and F2 seed 19 were not run. [M6 reproductions](results/m6/repro-2026-11-23/README.md) |
 
 M6's dated GPU smoke report covers a reference-free sample of 20 timed clips.
 The four beam systems passed N-best validation after shared-export deduplication.
@@ -100,4 +125,4 @@ recorded. Independent adjudication of 55 items and release approval are pending.
 
 See the [final review](docs/final_review_2026-11-22.md), [M3 results](results/final/m3_test_summary.json),
 and [final reproduction commands](docs/final_reproduction.md).
-PR #26 is open, awaiting non-author review.
+PR #26 was merged on 2026-11-23 as `a2a681d`. M6 (non-author) requested changes at `a70b8e3` and `dd7654b`, then approved `dd7654b`.

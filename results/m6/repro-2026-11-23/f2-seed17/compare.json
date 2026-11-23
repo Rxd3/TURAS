@@ -1,0 +1,86 @@
+{
+  "units": "percent",
+  "note": "M6 scorer (reproduction) vs frozen scorer (committed test); cross-scorer",
+  "systems": {
+    "F2": {
+      "committed": {
+        "system_id": "F2-whisper-full",
+        "selected_epoch": 2,
+        "test": {
+          "raw_wer": 18.88254283585796,
+          "normalized_wer": 10.370695114228653,
+          "raw_cer": 5.126305602829779,
+          "normalized_cer": 3.6910135412392284
+        },
+        "validation": {
+          "raw_wer": 18.44675007628929,
+          "normalized_wer": 10.193558030042597,
+          "raw_cer": null,
+          "normalized_cer": 3.447
+        }
+      },
+      "reproduction": {
+        "17": {
+          "selected_epoch": 2,
+          "test": {
+            "raw_wer": 19.096101316116215,
+            "normalized_wer": 10.468118271713186,
+            "raw_cer": 5.182367270664398,
+            "normalized_cer": 3.7340993024210096
+          },
+          "validation": {
+            "raw_wer": 18.606957583155324,
+            "normalized_wer": 10.223451162095508,
+            "raw_cer": 4.902827303851351,
+            "normalized_cer": 3.5014805963946176
+          },
+          "oracle": {
+            "one_best_wer_pct": 10.4681,
+            "oracle_wer_pct": 9.0263,
+            "one_best_cer_pct": 3.7341,
+            "oracle_cer_pct": 3.2615,
+            "oracle_beats_rank1_count": 229
+          }
+        }
+      }
+    },
+    "F3": {
+      "committed": {
+        "system_id": "F3-ctc-vocab",
+        "selected_epoch": 3,
+        "test": {
+          "raw_wer": 45.18003476533399,
+          "normalized_wer": 25.14978810463247,
+          "raw_cer": 11.42323222211099,
+          "normalized_cer": 7.581726166051156
+        },
+        "validation": {
+          "raw_wer": 44.8046994202014,
+          "normalized_wer": 25.40168896196099,
+          "raw_cer": null,
+          "normalized_cer": 7.637
+        }
+      },
+      "reproduction": {}
+    },
+    "F1": {
+      "committed": {
+        "system_id": "F1-whisper-lora",
+        "selected_epoch": 3,
+        "test": {
+          "raw_wer": 21.504842314377946,
+          "normalized_wer": 12.367869842661602,
+          "raw_cer": 5.782360596656321,
+          "normalized_cer": 4.148543290931473
+        },
+        "validation": {
+          "raw_wer": 21.093988404028075,
+          "normalized_wer": 12.457962783050593,
+          "raw_cer": null,
+          "normalized_cer": 3.971
+        }
+      },
+      "reproduction": {}
+    }
+  }
+}

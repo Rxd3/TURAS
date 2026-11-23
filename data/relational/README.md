@@ -10,16 +10,18 @@ usable by every split): `provenance.csv`, `topics.csv` (7), `entities.csv` (90),
 `entity_aliases.csv`, `relation_types.csv`, `relationships_static.csv`
 (entity `belongs_to` topic). Hashes: `relational_manifest.json`.
 
-Per-split utterance evidence lives outside Git under
-`<artifact-root>/turas-tr-econ-legis-v0.1/relational/<split>/` with
+Per-split utterance evidence is committed under
+`data/cleaned/turas-tr-econ-legis-v0.1/relational/<split>/`
+([D44](../../docs/owner_decisions.md)) with
 `utterances.csv`, `quantifiers.csv`, `relationships.csv`, `provenance.csv`
-(rebuild: `python scripts/m1_build_relational.py --artifact-root <dir>`):
+(rebuild into `<artifact-root>/turas-tr-econ-legis-v0.1/relational/<split>/`:
+`python scripts/m1_build_relational.py --artifact-root <dir>`):
 
-| Split | Utterances | Quantifiers | Relationships | Access |
+| Split | Utterances | Quantifiers | Relationships | Use |
 | --- | ---: | ---: | ---: | --- |
 | train | 4,376 | 1,459 | 31,639 | graph training allowed |
 | validation | 438 | 274 | 3,784 | evaluator/selection only, never in training snapshots |
-| test | 636 | 373 | 6,249 | evaluator-only |
+| test | 636 | 373 | 6,249 | final scoring only |
 
 Relations: `utterance -mentions-> entity`, `utterance -has_topic-> topic`,
 `utterance -expresses-> quantifier` (amounts with TRY/USD/EUR and percentages,

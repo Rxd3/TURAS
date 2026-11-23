@@ -22,6 +22,9 @@ checkpoint, vocabulary, data provenance and validation selection.
 
 | Candidate | Published evidence and decision |
 | --- | --- |
+| `nvidia/canary-1b` | An encoder-decoder model (FastConformer encoder, Transformer decoder). The card's language tags are en, de, es, fr, and it lists ASR in English, German, French and Spanish. Turkish is not listed. Exclude this revision from Turkish ASR. The card lists CC BY-NC 4.0. Checked 2026-11-23 at revision `1698acf1700ed316ffce1cb42d79437c7e360cfa`. [Pinned card](https://huggingface.co/nvidia/canary-1b/blob/1698acf1700ed316ffce1cb42d79437c7e360cfa/README.md) |
+| `nvidia/canary-1b-flash` | An encoder-decoder model (FastConformer encoder, Transformer decoder). The card's language tags are en, de, es, fr, and it lists ASR in English, German, French and Spanish. Turkish is not listed. Exclude this revision from Turkish ASR. The card lists CC BY 4.0. Checked 2026-11-23 at revision `2b6e4d2dacb11cc1b1724de31bb48fe68c26c12e`. [Pinned card](https://huggingface.co/nvidia/canary-1b-flash/blob/2b6e4d2dacb11cc1b1724de31bb48fe68c26c12e/README.md) |
+| `nvidia/canary-qwen-2.5b` | NVIDIA's card names it a speech-augmented language model (SALM). The card's only language tag is en, and it lists ASR in English. Turkish is not listed. Exclude this revision from Turkish ASR. The card lists CC BY 4.0. Checked 2026-11-23 at revision `b1469e1bba1cfe140205529c79c434ca47180960`. [Pinned card](https://huggingface.co/nvidia/canary-qwen-2.5b/blob/b1469e1bba1cfe140205529c79c434ca47180960/README.md) |
 | `nvidia/canary-1b-v2` | NVIDIA's card lists 25 supported European languages (bg, hr, cs, da, nl, en, et, fi, fr, de, el, hu, it, lv, lt, mt, pl, pt, ro, sk, sl, es, sv, ru, uk). Turkish is not supported. Exclude this revision from Turkish ASR rather than run it with a wrong language setting. The card lists CC BY 4.0. Checked 2026-11-22 at revision `d455706339a6b32e1aa40f82c713a482a0c938e2`. [Pinned card](https://huggingface.co/nvidia/canary-1b-v2/blob/d455706339a6b32e1aa40f82c713a482a0c938e2/README.md) |
 
 ## Transducers
@@ -43,5 +46,7 @@ model and text-emission policy using validation only. Evaluate on the frozen
 runtime using the shared protocol. [Dataset handoff](m1_deadline_handoff.md)
 [Evaluation policy](evaluation.md)
 
-This audit documents the supported and excluded candidates. A matched transducer
-run and the separate GMM-HMM baseline remain outstanding.
+This audit documents the supported and excluded candidates. Added 2026-11-23:
+since this review, the transducer run (B8, `atasoglu/seda-v0.1` @ `5cbbda1b`) and the
+GMM-HMM baseline (B7) have been run on TURAS and are reported in the
+[baseline completion report](../results/final/BASELINE_COMPLETION_REPORT.md).

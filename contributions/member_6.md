@@ -27,6 +27,12 @@ Ownership/tasks/review routing: [TEAM_TASKS.md](../TEAM_TASKS.md).
   * Added the M6 scorer `scripts/m6_score_baselines.py` (same library calls as `scripts/m45_final_evaluate.py`) and the timing helper `scripts/m6_b23_harness_run.py`, and scored B2, Member 2's reproduction, and B3 ([`results/m6/`](../results/m6/README.md)).
   * Checked Member 2's B2 handoff (zip `fd8471e9`) and scored it as an independent reproduction (577/636 test one-best hypotheses byte-equal).
   * Verified that the `Qwen/Qwen3-ASR-1.7B-hf` weights at `bcd2b5b7` are byte-identical (707/707 tensors) to the original `Qwen/Qwen3-ASR-1.7B` at `7278e1e`.
+* **2026-11-22 to 2026-11-23 — Submission fixes, PR #26 review, and post-freeze reproductions:**
+  * [PR #25](https://github.com/Rxd3/TURAS/pull/25) (merged `1cf8129`): restored the delivered M4/M5 final report bytes.
+  * [PR #30](https://github.com/Rxd3/TURAS/pull/30) (merged `055726c`): `scripts/verify_submission.py` checks the public M4/M5 result files against the hashes in `results/final/m45_handoff_manifest.json`; CI runs the tests on Windows and Python 3.14 (numpy pin split for Python 3.11); two tests made portable to Windows and Python 3.14; docs updated after the M6 review of PR #26.
+  * Reviewed [PR #26](https://github.com/Rxd3/TURAS/pull/26) at `a70b8e3` and `dd7654b` (changes requested both times), then approved `dd7654b`; merged as `a2a681d`.
+  * On the RTX 5070 Ti laptop, after the freeze: re-trained F2 with seeds 17 and 18 (10.4681% and 10.6045% normalized test WER against the frozen 10.3707%; selected epochs 2 and 3); re-decoded B1 (24.5506% against 24.5117%); re-scored PR #26's B5 run folders (all eight numbers identical); re-ran B8 on CPU with PR #26's scripts (test and validation `predictions.jsonl` byte-identical to the committed export hashes); checked by SHA-256 that the published test and validation references equal the scored ones ([M6 reproductions](../results/m6/repro-2026-11-23/README.md)).
+  * Added `scripts/m6_number_invariant_wer.py` (view `tr-number-invariant-v0`, with `tests/test_m6_number_invariant_wer.py`) and the runbook in `tools/m6-repro/`.
 
 ## Experiments and artifacts
 
@@ -51,5 +57,6 @@ Ownership/tasks/review routing: [TEAM_TASKS.md](../TEAM_TASKS.md).
 ## Remaining work
 
 * B5 (BiLSTM-CTC) is complete (47.776% normalized test WER, `results/final/m3_test_summary.json`); B7 and B8 results are in `results/final/BASELINE_COMPLETION_REPORT.md`.
-* B2 and B3 are scored outside the frozen protocol; B1 parity of the M6 scorer and paired intervals against F1/F2 are pending the private M4/M5 handoff bundle.
+* B2 and B3 are scored outside the frozen protocol. M6's B1 re-decode matches the frozen B1 normalized WER within 0.04 pp; scorer parity on the frozen B1 predictions and paired intervals against F1/F2 are pending the private M4/M5 handoff bundle.
+* F1, F3 and F2 seed 19 did not run before the time limit.
 * Data publication decided under the course rule (D44 in `docs/owner_decisions.md`): audio, references and the removal log are in the repository under CC BY-NC 4.0. Fine-tuned M4/M5 weights remain external.

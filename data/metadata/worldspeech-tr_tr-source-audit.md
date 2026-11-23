@@ -21,10 +21,10 @@ Numbers below are **measured** on that metadata unless marked otherwise.
 
 Rights conclusion (for team approval, D02/D16): course research use is
 non-commercial and fits CC BY-NC 4.0 with attribution to WorldSpeech and TBMM.
-The card does not grant redistribution of the audio beyond its own terms, and
-the TURAS repository is **public**, so audio, reference text and the exclusion
-ledger stay out of Git; only opaque IDs, hashes, counts and source URLs are
-committed. Rights record ID used in manifests: `rights_worldspeech_tr_tr_tbmm`.
+Superseded on 2026-11-22 by D44 (docs/owner_decisions.md): the cleaned audio,
+references and removal log are committed under data/ with CC BY-NC 4.0
+attribution; see NOTICE. TBMM terms were not separately reviewed.
+Rights record ID used in manifests: `rights_worldspeech_tr_tr_tbmm`.
 
 ## Fields
 

@@ -1,0 +1,1223 @@
+{
+  "status": "m6_baseline_scoring_complete",
+  "split": "validation",
+  "protocol_sha256": "288aebd71d8a3574e13d436748d4161bc258a487e65066f1c3508bc8e835bec1",
+  "reference_sha256": "d0c8519ca6aed053f89786bc733541a70faee09cf8d8bdb6cc12065d97dbd958",
+  "utterances": 438,
+  "recording_groups": 15,
+  "systems": [
+    {
+      "system_id": "baseline-bilstm-ctc",
+      "split": "validation",
+      "protocol_sha256": "288aebd71d8a3574e13d436748d4161bc258a487e65066f1c3508bc8e835bec1",
+      "reference_variant": null,
+      "reference_sha256": "d0c8519ca6aed053f89786bc733541a70faee09cf8d8bdb6cc12065d97dbd958",
+      "manifest_sha256": "6e338de65a90c24de4c644e800d9603cb2257146c6d6d27d75e15e5fe0a86d38",
+      "predictions_sha256": "08e1a2a5ff42d2e1ce9d47723e86b423117fffd9051d56dcc09e673fe119da6c",
+      "nbest_sha256": "78f11f3bd2f0db3a48c672b5d091f58521d9729fc32a2666bef10ba2c697b311",
+      "metrics": {
+        "raw-v1": {
+          "view": "raw-v1",
+          "utterances": 438,
+          "zero_reference_utterances": 0,
+          "error_rows": 0,
+          "words": {
+            "substitutions": 7255,
+            "deletions": 570,
+            "insertions": 556,
+            "hits": 5283
+          },
+          "chars": {
+            "substitutions": 7843,
+            "deletions": 6199,
+            "insertions": 2736,
+            "hits": 84391
+          },
+          "wer": 0.6393805309734514,
+          "cer": 0.1704509666473642,
+          "wacc": 0.3606194690265486,
+          "reference_words": 13108,
+          "reference_characters": 98433
+        },
+        "tr-normalized-v1": {
+          "view": "tr-normalized-v1",
+          "utterances": 438,
+          "zero_reference_utterances": 0,
+          "error_rows": 0,
+          "words": {
+            "substitutions": 5198,
+            "deletions": 715,
+            "insertions": 428,
+            "hits": 7468
+          },
+          "chars": {
+            "substitutions": 5564,
+            "deletions": 4256,
+            "insertions": 2940,
+            "hits": 86425
+          },
+          "wer": 0.47388087586876915,
+          "cer": 0.13257831575666268,
+          "wacc": 0.5261191241312309,
+          "reference_words": 13381,
+          "reference_characters": 96245
+        }
+      },
+      "m1_reported_verified_subset": {
+        "utterances": 0,
+        "metrics": {
+          "raw-v1": {
+            "status": "unavailable",
+            "utterances": 0
+          },
+          "tr-normalized-v1": {
+            "status": "unavailable",
+            "utterances": 0
+          }
+        }
+      },
+      "domain": {
+        "version": "canonical-occurrence-m1-v1",
+        "lexicon_version": "turas-domain-lexicon-v0.1",
+        "matching": "frozen M1 raw-text screening_tokens + longest nonoverlapping alias matches; canonical-ID ties, prefixes and exclusions",
+        "micro": {
+          "tp": 1526,
+          "fp": 40,
+          "fn": 315,
+          "reference_support": 1841,
+          "predicted_support": 1566,
+          "precision": 0.9744572158365262,
+          "recall": 0.8288973384030418,
+          "f1": 0.8958027590255356
+        },
+        "macro_reference_supported": {
+          "precision": 0.8855213782088862,
+          "recall": 0.6870926057391272,
+          "f1": 0.7514648063394518,
+          "reference_supported_terms": 78
+        },
+        "per_term": {
+          "BANK_BANKA": {
+            "tp": 12,
+            "fp": 1,
+            "fn": 3,
+            "reference_support": 15,
+            "predicted_support": 13,
+            "precision": 0.9230769230769231,
+            "recall": 0.8,
+            "f1": 0.8571428571428571
+          },
+          "BANK_BDDK": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "reference_support": 0,
+            "predicted_support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "BANK_BORC": {
+            "tp": 55,
+            "fp": 2,
+            "fn": 4,
+            "reference_support": 59,
+            "predicted_support": 57,
+            "precision": 0.9649122807017544,
+            "recall": 0.9322033898305084,
+            "f1": 0.9482758620689654
+          },
+          "BANK_BORSA": {
+            "tp": 2,
+            "fp": 0,
+            "fn": 0,
+            "reference_support": 2,
+            "predicted_support": 2,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0
+          },
+          "BANK_KREDI": {
+            "tp": 28,
+            "fp": 0,
+            "fn": 9,
+            "reference_support": 37,
+            "predicted_support": 28,
+            "precision": 1.0,
+            "recall": 0.7567567567567568,
+            "f1": 0.8615384615384616
+          },
+          "BANK_KREDI_KARTI": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 1,
+            "reference_support": 1,
+            "predicted_support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "BANK_KRIPTO": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "reference_support": 0,
+            "predicted_support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "BANK_MEVDUAT": {
+            "tp": 1,
+            "fp": 0,
+            "fn": 2,
+            "reference_support": 3,
+            "predicted_support": 1,
+            "precision": 1.0,
+            "recall": 0.3333333333333333,
+            "f1": 0.5
+          },
+          "BANK_SPK": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 1,
+            "reference_support": 1,
+            "predicted_support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "BANK_TMSF": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "reference_support": 0,
+            "predicted_support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "LAB_ASGARI_UCRET": {
+            "tp": 61,
+            "fp": 0,
+            "fn": 7,
+            "reference_support": 68,
+            "predicted_support": 61,
+            "precision": 1.0,
+            "recall": 0.8970588235294118,
+            "f1": 0.9457364341085273
+          },
+          "LAB_BAGKUR": {
+            "tp": 5,
+            "fp": 0,
+            "fn": 1,
+            "reference_support": 6,
+            "predicted_support": 5,
+            "precision": 1.0,
+            "recall": 0.8333333333333334,
+            "f1": 0.9090909090909091
+          },
+          "LAB_EMEKLI": {
+            "tp": 87,
+            "fp": 2,
+            "fn": 5,
+            "reference_support": 92,
+            "predicted_support": 89,
+            "precision": 0.9775280898876404,
+            "recall": 0.9456521739130435,
+            "f1": 0.9613259668508287
+          },
+          "LAB_EMEKLI_SANDIGI": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "reference_support": 0,
+            "predicted_support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "LAB_EYT": {
+            "tp": 1,
+            "fp": 0,
+            "fn": 0,
+            "reference_support": 1,
+            "predicted_support": 1,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0
+          },
+          "LAB_ISSIZLIK": {
+            "tp": 20,
+            "fp": 0,
+            "fn": 6,
+            "reference_support": 26,
+            "predicted_support": 20,
+            "precision": 1.0,
+            "recall": 0.7692307692307693,
+            "f1": 0.8695652173913044
+          },
+          "LAB_ISTIHDAM": {
+            "tp": 19,
+            "fp": 0,
+            "fn": 7,
+            "reference_support": 26,
+            "predicted_support": 19,
+            "precision": 1.0,
+            "recall": 0.7307692307692307,
+            "f1": 0.8444444444444443
+          },
+          "LAB_KIDEM_TAZMINATI": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "reference_support": 0,
+            "predicted_support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "LAB_MAAS": {
+            "tp": 52,
+            "fp": 0,
+            "fn": 2,
+            "reference_support": 54,
+            "predicted_support": 52,
+            "precision": 1.0,
+            "recall": 0.9629629629629629,
+            "f1": 0.9811320754716981
+          },
+          "LAB_PRIM": {
+            "tp": 15,
+            "fp": 1,
+            "fn": 9,
+            "reference_support": 24,
+            "predicted_support": 16,
+            "precision": 0.9375,
+            "recall": 0.625,
+            "f1": 0.75
+          },
+          "LAB_SGK": {
+            "tp": 7,
+            "fp": 0,
+            "fn": 5,
+            "reference_support": 12,
+            "predicted_support": 7,
+            "precision": 1.0,
+            "recall": 0.5833333333333334,
+            "f1": 0.7368421052631579
+          },
+          "LAB_SOSYAL_GUVENLIK": {
+            "tp": 8,
+            "fp": 0,
+            "fn": 2,
+            "reference_support": 10,
+            "predicted_support": 8,
+            "precision": 1.0,
+            "recall": 0.8,
+            "f1": 0.888888888888889
+          },
+          "LAB_UCRET": {
+            "tp": 29,
+            "fp": 3,
+            "fn": 5,
+            "reference_support": 34,
+            "predicted_support": 32,
+            "precision": 0.90625,
+            "recall": 0.8529411764705882,
+            "f1": 0.8787878787878787
+          },
+          "LEGIS_ANAYASA": {
+            "tp": 4,
+            "fp": 0,
+            "fn": 0,
+            "reference_support": 4,
+            "predicted_support": 4,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0
+          },
+          "LEGIS_ANAYASA_MAHKEMESI": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "reference_support": 0,
+            "predicted_support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "LEGIS_GENEL_KURUL": {
+            "tp": 2,
+            "fp": 0,
+            "fn": 5,
+            "reference_support": 7,
+            "predicted_support": 2,
+            "precision": 1.0,
+            "recall": 0.2857142857142857,
+            "f1": 0.4444444444444445
+          },
+          "LEGIS_IC_TUZUK": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 1,
+            "reference_support": 1,
+            "predicted_support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "LEGIS_KANUN": {
+            "tp": 28,
+            "fp": 4,
+            "fn": 11,
+            "reference_support": 39,
+            "predicted_support": 32,
+            "precision": 0.875,
+            "recall": 0.717948717948718,
+            "f1": 0.7887323943661971
+          },
+          "LEGIS_KANUN_TEKLIFI": {
+            "tp": 6,
+            "fp": 0,
+            "fn": 5,
+            "reference_support": 11,
+            "predicted_support": 6,
+            "precision": 1.0,
+            "recall": 0.5454545454545454,
+            "f1": 0.7058823529411764
+          },
+          "LEGIS_KARARNAME": {
+            "tp": 1,
+            "fp": 0,
+            "fn": 6,
+            "reference_support": 7,
+            "predicted_support": 1,
+            "precision": 1.0,
+            "recall": 0.14285714285714285,
+            "f1": 0.25
+          },
+          "LEGIS_KOMISYON": {
+            "tp": 11,
+            "fp": 3,
+            "fn": 2,
+            "reference_support": 13,
+            "predicted_support": 14,
+            "precision": 0.7857142857142857,
+            "recall": 0.8461538461538461,
+            "f1": 0.8148148148148148
+          },
+          "LEGIS_MADDE": {
+            "tp": 28,
+            "fp": 0,
+            "fn": 11,
+            "reference_support": 39,
+            "predicted_support": 28,
+            "precision": 1.0,
+            "recall": 0.717948717948718,
+            "f1": 0.835820895522388
+          },
+          "LEGIS_MEVZUAT": {
+            "tp": 26,
+            "fp": 0,
+            "fn": 4,
+            "reference_support": 30,
+            "predicted_support": 26,
+            "precision": 1.0,
+            "recall": 0.8666666666666667,
+            "f1": 0.9285714285714286
+          },
+          "LEGIS_ONERGE": {
+            "tp": 3,
+            "fp": 0,
+            "fn": 0,
+            "reference_support": 3,
+            "predicted_support": 3,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0
+          },
+          "LEGIS_TORBA_YASA": {
+            "tp": 2,
+            "fp": 0,
+            "fn": 2,
+            "reference_support": 4,
+            "predicted_support": 2,
+            "precision": 1.0,
+            "recall": 0.5,
+            "f1": 0.6666666666666666
+          },
+          "LEGIS_YASA": {
+            "tp": 11,
+            "fp": 4,
+            "fn": 3,
+            "reference_support": 14,
+            "predicted_support": 15,
+            "precision": 0.7333333333333333,
+            "recall": 0.7857142857142857,
+            "f1": 0.7586206896551724
+          },
+          "LEGIS_YASAMA": {
+            "tp": 2,
+            "fp": 1,
+            "fn": 1,
+            "reference_support": 3,
+            "predicted_support": 3,
+            "precision": 0.6666666666666666,
+            "recall": 0.6666666666666666,
+            "f1": 0.6666666666666666
+          },
+          "LEGIS_YONETMELIK": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "reference_support": 0,
+            "predicted_support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "MON_ALIM_GUCU": {
+            "tp": 7,
+            "fp": 0,
+            "fn": 3,
+            "reference_support": 10,
+            "predicted_support": 7,
+            "precision": 1.0,
+            "recall": 0.7,
+            "f1": 0.8235294117647058
+          },
+          "MON_AVRO": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 1,
+            "reference_support": 1,
+            "predicted_support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "MON_DOLAR": {
+            "tp": 82,
+            "fp": 2,
+            "fn": 6,
+            "reference_support": 88,
+            "predicted_support": 84,
+            "precision": 0.9761904761904762,
+            "recall": 0.9318181818181818,
+            "f1": 0.9534883720930233
+          },
+          "MON_DOVIZ": {
+            "tp": 6,
+            "fp": 0,
+            "fn": 0,
+            "reference_support": 6,
+            "predicted_support": 6,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0
+          },
+          "MON_ENFLASYON": {
+            "tp": 52,
+            "fp": 0,
+            "fn": 3,
+            "reference_support": 55,
+            "predicted_support": 52,
+            "precision": 1.0,
+            "recall": 0.9454545454545454,
+            "f1": 0.9719626168224299
+          },
+          "MON_FAIZ": {
+            "tp": 49,
+            "fp": 0,
+            "fn": 1,
+            "reference_support": 50,
+            "predicted_support": 49,
+            "precision": 1.0,
+            "recall": 0.98,
+            "f1": 0.98989898989899
+          },
+          "MON_HAYAT_PAHALILIGI": {
+            "tp": 1,
+            "fp": 0,
+            "fn": 3,
+            "reference_support": 4,
+            "predicted_support": 1,
+            "precision": 1.0,
+            "recall": 0.25,
+            "f1": 0.4
+          },
+          "MON_KUR": {
+            "tp": 6,
+            "fp": 0,
+            "fn": 0,
+            "reference_support": 6,
+            "predicted_support": 6,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0
+          },
+          "MON_MERKEZ_BANKASI": {
+            "tp": 8,
+            "fp": 0,
+            "fn": 1,
+            "reference_support": 9,
+            "predicted_support": 8,
+            "precision": 1.0,
+            "recall": 0.8888888888888888,
+            "f1": 0.9411764705882353
+          },
+          "MON_TUIK": {
+            "tp": 13,
+            "fp": 1,
+            "fn": 3,
+            "reference_support": 16,
+            "predicted_support": 14,
+            "precision": 0.9285714285714286,
+            "recall": 0.8125,
+            "f1": 0.8666666666666666
+          },
+          "MON_TURK_LIRASI": {
+            "tp": 167,
+            "fp": 2,
+            "fn": 43,
+            "reference_support": 210,
+            "predicted_support": 169,
+            "precision": 0.9881656804733728,
+            "recall": 0.7952380952380952,
+            "f1": 0.8812664907651715
+          },
+          "MON_ZAM": {
+            "tp": 11,
+            "fp": 0,
+            "fn": 6,
+            "reference_support": 17,
+            "predicted_support": 11,
+            "precision": 1.0,
+            "recall": 0.6470588235294118,
+            "f1": 0.7857142857142858
+          },
+          "PUBFIN_BUTCE": {
+            "tp": 67,
+            "fp": 2,
+            "fn": 3,
+            "reference_support": 70,
+            "predicted_support": 69,
+            "precision": 0.9710144927536232,
+            "recall": 0.9571428571428572,
+            "f1": 0.9640287769784173
+          },
+          "PUBFIN_BUTCE_ACIGI": {
+            "tp": 3,
+            "fp": 0,
+            "fn": 0,
+            "reference_support": 3,
+            "predicted_support": 3,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0
+          },
+          "PUBFIN_GARANTI": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 1,
+            "reference_support": 1,
+            "predicted_support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "PUBFIN_HAZINE": {
+            "tp": 6,
+            "fp": 3,
+            "fn": 2,
+            "reference_support": 8,
+            "predicted_support": 9,
+            "precision": 0.6666666666666666,
+            "recall": 0.75,
+            "f1": 0.7058823529411765
+          },
+          "PUBFIN_HAZINE_MALIYE_BAKANLIGI": {
+            "tp": 2,
+            "fp": 0,
+            "fn": 5,
+            "reference_support": 7,
+            "predicted_support": 2,
+            "precision": 1.0,
+            "recall": 0.2857142857142857,
+            "f1": 0.4444444444444445
+          },
+          "PUBFIN_KAMU_BORCU": {
+            "tp": 1,
+            "fp": 0,
+            "fn": 0,
+            "reference_support": 1,
+            "predicted_support": 1,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0
+          },
+          "PUBFIN_KAMU_HARCAMASI": {
+            "tp": 12,
+            "fp": 0,
+            "fn": 8,
+            "reference_support": 20,
+            "predicted_support": 12,
+            "precision": 1.0,
+            "recall": 0.6,
+            "f1": 0.7499999999999999
+          },
+          "PUBFIN_KAMU_IHALE": {
+            "tp": 7,
+            "fp": 0,
+            "fn": 0,
+            "reference_support": 7,
+            "predicted_support": 7,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0
+          },
+          "PUBFIN_KAMU_OZEL_ORTAKLIGI": {
+            "tp": 1,
+            "fp": 0,
+            "fn": 1,
+            "reference_support": 2,
+            "predicted_support": 1,
+            "precision": 1.0,
+            "recall": 0.5,
+            "f1": 0.6666666666666666
+          },
+          "PUBFIN_KAMU_ZARARI": {
+            "tp": 1,
+            "fp": 0,
+            "fn": 1,
+            "reference_support": 2,
+            "predicted_support": 1,
+            "precision": 1.0,
+            "recall": 0.5,
+            "f1": 0.6666666666666666
+          },
+          "PUBFIN_MALIYE": {
+            "tp": 48,
+            "fp": 6,
+            "fn": 2,
+            "reference_support": 50,
+            "predicted_support": 54,
+            "precision": 0.8888888888888888,
+            "recall": 0.96,
+            "f1": 0.923076923076923
+          },
+          "PUBFIN_MERKEZI_YONETIM_BUTCESI": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "reference_support": 0,
+            "predicted_support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "PUBFIN_ODENEK": {
+            "tp": 10,
+            "fp": 0,
+            "fn": 5,
+            "reference_support": 15,
+            "predicted_support": 10,
+            "precision": 1.0,
+            "recall": 0.6666666666666666,
+            "f1": 0.8
+          },
+          "PUBFIN_PLAN_BUTCE_KOMISYONU": {
+            "tp": 3,
+            "fp": 0,
+            "fn": 3,
+            "reference_support": 6,
+            "predicted_support": 3,
+            "precision": 1.0,
+            "recall": 0.5,
+            "f1": 0.6666666666666666
+          },
+          "PUBFIN_SAYISTAY": {
+            "tp": 4,
+            "fp": 0,
+            "fn": 2,
+            "reference_support": 6,
+            "predicted_support": 4,
+            "precision": 1.0,
+            "recall": 0.6666666666666666,
+            "f1": 0.8
+          },
+          "TAX_GELIR_IDARESI": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "reference_support": 0,
+            "predicted_support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "TAX_GELIR_VERGISI": {
+            "tp": 4,
+            "fp": 0,
+            "fn": 0,
+            "reference_support": 4,
+            "predicted_support": 4,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0
+          },
+          "TAX_HARC": {
+            "tp": 1,
+            "fp": 0,
+            "fn": 9,
+            "reference_support": 10,
+            "predicted_support": 1,
+            "precision": 1.0,
+            "recall": 0.1,
+            "f1": 0.18181818181818182
+          },
+          "TAX_KDV": {
+            "tp": 5,
+            "fp": 0,
+            "fn": 2,
+            "reference_support": 7,
+            "predicted_support": 5,
+            "precision": 1.0,
+            "recall": 0.7142857142857143,
+            "f1": 0.8333333333333333
+          },
+          "TAX_KURUMLAR_VERGISI": {
+            "tp": 2,
+            "fp": 0,
+            "fn": 0,
+            "reference_support": 2,
+            "predicted_support": 2,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0
+          },
+          "TAX_MATRAH": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "reference_support": 0,
+            "predicted_support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "TAX_OTV": {
+            "tp": 5,
+            "fp": 0,
+            "fn": 5,
+            "reference_support": 10,
+            "predicted_support": 5,
+            "precision": 1.0,
+            "recall": 0.5,
+            "f1": 0.6666666666666666
+          },
+          "TAX_STOPAJ": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 3,
+            "reference_support": 3,
+            "predicted_support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "TAX_VERGI": {
+            "tp": 88,
+            "fp": 1,
+            "fn": 16,
+            "reference_support": 104,
+            "predicted_support": 89,
+            "precision": 0.9887640449438202,
+            "recall": 0.8461538461538461,
+            "f1": 0.9119170984455959
+          },
+          "TAX_VERGI_AFFI": {
+            "tp": 1,
+            "fp": 0,
+            "fn": 2,
+            "reference_support": 3,
+            "predicted_support": 1,
+            "precision": 1.0,
+            "recall": 0.3333333333333333,
+            "f1": 0.5
+          },
+          "TRADE_BUYUME": {
+            "tp": 2,
+            "fp": 0,
+            "fn": 2,
+            "reference_support": 4,
+            "predicted_support": 2,
+            "precision": 1.0,
+            "recall": 0.5,
+            "f1": 0.6666666666666666
+          },
+          "TRADE_CARI_ACIK": {
+            "tp": 6,
+            "fp": 0,
+            "fn": 1,
+            "reference_support": 7,
+            "predicted_support": 6,
+            "precision": 1.0,
+            "recall": 0.8571428571428571,
+            "f1": 0.923076923076923
+          },
+          "TRADE_EKONOMI": {
+            "tp": 59,
+            "fp": 1,
+            "fn": 7,
+            "reference_support": 66,
+            "predicted_support": 60,
+            "precision": 0.9833333333333333,
+            "recall": 0.8939393939393939,
+            "f1": 0.9365079365079364
+          },
+          "TRADE_IHRACAT": {
+            "tp": 37,
+            "fp": 0,
+            "fn": 4,
+            "reference_support": 41,
+            "predicted_support": 37,
+            "precision": 1.0,
+            "recall": 0.9024390243902439,
+            "f1": 0.9487179487179488
+          },
+          "TRADE_IMF": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "reference_support": 0,
+            "predicted_support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "TRADE_ITHALAT": {
+            "tp": 31,
+            "fp": 0,
+            "fn": 7,
+            "reference_support": 38,
+            "predicted_support": 31,
+            "precision": 1.0,
+            "recall": 0.8157894736842105,
+            "f1": 0.898550724637681
+          },
+          "TRADE_KOBI": {
+            "tp": 41,
+            "fp": 0,
+            "fn": 4,
+            "reference_support": 45,
+            "predicted_support": 41,
+            "precision": 1.0,
+            "recall": 0.9111111111111111,
+            "f1": 0.9534883720930233
+          },
+          "TRADE_MILLI_GELIR": {
+            "tp": 11,
+            "fp": 0,
+            "fn": 4,
+            "reference_support": 15,
+            "predicted_support": 11,
+            "precision": 1.0,
+            "recall": 0.7333333333333333,
+            "f1": 0.846153846153846
+          },
+          "TRADE_OZELLESTIRME": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "reference_support": 0,
+            "predicted_support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "TRADE_PIYASA": {
+            "tp": 10,
+            "fp": 1,
+            "fn": 2,
+            "reference_support": 12,
+            "predicted_support": 11,
+            "precision": 0.9090909090909091,
+            "recall": 0.8333333333333334,
+            "f1": 0.8695652173913043
+          },
+          "TRADE_SANAYI": {
+            "tp": 36,
+            "fp": 0,
+            "fn": 10,
+            "reference_support": 46,
+            "predicted_support": 36,
+            "precision": 1.0,
+            "recall": 0.782608695652174,
+            "f1": 0.878048780487805
+          },
+          "TRADE_TESVIK": {
+            "tp": 21,
+            "fp": 0,
+            "fn": 3,
+            "reference_support": 24,
+            "predicted_support": 21,
+            "precision": 1.0,
+            "recall": 0.875,
+            "f1": 0.9333333333333333
+          },
+          "TRADE_TICARET": {
+            "tp": 30,
+            "fp": 0,
+            "fn": 4,
+            "reference_support": 34,
+            "predicted_support": 30,
+            "precision": 1.0,
+            "recall": 0.8823529411764706,
+            "f1": 0.9375
+          },
+          "TRADE_VARLIK_FONU": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 1,
+            "reference_support": 1,
+            "predicted_support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "TRADE_YATIRIM": {
+            "tp": 43,
+            "fp": 0,
+            "fn": 6,
+            "reference_support": 49,
+            "predicted_support": 43,
+            "precision": 1.0,
+            "recall": 0.8775510204081632,
+            "f1": 0.9347826086956522
+          }
+        },
+        "by_topic": {
+          "T_BANKING": {
+            "tp": 98,
+            "fp": 3,
+            "fn": 20,
+            "reference_support": 118,
+            "predicted_support": 101,
+            "precision": 0.9702970297029703,
+            "recall": 0.8305084745762712,
+            "f1": 0.8949771689497716
+          },
+          "T_LABOR": {
+            "tp": 304,
+            "fp": 6,
+            "fn": 49,
+            "reference_support": 353,
+            "predicted_support": 310,
+            "precision": 0.9806451612903225,
+            "recall": 0.8611898016997167,
+            "f1": 0.9170437405731523
+          },
+          "T_LEGIS": {
+            "tp": 124,
+            "fp": 12,
+            "fn": 51,
+            "reference_support": 175,
+            "predicted_support": 136,
+            "precision": 0.9117647058823529,
+            "recall": 0.7085714285714285,
+            "f1": 0.7974276527331189
+          },
+          "T_MONETARY": {
+            "tp": 402,
+            "fp": 5,
+            "fn": 70,
+            "reference_support": 472,
+            "predicted_support": 407,
+            "precision": 0.9877149877149877,
+            "recall": 0.8516949152542372,
+            "f1": 0.9146757679180887
+          },
+          "T_PUBFIN": {
+            "tp": 165,
+            "fp": 11,
+            "fn": 33,
+            "reference_support": 198,
+            "predicted_support": 176,
+            "precision": 0.9375,
+            "recall": 0.8333333333333334,
+            "f1": 0.8823529411764706
+          },
+          "T_TAX": {
+            "tp": 106,
+            "fp": 1,
+            "fn": 37,
+            "reference_support": 143,
+            "predicted_support": 107,
+            "precision": 0.9906542056074766,
+            "recall": 0.7412587412587412,
+            "f1": 0.848
+          },
+          "T_TRADE": {
+            "tp": 327,
+            "fp": 2,
+            "fn": 55,
+            "reference_support": 382,
+            "predicted_support": 329,
+            "precision": 0.993920972644377,
+            "recall": 0.856020942408377,
+            "f1": 0.9198312236286921
+          }
+        },
+        "by_entity_type": {
+          "concept": {
+            "tp": 1133,
+            "fp": 21,
+            "fn": 195,
+            "reference_support": 1328,
+            "predicted_support": 1154,
+            "precision": 0.9818024263431543,
+            "recall": 0.8531626506024096,
+            "f1": 0.9129734085414988
+          },
+          "currency": {
+            "tp": 249,
+            "fp": 4,
+            "fn": 50,
+            "reference_support": 299,
+            "predicted_support": 253,
+            "precision": 0.9841897233201581,
+            "recall": 0.8327759197324415,
+            "f1": 0.9021739130434783
+          },
+          "legal_text": {
+            "tp": 83,
+            "fp": 8,
+            "fn": 39,
+            "reference_support": 122,
+            "predicted_support": 91,
+            "precision": 0.9120879120879121,
+            "recall": 0.680327868852459,
+            "f1": 0.7793427230046949
+          },
+          "organization": {
+            "tp": 61,
+            "fp": 7,
+            "fn": 31,
+            "reference_support": 92,
+            "predicted_support": 68,
+            "precision": 0.8970588235294118,
+            "recall": 0.6630434782608695,
+            "f1": 0.7625
+          }
+        },
+        "unsupported_term_false_positives": 0,
+        "quantity_diagnostics": {
+          "micro": {
+            "tp": 250,
+            "fp": 130,
+            "fn": 161,
+            "reference_support": 411,
+            "predicted_support": 380,
+            "precision": 0.6578947368421053,
+            "recall": 0.6082725060827251,
+            "f1": 0.6321112515802783
+          },
+          "by_type": {
+            "amount": {
+              "tp": 164,
+              "fp": 85,
+              "fn": 116,
+              "reference_support": 280,
+              "predicted_support": 249,
+              "precision": 0.6586345381526104,
+              "recall": 0.5857142857142857,
+              "f1": 0.6200378071833649
+            },
+            "percentage": {
+              "tp": 86,
+              "fp": 45,
+              "fn": 45,
+              "reference_support": 131,
+              "predicted_support": 131,
+              "precision": 0.6564885496183206,
+              "recall": 0.6564885496183206,
+              "f1": 0.6564885496183206
+            }
+          },
+          "matching": "per-utterance exact (type, currency/unit, canonical numeric value) occurrence multisets",
+          "limitations": "automatic digit-based amount/percentage extraction; no spoken-number conversion, counts or dates; not human annotation"
+        },
+        "term_containing_utterances": {
+          "count": 438,
+          "metrics": {
+            "raw-v1": {
+              "view": "raw-v1",
+              "utterances": 438,
+              "zero_reference_utterances": 0,
+              "error_rows": 0,
+              "words": {
+                "substitutions": 7255,
+                "deletions": 570,
+                "insertions": 556,
+                "hits": 5283
+              },
+              "chars": {
+                "substitutions": 7843,
+                "deletions": 6199,
+                "insertions": 2736,
+                "hits": 84391
+              },
+              "wer": 0.6393805309734514,
+              "cer": 0.1704509666473642,
+              "wacc": 0.3606194690265486,
+              "reference_words": 13108,
+              "reference_characters": 98433
+            },
+            "tr-normalized-v1": {
+              "view": "tr-normalized-v1",
+              "utterances": 438,
+              "zero_reference_utterances": 0,
+              "error_rows": 0,
+              "words": {
+                "substitutions": 5198,
+                "deletions": 715,
+                "insertions": 428,
+                "hits": 7468
+              },
+              "chars": {
+                "substitutions": 5564,
+                "deletions": 4256,
+                "insertions": 2940,
+                "hits": 86425
+              },
+              "wer": 0.47388087586876915,
+              "cer": 0.13257831575666268,
+              "wacc": 0.5261191241312309,
+              "reference_words": 13381,
+              "reference_characters": 96245
+            }
+          }
+        }
+      },
+      "nbest_coverage": {
+        "requested_n": 5,
+        "actual_n_distribution": {
+          "1": 438
+        },
+        "hypotheses": 438
+      },
+      "error_rows": 0,
+      "independent_jiwer_crosscheck": "passed both views"
+    }
+  ],
+  "pairs": [],
+  "agreement": [],
+  "bootstrap": {
+    "seed": 2026,
+    "replicates": 2000,
+    "method": "paired recording-group percentile bootstrap",
+    "groups": 15
+  }
+}

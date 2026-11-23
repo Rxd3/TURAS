@@ -6,7 +6,7 @@ Branch: `feat/m1-data-relational-schema`. Ownership/tasks/review routing: [TEAM_
 
 > [!NOTE]
 > This is the canonical named contribution record for university submission.
-> [`member_1.md`](member_1.md) is kept for backward compatibility with older
+> [`archive/member_1.md`](archive/member_1.md) is kept for backward compatibility with older
 > links and holds the same dated history. PR #2 was opened from `Sam-Ali23`.
 > Its commits are attributed on GitHub to the commit-email account
 > `mutesim-alakili` (author name `mutesim`). The first two commits were made by a
@@ -141,7 +141,7 @@ and one on a synthetic copy exercised the reject and correct paths.
 The 2026-11-21 closeout, deadline handoff, 249-record primary review set
 (`rev_rasit`) and working archives were produced by the project owner (`Rxd3`,
 Member 5) with coding-agent assistance, under decisions D42/D43. They are
-recorded in [member_1.md](member_1.md#2026-11-21--owner-requested-technical-closeout),
+recorded in [archive/member_1.md](archive/member_1.md#2026-11-21--owner-requested-technical-closeout),
 [M1 closeout](../docs/m1_closeout.md) and
 [deadline handoff](../docs/m1_deadline_handoff.md). None of that listening or
 attestation is credited to Member 1 here.

@@ -144,7 +144,7 @@ Whisper-family systems.
 | --- | --- |
 | `nvidia/canary-1b-v2` @ `d4557063` | The card lists 25 European languages; Turkish is not one of them. [Model card](https://huggingface.co/nvidia/canary-1b-v2/blob/d455706339a6b32e1aa40f82c713a482a0c938e2/README.md) |
 | `nvidia/parakeet-tdt-0.6b-v3` @ `541d1f99` | The card lists 25 European languages; Turkish is not one of them. [Model card](https://huggingface.co/nvidia/parakeet-tdt-0.6b-v3/blob/541d1f99c6b0c3cd0b11a95167540bb8edefd82b/README.md) |
-| HuBERT + CTC (`facebook/hubert-large-ls960-ft`, `facebook/hubert-base-ls960`) | No Turkish ASR head: the CTC model is English-only and lacks Turkish letters; the base model is an encoder without a head. |
+| HuBERT + CTC (`facebook/hubert-large-ls960-ft`, `facebook/hubert-base-ls960`) | No Turkish ASR head: the CTC model is English-only and lacks Turkish letters; the base model is an encoder without a head. Model cards: [hubert-large-ls960-ft](https://huggingface.co/facebook/hubert-large-ls960-ft), [hubert-base-ls960](https://huggingface.co/facebook/hubert-base-ls960) |
 
 [Language support audit](docs/asr_language_support_audit.md)
 
@@ -198,6 +198,7 @@ benchmark), `m6_score_baselines.py` (B2/B3), `m3_*.py` and `train_mixture_hmm.py
 | [`configs/`](configs/) | Dataset, baseline, fine-tuning, decoding and evaluation settings |
 | [`data/`](data/) | Cleaned dataset (audio and references), metadata, frozen split IDs, relational tables and verification records |
 | [`results/`](results/) | Test results, B2/B3 scores, B5/HMM checkpoints and outputs, validation and ablation summaries |
+| [`tools/`](tools/m6-repro/README.md) | M6 post-freeze reproduction scripts (F1/F2/F3 reruns on a Windows GPU), outside the frozen protocol |
 | [`experiments/`](experiments/) | Experiment protocol and per-workstream notes |
 | [`tests/`](tests/) | Offline unit and integration tests for data, evaluation, models and scoring |
 | [`docs/`](docs/) | Dataset card, evaluation, architecture, contracts and run records |

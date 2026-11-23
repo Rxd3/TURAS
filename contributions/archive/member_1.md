@@ -3,13 +3,13 @@
 Name: Almutesim alakili. Student ID: `220911336`. GitHub username: [`Sam-Ali23`](https://github.com/Sam-Ali23).
 Role: Member 1 — Dataset and Relational Schema.
 Branch: `feat/m1-data-relational-schema`.
-Ownership/tasks/review routing: [TEAM_TASKS.md](../TEAM_TASKS.md).
+Ownership/tasks/review routing: [TEAM_TASKS.md](../../TEAM_TASKS.md).
 
 > [!NOTE]
 > **Canonical individual contribution record:** the named record for university
-> submission is [`Almutesim_alakili_220911336_Sam-Ali23.md`](Almutesim_alakili_220911336_Sam-Ali23.md).
+> submission is [`Almutesim_alakili_220911336_Sam-Ali23.md`](../Almutesim_alakili_220911336_Sam-Ali23.md).
 > It separates Member 1's own work from later owner-assisted M1-workstream
-> entries. This file (`member_1.md`) is kept unchanged below for backward
+> entries. This file (`archive/member_1.md`, moved 2026-11-23) is kept unchanged below for backward
 > compatibility with historical links.
 
 **Status (2026-11-21): frozen by M1; working technical closeout prepared.
@@ -22,7 +22,7 @@ remain pending. PR #2 merged with an outstanding changes-requested review.**
 
 - Audited WorldSpeech `tr_tr` at revision `b76b85395039f50332fbc421f7c098ee2f2653d7`
   from the card and every non-audio column of all 389 shards:
-  [source audit](../data/metadata/worldspeech-tr_tr-source-audit.md).
+  [source audit](../../data/metadata/worldspeech-tr_tr-source-audit.md).
   Found that the upstream test leaks at recording level, 7.1% of references
   contain non-spoken stenographic text, and the audio is 24 kHz stereo.
 - Wrote the domain lexicon v0.1 (7 topics, 90 terms, Turkish suffix-aware
@@ -36,11 +36,11 @@ remain pending. PR #2 merged with an outstanding changes-requested review.**
   3 h test (5,450 utterances, 172 recordings), recording-grouped, temporal 2026
   test, with leakage checks at zero. Split files and manifests under
   `data/splits/`, `data/manifests/`, `data/metadata/`; details in
-  [dataset](../docs/dataset.md#proposed-release-turas-tr-econ-legis-v01-m1-2026-11-18).
+  [dataset](../../docs/dataset.md#proposed-release-turas-tr-econ-legis-v01-m1-2026-11-18).
 - Wrote the listening verification guide
-  [`turas-verbatim-v0.1`](../data/verification/turas-verbatim-v0.1.md) and a
+  [`turas-verbatim-v0.1`](../../data/verification/turas-verbatim-v0.1.md) and a
   self-contained review page generator for the 50-clip pilot.
-- Relational CSV tables (train 31,639 relationships at freeze, evaluator-only validation/test) per [RDL contract](../docs/contracts/rdl.md): static
+- Relational CSV tables (train 31,639 relationships at freeze, evaluator-only validation/test) per [RDL contract](../../docs/contracts/rdl.md): static
   lexicon tables in `data/relational/turas-tr-econ-legis-v0.1/`; per-split
   automatic evidence tables in the artifact root, with train-only access for
   graph training.
@@ -135,16 +135,16 @@ does not attribute new human listening to Member 1 or any invented reviewer.
 - Corrected approval and reference-bias claims, recorded D42, preserved frozen
   source bytes through a separately hashed status erratum.
 
-Evidence/commands: [M1 closeout](../docs/m1_closeout.md),
-[preparation audit](../data/verification/turas-tr-econ-legis-v0.1-preparation-audit-v1.json),
-[working handoff](../data/manifests/turas-tr-econ-legis-v0.1-m1-working-handoff-v1.json).
+Evidence/commands: [M1 closeout](../../docs/m1_closeout.md),
+[preparation audit](../../data/verification/turas-tr-econ-legis-v0.1-preparation-audit-v1.json),
+[working handoff](../../data/manifests/turas-tr-econ-legis-v0.1-m1-working-handoff-v1.json).
 These are technical checks; zero new human review decisions were supplied.
 
 ## Remaining work
 
 - Deadline technical handoff is complete for the available inputs under D43;
   this list remains the genuine outstanding evidence/access work, not completed
-  listening. See [deadline handoff](../docs/m1_deadline_handoff.md).
+  listening. See [deadline handoff](../../docs/m1_deadline_handoff.md).
 - Obtain compatible original 50 pilot decision payloads, or have real Turkish
   listeners review the recovery pages; review the 199 additional test clips.
 - Complete independent adjudication, including corrections and the pinned
@@ -185,7 +185,7 @@ A private provisional page binds the four corrections to their primary record
 IDs for a different listener. The full pinned adjudication/accept-sample plan
 still awaits complete primary coverage. There are 192 missing primary records;
 no assumed acceptances were added. Frozen references, splits and metrics remain
-unchanged. See [aggregate receipt](../data/verification/turas-tr-econ-legis-v0.1-review-progress-v1.json).
+unchanged. See [aggregate receipt](../../data/verification/turas-tr-econ-legis-v0.1-review-progress-v1.json).
 These are supplied primary decisions, not independent confirmation of listening
 or a completed verified reference release.
 
@@ -202,4 +202,4 @@ The canonical set now has 249 primary records: 245 accept and four correct
 pins 55 items, including 25 sampled accepts. Generated two private second-listener
 pages with the primary reviewer blocked from adjudicating their own records.
 No second-listener decisions, new reference variant or changed metric is claimed.
-See [current receipt](../data/verification/turas-tr-econ-legis-v0.1-review-progress-v2.json).
+See [current receipt](../../data/verification/turas-tr-econ-legis-v0.1-review-progress-v2.json).

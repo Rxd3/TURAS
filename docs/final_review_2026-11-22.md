@@ -18,7 +18,7 @@ not an independent team approval or a verified-reference release.
 | Presentation | A title slide and four content slides with native charts, and a timed English script (134 spoken words, about 1:15) |
 | Reproduction delivery | Separate role packages, exact runtime source snapshots, restore and scoring commands, file hashes and upload/link instructions |
 | Fresh Python-environment restoration | Archived B5 source/weights/audio matched 3/3 validation transcripts. M4/M5 restoration verified 226 indexed files and passed 3 acoustic, 3 online joint and 15 cached runs on two validation clips, with no references/test audio read. Same-machine owner-assisted check; independent review is not claimed. |
-| Current offline suite | At this head: 1,256 passed and 43 skipped in a lean environment without torch (earlier: 1,200 passed, 19 skipped), four upstream deprecation warnings and 51 passing subtests; controller-lock and metadata-only weight-restoration regressions are covered. |
+| Current offline suite | At commit `f2bc8a2`: 1,256 passed and 43 skipped in a lean environment without torch (earlier: 1,200 passed, 19 skipped), four upstream deprecation warnings and 51 passing subtests; controller-lock and metadata-only weight-restoration regressions are covered. |
 
 M3 normalized test results, against the same working test reference bytes:
 
@@ -35,7 +35,7 @@ establish a conventional mixture-Gaussian phoneme HMM baseline.
 
 | Remaining item | Owner / evidence needed |
 | --- | --- |
-| Publish this local closeout | Prepare and review the new baseline code, results, guides and final deck through the repository PR workflow. No push, merge or peer approval is claimed here. |
+| Publish this local closeout | Published for review as PR #26, open on 2026-11-23. M6 (non-author) reviewed it at `a70b8e3` and `dd7654b` and requested changes. |
 | Upload and test Drive retrieval | User uploads each role folder, sets actual named-account access, supplies the public submission URL, and tests downloads/checksums from a recipient account. |
 | B2/B3 official results | Done by M6 in [`results/m6/`](../results/m6/README.md): B2 12.319% and B3 (Qwen3-ASR-1.7B) 16.094% normalized test WER, paired intervals, N-best oracle and same-session timing. M6 also scored M2's B2 handoff (`fd8471e9`) as an independent reproduction (12.392%). Remaining: B1 parity of the M6 scorer and paired intervals against F1/F2, both needing the private M4/M5 bundle. |
 | Owner B2/B3 local rerun | A separate reproduction, not the reported result. It completed all 438 B2 validation IDs (12.847% WER, 5.679% CER) and 636 test exports with zero error rows; both Qwen candidates completed validation and its minimum-CER rule also selected 1.7B (5.423% versus 7.067% CER). Any timing or test scores from it should be reported only as agreement checks against `results/m6/`. |

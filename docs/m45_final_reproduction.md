@@ -33,12 +33,14 @@ parallelism. After obtaining the exact parent weights/processors, final inferenc
 uses `HF_HUB_OFFLINE=1` and `TRANSFORMERS_OFFLINE=1`; network/model downloads are
 outside the measurement. Cold model/graph load is separate from warm RTF.
 
-Private inputs must be supplied separately: the M1 inference/audio bundle, the
-selected checkpoints and graph bundles, and evaluator-only references. The
-gold-free model/run handoff supplies the selected checkpoints, graphs, native
-predictions, fixed-candidate outputs, timing records, manifests and source bundle.
-It deliberately excludes audio and reference text. Keep these private artifacts
-outside Git. Preserve their protocol-relative paths when restoring the handoff.
+The M1 inference manifests, audio and references are committed under
+`data/cleaned/turas-tr-econ-legis-v0.1/` ([D44](owner_decisions.md)). Test references
+are used only for final scoring, never for training, tuning or prompting. The
+selected checkpoints and graph bundles are supplied separately: the gold-free
+model/run handoff supplies the selected checkpoints, graphs, native predictions,
+fixed-candidate outputs, timing records, manifests and source bundle. It excludes
+audio and reference text and is kept outside Git. Preserve its protocol-relative
+paths when restoring the handoff.
 Whisper LoRA additionally requires its exact pinned parent; it is an adapter,
 not a standalone full model. Verify all hashes before consuming artifacts.
 

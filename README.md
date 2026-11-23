@@ -115,8 +115,8 @@ Normalized test WER/CER (%) on the 636 test clips.
 | ID | Family | Exact model and revision | WER | CER |
 | --- | --- | --- | ---: | ---: |
 | B1 | Attention encoder-decoder (Whisper) | `openai/whisper-small` @ `973afd24` | 24.51 | 10.08 |
-| B2 | Attention encoder-decoder (Whisper) | `openai/whisper-large-v3` @ `06f233fe` (M6 scorer, B1 parity pending) | 12.32 | 5.45 |
-| B3 | Speech LLM | `Qwen/Qwen3-ASR-1.7B-hf` @ `bcd2b5b7` (0.6B rejected on validation; M6 scorer, B1 parity pending) | 16.09 | 5.60 |
+| B2 | Attention encoder-decoder (Whisper) | `openai/whisper-large-v3` @ `06f233fe` (M6 scorer; B1 re-decode within 0.04 pp normalized WER, scorer parity on frozen B1 predictions pending) | 12.32 | 5.45 |
+| B3 | Speech LLM | `Qwen/Qwen3-ASR-1.7B-hf` @ `bcd2b5b7` (0.6B rejected on validation; M6 scorer; B1 re-decode within 0.04 pp normalized WER, scorer parity on frozen B1 predictions pending) | 16.09 | 5.60 |
 | B4 | wav2vec 2.0 + CTC head, fine-tuned for Turkish by its publisher | `mpoyraz/wav2vec2-xls-r-300m-cv7-turkish` @ `708639f5` | 37.15 | 13.17 |
 | B5 | CTC encoder (BiLSTM-CTC), trained by us from scratch | [`configs/baselines/bilstm_ctc.json`](configs/baselines/bilstm_ctc.json) | 47.78 | 13.50 |
 | B6 | Classical HMM, single diagonal Gaussian per character state, trained by us | [`scripts/m3_run_gaussian_hmm.py`](scripts/m3_run_gaussian_hmm.py) | 100.00 | 88.76 |
@@ -164,6 +164,12 @@ model and checkpoint selection on validation only; test used once after the
 Intervals are paired recording-group bootstrap (28 groups, 2,000 replicates,
 seed 2026). [Final report](results/final/M4_M5_FINAL_REPORT.md) ·
 [Error analysis](docs/error_analysis.md)
+
+After the freeze, M6 re-trained F2 with the same recipe and seed on a second machine:
+10.47% normalized test WER against the frozen 10.37%. In a number-invariant view of M6's B1
+re-decode and F2 re-train, where digits and spelled-out numbers count the same, the B1 → F2 gain
+falls from 14.1 to 6.8 points, so about half of the gain is the minutes' number style. These are reported apart from the main results:
+[M6 reproductions](results/m6/repro-2026-11-23/README.md)
 
 ## Reproduce
 

@@ -41,7 +41,7 @@ editable English slides for a two-minute slot.
 
 ## Evidence and validation
 
-- `python -X utf8 -m pytest -q`: at the current head **1,256 passed, 43 skipped** in a
+- `python -X utf8 -m pytest -q`: at commit `f2bc8a2` **1,256 passed, 43 skipped** in a
   lean environment without torch (earlier record: 1,200 passed, 19 skipped), four upstream
   deprecation warnings, 51 passing subtests. Optional integration skips are not
   claims of full benchmark execution.
@@ -63,8 +63,11 @@ editable English slides for a two-minute slot.
   passed, including source-import origin and cached/joint transcript parity.
   No reference text or test audio was read. Public evidence is in
   `results/final/fresh_environment_restoration.json`.
-- Full follow-up validation/test/timing evidence, final presentation checks and
-  refreshed delivery verification must be attached before this draft is ready.
+- Follow-up validation/test/timing evidence is attached:
+  `results/final/BASELINE_COMPLETION_REPORT.md` (B7, B8) and
+  `results/final/m3_test_summary.json` (B5, single-Gaussian HMM). The 12-slide deck
+  and outline were refreshed for B5, B7 and B8. Drive upload and retrieval checks
+  remain open in `docs/final_review_2026-11-22.md`.
 
 Individual contribution records must be completed by the actual contributors.
 This preparation does not impersonate their attestations.

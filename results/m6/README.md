@@ -3,7 +3,8 @@
 Aggregate scores and timing for B2 (Whisper-large-v3) and B3 (Qwen3-ASR-1.7B) on `turas-tr-econ-legis-v0.1`,
 outside the frozen M4/M5 protocol, with input hashes and no per-utterance text. The M6 scorer,
 `scripts/m6_score_baselines.py`, makes the same library calls as `scripts/m45_final_evaluate.py`; it is not pinned
-by the protocol, and its B1 parity check is pending.
+by the protocol. M6's B1 re-decode, scored with it, matches the frozen B1 normalized WER within 0.04 pp; scorer parity on the
+identical frozen B1 predictions is pending ([reproductions](repro-2026-11-23/README.md)).
 
 | Path | Contents |
 | --- | --- |
@@ -45,7 +46,7 @@ Whisper-family systems such as B2 over B3 (`data/metadata/turas-tr-econ-legis-v0
 
 On test, zero-shot B2 (12.32 normalized WER) is level with F1 LoRA (12.37); F2 full fine-tuning (10.37) is lower
 by about 2 pp. F1 is better on raw WER (21.50 vs 24.54) and runs at about B1's RTF, about 3x faster than B2.
-These comparisons are unpaired and cross scorers: B2 is scored by the M6 scorer, whose B1 parity check is pending,
+These comparisons are unpaired and cross scorers: B2 is scored by the M6 scorer, whose parity on the frozen B1 predictions is pending,
 and F1/F2 by the frozen scorer. There is no paired interval against F1 or F2 yet: their per-utterance outputs are
 in the private M4/M5 handoff bundle, which M6 has not received. 611 of the 636 test references are unreviewed
 edited TBMM minutes, the style F1 and F2 are fine-tuned on.
@@ -60,6 +61,11 @@ Per utterance, the oracle is the candidate (of up to 5) with the fewest word err
 | B2 (official), raw | 24.5443 → 20.0894 | 4.4549 | 8.0222 / 6.4765 | 422 / 636 |
 | B3, normalized | 16.0943 → 14.5161 | 1.5783 | 5.6005 / 5.1046 | 234 / 636 |
 | B3, raw | 27.5937 → 25.0906 | 2.5031 | 7.8680 / 7.2253 | 331 / 636 |
+
+## Post-freeze reproductions (2026-11-23)
+
+M6 re-trained F2 (seed 17), re-decoded B1 and B8, re-scored B5 and added a number-invariant WER view, all after
+the test references were opened and reported apart from the main results: [reproduction report](repro-2026-11-23/README.md).
 
 ## Provenance
 

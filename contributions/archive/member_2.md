@@ -3,11 +3,11 @@
 Name: Omar Alzyod. Student ID: `2409015412`. GitHub username: [`Devinci101`](https://github.com/Devinci101).
 Role: Member 2 — Seq2Seq and Speech-LLM Baselines.
 Branch convention: `feat/m2-seq2seq-speech-llm-baselines` (focused topic suffixes allowed).
-Ownership/tasks/review routing: [TEAM_TASKS.md](../TEAM_TASKS.md).
+Ownership/tasks/review routing: [TEAM_TASKS.md](../../TEAM_TASKS.md).
 
 > [!NOTE]
 > **Canonical Individual Contribution Record:**
-> The primary named record for university submission is [`OMAR_ALZYOD_2409015412_Devinci101.md`](OMAR_ALZYOD_2409015412_Devinci101.md). This file (`member_2.md`) is maintained for backward compatibility with repository documentation and historical links.
+> The primary named record for university submission is [`OMAR_ALZYOD_2409015412_Devinci101.md`](../OMAR_ALZYOD_2409015412_Devinci101.md). This file (`member_2.md`) is maintained for backward compatibility with repository documentation and historical links.
 
 **Status: PR #6 merged (`cbdc07c`), PR #20 merged (`1dade5b`), PR #22 merged (`34a8a07`); independent reproduction of Baseline B2 (Whisper-large-v3) validation (438/438 OK) and D43 working-test (636/636 OK) reference-free batch inference complete, verified, packaged (`turas-b2-whisper-large-v3-m2-handoff.zip`), and handed off to Member 6; scored by M6 in PR #24 (`results/m6/test/B2-whisper-large-v3-m2repro.json`) at 12.3922% normalized test WER alongside M6's official RTX 5070 Ti B2 experiment (12.3192% normalized WER, delta ~+0.07 percentage points); smoke CLI keyword argument mismatch fixed with regression test (76 tests total: 52 passed, 24 skipped in lean CI; 58 passed, 18 skipped offline; 76 passed with shared decoder). B1 baseline integrated via owner-assisted M4/M5 benchmark (PR #5, 62fadf5; recomputed and reviewed by M6 in results/final/m45_metrics.csv); B3 Qwen3-ASR-1.7B-hf selected on validation by M6 with weights verified against January 2026 original.**
 

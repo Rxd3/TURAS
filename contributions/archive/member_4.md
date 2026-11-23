@@ -3,13 +3,13 @@
 Name: Mohamed Kamaleldin Eliwa. Student ID: `2309015740`. GitHub username: [`mokamaleldin`](https://github.com/mokamaleldin).
 Role: Member 4 — Whisper Fine-Tuning.
 Branch convention: `feat/m4-whisper-finetuning` (focused topic suffixes allowed).
-Ownership/tasks/review routing: [TEAM_TASKS.md](../TEAM_TASKS.md).
+Ownership/tasks/review routing: [TEAM_TASKS.md](../../TEAM_TASKS.md).
 
 > [!NOTE]
 > **Canonical individual contribution record:** the named record for university
-> submission is [`Mohamed_Kamaleldin_Eliwa_2309015740_mokamaleldin.md`](Mohamed_Kamaleldin_Eliwa_2309015740_mokamaleldin.md).
+> submission is [`Mohamed_Kamaleldin_Eliwa_2309015740_mokamaleldin.md`](../Mohamed_Kamaleldin_Eliwa_2309015740_mokamaleldin.md).
 > It separates Member 4's own identity/verification commits from the earlier
-> owner-assisted M4 workstream deliverables. This file (`member_4.md`) is kept
+> owner-assisted M4 workstream deliverables. This file (`archive/member_4.md`, moved 2026-11-23) is kept
 > unchanged below for backward compatibility with historical links.
 
 **Status (2026-11-19): owner-assisted implementation, seed-17 corpus training and
@@ -23,14 +23,14 @@ individual human authorship is inferred from this workstream assignment.
 optimization/checkpoint export, Whisper LoRA/full construction and collation,
 genuine beam candidates and original-logit teacher-forced scores. Added separate
 draft profiles, thin training wrapper, offline random-model tests and a CPU test
-workflow. See [implementation notes](../experiments/m4-whisper-notes.md).
+workflow. See [implementation notes](../../experiments/m4-whisper-notes.md).
 Shared training/CI changes require M6 review; parent compatibility requires M2;
 N-best requires M5. Commit and PR are recorded in Git/GitHub at handoff.
 
 ## Experiments and artifacts
 
 No runs in the initial implementation. Later owner-assisted execution is in
-[the dated M4/M5 record](../docs/m45_execution_2026-11-19.md); current local job
+[the dated M4/M5 record](../../docs/m45_execution_2026-11-19.md); current local job
 status is `artifacts/owner-m45/queue-status.json`. Add actual run IDs, release/model/config hashes, artifact location/hash,
 validation-selection evidence, outcome/limitations and corresponding baseline.
 Do not enter invented transcripts, metrics, checkpoint paths or completed work.
@@ -52,24 +52,24 @@ Add actual approvals, reproduction and accepted bundle hashes when they occur.
 
 Final technical closeout also restores the shipped archive into a fresh source
 checkout and executes the actual delivered models. The recorded
-[acceptance result](../results/final/m45_restored_delivery_acceptance.json) uses
+[acceptance result](../../results/final/m45_restored_delivery_acceptance.json) uses
 validation audio only, verifies all shipped bytes and imports, and includes
 online/cached RDL parity. It is owner-assisted verification, not another person's
 approval. The component PR was synchronized with current `main`; its 54 tests
-pass. See [consumer procedure](../docs/m45_delivery_acceptance.md).
+pass. See [consumer procedure](../../docs/m45_delivery_acceptance.md).
 
 Owner-assisted seed-17 LoRA/full training and all six validation epochs are now
 complete; best working checkpoints are LoRA epoch 3 and full epoch 2, selected
 on the explicitly recovered-minutes validation reference version. Real scored
 N-best was consumed in M5's fusion grids. See the
-[completed working validation record](../docs/m45_validation_complete.md) and
-[selection inventory](../results/evaluation/m45_working_checkpoint_selection.json).
+[completed working validation record](../../docs/m45_validation_complete.md) and
+[selection inventory](../../results/evaluation/m45_working_checkpoint_selection.json).
 Final working evaluation is now complete: LoRA normalized test WER 12.368%, full
 10.371%, unchanged parent 24.512%; all 636 IDs, raw/normalized CER/WER,
 terminology, 2,000-replicate paired intervals and three-repeat timing are in the
-[final report](../results/final/M4_M5_FINAL_REPORT.md). Actual N-best was consumed
+[final report](../../results/final/M4_M5_FINAL_REPORT.md). Actual N-best was consumed
 in all fixed-candidate studies; all main scores independently match JiWER.
 The private model/run bundle is built and byte verified; see
-[handoff and limitations](../docs/m45_completion.md). Remaining: required
+[handoff and limitations](../../docs/m45_completion.md). Remaining: required
 independent PR review/reproduction and actual consumer ACK. Optional extra seeds
 are follow-up robustness work, not a completed experiment or a deadline blocker.

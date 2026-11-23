@@ -4,11 +4,11 @@ Name: Mohamed Kamaleldin Eliwa. Student ID: `2309015740`. GitHub username: [`mok
 Role: Member 4 — Whisper Fine-Tuning.
 Branch convention: `feat/m4-whisper-finetuning` (focused topic suffixes allowed).
 Ownership/tasks/review routing: [TEAM_TASKS.md](../TEAM_TASKS.md).
-Backward-compatible record: [member_4.md](member_4.md).
+Backward-compatible record: [archive/member_4.md](archive/member_4.md).
 
 > [!NOTE]
 > This is the canonical named individual contribution record for university
-> submission. [`member_4.md`](member_4.md) is kept for backward compatibility
+> submission. [`archive/member_4.md`](archive/member_4.md) is kept for backward compatibility
 > with historical links. In accordance with repository attribution rules, this
 > record separates Member 4's own identity/verification commits (`@mokamaleldin`)
 > from the earlier owner-assisted M4 implementation, seed-17 training runs,
@@ -32,7 +32,7 @@ Assigned workstream from [TEAM_TASKS.md](../TEAM_TASKS.md) (Whisper Fine-Tuning)
 | Acoustic training and Whisper collation | `src/turkish_asr_rdl/training/whisper.py`, `src/turkish_asr_rdl/training/acoustic.py`, `scripts/m4_train_whisper.py` | Train-only manifest/hash validation, LoRA (r=16, alpha=32) and full fine-tuning, checkpoint export; owner-assisted (PR #3 `2f20f92`) |
 | Scored Whisper N-best decoding | `src/turkish_asr_rdl/decoding/whisper.py` | Genuine beam N-best (`num_beams=5`, `requested_n=5`) and original-logit teacher-forced scoring consumed by M5; owner-assisted (PR #3 `2f20f92`) |
 | Offline unit tests and notes | `tests/test_m4_training.py`, `experiments/m4-whisper-notes.md` | Random-model offline tests and dated adaptation notes; owner-assisted (PR #3 `2f20f92`, PR #5 `62fadf5`) |
-| Contribution identity and verification | `contributions/Mohamed_Kamaleldin_Eliwa_2309015740_mokamaleldin.md`, `contributions/member_4.md`, `contributions/README.md`, `TEAM_TASKS.md`, `docs/directory_tree.txt`, `experiments/m4-whisper-notes.md` | Committed from `@mokamaleldin` on 2026-11-22 (PR #28 `2fb96a0` + notes/board sync); verified locally with `scripts/verify_submission.py` |
+| Contribution identity and verification | `contributions/Mohamed_Kamaleldin_Eliwa_2309015740_mokamaleldin.md`, `contributions/archive/member_4.md`, `contributions/README.md`, `TEAM_TASKS.md`, `docs/directory_tree.txt`, `experiments/m4-whisper-notes.md` | Committed from `@mokamaleldin` on 2026-11-22 (PR #28 `2fb96a0` + notes/board sync); verified locally with `scripts/verify_submission.py` |
 
 ## Actual contributions
 
@@ -44,7 +44,7 @@ Assigned workstream from [TEAM_TASKS.md](../TEAM_TASKS.md) (Whisper Fine-Tuning)
   `2fb96a0`).
 - Added canonical named record
   `contributions/Mohamed_Kamaleldin_Eliwa_2309015740_mokamaleldin.md`, updated
-  `contributions/member_4.md` with identity and canonical pointer for backward
+  `contributions/archive/member_4.md` with identity and canonical pointer for backward
   compatibility, and updated links/identity entries in `contributions/README.md`,
   `TEAM_TASKS.md`, `docs/directory_tree.txt`, and `experiments/m4-whisper-notes.md`.
 - Ran `python3 scripts/verify_submission.py` locally against `main` (`bc3c533`),

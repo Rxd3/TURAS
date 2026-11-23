@@ -337,7 +337,7 @@ reviewers for M6's own changes. Evaluation design need not wait for trained mode
 **Handoff/review:** metric/text PRs require M1 plus affected model owners; integration
 PRs require the component owner; result/reproduction PRs require non-author model
 and data-owner review. M6 cannot self-approve. Record work in
-[member_6.md](contributions/member_6.md).
+[Abdalraouf_Alkabir_2309015482_afel6.md](contributions/Abdalraouf_Alkabir_2309015482_afel6.md).
 
 **Specific next task:** lead a contract review covering IDs, gold access, Turkish
 normalization, corpus aggregation, timing, artifact compatibility and review routing.

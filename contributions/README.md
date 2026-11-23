@@ -17,7 +17,9 @@ marking a TEAM_TASKS item complete; ownership and specifications do not prove wo
 | [Member 3](Abdullah_Gamal_2309015819_abdu3061.md) | CTC and Classical Baselines — Abdullah Gamal (`2309015819`, `@abdu3061`) |
 | [Member 4](Mohamed_Kamaleldin_Eliwa_2309015740_mokamaleldin.md) | Whisper Fine-Tuning — Mohamed Kamaleldin Eliwa (`2309015740`, `@mokamaleldin`) |
 | [Member 5](Rasit_Isaoglu_2309015397_Rxd3.md) | CTC Fine-Tuning and RDL — Raşit isaoğlu (`2309015397`, `@Rxd3`) |
-| [Member 6](member_6.md) | Integration, Evaluation, and QA — Abdalraouf Alkabir (`2309015482`, `@afel6`) |
+| [Member 6](Abdalraouf_Alkabir_2309015482_afel6.md) | Integration, Evaluation, and QA — Abdalraouf Alkabir (`2309015482`, `@afel6`) |
 
 [Owner-directed integration](owner_integration.md) records cross-workstream
 decisions and agent-assisted preparation; it is not a seventh membership assignment.
+Earlier unnamed records (`member_1.md`, `member_2.md`, `member_4.md`) are kept in
+[archive/](archive/) for older links; the named files above are the submission records.

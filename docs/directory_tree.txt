@@ -19,15 +19,14 @@ TURAS/
 |   `-- README.md
 |-- contributions/
 |   |-- README.md
-|   |-- member_1.md
 |   |-- Almutesim_alakili_220911336_Sam-Ali23.md
-|   |-- member_2.md
 |   |-- OMAR_ALZYOD_2409015412_Devinci101.md
 |   |-- Abdullah_Gamal_2309015819_abdu3061.md
-|   |-- member_4.md
 |   |-- Mohamed_Kamaleldin_Eliwa_2309015740_mokamaleldin.md
 |   |-- Rasit_Isaoglu_2309015397_Rxd3.md
-|   `-- member_6.md
+|   |-- Abdalraouf_Alkabir_2309015482_afel6.md
+|   |-- owner_integration.md
+|   `-- archive/   (earlier member_1/2/4.md records)
 |-- data/
 |   |-- manifests/
 |   |   `-- .gitkeep

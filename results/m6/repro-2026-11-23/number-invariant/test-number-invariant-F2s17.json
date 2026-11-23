@@ -1,0 +1,55 @@
+{
+  "status": "m6_number_invariant_scoring_complete",
+  "views": [
+    "tr-normalized-v1",
+    "tr-number-invariant-v0"
+  ],
+  "script_sha256": "55911e521ffad2feb62e12f97f6eafa2018f75bfa5417ce213684cef54fdd6f1",
+  "references_sha256": "31e372f0e35f504de59b49f1e0e1f3ed6fcc2772138c591a2cf2b054a4e7ef3f",
+  "systems": {
+    "F2-m6repro-s17": {
+      "split": "test",
+      "predictions_sha256": "52c62a00369690721001bcdfcc0a172402b280ed7ed18a842a1d6aa3d55c587a",
+      "utterances": 636,
+      "error_rows": 0,
+      "metrics": {
+        "tr-normalized-v1": {
+          "words": {
+            "substitutions": 1574,
+            "deletions": 270,
+            "insertions": 305,
+            "hits": 18685,
+            "n": 20529
+          },
+          "characters": {
+            "substitutions": 1484,
+            "deletions": 1970,
+            "insertions": 2006,
+            "hits": 142766,
+            "n": 146220
+          },
+          "wer": 0.10468118271713187,
+          "cer": 0.037340993024210095
+        },
+        "tr-number-invariant-v0": {
+          "words": {
+            "substitutions": 1517,
+            "deletions": 275,
+            "insertions": 307,
+            "hits": 19886,
+            "n": 21678
+          },
+          "characters": {
+            "substitutions": 1383,
+            "deletions": 2004,
+            "insertions": 1999,
+            "hits": 150168,
+            "n": 153555
+          },
+          "wer": 0.09682627548666851,
+          "cer": 0.03507538015694702
+        }
+      }
+    }
+  }
+}

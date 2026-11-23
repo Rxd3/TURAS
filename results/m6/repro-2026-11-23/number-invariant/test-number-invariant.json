@@ -1,0 +1,319 @@
+{
+  "status": "m6_number_invariant_scoring_complete",
+  "views": [
+    "tr-normalized-v1",
+    "tr-number-invariant-v0"
+  ],
+  "script_sha256": "55911e521ffad2feb62e12f97f6eafa2018f75bfa5417ce213684cef54fdd6f1",
+  "references_sha256": "31e372f0e35f504de59b49f1e0e1f3ed6fcc2772138c591a2cf2b054a4e7ef3f",
+  "systems": {
+    "baseline-whisper-small": {
+      "split": "test",
+      "predictions_sha256": "42e037c9dffe429beca49d92b3a6eb4a015a6b02069c2b35935ad02e3772e8ec",
+      "utterances": 636,
+      "error_rows": 0,
+      "metrics": {
+        "tr-normalized-v1": {
+          "words": {
+            "substitutions": 3445,
+            "deletions": 342,
+            "insertions": 1253,
+            "hits": 16742,
+            "n": 20529
+          },
+          "characters": {
+            "substitutions": 4486,
+            "deletions": 2069,
+            "insertions": 8134,
+            "hits": 139665,
+            "n": 146220
+          },
+          "wer": 0.24550635686102587,
+          "cer": 0.10045821365066339
+        },
+        "tr-number-invariant-v0": {
+          "words": {
+            "substitutions": 2634,
+            "deletions": 469,
+            "insertions": 479,
+            "hits": 18575,
+            "n": 21678
+          },
+          "characters": {
+            "substitutions": 2742,
+            "deletions": 2611,
+            "insertions": 2834,
+            "hits": 148202,
+            "n": 153555
+          },
+          "wer": 0.16523664544699695,
+          "cer": 0.05331640128944026
+        }
+      }
+    },
+    "B2-whisper-large-v3": {
+      "split": "test",
+      "predictions_sha256": "a5b1f31cc28e6055cdac13115205ba3a0e589d7d6969b1cf39f63926ad44bee1",
+      "utterances": 636,
+      "error_rows": 0,
+      "metrics": {
+        "tr-normalized-v1": {
+          "words": {
+            "substitutions": 1567,
+            "deletions": 422,
+            "insertions": 540,
+            "hits": 18540,
+            "n": 20529
+          },
+          "characters": {
+            "substitutions": 1783,
+            "deletions": 2508,
+            "insertions": 3674,
+            "hits": 141929,
+            "n": 146220
+          },
+          "wer": 0.12319158263919333,
+          "cer": 0.05447271235125154
+        },
+        "tr-number-invariant-v0": {
+          "words": {
+            "substitutions": 1167,
+            "deletions": 428,
+            "insertions": 343,
+            "hits": 20083,
+            "n": 21678
+          },
+          "characters": {
+            "substitutions": 1064,
+            "deletions": 2622,
+            "insertions": 2142,
+            "hits": 149869,
+            "n": 153555
+          },
+          "wer": 0.08939939108773873,
+          "cer": 0.03795382761876852
+        }
+      }
+    },
+    "B2-whisper-large-v3-m2repro": {
+      "split": "test",
+      "predictions_sha256": "a90268a9a7f0af2f42d461b7e0b239e830f8f2a1577ec304398c63e126fd38b4",
+      "utterances": 636,
+      "error_rows": 0,
+      "metrics": {
+        "tr-normalized-v1": {
+          "words": {
+            "substitutions": 1575,
+            "deletions": 426,
+            "insertions": 543,
+            "hits": 18528,
+            "n": 20529
+          },
+          "characters": {
+            "substitutions": 1806,
+            "deletions": 2512,
+            "insertions": 3635,
+            "hits": 141902,
+            "n": 146220
+          },
+          "wer": 0.12392225632032734,
+          "cer": 0.05439064423471481
+        },
+        "tr-number-invariant-v0": {
+          "words": {
+            "substitutions": 1178,
+            "deletions": 432,
+            "insertions": 340,
+            "hits": 20068,
+            "n": 21678
+          },
+          "characters": {
+            "substitutions": 1071,
+            "deletions": 2637,
+            "insertions": 2096,
+            "hits": 149847,
+            "n": 153555
+          },
+          "wer": 0.08995294768890119,
+          "cer": 0.037797531828986354
+        }
+      }
+    },
+    "B3-qwen3-asr-1.7b": {
+      "split": "test",
+      "predictions_sha256": "3ea4f2b8c3393167090761aa5baa955db536054fec71e5c831fa6b471ac4fd1a",
+      "utterances": 636,
+      "error_rows": 0,
+      "metrics": {
+        "tr-normalized-v1": {
+          "words": {
+            "substitutions": 2480,
+            "deletions": 350,
+            "insertions": 474,
+            "hits": 17699,
+            "n": 20529
+          },
+          "characters": {
+            "substitutions": 2734,
+            "deletions": 2154,
+            "insertions": 3301,
+            "hits": 141332,
+            "n": 146220
+          },
+          "wer": 0.1609430561644503,
+          "cer": 0.05600465052660375
+        },
+        "tr-number-invariant-v0": {
+          "words": {
+            "substitutions": 2213,
+            "deletions": 428,
+            "insertions": 437,
+            "hits": 19037,
+            "n": 21678
+          },
+          "characters": {
+            "substitutions": 2371,
+            "deletions": 2662,
+            "insertions": 2630,
+            "hits": 148522,
+            "n": 153555
+          },
+          "wer": 0.14198726819817326,
+          "cer": 0.049903943212529715
+        }
+      }
+    },
+    "baseline-bilstm-ctc": {
+      "split": "test",
+      "predictions_sha256": "a762bc240c1fb93299cc94d6c84bc32b8db09531d1d3f37da723dcce6e3b30c7",
+      "utterances": 636,
+      "error_rows": 0,
+      "metrics": {
+        "tr-normalized-v1": {
+          "words": {
+            "substitutions": 8087,
+            "deletions": 1016,
+            "insertions": 705,
+            "hits": 11426,
+            "n": 20529
+          },
+          "characters": {
+            "substitutions": 8428,
+            "deletions": 6736,
+            "insertions": 4580,
+            "hits": 131056,
+            "n": 146220
+          },
+          "wer": 0.4777631643041551,
+          "cer": 0.135029407741759
+        },
+        "tr-number-invariant-v0": {
+          "words": {
+            "substitutions": 8081,
+            "deletions": 1135,
+            "insertions": 772,
+            "hits": 12462,
+            "n": 21678
+          },
+          "characters": {
+            "substitutions": 8661,
+            "deletions": 7714,
+            "insertions": 4717,
+            "hits": 137180,
+            "n": 153555
+          },
+          "wer": 0.46074361103422823,
+          "cer": 0.13735794992022402
+        }
+      }
+    },
+    "baseline-m3-single-gaussian-character-hmm": {
+      "split": "test",
+      "predictions_sha256": "ebb22d4b40b855d27466aec44ecf1bddccb2660a6986bfa68887f6a8fefc8ca3",
+      "utterances": 636,
+      "error_rows": 0,
+      "metrics": {
+        "tr-normalized-v1": {
+          "words": {
+            "substitutions": 1295,
+            "deletions": 19233,
+            "insertions": 0,
+            "hits": 1,
+            "n": 20529
+          },
+          "characters": {
+            "substitutions": 76012,
+            "deletions": 53648,
+            "insertions": 125,
+            "hits": 16560,
+            "n": 146220
+          },
+          "wer": 0.9999512884212577,
+          "cer": 0.8876008753932431
+        },
+        "tr-number-invariant-v0": {
+          "words": {
+            "substitutions": 20537,
+            "deletions": 0,
+            "insertions": 22753,
+            "hits": 1141,
+            "n": 21678
+          },
+          "characters": {
+            "substitutions": 96853,
+            "deletions": 1789,
+            "insertions": 68288,
+            "hits": 54913,
+            "n": 153555
+          },
+          "wer": 1.9969554386936064,
+          "cer": 1.0871023411806844
+        }
+      }
+    },
+    "baseline-seda-zipformer2-rnnt": {
+      "split": "test",
+      "predictions_sha256": "f1ee00943d6dada99d71e8dd5dc1aab7a2b88c739ff68cc8b69c054f3d97953a",
+      "utterances": 636,
+      "error_rows": 0,
+      "metrics": {
+        "tr-normalized-v1": {
+          "words": {
+            "substitutions": 4155,
+            "deletions": 460,
+            "insertions": 1535,
+            "hits": 15914,
+            "n": 20529
+          },
+          "characters": {
+            "substitutions": 5391,
+            "deletions": 3900,
+            "insertions": 9442,
+            "hits": 136929,
+            "n": 146220
+          },
+          "wer": 0.2995762092649423,
+          "cer": 0.12811516892353988
+        },
+        "tr-number-invariant-v0": {
+          "words": {
+            "substitutions": 3128,
+            "deletions": 649,
+            "insertions": 575,
+            "hits": 17901,
+            "n": 21678
+          },
+          "characters": {
+            "substitutions": 3116,
+            "deletions": 4729,
+            "insertions": 2936,
+            "hits": 145710,
+            "n": 153555
+          },
+          "wer": 0.20075652735492205,
+          "cer": 0.07020937123506235
+        }
+      }
+    }
+  }
+}

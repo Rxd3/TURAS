@@ -1,0 +1,55 @@
+{
+  "status": "m6_number_invariant_scoring_complete",
+  "views": [
+    "tr-normalized-v1",
+    "tr-number-invariant-v0"
+  ],
+  "script_sha256": "55911e521ffad2feb62e12f97f6eafa2018f75bfa5417ce213684cef54fdd6f1",
+  "references_sha256": "31e372f0e35f504de59b49f1e0e1f3ed6fcc2772138c591a2cf2b054a4e7ef3f",
+  "systems": {
+    "F2-m6repro-s18": {
+      "split": "test",
+      "predictions_sha256": "79708e4f8c0e6eb44e535f5c933b474618f0a249ebfae5253e96630dbd62172f",
+      "utterances": 636,
+      "error_rows": 0,
+      "metrics": {
+        "tr-normalized-v1": {
+          "words": {
+            "substitutions": 1557,
+            "deletions": 297,
+            "insertions": 323,
+            "hits": 18675,
+            "n": 20529
+          },
+          "characters": {
+            "substitutions": 1528,
+            "deletions": 2032,
+            "insertions": 2440,
+            "hits": 142660,
+            "n": 146220
+          },
+          "wer": 0.10604510692191534,
+          "cer": 0.04103405826836274
+        },
+        "tr-number-invariant-v0": {
+          "words": {
+            "substitutions": 1497,
+            "deletions": 300,
+            "insertions": 333,
+            "hits": 19881,
+            "n": 21678
+          },
+          "characters": {
+            "substitutions": 1444,
+            "deletions": 2052,
+            "insertions": 2460,
+            "hits": 150059,
+            "n": 153555
+          },
+          "wer": 0.09825629670633822,
+          "cer": 0.03878740516427339
+        }
+      }
+    }
+  }
+}

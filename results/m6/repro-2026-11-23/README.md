@@ -128,6 +128,7 @@ Its `tr-normalized-v1` output equals the committed scores exactly. Test set:
 | --- | ---: | ---: | ---: | ---: |
 | B1 Whisper-small (M6 re-decode) | 24.5506 | 16.5237 | 10.0458 | 5.3316 |
 | F2 Whisper-small full fine-tune (M6 re-train, seed 17) | 10.4681 | 9.6826 | 3.7341 | 3.5075 |
+| F2 Whisper-small full fine-tune (M6 re-train, seed 18) | 10.6045 | 9.8256 | 4.1034 | 3.8787 |
 | B2 Whisper-large-v3 | 12.3192 | 8.9399 | 5.4473 | 3.7954 |
 | B2, Member 2's reproduction | 12.3922 | 8.9953 | 5.4391 | 3.7798 |
 | B3 Qwen3-ASR-1.7B | 16.0943 | 14.1987 | 5.6005 | 4.9904 |
@@ -136,7 +137,7 @@ Its `tr-normalized-v1` output equals the committed scores exactly. Test set:
 | B8 Seda Zipformer2 RNN-T | 29.9576 | 20.0757 | 12.8115 | 7.0209 |
 
 - From B1 to F2 (both M6 runs), WER falls by 14.08 pp (57% relative) in tr-normalized-v1
-  but by 6.84 pp (41% relative) in the number-invariant view. About half of the measured
+  but by 6.84 pp (41% relative) in the number-invariant view (seed 18: 6.70 pp). About half of the measured
   fine-tuning gain is learning how the minutes write numbers.
 - In the number-invariant view, zero-shot Whisper-large-v3 (B2) has lower WER than
   fine-tuned Whisper-small (8.94 against 9.68). F2 keeps the lower CER (3.51 against 3.80).
@@ -186,7 +187,7 @@ Number-invariant view (run folders hold `predictions.jsonl`; one `--run` per sys
 python scripts/m6_number_invariant_wer.py --references data/cleaned/turas-tr-econ-legis-v0.1/turas-tr-econ-legis-v0.1.references.test.jsonl --references-sha256 31e372f0e35f504de59b49f1e0e1f3ed6fcc2772138c591a2cf2b054a4e7ef3f --run baseline-whisper-small=<B1_RUN_DIR> --run B2-whisper-large-v3=<B2_RUN_DIR> --run B3-qwen3-asr-1.7b=<B3_RUN_DIR> --run baseline-seda-zipformer2-rnnt=<B8_RUN_DIR> --run B2-whisper-large-v3-m2repro=<M2_B2_RUN_DIR> --run baseline-bilstm-ctc=results/m3/b5/test --run baseline-m3-single-gaussian-character-hmm=results/m3/gaussian-hmm/test --output <NEW_OUTPUT_FILE>
 ```
 
-The F2 entry (`number-invariant/test-number-invariant-F2s17.json`) comes from a second run:
+The F2 entries (`number-invariant/test-number-invariant-F2s17.json` and `test-number-invariant-F2s18.json`) come from one run per seed (seed 18: `--run F2-m6repro-s18=<F2_S18_RUN_DIR>`):
 
 ```text
 python scripts/m6_number_invariant_wer.py --references data/cleaned/turas-tr-econ-legis-v0.1/turas-tr-econ-legis-v0.1.references.test.jsonl --references-sha256 31e372f0e35f504de59b49f1e0e1f3ed6fcc2772138c591a2cf2b054a4e7ef3f --run F2-m6repro-s17=<F2_S17_RUN_DIR> --output <NEW_OUTPUT_FILE>

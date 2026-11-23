@@ -4,16 +4,42 @@ TURAS — Dataset and Third-Party Model Notice
    The TURAS dataset (`turas-tr-econ-legis-v0.1`) is derived from
    `disco-eth/WorldSpeech` (`tr_tr`), which is distributed under
    Creative Commons Attribution-NonCommercial 4.0 International (CC BY-NC 4.0).
-   Audio recordings and protected transcripts are not redistributed in this
-   repository; only selection code, split IDs, hashes, exclusion ledgers, and
-   aggregate statistics are committed. Any downstream use of WorldSpeech-derived
-   data must comply with CC BY-NC 4.0 attribution and non-commercial terms.
+   Following the course rule that raw and cleaned data be in the repository,
+   this repository redistributes WorldSpeech-derived data under CC BY-NC 4.0:
+   - data/raw/worldspeech-tr_tr-b76b8539/: upstream tr_tr text and metadata
+     (no audio), unmodified;
+   - data/cleaned/turas-tr-econ-legis-v0.1/: 5,450 selected clips converted to
+     16 kHz mono FLAC, their references (13 corrected after listening),
+     relational tables and the removal log.
+   Attribution: WorldSpeech (disco-eth/WorldSpeech, arXiv:2605.09167);
+   recordings by the Turkish Grand National Assembly (https://www.tbmm.gov.tr/).
+   Licence: https://creativecommons.org/licenses/by-nc/4.0/. This data licence
+   is separate from the MIT licence that covers the TURAS code. Any use of
+   this data must be non-commercial and keep this attribution.
 
 2. Pretrained model checkpoints:
    Upstream pretrained models referenced by configs remain subject to their own
    licenses, including:
    - `openai/whisper-small` and `openai/whisper-large-v3`: Apache-2.0 (Hugging Face model
-     license field at the pinned revisions)
+     license field at the pinned revisions). The upstream OpenAI Whisper
+     code/weights release on GitHub uses MIT; retain the pinned publisher cards
+     alongside the upstream notices.
    - `mpoyraz/wav2vec2-xls-r-300m-cv7-turkish`: CC BY 4.0 (attribution required)
    - `mpoyraz/wav2vec2-xls-r-300m-cv8-turkish`: Apache-2.0
    - `Qwen/Qwen3-ASR-0.6B-hf` and `Qwen/Qwen3-ASR-1.7B-hf`: Apache-2.0
+   - `atasoglu/seda-v0.1`: publisher card declares Apache-2.0 for the acoustic
+     model. The delivery preserves its card and includes Apache-2.0 text.
+     Optional external language-model artifacts are not included or used.
+
+3. Publisher records used for the follow-up:
+   - OpenAI Whisper upstream: https://github.com/openai/whisper/blob/main/LICENSE
+   - Pinned HF large-v3 card:
+     https://huggingface.co/openai/whisper-large-v3/blob/06f233fe06e710322aca913c1bc4249a0d71fce1/README.md
+   - Pinned Seda card:
+     https://huggingface.co/atasoglu/seda-v0.1/blob/5cbbda1b34bde5e3004e79b137dc3871587ea282/README.md
+   - Apache license text: https://www.apache.org/licenses/LICENSE-2.0.txt
+     Local copy: licenses/Apache-2.0.txt
+
+   New follow-up archives include the applicable notices/license text. Large
+   upstream B2/Qwen weights remain separate pinned downloads. Model rights do
+   not replace the dataset's attribution/non-commercial terms.

@@ -1,0 +1,97 @@
+{
+  "schema_version": "0.1",
+  "run_id": "b5-gpu-resume-2026-11-22",
+  "state": "completed",
+  "started_at_utc": "2026-11-22T09:13:17.793436+00:00",
+  "owner_member": "M3 local GPU continuation",
+  "purpose": "Continue epoch-13 B5 weights on CUDA",
+  "parent_manifest_sha256": "3ce85052d0e2b8ad63c07647d9911ccdb2cb4264baa1737e95c38a514d38a683",
+  "parent_weights_sha256": "53f1c42ba692572deb718afcc3716f957891cc44b837575168a5dc4ea41f4ded",
+  "dataset_release": "turas-tr-econ-legis-v0.1",
+  "split_manifest_sha256": "a8fff65b99fcf11d9452685e438e250207032ecfe11152741562147126d095b8",
+  "split_file_sha256": {
+    "train": "3758fae04956ef65464b9c15821527535bd40b4d00438885d7fbffdaf33bda1e",
+    "validation": "2dd6126b221ab586dc4417141291ff3f7dfef2264a397a2c317c2a5a505f936f"
+  },
+  "reference_sha256": {
+    "train": "f4992d2951389ac243c281d2875511cfa0669d026d8698993db48b30b09a4508",
+    "validation": "d0c8519ca6aed053f89786bc733541a70faee09cf8d8bdb6cc12065d97dbd958"
+  },
+  "validation_reference_variant": "owner-recovered-validation-minutes-v1",
+  "code_commit": "d2bdf5e9701aa502a349a10348041673acc727c2",
+  "git_status": "?? scripts/m3_resume_b5_gpu.py\n",
+  "script_sha256": "f12a74fa29dc84947ed5b7135eff611058bea22edd228dcd6af90b32bcb0c854",
+  "original_script_sha256": "192a8c5775da39948b2a837d7932862e1642f4f46e74526f36539ed02272eaff",
+  "command": "C:\\Users\\USER\\Downloads\\NLP-3\\.venv\\Scripts\\python.exe C:\\Users\\USER\\Downloads\\NLP-3\\scripts\\m3_resume_b5_gpu.py --source-zip C:\\Users\\USER\\AppData\\Local\\Temp\\turas-b5-epoch13-inspection\\b5_epoch13_handoff.zip --output C:\\Users\\USER\\Downloads\\NLP-3\\artifacts\\b5-gpu-resume-2026-11-22 --max-epochs 40 --patience 6 --max-hours 2",
+  "environment": {
+    "os": "Windows-11-10.0.26300-SP0",
+    "python": "3.13.14 (tags/v3.13.14:fd17997, Jun 10 2026, 13:03:48) [MSC v.1944 64 bit (AMD64)]",
+    "torch": "2.14.1+cu130",
+    "cuda": "13.0",
+    "cudnn": 92400,
+    "gpu": "NVIDIA GeForce RTX 5070",
+    "cpu": "AMD64 Family 25 Model 97 Stepping 2, AuthenticAMD",
+    "cpu_threads": 1,
+    "gpu_vram_bytes": 12792037376,
+    "nvidia_smi": "NVIDIA GeForce RTX 5070, 617.42, 12227 MiB"
+  },
+  "dependency_lock_sha256": "9029e41b2e5cce9af66521d203ba336903a6d533be5425e7f9ea030dfb1b58a9",
+  "model_arch": {
+    "vocab_size": 48,
+    "n_mels": 80,
+    "conv_channels": 32,
+    "hidden_size": 320,
+    "num_layers": 4,
+    "dropout": 0.2
+  },
+  "vocab_sha256": "613c33d354997064c310b8602e0f5865a74595bd5cad859d15cc129438a2837c",
+  "model_code_sha256": "eece740b59a26fffcf9f9f1fbce352263156cd178561b5ba79852aae9ad980fd",
+  "normalizer_sha256": "f2c4ac06699d9abe976cca0c02a1dde5f8cf0e9ab832031b973e66cb67bb771c",
+  "metrics_sha256": "ef048aa65571f98efbe4e2364800b3629db89d45cfdf0677962b38201b0d4986",
+  "aligner_sha256": "89699b724cdde42f5405a8a77d2ff6b6def8a85464abb49e758a3a257f4aca85",
+  "optimizer": {
+    "type": "AdamW",
+    "lr": 0.0003,
+    "weight_decay": 0.0001,
+    "fresh_on_parent_resume": true
+  },
+  "scheduler": {
+    "type": "ReduceLROnPlateau",
+    "factor": 0.5,
+    "patience": 2
+  },
+  "seed": 42,
+  "deterministic_algorithms": false,
+  "precision": "float32; cached features round-tripped through float16 as in M3 script",
+  "batch_size": 16,
+  "max_epochs": 40,
+  "early_stopping_patience": 6,
+  "wall_clock_limit_hours": 2.0,
+  "selection_metric": "validation norm CER",
+  "limits": [
+    "Single training seed",
+    "Original optimizer/scheduler/RNG not supplied; fresh AdamW continuation",
+    "Working validation minutes are unreviewed; not a verified verbatim gold reference",
+    "Original M3 reference hash was not supplied; parent is re-evaluated on this pinned local snapshot",
+    "No test references or test inference inputs read; no inference timing or GMM-HMM run"
+  ],
+  "ended_at_utc": "2026-11-22T09:30:01.393816+00:00",
+  "best_epoch": 22,
+  "best_val_norm_cer": 0.13258870590680036,
+  "stop_reason": "early_stopping",
+  "selected_checkpoint_frozen_at_utc": "2026-11-22T09:30:01.393821+00:00",
+  "outputs": {
+    "bilstm_ctc.pt": {
+      "sha256": "0b304a93e9aabc204bd4b1be0c49e06870f744b9aa8edf2652a7e20a137efce3",
+      "bytes": 37116214
+    },
+    "vocab.json": {
+      "sha256": "613c33d354997064c310b8602e0f5865a74595bd5cad859d15cc129438a2837c",
+      "bytes": 529
+    },
+    "checkpoint-manifest.json": {
+      "sha256": "f5d98c4e64c793c1c48e2a8aca70f9a6a503663fc5ffda5ff3c374f41aab8917",
+      "bytes": 568
+    }
+  }
+}

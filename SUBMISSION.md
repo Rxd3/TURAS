@@ -8,7 +8,7 @@ and rescoring conditions on the same frozen 636 clips against working references
 
 | Material | What it covers |
 | --- | --- |
-| [Two-minute presentation](presentation/TURAS-2-minute.pptx) and [full deck](presentation/TURAS.pptx) | Four timed slides for delivery and 12 slides for questions |
+| [Final two-minute presentation](presentation/TURAS-final-2-minute.pptx) and [full deck](presentation/TURAS.pptx) | Title slide and four timed slides (about 1:15) for delivery; 12-slide full deck for questions |
 | [Final report](results/final/M4_M5_FINAL_REPORT.md) | Raw and normalized WER/CER, terminology, timing, controls and paired uncertainty |
 | [Metrics CSV](results/final/m45_metrics.csv) and [evaluation summary](results/final/m45_test_summary.json) | Per-system aggregates, edit counts and evaluation provenance |
 | [Error analysis](docs/error_analysis.md) | Error profiles, terminology and quantity diagnostics, and the RDL null result |
@@ -28,6 +28,10 @@ confidence intervals include zero. The study uses a single training seed.
 [Final report](results/final/M4_M5_FINAL_REPORT.md)
 
 ## Verify from a fresh clone
+
+**Clone size:** the repository holds the dataset (about 2.1 GB, mostly 5,450 FLAC
+clips, without Git LFS), so `git clone` downloads about 2.1 GB and CI checkout
+takes 2–3 minutes. `git clone --depth 1` still includes the data.
 
 The first command uses only the Python standard library. The full public offline
 suite uses Python 3.11+ and the lean development dependencies. Run from the
@@ -59,8 +63,11 @@ model and run archive, and separate audio and evaluator-only references. Ask the
 project team for the appropriate bundles and access. The documented restore
 exercised three acoustic systems, three joint systems and 15 cached controls on
 validation audio in a fresh checkout using the existing runtime. Independent
-clean-environment reproduction, non-author review and consumer acknowledgment
-remain pending.
+reproduction by a non-author and consumer acknowledgment remain pending.
+The follow-up installed a fresh isolated Python environment and matched three
+archived B5 validation transcripts after restoring source, weights and audio.
+This owner-assisted same-machine subset check does not establish independent
+review or full-test parity for every system.
 [Reproduction guide](docs/m45_final_reproduction.md) ·
 [Delivery acceptance](docs/m45_delivery_acceptance.md)
 
@@ -69,10 +76,11 @@ remain pending.
 | Track | Evidence and status |
 | --- | --- |
 | B1 (Whisper-small) and B4 (XLS-R Turkish CV7) | Full matched test evaluation and repeated timing |
-| B2 (Whisper-large-v3) and B3 (Qwen3-ASR-1.7B) | Validation and test scores from the M6 scorer, outside the frozen protocol, and same-session timing on an RTX 5070 Ti laptop. B3 was selected on validation. B1 parity of the scorer and paired intervals against F1/F2 are pending the private M4/M5 bundle. [B2 and B3 results](results/m6/README.md) |
-| B5 (BiLSTM-CTC) | Model, adapter and configuration with a synthetic three-step CPU probe and checkpoint reload check. Corpus training and frozen evaluation are pending |
+| B2 (Whisper-large-v3) and B3 (Qwen3-ASR-1.7B) | Official validation and test scores from the M6 scorer, outside the frozen protocol, and same-session timing on an RTX 5070 Ti laptop. B3 was selected over 0.6B on validation. Member 2's B2 handoff is scored as an independent reproduction. B1 parity of the scorer and paired intervals against F1/F2 are pending the private M4/M5 bundle. The owner's separate local B2/B3 follow-up is a reproduction, not the reported result. [B2 and B3 results](results/m6/README.md) |
+| B5 (BiLSTM-CTC) | Epoch 22 selected after GPU continuation; full test WER 47.776%, CER 13.503%; checked predictions/N-best and 3-repeat timing |
+| Supplied single-Gaussian character HMM | Three EM passes; full test WER 99.995%, CER 88.760%; a weak classical baseline, not a conventional mixture-Gaussian phoneme HMM |
 | F1–F3 (Whisper LoRA, full Whisper and adapted CTC) and R1 (learned relational rescoring) | Complete working test results, adapted checkpoints, graph controls and timing |
-| Additional course requirements | Turkish support audited from published HuBERT and transducer sources. A matched transducer run and the GMM-HMM baseline are pending. [Support audit](docs/asr_language_support_audit.md) |
+| B7 four-mixture MFCC GMM-HMM and B8 Seda Turkish RNN-T | Aggregate validation/test results, edit counts, export hashes and three-repeat timing are committed (B8 29.96% WER / 12.81% CER, B7 99.97% / 64.55%); the per-utterance exports and the B7 model file are external and not verified in this repository. The earlier single-Gaussian HMM is kept separately. [Completion report](results/final/BASELINE_COMPLETION_REPORT.md) |
 
 M6's dated GPU smoke report covers a reference-free sample of 20 timed clips.
 The four beam systems passed N-best validation after shared-export deduplication.
@@ -87,3 +95,9 @@ unproven. The recovered validation minutes omit three private reference
 corrections. All 249 primary decisions for the separate review plan have been
 recorded. Independent adjudication of 55 items and release approval are pending. [Dataset handoff](docs/m1_deadline_handoff.md) ·
 [Completion record](docs/m45_completion.md)
+
+## 2026-11-22 closeout
+
+See the [final review](docs/final_review_2026-11-22.md), [M3 results](results/final/m3_test_summary.json),
+and [final reproduction commands](docs/final_reproduction.md).
+PR #26 is open, awaiting non-author review.

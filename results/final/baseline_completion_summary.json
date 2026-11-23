@@ -1,0 +1,1784 @@
+{
+  "status": "completed_archived_runs_rechecked_on_current_repository",
+  "rechecked_at_utc": "2026-11-22T19:20:25.931512+00:00",
+  "current_repository_base": "1cf8129c8c13301db1db23eaf9e0de4075c22d4e",
+  "archived_results_commit": "b98b45c94d588cc39d49cc5dc09d90244c35f095",
+  "dataset_release": "turas-tr-econ-legis-v0.1",
+  "split_manifest_sha256": "a8fff65b99fcf11d9452685e438e250207032ecfe11152741562147126d095b8",
+  "test_reference_sha256": "31e372f0e35f504de59b49f1e0e1f3ed6fcc2772138c591a2cf2b054a4e7ef3f",
+  "validation_reference_sha256": "d0c8519ca6aed053f89786bc733541a70faee09cf8d8bdb6cc12065d97dbd958",
+  "domain_lexicon_sha256": "8ef903fe74135897a9d3781966c5e484c0711a6679d72346efb1ec89eff6df94",
+  "source_aggregate_sha256": {
+    "m3_test_summary.json": "8536cd058ebfd1f64299879263af928c9ce4f0cffbc040453ebe1470ed9e1b43",
+    "completion_test_summary.json": "fc8c182698dade35d54e992f4c4d94c76eb217e816b066a9ab574c141bfcdfed"
+  },
+  "systems": {
+    "b2": {
+      "label": "B2 Whisper-large-v3",
+      "system_id": "baseline-whisper-large-v3",
+      "runtime_scope": "archived run; inference was not rerun on the pulled repository",
+      "exports": {
+        "validation": {
+          "rows": 438,
+          "files": {
+            "nbest.jsonl": "c3884611e3581836beec8f6789a126ad0fd59840e0123975291f542d7c1bc380",
+            "predictions.jsonl": "105752d898a398fe5fd3d179a099cc5ded5990a7e8ce1c928ca41a7f42e44d52",
+            "timing.jsonl": "03af60fb20e13dcd5fd3d389101b4889b4b2925cebffe5ae2bd7f2cf32cfcda7",
+            "manifest.json": "ae0470aa43eb5f6950f175e2744b8d8aae48919961d59f1d15d4d0b7a1f8d211"
+          },
+          "shared_contract_validation": "passed",
+          "model_artifact_sha256": "a8e94b85976e5864ba3e9525c7e6c83b2a1eca42d4b797a0c7c24d778e40fd95",
+          "decoder_config_sha256": "8395d6ca8c486d88fd89efb412485d605b957371a20a7caf7372cacc4abd3f2c"
+        },
+        "test": {
+          "rows": 636,
+          "files": {
+            "nbest.jsonl": "e91d803a346e041e6bf1d6edd89b6083bae6aa54010d1b192b11fccbd17aa689",
+            "predictions.jsonl": "7e3e6fb867d393905e91a37035d89dc82c92e45ae2a652c55571257a299dd632",
+            "timing.jsonl": "ff7ca9a527e5cdea8a311d12c8a5fa0304025bb5d77909e43c9f750224c46d49",
+            "manifest.json": "20f3a0e7f328828cff1aade2a0997d8c03d2d6f6ed63fb1b4d512b624c2c9106"
+          },
+          "shared_contract_validation": "passed",
+          "model_artifact_sha256": "a8e94b85976e5864ba3e9525c7e6c83b2a1eca42d4b797a0c7c24d778e40fd95",
+          "decoder_config_sha256": "8395d6ca8c486d88fd89efb412485d605b957371a20a7caf7372cacc4abd3f2c"
+        },
+        "timing": {
+          "rows": 107,
+          "files": {
+            "nbest.jsonl": "f72af49f63ed1679c8c020faea7951adf575ae5102182c537407a1f585af18f3",
+            "predictions.jsonl": "c2d34855b59e35baac872d77c58c455fe55418104190e6c3a97c5d751d2976e7",
+            "timing.jsonl": "06ba88ec612ee263a41b3d6b4e1097ec4c37f72bd0300e0709b163c99a4ab81c",
+            "manifest.json": "5fe1998aac1914b1978c173339938960c0d3c37c77fdc121edf0af69557c0a2e"
+          },
+          "shared_contract_validation": "passed",
+          "model_artifact_sha256": "a8e94b85976e5864ba3e9525c7e6c83b2a1eca42d4b797a0c7c24d778e40fd95",
+          "decoder_config_sha256": "8395d6ca8c486d88fd89efb412485d605b957371a20a7caf7372cacc4abd3f2c"
+        }
+      },
+      "validation": {
+        "rows": 438,
+        "reference_sha256": "d0c8519ca6aed053f89786bc733541a70faee09cf8d8bdb6cc12065d97dbd958",
+        "metrics": {
+          "raw-v1": {
+            "view": "raw-v1",
+            "utterances": 438,
+            "zero_reference_utterances": 0,
+            "error_rows": 0,
+            "words": {
+              "substitutions": 2464,
+              "deletions": 165,
+              "insertions": 484,
+              "hits": 10479
+            },
+            "chars": {
+              "substitutions": 2652,
+              "deletions": 1677,
+              "insertions": 3431,
+              "hits": 94104
+            },
+            "wer": 0.2374885566066524,
+            "cer": 0.07883534993345727,
+            "wacc": 0.7625114433933475
+          },
+          "tr-normalized-v1": {
+            "view": "tr-normalized-v1",
+            "utterances": 438,
+            "zero_reference_utterances": 0,
+            "error_rows": 0,
+            "words": {
+              "substitutions": 1081,
+              "deletions": 221,
+              "insertions": 417,
+              "hits": 12079
+            },
+            "chars": {
+              "substitutions": 1447,
+              "deletions": 1233,
+              "insertions": 2786,
+              "hits": 93565
+            },
+            "wer": 0.12846573499738434,
+            "cer": 0.05679256065250143,
+            "wacc": 0.8715342650026157
+          }
+        },
+        "domain_micro": {
+          "tp": 1779,
+          "fp": 25,
+          "fn": 62,
+          "reference_support": 1841,
+          "predicted_support": 1804,
+          "precision": 0.9861419068736141,
+          "recall": 0.9663226507332972,
+          "f1": 0.9761316872427983
+        },
+        "current_shared_evaluator_recheck": "exact match"
+      },
+      "test": {
+        "rows": 636,
+        "reference_sha256": "31e372f0e35f504de59b49f1e0e1f3ed6fcc2772138c591a2cf2b054a4e7ef3f",
+        "metrics": {
+          "raw-v1": {
+            "view": "raw-v1",
+            "utterances": 636,
+            "zero_reference_utterances": 0,
+            "error_rows": 0,
+            "words": {
+              "substitutions": 3988,
+              "deletions": 324,
+              "insertions": 645,
+              "hits": 15823
+            },
+            "chars": {
+              "substitutions": 4065,
+              "deletions": 3360,
+              "insertions": 4611,
+              "hits": 142410
+            },
+            "wer": 0.24618822945120436,
+            "cer": 0.08032836119731705,
+            "wacc": 0.7538117705487957
+          },
+          "tr-normalized-v1": {
+            "view": "tr-normalized-v1",
+            "utterances": 636,
+            "zero_reference_utterances": 0,
+            "error_rows": 0,
+            "words": {
+              "substitutions": 1574,
+              "deletions": 421,
+              "insertions": 548,
+              "hits": 18534
+            },
+            "chars": {
+              "substitutions": 1792,
+              "deletions": 2502,
+              "insertions": 3691,
+              "hits": 141926
+            },
+            "wer": 0.12387354474158507,
+            "cer": 0.054609492545479414,
+            "wacc": 0.8761264552584149
+          }
+        },
+        "domain_micro": {
+          "tp": 3279,
+          "fp": 46,
+          "fn": 106,
+          "reference_support": 3385,
+          "predicted_support": 3325,
+          "precision": 0.9861654135338346,
+          "recall": 0.968685376661743,
+          "f1": 0.9773472429210134
+        },
+        "current_shared_evaluator_recheck": "exact match"
+      },
+      "timing": {
+        "rtf": 0.15110403098894487,
+        "rtfx": 6.6179571349301884,
+        "latency_p50_s": 2.465771399991354,
+        "latency_p95_s": 3.6018559000076493,
+        "request_measurements": 321,
+        "scope": {
+          "normalization_version": "tr-normalized-v1",
+          "primary_rtf": "end_to_end_rtf",
+          "end_to_end_rtf": 0.15110403098894487,
+          "core_model_rtf": 0.15085980523021425,
+          "per_repeat_end_to_end_rtf": [
+            0.15111677163253356,
+            0.15126601141818832,
+            0.1509293099161127
+          ],
+          "cold_load_s": 11.826198999988264,
+          "warmup_batches": 3,
+          "repeats": 3,
+          "batch_size": 1,
+          "thermal_flags": 0,
+          "sync_method": "torch.cuda.synchronize",
+          "scope": {
+            "end_to_end": "audio read, decode and resample through result serialization",
+            "core_model": "adapter.transcribe only"
+          }
+        },
+        "environment": {
+          "python": "3.13.14",
+          "platform": "Windows-11-10.0.26300-SP0",
+          "numpy": "2.5.5",
+          "soundfile": "0.14.0",
+          "soxr": "1.1.0",
+          "gpu_name": "NVIDIA GeForce RTX 5070",
+          "gpu_driver": "617.42",
+          "torch": "2.14.1+cu130",
+          "cuda": "13.0",
+          "transformers": "5.23.0"
+        }
+      },
+      "configuration": {
+        "system_id": "baseline-whisper-large-v3",
+        "model": {
+          "id": "openai/whisper-large-v3",
+          "revision": "06f233fe06e710322aca913c1bc4249a0d71fce1",
+          "weight_file": "model.safetensors",
+          "weight_sha256": "a8e94b85976e5864ba3e9525c7e6c83b2a1eca42d4b797a0c7c24d778e40fd95",
+          "weight_sha256_kind": "Hub LFS oid; bytes verified at download",
+          "precision": "bfloat16",
+          "device": "cuda"
+        },
+        "processor": {
+          "id": "openai/whisper-large-v3",
+          "revision": "06f233fe06e710322aca913c1bc4249a0d71fce1",
+          "sampling_rate_hz": 16000
+        },
+        "audio": {
+          "sampling_rate_hz": 16000,
+          "clip_duration_constraint": "10-20 s clips from TURAS (M1 source audit: data/metadata/worldspeech-tr_tr-source-audit.md:52); fits within Whisper 30 s window (480,000 samples), no chunking needed"
+        },
+        "decoding": {
+          "algorithm": "beam",
+          "requested_n": 5,
+          "num_beams": 5,
+          "num_return_sequences": 5,
+          "max_new_tokens": 440,
+          "language": "tr",
+          "task": "transcribe",
+          "do_sample": false,
+          "temperature": null,
+          "length_penalty": 1.0,
+          "early_stopping": false,
+          "repetition_penalty": 1.0,
+          "no_repeat_ngram_size": 0,
+          "forced_prefix_tokens": [
+            "<|startoftranscript|>",
+            "<|tr|>",
+            "<|transcribe|>",
+            "<|notimestamps|>"
+          ]
+        },
+        "nbest": {
+          "score_convention_id": "whisper-original-logits-generated-plus-eos-v1",
+          "acoustic_score_kind": "seq2seq_token_log_prob_sum",
+          "deduplication_policy": "exact raw-text match; first (lowest-rank) occurrence kept; removed IDs listed in dedup_map"
+        }
+      },
+      "normalized_bootstrap_95_ci": {
+        "seed": 2026,
+        "replicates": 2000,
+        "recording_groups": 28,
+        "normalized_wer_95_ci": [
+          0.11163121751713248,
+          0.1375063961044291
+        ],
+        "normalized_cer_95_ci": [
+          0.04704272990824848,
+          0.06392540211530931
+        ]
+      },
+      "limitations": [
+        "Working edited-minutes references",
+        "Follow-up study after earlier working test exposure",
+        "Training-data overlap uncertainty is disclosed in candidate audit"
+      ]
+    },
+    "qwen17": {
+      "label": "B3 Qwen3-ASR-1.7B",
+      "system_id": "baseline-qwen3-asr-1.7b",
+      "runtime_scope": "archived run; inference was not rerun on the pulled repository",
+      "exports": {
+        "validation": {
+          "rows": 438,
+          "files": {
+            "nbest.jsonl": "4068f2b35db2fd8d09bf185b9a904544ce44b27730a489b9ebce104adba6440f",
+            "predictions.jsonl": "3c433b03df6af5f1bc1c2a9139d3012c219782384ac832a58fc6537d62cd6c45",
+            "timing.jsonl": "34747c02938f18c7676f47cbb30c6bed099d9da0ba88d7bd26d951c27ff8db02",
+            "manifest.json": "9c8adcaa8443a6675e5f5ffa741689a6dd893490d401a5e2cf2516b543dd3101"
+          },
+          "shared_contract_validation": "passed",
+          "model_artifact_sha256": "2db53c7d81bd9b8cbc6a074e89be2c968a0d373fb4ee68bb1b1e14f7042dfee1",
+          "decoder_config_sha256": "912a63798088d36d5bab23b6b5a296d51f9c9c62f01b0ddd94ea9fd9d164c75d"
+        },
+        "test": {
+          "rows": 636,
+          "files": {
+            "nbest.jsonl": "9026637fbd0f138801eb8b3b63496819dd2e617851812f35aa7b66a8da4cdee6",
+            "predictions.jsonl": "bacac34a483e57cf74770eb7c72caba662c21a7a2910ea312a20f08a04edd604",
+            "timing.jsonl": "d8da88a0afdb30b707f9e465db16ec44c75e6564ba6beadd960509e4d76b5fa1",
+            "manifest.json": "b0c204f0231b2b3291e5e1f883ac65edd54eac7af468dba3be1e4cb293456834"
+          },
+          "shared_contract_validation": "passed",
+          "model_artifact_sha256": "2db53c7d81bd9b8cbc6a074e89be2c968a0d373fb4ee68bb1b1e14f7042dfee1",
+          "decoder_config_sha256": "912a63798088d36d5bab23b6b5a296d51f9c9c62f01b0ddd94ea9fd9d164c75d"
+        },
+        "timing": {
+          "rows": 107,
+          "files": {
+            "nbest.jsonl": "62f4a0cfd08c22c457bba2a92246797ec17680ef71364131e24aa346a417347b",
+            "predictions.jsonl": "71b4d9a6a8f24cf5771387cd3e252d6b15fc71c0bf01c6f5386f8a6e9a8b0cce",
+            "timing.jsonl": "45deb5a6a07df341edac79bbbd087c6772373b88a02befd7b63a3695e6826ad1",
+            "manifest.json": "e3218aaab83862d40fb999927744286595a66c54cbb484682148b851c90d6542"
+          },
+          "shared_contract_validation": "passed",
+          "model_artifact_sha256": "2db53c7d81bd9b8cbc6a074e89be2c968a0d373fb4ee68bb1b1e14f7042dfee1",
+          "decoder_config_sha256": "912a63798088d36d5bab23b6b5a296d51f9c9c62f01b0ddd94ea9fd9d164c75d"
+        }
+      },
+      "validation": {
+        "rows": 438,
+        "reference_sha256": "d0c8519ca6aed053f89786bc733541a70faee09cf8d8bdb6cc12065d97dbd958",
+        "metrics": {
+          "raw-v1": {
+            "view": "raw-v1",
+            "utterances": 438,
+            "zero_reference_utterances": 0,
+            "error_rows": 0,
+            "words": {
+              "substitutions": 2965,
+              "deletions": 153,
+              "insertions": 344,
+              "hits": 9990
+            },
+            "chars": {
+              "substitutions": 2959,
+              "deletions": 1939,
+              "insertions": 2339,
+              "hits": 93535
+            },
+            "wer": 0.2641135184620079,
+            "cer": 0.07352209116861215,
+            "wacc": 0.7358864815379921
+          },
+          "tr-normalized-v1": {
+            "view": "tr-normalized-v1",
+            "utterances": 438,
+            "zero_reference_utterances": 0,
+            "error_rows": 0,
+            "words": {
+              "substitutions": 1553,
+              "deletions": 211,
+              "insertions": 289,
+              "hits": 11617
+            },
+            "chars": {
+              "substitutions": 1673,
+              "deletions": 1422,
+              "insertions": 2124,
+              "hits": 93150
+            },
+            "wer": 0.1534265002615649,
+            "cer": 0.05422619356849707,
+            "wacc": 0.8465734997384351
+          }
+        },
+        "domain_micro": {
+          "tp": 1639,
+          "fp": 98,
+          "fn": 202,
+          "reference_support": 1841,
+          "predicted_support": 1737,
+          "precision": 0.943580886586068,
+          "recall": 0.8902770233568713,
+          "f1": 0.9161542761319172
+        },
+        "current_shared_evaluator_recheck": "exact match"
+      },
+      "test": {
+        "rows": 636,
+        "reference_sha256": "31e372f0e35f504de59b49f1e0e1f3ed6fcc2772138c591a2cf2b054a4e7ef3f",
+        "metrics": {
+          "raw-v1": {
+            "view": "raw-v1",
+            "utterances": 636,
+            "zero_reference_utterances": 0,
+            "error_rows": 0,
+            "words": {
+              "substitutions": 4771,
+              "deletions": 230,
+              "insertions": 551,
+              "hits": 15134
+            },
+            "chars": {
+              "substitutions": 5133,
+              "deletions": 3031,
+              "insertions": 3635,
+              "hits": 141671
+            },
+            "wer": 0.275738763347405,
+            "cer": 0.07874662128341176,
+            "wacc": 0.724261236652595
+          },
+          "tr-normalized-v1": {
+            "view": "tr-normalized-v1",
+            "utterances": 636,
+            "zero_reference_utterances": 0,
+            "error_rows": 0,
+            "words": {
+              "substitutions": 2490,
+              "deletions": 349,
+              "insertions": 481,
+              "hits": 17690
+            },
+            "chars": {
+              "substitutions": 2724,
+              "deletions": 2156,
+              "insertions": 3337,
+              "hits": 141340
+            },
+            "wer": 0.16172244142432657,
+            "cer": 0.05619614279852277,
+            "wacc": 0.8382775585756734
+          }
+        },
+        "domain_micro": {
+          "tp": 2978,
+          "fp": 159,
+          "fn": 407,
+          "reference_support": 3385,
+          "predicted_support": 3137,
+          "precision": 0.9493146318138349,
+          "recall": 0.8797636632200886,
+          "f1": 0.913216804661147
+        },
+        "current_shared_evaluator_recheck": "exact match"
+      },
+      "timing": {
+        "rtf": 0.11824144818468875,
+        "rtfx": 8.457271247541193,
+        "latency_p50_s": 1.9291133000078844,
+        "latency_p95_s": 2.9602209000004223,
+        "request_measurements": 321,
+        "scope": {
+          "normalization_version": "tr-normalized-v1",
+          "primary_rtf": "end_to_end_rtf",
+          "end_to_end_rtf": 0.11824144818468875,
+          "core_model_rtf": 0.11799359685517538,
+          "per_repeat_end_to_end_rtf": [
+            0.1177362562956726,
+            0.11710063492234567,
+            0.11988745333604797
+          ],
+          "cold_load_s": 14.751372699989588,
+          "warmup_batches": 3,
+          "repeats": 3,
+          "batch_size": 1,
+          "thermal_flags": 0,
+          "sync_method": "torch.cuda.synchronize",
+          "scope": {
+            "end_to_end": "audio read, decode and resample through result serialization",
+            "core_model": "adapter.transcribe only"
+          }
+        },
+        "environment": {
+          "python": "3.13.14",
+          "platform": "Windows-11-10.0.26300-SP0",
+          "numpy": "2.5.5",
+          "soundfile": "0.14.0",
+          "soxr": "1.1.0",
+          "gpu_name": "NVIDIA GeForce RTX 5070",
+          "gpu_driver": "617.42",
+          "torch": "2.14.1+cu130",
+          "cuda": "13.0",
+          "transformers": "5.23.0"
+        }
+      },
+      "configuration": {
+        "system_id": "baseline-qwen3-asr-1.7b",
+        "model": {
+          "id": "Qwen/Qwen3-ASR-1.7B-hf",
+          "revision": "bcd2b5b7f32b480ab5790554cfa8347f246a14f3",
+          "weight_file": "model.safetensors",
+          "weight_sha256": "2db53c7d81bd9b8cbc6a074e89be2c968a0d373fb4ee68bb1b1e14f7042dfee1",
+          "weight_sha256_kind": "Hub LFS oid; bytes verified at download",
+          "precision": "bfloat16",
+          "device": "cuda"
+        },
+        "processor": {
+          "id": "Qwen/Qwen3-ASR-1.7B-hf",
+          "revision": "bcd2b5b7f32b480ab5790554cfa8347f246a14f3",
+          "sampling_rate_hz": 16000
+        },
+        "audio": {
+          "sampling_rate_hz": 16000,
+          "clip_duration_constraint": "10-20 s clips from TURAS (M1 source audit: data/metadata/worldspeech-tr_tr-source-audit.md:52); Qwen3-ASR accepts up to 20 minutes (1,200 s per arXiv:2601.21337 Section 2.1)"
+        },
+        "decoding": {
+          "algorithm": "beam",
+          "requested_n": 5,
+          "num_beams": 5,
+          "num_return_sequences": 5,
+          "max_new_tokens": 440,
+          "language": "tr",
+          "prompt_format": "AutoProcessor.apply_transcription_request(language='tr')",
+          "do_sample": false,
+          "temperature": null,
+          "length_penalty": 1.0,
+          "early_stopping": false,
+          "repetition_penalty": 1.0,
+          "no_repeat_ngram_size": 0
+        },
+        "nbest": {
+          "score_convention_id": "qwen3-asr-generation-logprob-sum-v1",
+          "acoustic_score_kind": "speech_llm_joint_token_log_prob_sum",
+          "library_beam_score_target": "decoder_sequence_score",
+          "deduplication_policy": "exact raw-text match; first (lowest-rank) occurrence kept; removed IDs listed in dedup_map"
+        }
+      },
+      "normalized_bootstrap_95_ci": {
+        "seed": 2026,
+        "replicates": 2000,
+        "recording_groups": 28,
+        "normalized_wer_95_ci": [
+          0.14885610779245206,
+          0.17568775274089463
+        ],
+        "normalized_cer_95_ci": [
+          0.051117563038258804,
+          0.061410536754793084
+        ]
+      },
+      "limitations": [
+        "Working edited-minutes references",
+        "Follow-up study after earlier working test exposure",
+        "Training-data overlap uncertainty is disclosed in candidate audit"
+      ]
+    },
+    "b5": {
+      "label": "B5 BiLSTM-CTC (epoch 22)",
+      "system_id": "baseline-bilstm-ctc",
+      "runtime_scope": "archived run; inference was not rerun on the pulled repository",
+      "exports": {
+        "validation": {
+          "rows": 438,
+          "files": {
+            "nbest.jsonl": "78f11f3bd2f0db3a48c672b5d091f58521d9729fc32a2666bef10ba2c697b311",
+            "predictions.jsonl": "08e1a2a5ff42d2e1ce9d47723e86b423117fffd9051d56dcc09e673fe119da6c",
+            "timing.jsonl": "55e0be59d896e11c0c120912b2496018c472e0682ec217b329ce666dcc8c19f0",
+            "manifest.json": "6e338de65a90c24de4c644e800d9603cb2257146c6d6d27d75e15e5fe0a86d38"
+          },
+          "shared_contract_validation": "passed",
+          "model_artifact_sha256": "f5d98c4e64c793c1c48e2a8aca70f9a6a503663fc5ffda5ff3c374f41aab8917",
+          "decoder_config_sha256": "f0e9c544344c8713e6ada84764ddca250fd243d50f7c8c9a2c33daa541374df3"
+        },
+        "test": {
+          "rows": 636,
+          "files": {
+            "nbest.jsonl": "7adccb4103a14ed0fcb4ad44ebc40bc78dacb76a52ac1c0837689fd1db35743b",
+            "predictions.jsonl": "a762bc240c1fb93299cc94d6c84bc32b8db09531d1d3f37da723dcce6e3b30c7",
+            "timing.jsonl": "887b2989d5d27379cda7a85b72809102d74374b8e80aab8822d23b707dbaed29",
+            "manifest.json": "6e0c6c9a42c8c5efb649f7e92a0391d2506d3b98b7a4aaea7038c746fa3417d4"
+          },
+          "shared_contract_validation": "passed",
+          "model_artifact_sha256": "f5d98c4e64c793c1c48e2a8aca70f9a6a503663fc5ffda5ff3c374f41aab8917",
+          "decoder_config_sha256": "f0e9c544344c8713e6ada84764ddca250fd243d50f7c8c9a2c33daa541374df3"
+        },
+        "timing": {
+          "rows": 107,
+          "files": {
+            "nbest.jsonl": "d7bcabf71b150768f3100c9c576b895eede53ce7c2a1fc16857cb91fdf095b47",
+            "predictions.jsonl": "23293e3fa1a4a5df5a720c9d2ed6bfaecd19473d1bc4fb34c2dd93a0ce531777",
+            "timing.jsonl": "3bc8f57d37a97b1bb9f83dd3459ee132796a0c684aa2d194e3b72e918e540736",
+            "manifest.json": "a8068659763cc923f837c6411627fd4269574e0e5fbbc453826e7e78fbede28e"
+          },
+          "shared_contract_validation": "passed",
+          "model_artifact_sha256": "f5d98c4e64c793c1c48e2a8aca70f9a6a503663fc5ffda5ff3c374f41aab8917",
+          "decoder_config_sha256": "f0e9c544344c8713e6ada84764ddca250fd243d50f7c8c9a2c33daa541374df3"
+        }
+      },
+      "validation": {
+        "rows": 438,
+        "reference_sha256": "d0c8519ca6aed053f89786bc733541a70faee09cf8d8bdb6cc12065d97dbd958",
+        "metrics": {
+          "raw-v1": {
+            "view": "raw-v1",
+            "utterances": 438,
+            "zero_reference_utterances": 0,
+            "error_rows": 0,
+            "words": {
+              "substitutions": 7255,
+              "deletions": 570,
+              "insertions": 556,
+              "hits": 5283
+            },
+            "chars": {
+              "substitutions": 7843,
+              "deletions": 6199,
+              "insertions": 2736,
+              "hits": 84391
+            },
+            "wer": 0.6393805309734514,
+            "cer": 0.1704509666473642,
+            "wacc": 0.3606194690265486
+          },
+          "tr-normalized-v1": {
+            "view": "tr-normalized-v1",
+            "utterances": 438,
+            "zero_reference_utterances": 0,
+            "error_rows": 0,
+            "words": {
+              "substitutions": 5198,
+              "deletions": 715,
+              "insertions": 428,
+              "hits": 7468
+            },
+            "chars": {
+              "substitutions": 5564,
+              "deletions": 4256,
+              "insertions": 2940,
+              "hits": 86425
+            },
+            "wer": 0.47388087586876915,
+            "cer": 0.13257831575666268,
+            "wacc": 0.5261191241312309
+          }
+        },
+        "domain_micro": {
+          "tp": 1526,
+          "fp": 40,
+          "fn": 315,
+          "reference_support": 1841,
+          "predicted_support": 1566,
+          "precision": 0.9744572158365262,
+          "recall": 0.8288973384030418,
+          "f1": 0.8958027590255356
+        },
+        "current_shared_evaluator_recheck": "exact match"
+      },
+      "test": {
+        "rows": 636,
+        "reference_sha256": "31e372f0e35f504de59b49f1e0e1f3ed6fcc2772138c591a2cf2b054a4e7ef3f",
+        "metrics": {
+          "raw-v1": {
+            "view": "raw-v1",
+            "utterances": 636,
+            "zero_reference_utterances": 0,
+            "error_rows": 0,
+            "words": {
+              "substitutions": 11166,
+              "deletions": 819,
+              "insertions": 902,
+              "hits": 8150
+            },
+            "chars": {
+              "substitutions": 12151,
+              "deletions": 9946,
+              "insertions": 4222,
+              "hits": 127738
+            },
+            "wer": 0.6400297988577105,
+            "cer": 0.17565321854039442,
+            "wacc": 0.3599702011422895
+          },
+          "tr-normalized-v1": {
+            "view": "tr-normalized-v1",
+            "utterances": 636,
+            "zero_reference_utterances": 0,
+            "error_rows": 0,
+            "words": {
+              "substitutions": 8087,
+              "deletions": 1016,
+              "insertions": 705,
+              "hits": 11426
+            },
+            "chars": {
+              "substitutions": 8428,
+              "deletions": 6736,
+              "insertions": 4580,
+              "hits": 131056
+            },
+            "wer": 0.4777631643041551,
+            "cer": 0.135029407741759,
+            "wacc": 0.5222368356958449
+          }
+        },
+        "domain_micro": {
+          "tp": 2785,
+          "fp": 80,
+          "fn": 600,
+          "reference_support": 3385,
+          "predicted_support": 2865,
+          "precision": 0.9720767888307156,
+          "recall": 0.8227474150664698,
+          "f1": 0.8912
+        },
+        "current_shared_evaluator_recheck": "exact match"
+      },
+      "timing": {
+        "rtf": 0.009317066966573504,
+        "rtfx": 107.32991440199613,
+        "latency_p50_s": 0.15738360000250395,
+        "latency_p95_s": 0.22537739999825135,
+        "request_measurements": 321,
+        "scope": {
+          "normalization_version": "tr-normalized-v1",
+          "primary_rtf": "end_to_end_rtf",
+          "end_to_end_rtf": 0.009317066966573504,
+          "core_model_rtf": 0.009117832115315888,
+          "per_repeat_end_to_end_rtf": [
+            0.009305934065285112,
+            0.009373901856046663,
+            0.009271364978388735
+          ],
+          "cold_load_s": 0.07763289999275003,
+          "warmup_batches": 3,
+          "repeats": 3,
+          "batch_size": 1,
+          "thermal_flags": 0,
+          "sync_method": "torch.cuda.synchronize",
+          "scope": {
+            "end_to_end": "audio read, decode and resample through result serialization",
+            "core_model": "adapter.transcribe only"
+          }
+        },
+        "environment": {
+          "python": "3.13.14",
+          "platform": "Windows-11-10.0.26300-SP0",
+          "numpy": "2.5.5",
+          "soundfile": "0.14.0",
+          "soxr": "1.1.0",
+          "gpu_name": "NVIDIA GeForce RTX 5070",
+          "gpu_driver": "617.42",
+          "torch": "2.14.1+cu130",
+          "cuda": "13.0",
+          "transformers": "5.23.0"
+        }
+      },
+      "configuration": {
+        "system_id": "baseline-bilstm-ctc",
+        "model": {
+          "architecture": "BiLSTM-CTC",
+          "n_mels": 80,
+          "hidden_size": 320,
+          "num_layers": 4,
+          "dropout": 0.2,
+          "precision": "float32",
+          "device": "cuda"
+        },
+        "decoding": {
+          "primary_decode_mode": "greedy_ctc",
+          "requested_n": 1,
+          "beam_size": 10,
+          "lm_rescoring": false,
+          "strip_leading_trailing_whitespace_in_raw": false,
+          "score_convention_id": "ctc-greedy-v1"
+        }
+      },
+      "normalized_bootstrap_95_ci": {
+        "groups": 28,
+        "replicates": 2000,
+        "seed": 2026,
+        "wer": [
+          0.4634854027292906,
+          0.491896179470643
+        ],
+        "cer": [
+          0.12866359238087088,
+          0.14134225334094946
+        ]
+      },
+      "limitations": [
+        "Single training seed",
+        "Working parliamentary minutes, not fully verified verbatim gold",
+        "GMM-HMM is a separate stage; no B5 settings selected from test scores"
+      ],
+      "training_selection": {
+        "supplied_start_epoch": 13,
+        "fresh_adamw_lr": 0.0003,
+        "validation_selected_epoch": 22,
+        "early_stop_epoch": 28
+      }
+    },
+    "seda": {
+      "label": "Seda Zipformer2 RNN-T",
+      "system_id": "baseline-seda-zipformer2-rnnt",
+      "runtime_scope": "archived run; inference was not rerun on the pulled repository",
+      "exports": {
+        "validation": {
+          "rows": 438,
+          "files": {
+            "predictions.jsonl": "5c43a368f3641143749465e9968083699b6b5e3fa983cfa7d1bdd105faa7417f",
+            "timing.jsonl": "77ba0b1d4add0f2ff84ebf0071779d69e59ec8709b6e616e2f4c1172b9d43c35",
+            "manifest.json": "b3e6d056e400fb088b52614ad82b50a573a23f715e157de2d388590158fc78ea"
+          },
+          "shared_contract_validation": "passed",
+          "model_artifact_sha256": "5b85df09f99df94cc5f44302d53dfb580113bcc6666caf40a0ed502612a953a2",
+          "decoder_config_sha256": "5d6fa550005873731243de3471b9c88431e8034497fc35bd01c1187a7f45f2db"
+        },
+        "test": {
+          "rows": 636,
+          "files": {
+            "predictions.jsonl": "f1ee00943d6dada99d71e8dd5dc1aab7a2b88c739ff68cc8b69c054f3d97953a",
+            "timing.jsonl": "585cf82b7f845c0c430e065aa8702ef33f86cb63e315f090413495739db3e51f",
+            "manifest.json": "eaf721637ca099191553e2b0a2c556f0e1c6ea9ec311fc49bbf3e899fdfe8344"
+          },
+          "shared_contract_validation": "passed",
+          "model_artifact_sha256": "5b85df09f99df94cc5f44302d53dfb580113bcc6666caf40a0ed502612a953a2",
+          "decoder_config_sha256": "5d6fa550005873731243de3471b9c88431e8034497fc35bd01c1187a7f45f2db"
+        },
+        "timing": {
+          "rows": 107,
+          "files": {
+            "predictions.jsonl": "f05ec498e313fb64d385f4efbf8494b72a2c0202fb88432ccf63dd40ab3cc434",
+            "timing.jsonl": "b27c87518165e92e7ca338bb94f077969415fd51df5a6ade68966c98866a283f",
+            "manifest.json": "cde72c92a725fe8064ab5f82db402482776ebee90241ac63f57957f4576dfdc4"
+          },
+          "shared_contract_validation": "passed",
+          "model_artifact_sha256": "5b85df09f99df94cc5f44302d53dfb580113bcc6666caf40a0ed502612a953a2",
+          "decoder_config_sha256": "5d6fa550005873731243de3471b9c88431e8034497fc35bd01c1187a7f45f2db"
+        }
+      },
+      "validation": {
+        "rows": 438,
+        "reference_sha256": "d0c8519ca6aed053f89786bc733541a70faee09cf8d8bdb6cc12065d97dbd958",
+        "metrics": {
+          "raw-v1": {
+            "view": "raw-v1",
+            "utterances": 438,
+            "zero_reference_utterances": 0,
+            "error_rows": 0,
+            "words": {
+              "substitutions": 5178,
+              "deletions": 219,
+              "insertions": 1237,
+              "hits": 7711
+            },
+            "chars": {
+              "substitutions": 5817,
+              "deletions": 4304,
+              "insertions": 6303,
+              "hits": 88312
+            },
+            "wer": 0.5061031431187062,
+            "cer": 0.16685461176637917,
+            "wacc": 0.4938968568812938
+          },
+          "tr-normalized-v1": {
+            "view": "tr-normalized-v1",
+            "utterances": 438,
+            "zero_reference_utterances": 0,
+            "error_rows": 0,
+            "words": {
+              "substitutions": 2659,
+              "deletions": 301,
+              "insertions": 1046,
+              "hits": 10421
+            },
+            "chars": {
+              "substitutions": 3467,
+              "deletions": 2390,
+              "insertions": 6577,
+              "hits": 90388
+            },
+            "wer": 0.2993797175099021,
+            "cer": 0.12919112681178244,
+            "wacc": 0.7006202824900979
+          }
+        },
+        "domain_micro": {
+          "tp": 1653,
+          "fp": 36,
+          "fn": 188,
+          "reference_support": 1841,
+          "predicted_support": 1689,
+          "precision": 0.9786856127886323,
+          "recall": 0.8978815860945139,
+          "f1": 0.936543909348442
+        },
+        "current_shared_evaluator_recheck": "exact match"
+      },
+      "test": {
+        "rows": 636,
+        "reference_sha256": "31e372f0e35f504de59b49f1e0e1f3ed6fcc2772138c591a2cf2b054a4e7ef3f",
+        "metrics": {
+          "raw-v1": {
+            "view": "raw-v1",
+            "utterances": 636,
+            "zero_reference_utterances": 0,
+            "error_rows": 0,
+            "words": {
+              "substitutions": 8162,
+              "deletions": 325,
+              "insertions": 1794,
+              "hits": 11648
+            },
+            "chars": {
+              "substitutions": 9263,
+              "deletions": 7060,
+              "insertions": 8987,
+              "hits": 133512
+            },
+            "wer": 0.5106034268686367,
+            "cer": 0.1689191443921647,
+            "wacc": 0.4893965731313633
+          },
+          "tr-normalized-v1": {
+            "view": "tr-normalized-v1",
+            "utterances": 636,
+            "zero_reference_utterances": 0,
+            "error_rows": 0,
+            "words": {
+              "substitutions": 4155,
+              "deletions": 460,
+              "insertions": 1535,
+              "hits": 15914
+            },
+            "chars": {
+              "substitutions": 5391,
+              "deletions": 3900,
+              "insertions": 9442,
+              "hits": 136929
+            },
+            "wer": 0.2995762092649423,
+            "cer": 0.12811516892353988,
+            "wacc": 0.7004237907350577
+          }
+        },
+        "domain_micro": {
+          "tp": 3022,
+          "fp": 61,
+          "fn": 363,
+          "reference_support": 3385,
+          "predicted_support": 3083,
+          "precision": 0.9802140771975348,
+          "recall": 0.8927621861152142,
+          "f1": 0.9344465058750773
+        },
+        "current_shared_evaluator_recheck": "exact match"
+      },
+      "timing": {
+        "rtf": 0.028420330270644847,
+        "rtfx": 35.1860794887698,
+        "latency_p50_s": 0.49122839998744894,
+        "latency_p95_s": 0.6155634999886388,
+        "request_measurements": 321,
+        "scope": {
+          "normalization_version": "tr-normalized-v1",
+          "primary_rtf": "end_to_end_rtf",
+          "end_to_end_rtf": 0.028420330270644847,
+          "core_model_rtf": 0.028224128282004143,
+          "per_repeat_end_to_end_rtf": [
+            0.02806108635895526,
+            0.027675447811617918,
+            0.029524456641361357
+          ],
+          "cold_load_s": 2.667018199994345,
+          "warmup_batches": 3,
+          "repeats": 3,
+          "batch_size": 1,
+          "thermal_flags": 0,
+          "sync_method": "cpu_sync",
+          "scope": {
+            "end_to_end": "audio read, decode and resample through result serialization",
+            "core_model": "adapter.transcribe only"
+          }
+        },
+        "environment": {
+          "python": "3.13.14",
+          "platform": "Windows-11-10.0.26300-SP0",
+          "numpy": "2.5.5",
+          "soundfile": "0.14.0",
+          "soxr": "1.1.0",
+          "gpu_name": "NVIDIA GeForce RTX 5070",
+          "gpu_driver": "617.42",
+          "torch": null,
+          "cuda": null,
+          "transformers": null
+        }
+      },
+      "configuration": {
+        "model": {
+          "id": "atasoglu/seda-v0.1",
+          "revision": "5cbbda1b34bde5e3004e79b137dc3871587ea282",
+          "architecture": "streaming Zipformer2 RNN-T",
+          "precision": "int8 encoder/joiner; fp32 decoder",
+          "device": "cpu",
+          "threads": 1
+        },
+        "decoding": {
+          "algorithm": "greedy_search",
+          "external_lm": false,
+          "hotwords": false,
+          "endpointing": false,
+          "sample_rate_hz": 16000,
+          "feature_dim": 80,
+          "end_padding_samples": 4800,
+          "formatting": "raw decoder text",
+          "requested_n": 0
+        }
+      },
+      "normalized_bootstrap_95_ci": {
+        "seed": 2026,
+        "replicates": 2000,
+        "recording_groups": 28,
+        "normalized_wer_95_ci": [
+          0.2848008303162058,
+          0.31422519187517495
+        ],
+        "normalized_cer_95_ci": [
+          0.11952904140207675,
+          0.13718321782913362
+        ]
+      },
+      "limitations": [
+        "Working edited-minutes references",
+        "Follow-up study after earlier working test exposure",
+        "Training-data overlap uncertainty is disclosed in candidate audit"
+      ]
+    },
+    "gmm": {
+      "label": "Four-mixture grapheme HMM",
+      "system_id": "baseline-gmm-hmm-mfcc39-4mix",
+      "runtime_scope": "archived run; inference was not rerun on the pulled repository",
+      "exports": {
+        "validation": {
+          "rows": 438,
+          "files": {
+            "predictions.jsonl": "88ca999db4458c37149cabde3f4e8227b5ddb83a81610b8615e78dda665bca5e",
+            "timing.jsonl": "9beaf77c1a1663907a963456ce3ae80257d46ca9390a007d930a96b37a76be92",
+            "manifest.json": "0949b79150553cda4005971ae1f3974cb456173ac9604aa6529fbaad5a0e310a"
+          },
+          "shared_contract_validation": "passed",
+          "model_artifact_sha256": "ca42a4807e33932cb9d508bedab3008de82f9ef026d40970e6c22d607d827ffe",
+          "decoder_config_sha256": "b70833f1016bc58cf420392afd3ef2e0632c6c39f1d0270082b99579fe4ed741"
+        },
+        "test": {
+          "rows": 636,
+          "files": {
+            "predictions.jsonl": "7bad672d0617de835b4e48f7c7aace6e5393d24ed2560c3c00dc80d6b36ec4de",
+            "timing.jsonl": "b70909f86d5966e98ea9fa64e8084c68aa4f850180429f1b38463fb10e0406d1",
+            "manifest.json": "7f43d14a6ca6769911afe6c76f604e545675f9a4176929a508476c4fc13ec42f"
+          },
+          "shared_contract_validation": "passed",
+          "model_artifact_sha256": "ca42a4807e33932cb9d508bedab3008de82f9ef026d40970e6c22d607d827ffe",
+          "decoder_config_sha256": "b70833f1016bc58cf420392afd3ef2e0632c6c39f1d0270082b99579fe4ed741"
+        },
+        "timing": {
+          "rows": 107,
+          "files": {
+            "predictions.jsonl": "56f9c3c26061690043c5ef492f9dd814539be6617eac2398e417993e21fcf9af",
+            "timing.jsonl": "8e9c06ecd8605b958143e5dba61b1a29eb1b445b1591c3e8fa12e67f156ea1d0",
+            "manifest.json": "6f8092d006971bf9102c8c99c883324368f7e50c9142de2429496d141e8ba621"
+          },
+          "shared_contract_validation": "passed",
+          "model_artifact_sha256": "ca42a4807e33932cb9d508bedab3008de82f9ef026d40970e6c22d607d827ffe",
+          "decoder_config_sha256": "b70833f1016bc58cf420392afd3ef2e0632c6c39f1d0270082b99579fe4ed741"
+        }
+      },
+      "validation": {
+        "rows": 438,
+        "reference_sha256": "d0c8519ca6aed053f89786bc733541a70faee09cf8d8bdb6cc12065d97dbd958",
+        "metrics": {
+          "raw-v1": {
+            "view": "raw-v1",
+            "utterances": 438,
+            "zero_reference_utterances": 0,
+            "error_rows": 0,
+            "words": {
+              "substitutions": 3556,
+              "deletions": 9550,
+              "insertions": 0,
+              "hits": 2
+            },
+            "chars": {
+              "substitutions": 40239,
+              "deletions": 20613,
+              "insertions": 3648,
+              "hits": 37581
+            },
+            "wer": 0.9998474214220323,
+            "cer": 0.6552680503489683,
+            "wacc": 0.00015257857796768803
+          },
+          "tr-normalized-v1": {
+            "view": "tr-normalized-v1",
+            "utterances": 438,
+            "zero_reference_utterances": 0,
+            "error_rows": 0,
+            "words": {
+              "substitutions": 3555,
+              "deletions": 9823,
+              "insertions": 0,
+              "hits": 3
+            },
+            "chars": {
+              "substitutions": 38174,
+              "deletions": 19457,
+              "insertions": 4281,
+              "hits": 38614
+            },
+            "wer": 0.9997758015096032,
+            "cer": 0.6432749753233934,
+            "wacc": 0.00022419849039678752
+          }
+        },
+        "domain_micro": {
+          "tp": 1,
+          "fp": 1,
+          "fn": 1840,
+          "reference_support": 1841,
+          "predicted_support": 2,
+          "precision": 0.5,
+          "recall": 0.0005431830526887561,
+          "f1": 0.0010851871947911015
+        },
+        "current_shared_evaluator_recheck": "exact match"
+      },
+      "test": {
+        "rows": 636,
+        "reference_sha256": "31e372f0e35f504de59b49f1e0e1f3ed6fcc2772138c591a2cf2b054a4e7ef3f",
+        "metrics": {
+          "raw-v1": {
+            "view": "raw-v1",
+            "utterances": 636,
+            "zero_reference_utterances": 0,
+            "error_rows": 0,
+            "words": {
+              "substitutions": 5518,
+              "deletions": 14613,
+              "insertions": 0,
+              "hits": 4
+            },
+            "chars": {
+              "substitutions": 62024,
+              "deletions": 31300,
+              "insertions": 5229,
+              "hits": 56511
+            },
+            "wer": 0.999801340948597,
+            "cer": 0.6577435178696566,
+            "wacc": 0.0001986590514030384
+          },
+          "tr-normalized-v1": {
+            "view": "tr-normalized-v1",
+            "utterances": 636,
+            "zero_reference_utterances": 0,
+            "error_rows": 0,
+            "words": {
+              "substitutions": 5516,
+              "deletions": 15007,
+              "insertions": 0,
+              "hits": 6
+            },
+            "chars": {
+              "substitutions": 58794,
+              "deletions": 29348,
+              "insertions": 6241,
+              "hits": 58078
+            },
+            "wer": 0.9997077305275464,
+            "cer": 0.6454862535904801,
+            "wacc": 0.00029226947245364343
+          }
+        },
+        "domain_micro": {
+          "tp": 5,
+          "fp": 0,
+          "fn": 3380,
+          "reference_support": 3385,
+          "predicted_support": 5,
+          "precision": 1.0,
+          "recall": 0.0014771048744460858,
+          "f1": 0.0029498525073746312
+        },
+        "current_shared_evaluator_recheck": "exact match"
+      },
+      "timing": {
+        "rtf": 0.0016723903593025744,
+        "rtfx": 597.9465227346941,
+        "latency_p50_s": 0.029170499998144805,
+        "latency_p95_s": 0.03799180001078639,
+        "request_measurements": 321,
+        "scope": {
+          "normalization_version": "tr-normalized-v1",
+          "primary_rtf": "end_to_end_rtf",
+          "end_to_end_rtf": 0.0016723903593025744,
+          "core_model_rtf": 0.0014865908575599955,
+          "per_repeat_end_to_end_rtf": [
+            0.0016822019942006926,
+            0.0016644118725700368,
+            0.0016705572111369936
+          ],
+          "cold_load_s": 0.6730302999931155,
+          "warmup_batches": 3,
+          "repeats": 3,
+          "batch_size": 1,
+          "thermal_flags": 0,
+          "sync_method": "cpu_sync",
+          "scope": {
+            "end_to_end": "audio read, decode and resample through result serialization",
+            "core_model": "adapter.transcribe only"
+          }
+        },
+        "environment": {
+          "python": "3.13.14",
+          "platform": "Windows-11-10.0.26300-SP0",
+          "numpy": "2.5.5",
+          "soundfile": "0.14.0",
+          "soxr": "1.1.0",
+          "gpu_name": "NVIDIA GeForce RTX 5070",
+          "gpu_driver": "617.42",
+          "torch": "2.14.1+cu130",
+          "cuda": "13.0",
+          "transformers": "5.23.0"
+        }
+      },
+      "configuration": {
+        "model": {
+          "type": "grapheme Gaussian-mixture HMM",
+          "states_per_unit": 3,
+          "mixtures_per_state": 4,
+          "covariance": "diagonal",
+          "precision": "float32",
+          "device": "cpu",
+          "threads": 1
+        },
+        "features": {
+          "recipe": "mfcc39-standard-v1",
+          "sample_rate": 16000,
+          "preemphasis": 0.97,
+          "n_fft": 512,
+          "win_length": 400,
+          "hop_length": 160,
+          "n_mels": 26,
+          "n_mfcc": 13,
+          "dct_type": 2,
+          "dct_norm": "ortho",
+          "lifter": 22,
+          "htk": true,
+          "center": false,
+          "delta_width": 5,
+          "delta_mode": "nearest",
+          "cmvn": "per-utterance after stacking"
+        },
+        "decoding": {
+          "algorithm": "Viterbi",
+          "stay_probability": 0.65,
+          "advance_probability": 0.35,
+          "unit_priors": "smoothed train-character frequencies",
+          "external_lm": false,
+          "text_postprocessing": "none",
+          "requested_n": 0
+        }
+      },
+      "normalized_bootstrap_95_ci": {
+        "seed": 2026,
+        "replicates": 2000,
+        "recording_groups": 28,
+        "normalized_wer_95_ci": [
+          0.9994722223282893,
+          0.9999030072598176
+        ],
+        "normalized_cer_95_ci": [
+          0.6391901881745966,
+          0.6513813604889347
+        ]
+      },
+      "limitations": [
+        "Working edited-minutes references",
+        "Follow-up study after earlier working test exposure",
+        "Training-data overlap uncertainty is disclosed in candidate audit"
+      ],
+      "training": {
+        "state": "completed",
+        "checkpoint_sha256": "ca42a4807e33932cb9d508bedab3008de82f9ef026d40970e6c22d607d827ffe",
+        "trained_states": 138,
+        "mixtures_per_state": 4,
+        "em_passes": 5,
+        "train_rows": 4376,
+        "infeasible_train_rows": 0,
+        "frozen_protocol_sha256": "ab0024092cf6bd125172108c3fa03a8fccf33401389a7dcb5cd7e4edd77e1029",
+        "training_history_sha256": "b0036ae4bb0a66ac6a0fb950c420899c4354bc5175dd8ae6249fd9e489762955",
+        "all_states_have_distinct_component_means": true,
+        "minimum_pairwise_component_mean_distance": 1.0151432752609253,
+        "minimum_component_weight": 2.4152253899956122e-05,
+        "unit_priors_sum": 1.0,
+        "parameter_shape": [
+          138,
+          4,
+          39
+        ]
+      }
+    },
+    "gaussian-hmm": {
+      "label": "Supplied single-Gaussian character HMM",
+      "system_id": "baseline-m3-single-gaussian-character-hmm",
+      "runtime_scope": "archived run; inference was not rerun on the pulled repository",
+      "exports": {
+        "validation": {
+          "rows": 438,
+          "files": {
+            "predictions.jsonl": "7b6c5f9139eb47f40ccfdc46a6c84f378b2222855e0d18b08f7ec81a973974a5",
+            "timing.jsonl": "7088e4f95a2477c8506deab8c01f1a9ebebe0b449a89cde45052739a86d80bda",
+            "manifest.json": "41fed1a9fc5cf2391794011cedd9c92b17d927f14601344033165a6c9f5c6e31"
+          },
+          "shared_contract_validation": "passed",
+          "model_artifact_sha256": "f9b0f02ab98a32a63d43df01e1aebf985d39caf6dd8a6d886a77d97f53669b7f",
+          "decoder_config_sha256": "526dff2cebe2ebf97ac797883b3fb1343a1b20d97b818faa9558c27652a87737"
+        },
+        "test": {
+          "rows": 636,
+          "files": {
+            "predictions.jsonl": "ebb22d4b40b855d27466aec44ecf1bddccb2660a6986bfa68887f6a8fefc8ca3",
+            "timing.jsonl": "36e9ce6b1238e9ee661d379b30991b8e424208b7ee25292fb4a24258255c3d0d",
+            "manifest.json": "3a2cb07f4a7dec41267d723f6487d22ec996b562bf41e0c2a47bb1da56b5ce96"
+          },
+          "shared_contract_validation": "passed",
+          "model_artifact_sha256": "f9b0f02ab98a32a63d43df01e1aebf985d39caf6dd8a6d886a77d97f53669b7f",
+          "decoder_config_sha256": "526dff2cebe2ebf97ac797883b3fb1343a1b20d97b818faa9558c27652a87737"
+        },
+        "timing": {
+          "rows": 107,
+          "files": {
+            "predictions.jsonl": "a8cbc24f226fa851c1dbdd4310cfd05a8331bc94b5c447955b1320c8719e7423",
+            "timing.jsonl": "f5afad160d1ab6bd3e79d9ed1aeab3ebe4e96d60687c4f29f17e627f1250d88c",
+            "manifest.json": "308d55e867748ddc401871bcda3c6e8d1453015fe485344f7dd92d2adb47ddbf"
+          },
+          "shared_contract_validation": "passed",
+          "model_artifact_sha256": "f9b0f02ab98a32a63d43df01e1aebf985d39caf6dd8a6d886a77d97f53669b7f",
+          "decoder_config_sha256": "526dff2cebe2ebf97ac797883b3fb1343a1b20d97b818faa9558c27652a87737"
+        }
+      },
+      "validation": {
+        "rows": 438,
+        "reference_sha256": "d0c8519ca6aed053f89786bc733541a70faee09cf8d8bdb6cc12065d97dbd958",
+        "metrics": {
+          "raw-v1": {
+            "view": "raw-v1",
+            "utterances": 438,
+            "zero_reference_utterances": 0,
+            "error_rows": 0,
+            "words": {
+              "substitutions": 895,
+              "deletions": 12213,
+              "insertions": 0,
+              "hits": 0
+            },
+            "chars": {
+              "substitutions": 50388,
+              "deletions": 37181,
+              "insertions": 94,
+              "hits": 10864
+            },
+            "wer": 1.0,
+            "cer": 0.8905854743835908,
+            "wacc": 0.0
+          },
+          "tr-normalized-v1": {
+            "view": "tr-normalized-v1",
+            "utterances": 438,
+            "zero_reference_utterances": 0,
+            "error_rows": 0,
+            "words": {
+              "substitutions": 894,
+              "deletions": 12486,
+              "insertions": 0,
+              "hits": 1
+            },
+            "chars": {
+              "substitutions": 50275,
+              "deletions": 35038,
+              "insertions": 139,
+              "hits": 10932
+            },
+            "wer": 0.9999252671698677,
+            "cer": 0.8878591095641332,
+            "wacc": 7.47328301322625e-05
+          }
+        },
+        "domain_micro": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 1841,
+          "reference_support": 1841,
+          "predicted_support": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "current_shared_evaluator_recheck": "exact match"
+      },
+      "test": {
+        "rows": 636,
+        "reference_sha256": "31e372f0e35f504de59b49f1e0e1f3ed6fcc2772138c591a2cf2b054a4e7ef3f",
+        "metrics": {
+          "raw-v1": {
+            "view": "raw-v1",
+            "utterances": 636,
+            "zero_reference_utterances": 0,
+            "error_rows": 0,
+            "words": {
+              "substitutions": 1296,
+              "deletions": 18839,
+              "insertions": 0,
+              "hits": 0
+            },
+            "chars": {
+              "substitutions": 76155,
+              "deletions": 57234,
+              "insertions": 96,
+              "hits": 16446
+            },
+            "wer": 1.0,
+            "cer": 0.8908799679647612,
+            "wacc": 0.0
+          },
+          "tr-normalized-v1": {
+            "view": "tr-normalized-v1",
+            "utterances": 636,
+            "zero_reference_utterances": 0,
+            "error_rows": 0,
+            "words": {
+              "substitutions": 1295,
+              "deletions": 19233,
+              "insertions": 0,
+              "hits": 1
+            },
+            "chars": {
+              "substitutions": 76012,
+              "deletions": 53648,
+              "insertions": 125,
+              "hits": 16560
+            },
+            "wer": 0.9999512884212577,
+            "cer": 0.8876008753932431,
+            "wacc": 4.871157874231091e-05
+          }
+        },
+        "domain_micro": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 3385,
+          "reference_support": 3385,
+          "predicted_support": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "current_shared_evaluator_recheck": "exact match"
+      },
+      "timing": {
+        "rtf": 0.001699136859859138,
+        "rtfx": 588.5341102440107,
+        "latency_p50_s": 0.02992689999518916,
+        "latency_p95_s": 0.034165800010669045,
+        "request_measurements": 321,
+        "scope": {
+          "normalization_version": "tr-normalized-v1",
+          "primary_rtf": "end_to_end_rtf",
+          "end_to_end_rtf": 0.001699136859859138,
+          "core_model_rtf": 0.0015003143921019024,
+          "per_repeat_end_to_end_rtf": [
+            0.0017172732961240626,
+            0.001684059897466541,
+            0.0016960773859868098
+          ],
+          "cold_load_s": 0.0027962000021943823,
+          "warmup_batches": 3,
+          "repeats": 3,
+          "batch_size": 1,
+          "thermal_flags": 0,
+          "sync_method": "cpu_sync",
+          "scope": {
+            "end_to_end": "audio read, decode and resample through result serialization",
+            "core_model": "adapter.transcribe only"
+          }
+        },
+        "environment": {
+          "python": "3.13.14",
+          "platform": "Windows-11-10.0.26300-SP0",
+          "numpy": "2.5.5",
+          "soundfile": "0.14.0",
+          "soxr": "1.1.0",
+          "gpu_name": "NVIDIA GeForce RTX 5070",
+          "gpu_driver": "617.42",
+          "torch": "2.14.1+cu130",
+          "cuda": "13.0",
+          "transformers": "5.23.0"
+        }
+      },
+      "configuration": {
+        "model": "single diagonal Gaussian per character state",
+        "states_per_unit": 3,
+        "feature_recipe": "m3-dct-normalized-logmel-first40-every2-delta39-fp16-v1",
+        "decoder": "ergodic_character_viterbi",
+        "lm_rescoring": false,
+        "device": "cpu",
+        "precision": "float32",
+        "whitespace_policy": "supplied decoder collapses and strips whitespace",
+        "requested_n": 0
+      },
+      "normalized_bootstrap_95_ci": {
+        "groups": 28,
+        "replicates": 2000,
+        "seed": 2026,
+        "wer": [
+          0.9998525794903326,
+          1.0
+        ],
+        "cer": [
+          0.8856268645114564,
+          0.8894183841556716
+        ]
+      },
+      "limitations": [
+        "Supplied stage is named GMM-HMM but implements one Gaussian per character state",
+        "DCT of normalized log-Mel features is the supplied recipe, not standard MFCC computation",
+        "Infeasible training clips are explicitly counted; evaluation retains all frozen IDs",
+        "Gaussian quadratic expansion can introduce float32 rounding differences from the source difference tensor",
+        "No supported scored N-best; requested_n=0",
+        "Working minutes are not fully verified verbatim references"
+      ]
+    }
+  },
+  "qwen_selection": {
+    "state": "frozen_before_selected_qwen_test",
+    "selected_system": "qwen17",
+    "criterion": "minimum validation normalized CER, then normalized WER, then stable system key",
+    "validation_report_sha256": {
+      "qwen17": "61ed49e7d92cf60d51393367256a88aa5aab1fafc3c9d7cbb94aee4e3e463fa5",
+      "qwen06": "b9957c96d8753659ecd8b0a3f6f8b9e66b9e88c8ac27f592b2639d731b8e18f4"
+    },
+    "selected_at_utc": "2026-11-22T15:38:54.554467+00:00",
+    "peer_approval_claimed": false,
+    "authority": "project owner goal to audit and execute remaining B3 candidates"
+  },
+  "qwen_validation_candidates": {
+    "qwen17": {
+      "rows": 438,
+      "metrics": {
+        "raw-v1": {
+          "view": "raw-v1",
+          "utterances": 438,
+          "zero_reference_utterances": 0,
+          "error_rows": 0,
+          "words": {
+            "substitutions": 2965,
+            "deletions": 153,
+            "insertions": 344,
+            "hits": 9990
+          },
+          "chars": {
+            "substitutions": 2959,
+            "deletions": 1939,
+            "insertions": 2339,
+            "hits": 93535
+          },
+          "wer": 0.2641135184620079,
+          "cer": 0.07352209116861215,
+          "wacc": 0.7358864815379921
+        },
+        "tr-normalized-v1": {
+          "view": "tr-normalized-v1",
+          "utterances": 438,
+          "zero_reference_utterances": 0,
+          "error_rows": 0,
+          "words": {
+            "substitutions": 1553,
+            "deletions": 211,
+            "insertions": 289,
+            "hits": 11617
+          },
+          "chars": {
+            "substitutions": 1673,
+            "deletions": 1422,
+            "insertions": 2124,
+            "hits": 93150
+          },
+          "wer": 0.1534265002615649,
+          "cer": 0.05422619356849707,
+          "wacc": 0.8465734997384351
+        }
+      },
+      "predictions_sha256": "3c433b03df6af5f1bc1c2a9139d3012c219782384ac832a58fc6537d62cd6c45"
+    },
+    "qwen06": {
+      "rows": 438,
+      "metrics": {
+        "raw-v1": {
+          "view": "raw-v1",
+          "utterances": 438,
+          "zero_reference_utterances": 0,
+          "error_rows": 0,
+          "words": {
+            "substitutions": 3852,
+            "deletions": 273,
+            "insertions": 335,
+            "hits": 8983
+          },
+          "chars": {
+            "substitutions": 3971,
+            "deletions": 3024,
+            "insertions": 2161,
+            "hits": 91438
+          },
+          "wer": 0.34025022886786693,
+          "cer": 0.09301758556581634,
+          "wacc": 0.6597497711321331
+        },
+        "tr-normalized-v1": {
+          "view": "tr-normalized-v1",
+          "utterances": 438,
+          "zero_reference_utterances": 0,
+          "error_rows": 0,
+          "words": {
+            "substitutions": 2371,
+            "deletions": 310,
+            "insertions": 309,
+            "hits": 10700
+          },
+          "chars": {
+            "substitutions": 2480,
+            "deletions": 2360,
+            "insertions": 1962,
+            "hits": 91405
+          },
+          "wer": 0.22345116209550855,
+          "cer": 0.07067380123642787,
+          "wacc": 0.7765488379044915
+        }
+      },
+      "predictions_sha256": "6af68a2c718d8daa398aedc455e1d327ff11195d44c07e382721f5a672e5e359"
+    }
+  },
+  "hardware_and_measurement_context": {
+    "cpu_model": "AMD Ryzen 5 7500F 6-Core Processor",
+    "cpu_physical_cores": 6,
+    "cpu_logical_processors": 12,
+    "ram_os_visible_bytes": 16765120512,
+    "filesystem": "NTFS",
+    "disk_bus_type": "NVMe",
+    "logical_sector_size_bytes": 512,
+    "ram_os_visible_gib": 15.61373519897461,
+    "state": "captured",
+    "context_kind": "supplemental host/method record before follow-up headline timing; per-repeat device telemetry stays in each timing export",
+    "collected_at_utc": "2026-11-22T15:51:31.434374+00:00",
+    "platform": "Windows-11-10.0.26300-SP0",
+    "gpu_count": 1,
+    "gpus": [
+      {
+        "name": "NVIDIA GeForce RTX 5070",
+        "driver": "617.42",
+        "memory_total_mib": 12227
+      }
+    ],
+    "threads": {
+      "b2_torch_intraop": 4,
+      "qwen17_torch_intraop": 4,
+      "seda_sherpa_onnx": 1,
+      "gmm_numba_parallel": false,
+      "OPENBLAS_NUM_THREADS": "1",
+      "OMP_NUM_THREADS": "1",
+      "MKL_NUM_THREADS": "1",
+      "torch_interop": "not explicitly set"
+    },
+    "storage_cache_condition": "Local NTFS/NVMe files; OS caching enabled and not forcibly cleared. Full accuracy inference precedes the headline timed workload; a cold filesystem cache is not claimed.",
+    "concurrency": "One controlled ASR timing job at a time after all project model downloads and GMM training finish; ordinary desktop processes are not controlled.",
+    "timed_scope": {
+      "included": [
+        "audio read/decode/resample",
+        "adapter inference and text decoding",
+        "supported N-best extraction",
+        "in-memory result serialization"
+      ],
+      "excluded": [
+        "model/config loading and weight hash verification",
+        "warm-up batches",
+        "input manifest parsing",
+        "output-file writing/flush",
+        "network/queue transport"
+      ]
+    },
+    "headline": {
+      "batch_size": 1,
+      "repeats": 3,
+      "frozen_subset_clips": 107,
+      "train_warmup_batches": 3,
+      "cold_load": "recorded separately",
+      "gpu_synchronization": "torch.cuda.synchronize at measured boundaries",
+      "clock": "shared run_timed monotonic perf_counter"
+    }
+  },
+  "archived_delivery_packages": [
+    {
+      "path": "TURAS-Restricted-Reproduction/06-M3-B5-HMM/TURAS-M3-final-2026-11-22.zip",
+      "bytes": 35676182,
+      "sha256": "a7ba24f421b3adeedc1529d85d9f5ebe959199608ef10e382a45b140a2778087",
+      "audience": "authorized M3/M6/reproduction reviewers",
+      "optional_for_score_inference": false,
+      "restore_role": "m3",
+      "restore_action": "archive",
+      "restore_target": "artifacts/m3-final-2026-11-22"
+    },
+    {
+      "path": "TURAS-Restricted-Reproduction/06-M3-B5-HMM/m3-runtime-source.zip",
+      "bytes": 859526,
+      "sha256": "659aac00c8c8c19100da8368d8489080b8ca97be1ebeb4f0310988fb8d982805",
+      "audience": "authorized reproduction reviewers",
+      "optional_for_score_inference": false
+    },
+    {
+      "path": "TURAS-Restricted-Reproduction/06-M3-B5-HMM/b5-training-status.json",
+      "bytes": 367,
+      "sha256": "3088953748663b16ea66c663092935c306251590046b74cd24679c611c5399bd",
+      "audience": "authorized reproduction reviewers",
+      "optional_for_score_inference": false,
+      "restore_role": "m3",
+      "restore_action": "copy",
+      "restore_target": "artifacts/b5-gpu-resume-2026-11-22/status.json"
+    },
+    {
+      "path": "TURAS-Restricted-Reproduction/10-B2-WHISPER-LARGE-V3/TURAS-B2-GPU-followup.zip",
+      "bytes": 2376406,
+      "sha256": "f82b009e46ebc9c70eda27a4cdfe3a915e0f14dada1df14daa6bcb827fb84d85",
+      "audience": "authorized reproduction reviewers",
+      "optional_for_score_inference": false,
+      "restore_role": "b2",
+      "restore_action": "archive",
+      "restore_target": "."
+    },
+    {
+      "path": "TURAS-Restricted-Reproduction/11-B3-QWEN/TURAS-B3-Qwen-followup.zip",
+      "bytes": 5798362,
+      "sha256": "a46bacc0ab7f306874f9500c10cd24584f8a1ffed04fe14da38ac04a88e6d190",
+      "audience": "authorized reproduction reviewers",
+      "optional_for_score_inference": false,
+      "restore_role": "b3",
+      "restore_action": "archive",
+      "restore_target": "."
+    },
+    {
+      "path": "TURAS-Restricted-Reproduction/12-TURKISH-TRANSDUCER/TURAS-Seda-RNNT-followup.zip",
+      "bytes": 60682343,
+      "sha256": "0f9b979051010955a4ab0f38310f944592c5b554200a1a682d7dab163803faca",
+      "audience": "authorized reproduction reviewers",
+      "optional_for_score_inference": false,
+      "restore_role": "transducer",
+      "restore_action": "archive",
+      "restore_target": "."
+    },
+    {
+      "path": "TURAS-Restricted-Reproduction/13-MIXTURE-GMM-HMM/TURAS-4mixture-GMM-HMM-followup.zip",
+      "bytes": 511409,
+      "sha256": "c9075051a6156eb55737d063301b74faedffdfb01af8ec8469d51cc7b7b7b242",
+      "audience": "authorized reproduction reviewers",
+      "optional_for_score_inference": false,
+      "restore_role": "gmm",
+      "restore_action": "archive",
+      "restore_target": "."
+    },
+    {
+      "path": "TURAS-Public-Submission/00-START-HERE/TURAS-submission-source.zip",
+      "bytes": 1182330,
+      "sha256": "7a5a22fb421d5aa984ec6e9ff1d32d0b9f769515cba68da717c071f591dce5cb",
+      "audience": "public source readers",
+      "optional_for_score_inference": false
+    }
+  ],
+  "reproduction_scope": "Exact archived source and model packages are preserved separately; current repository code is authoritative. No removed implementation files are restored by this results import.",
+  "limitations": [
+    "Working edited-minutes references, with 611 unreviewed and 25 historical single-reviewer test tags",
+    "Follow-up experiments after earlier working-test exposure; no blind preregistration claim",
+    "One training seed; speaker disjointness and complete pretraining-data separation are unproven",
+    "GMM-HMM uses graphemes, not a phoneme/pronunciation lexicon; classical results are weak",
+    "CPU/GPU timing rows use distinct devices; RTF is not a streaming guarantee"
+  ],
+  "independent_human_approval_claimed": false,
+  "cloud_upload_claimed": false
+}

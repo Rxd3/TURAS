@@ -1,0 +1,125 @@
+{
+  "state": "completed",
+  "system_id": "baseline-m3-single-gaussian-character-hmm",
+  "ended_at_utc": "2026-11-22T11:03:38.838463+00:00",
+  "scores": {
+    "validation": {
+      "rows": 438,
+      "reference_sha256": "d0c8519ca6aed053f89786bc733541a70faee09cf8d8bdb6cc12065d97dbd958",
+      "metrics": {
+        "raw-v1": {
+          "view": "raw-v1",
+          "utterances": 438,
+          "zero_reference_utterances": 0,
+          "error_rows": 0,
+          "words": {
+            "substitutions": 895,
+            "deletions": 12213,
+            "insertions": 0,
+            "hits": 0
+          },
+          "chars": {
+            "substitutions": 50388,
+            "deletions": 37181,
+            "insertions": 94,
+            "hits": 10864
+          },
+          "wer": 1.0,
+          "cer": 0.8905854743835908,
+          "wacc": 0.0
+        },
+        "tr-normalized-v1": {
+          "view": "tr-normalized-v1",
+          "utterances": 438,
+          "zero_reference_utterances": 0,
+          "error_rows": 0,
+          "words": {
+            "substitutions": 894,
+            "deletions": 12486,
+            "insertions": 0,
+            "hits": 1
+          },
+          "chars": {
+            "substitutions": 50275,
+            "deletions": 35038,
+            "insertions": 139,
+            "hits": 10932
+          },
+          "wer": 0.9999252671698677,
+          "cer": 0.8878591095641332,
+          "wacc": 7.47328301322625e-05
+        }
+      }
+    },
+    "test": {
+      "rows": 636,
+      "reference_sha256": "31e372f0e35f504de59b49f1e0e1f3ed6fcc2772138c591a2cf2b054a4e7ef3f",
+      "metrics": {
+        "raw-v1": {
+          "view": "raw-v1",
+          "utterances": 636,
+          "zero_reference_utterances": 0,
+          "error_rows": 0,
+          "words": {
+            "substitutions": 1296,
+            "deletions": 18839,
+            "insertions": 0,
+            "hits": 0
+          },
+          "chars": {
+            "substitutions": 76155,
+            "deletions": 57234,
+            "insertions": 96,
+            "hits": 16446
+          },
+          "wer": 1.0,
+          "cer": 0.8908799679647612,
+          "wacc": 0.0
+        },
+        "tr-normalized-v1": {
+          "view": "tr-normalized-v1",
+          "utterances": 636,
+          "zero_reference_utterances": 0,
+          "error_rows": 0,
+          "words": {
+            "substitutions": 1295,
+            "deletions": 19233,
+            "insertions": 0,
+            "hits": 1
+          },
+          "chars": {
+            "substitutions": 76012,
+            "deletions": 53648,
+            "insertions": 125,
+            "hits": 16560
+          },
+          "wer": 0.9999512884212577,
+          "cer": 0.8876008753932431,
+          "wacc": 4.871157874231091e-05
+        }
+      }
+    }
+  },
+  "headline_timing": {
+    "state": "completed",
+    "rows": 107,
+    "files": {
+      "predictions.jsonl": "a8cbc24f226fa851c1dbdd4310cfd05a8331bc94b5c447955b1320c8719e7423",
+      "timing.jsonl": "f5afad160d1ab6bd3e79d9ed1aeab3ebe4e96d60687c4f29f17e627f1250d88c",
+      "manifest.json": "308d55e867748ddc401871bcda3c6e8d1453015fe485344f7dd92d2adb47ddbf"
+    },
+    "rtf": 0.001699136859859138,
+    "repeats": 3,
+    "requested_n": 0,
+    "timing_claim": "CPU serial 30-minute subset"
+  },
+  "checkpoint_sha256": "f9b0f02ab98a32a63d43df01e1aebf985d39caf6dd8a6d886a77d97f53669b7f",
+  "limitations": [
+    "Supplied stage is named GMM-HMM but implements one Gaussian per character state",
+    "DCT of normalized log-Mel features is the supplied recipe, not standard MFCC computation",
+    "Infeasible training clips are explicitly counted; evaluation retains all frozen IDs",
+    "Gaussian quadratic expansion can introduce float32 rounding differences from the source difference tensor",
+    "No supported scored N-best; requested_n=0",
+    "Working minutes are not fully verified verbatim references"
+  ]
+}

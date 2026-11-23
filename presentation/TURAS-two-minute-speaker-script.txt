@@ -1,0 +1,16 @@
+TURAS two-minute technical presentation
+
+Slide 1: 0:00-0:02
+This is TURAS, Turkish speech recognition for parliament.
+
+Slide 2: 0:02-0:22
+We built a domain-specific Turkish dataset from parliament recordings. From 240 thousand clips we kept 5,450 about the economy and laws, using a 90-term word list. We test on unseen 2026 sessions and checked samples by listening.
+
+Slide 3: 0:22-0:42
+Fine-tuning Whisper-small cut errors from 24.5 to 10.4 percent, our best result. XLS-R improved from 37 to 25. The much larger Whisper-large-v3, without tuning, only ties our small model and is three times slower.
+
+Slide 4: 0:42-0:59
+Fine-tuning removes most extra words and learns domain terms like SGK and spoken numbers. The intervals on the right are far below zero, so the gains are real.
+
+Slide 5: 0:59-1:16
+Our graph rescoring did not help: every interval crosses zero, even though better candidates exist. We report this honestly. Limits: one training seed and mostly unreviewed transcripts.

@@ -1,0 +1,58 @@
+{
+  "cpu_model": "AMD Ryzen 5 7500F 6-Core Processor",
+  "cpu_physical_cores": 6,
+  "cpu_logical_processors": 12,
+  "ram_os_visible_bytes": 16765120512,
+  "filesystem": "NTFS",
+  "disk_bus_type": "NVMe",
+  "logical_sector_size_bytes": 512,
+  "ram_os_visible_gib": 15.61373519897461,
+  "state": "captured",
+  "context_kind": "supplemental host/method record before follow-up headline timing; per-repeat device telemetry stays in each timing export",
+  "collected_at_utc": "2026-11-22T15:51:31.434374+00:00",
+  "platform": "Windows-11-10.0.26300-SP0",
+  "gpu_count": 1,
+  "gpus": [
+    {
+      "name": "NVIDIA GeForce RTX 5070",
+      "driver": "617.42",
+      "memory_total_mib": 12227
+    }
+  ],
+  "threads": {
+    "b2_torch_intraop": 4,
+    "qwen17_torch_intraop": 4,
+    "seda_sherpa_onnx": 1,
+    "gmm_numba_parallel": false,
+    "OPENBLAS_NUM_THREADS": "1",
+    "OMP_NUM_THREADS": "1",
+    "MKL_NUM_THREADS": "1",
+    "torch_interop": "not explicitly set"
+  },
+  "storage_cache_condition": "Local NTFS/NVMe files; OS caching enabled and not forcibly cleared. Full accuracy inference precedes the headline timed workload; a cold filesystem cache is not claimed.",
+  "concurrency": "One controlled ASR timing job at a time after all project model downloads and GMM training finish; ordinary desktop processes are not controlled.",
+  "timed_scope": {
+    "included": [
+      "audio read/decode/resample",
+      "adapter inference and text decoding",
+      "supported N-best extraction",
+      "in-memory result serialization"
+    ],
+    "excluded": [
+      "model/config loading and weight hash verification",
+      "warm-up batches",
+      "input manifest parsing",
+      "output-file writing/flush",
+      "network/queue transport"
+    ]
+  },
+  "headline": {
+    "batch_size": 1,
+    "repeats": 3,
+    "frozen_subset_clips": 107,
+    "train_warmup_batches": 3,
+    "cold_load": "recorded separately",
+    "gpu_synchronization": "torch.cuda.synchronize at measured boundaries",
+    "clock": "shared run_timed monotonic perf_counter"
+  }
+}

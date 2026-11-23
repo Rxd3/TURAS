@@ -1,0 +1,22 @@
+TURAS Member 3 final results
+
+Completed UTC: 2026-11-22T11:03:54.938787+00:00
+Test: 636 frozen IDs; working parliamentary minutes (not fully verified verbatim speech).
+
+b5
+  Test normalized WER: 0.477763 (47.78%)
+  Test normalized CER: 0.135029 (13.50%)
+  Terminology micro F1: 0.891200
+  End-to-end RTF: 0.009317
+  Exports passed shared validators; WER/CER independently cross-checked with jiwer.
+
+gaussian-hmm
+  Test normalized WER: 0.999951 (100.00%)
+  Test normalized CER: 0.887601 (88.76%)
+  Terminology micro F1: 0.000000
+  End-to-end RTF: 0.001699
+  Exports passed shared validators; WER/CER independently cross-checked with jiwer.
+
+B5 selected checkpoint: epoch 22 (selection frozen on validation before test scoring).
+The supplied GMM-HMM method has one Gaussian per character state and nonstandard DCT/log-Mel features.
+See final-summary.json and each model's final-report.json for counts, confidence intervals, timing and limitations.

@@ -14,13 +14,13 @@ by the protocol, and its B1 parity check is pending.
 ## Systems and references
 
 - **B2** (`B2-whisper-large-v3`): `openai/whisper-large-v3` at `06f233fe`, bf16, beam 5, N 5, the same decoding as
-  B1. The official B2 run is M6's RTX 5070 Ti laptop decode, decided and recorded before the test references were
-  opened. Member 2's decode (`B2-whisper-large-v3-m2repro`, handoff zip `fd8471e9`) is an independent reproduction.
+  B1. The official B2 run is M6's RTX 5070 Ti laptop decode, decided and recorded before M6 opened the test
+  references (M3 and M4/M5 had already scored against the same reference `31e372f0`). Member 2's decode (`B2-whisper-large-v3-m2repro`, handoff zip `fd8471e9`) is an independent reproduction.
 - **B3** (`B3-qwen3-asr-1.7b`): `Qwen/Qwen3-ASR-1.7B-hf` at `bcd2b5b7`, bf16, beam 5, N 5, selected on validation
   over the 0.6B candidate (`B3cand-qwen3-asr-0.6b`) by lower WER, with RTF only as a tie-break. Its weights are
   byte-identical (707/707 tensors) to the original `Qwen/Qwen3-ASR-1.7B` at `7278e1e`, released 2026-01-28.
 - **References:** test uses the M1 test archive payload `31e372f0` (the protocol's `test_reference.payload_sha256`),
-  opened for M6 scoring at 2026-11-22T12:33:41Z, after all B2/B3 decoding and timing. Validation uses
+  opened for M6 scoring at 2026-11-22T12:33:41Z, after the official B2 decision (11:28:14Z). Validation uses
   `owner-recovered-validation-minutes-v1` (`d0c8519c`), the reference used for the M4/M5 validation numbers.
 
 ## Test (WER and CER in %, term F1 from 0 to 1)
@@ -41,7 +41,7 @@ comparisons. Validation (raw WER, normalized WER, term F1 micro): B2 23.8328, 12
 The test references were kept by CER <= 0.25 agreement with an upstream ASR transcript, whose `tr_tr` model is not
 confirmed (`whisper-large-v3-turbo` is the WorldSpeech paper's most common alignment model); this filter can favour
 Whisper-family systems such as B2 over B3 (`data/metadata/turas-tr-econ-legis-v0.1.json` line 83,
-`experiments/m2-baseline-notes.md` line 45).
+`experiments/m2-baseline-notes.md` line 43).
 
 On test, zero-shot B2 (12.32 normalized WER) is level with F1 LoRA (12.37); F2 full fine-tuning (10.37) is lower
 by about 2 pp. F1 is better on raw WER (21.50 vs 24.54) and runs at about B1's RTF, about 3x faster than B2.

@@ -20,7 +20,9 @@ for the new pinned 224-clip verification plan and truthful working-bundle status
 | `splits/turas-tr-econ-legis-v0.1/` | Frozen `train.txt`, `validation.txt`, `test.txt`, `m45-timing-30min.txt`, and `split_manifest.json` |
 | `verification/` | Pilot verification IDs (`turas-tr-econ-legis-v0.1-pilot-ids.txt`), audit summary, and verbatim verification policy |
 | `relational/turas-tr-econ-legis-v0.1/` | Relational CSV tables (`entities.csv`, `entity_aliases.csv`, `topics.csv`, `relation_types.csv`, `relationships_static.csv`, `provenance.csv`) and `relational_manifest.json` |
+| `raw/worldspeech-tr_tr-b76b8539/` | **The raw data:** all 239,654 upstream WorldSpeech `tr_tr` rows (transcripts and metadata, no audio). [Details](raw/worldspeech-tr_tr-b76b8539/README.md) |
+| `cleaned/turas-tr-econ-legis-v0.1/` | **The cleaned dataset:** 5,450 FLAC clips (25 h), train and test references, inference inputs, relational tables and checksums. [Details](cleaned/turas-tr-econ-legis-v0.1/README.md) |
 
-Raw/processed audio, private test references, and large intermediate archives
-are not committed to Git (upstream WorldSpeech is CC BY-NC 4.0). To rebuild
-locally from upstream WorldSpeech, see `scripts/m1_build_release.py`.
+The cleaned data is built from upstream WorldSpeech `tr_tr` (CC BY-NC 4.0) by
+`scripts/m1_build_release.py`; `scripts/m1_export_raw.py` writes the raw data and
+rebuilds the removal log, checking it against the frozen release.

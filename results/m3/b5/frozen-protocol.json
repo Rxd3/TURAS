@@ -1,0 +1,107 @@
+{
+  "schema_version": "0.1",
+  "state": "frozen_before_test_scoring",
+  "frozen_at_utc": "2026-11-22T10:55:54.012636+00:00",
+  "system_id": "baseline-bilstm-ctc",
+  "best_epoch": 22,
+  "checkpoint_manifest_sha256": "f5d98c4e64c793c1c48e2a8aca70f9a6a503663fc5ffda5ff3c374f41aab8917",
+  "dataset_release": "turas-tr-econ-legis-v0.1",
+  "split_manifest_sha256": "a8fff65b99fcf11d9452685e438e250207032ecfe11152741562147126d095b8",
+  "config": {
+    "schema_version": "0.1",
+    "track_id": "B5",
+    "system_id": "baseline-bilstm-ctc",
+    "status": "proposed-baseline-protocol-pending-3step-probe",
+    "dataset_release": null,
+    "split_manifest_sha256": null,
+    "model": {
+      "architecture": "BiLSTM-CTC",
+      "pretrained_weights": false,
+      "input_features": {
+        "type": "log_mel_spectrogram",
+        "sample_rate_hz": 16000,
+        "n_mels": 80,
+        "win_length_ms": 25.0,
+        "hop_length_ms": 10.0,
+        "cmvn": "per_utterance"
+      },
+      "provisional_encoder": {
+        "conv_subsampling": "two_strided_conv2d_layers_stride_2_each",
+        "total_subsampling_factor": 4,
+        "rnn_type": "LSTM",
+        "bidirectional": true,
+        "num_layers": 4,
+        "hidden_size": 320,
+        "dropout": 0.2,
+        "size_lock_policy": "confirm_after_3step_memory_and_1epoch_probe_on_training_hardware"
+      },
+      "ctc_head": {
+        "vocab_source": "frozen_train_split_characters_only",
+        "target_text_view": "tr-normalized-v1",
+        "blank_id": 0,
+        "unk_id": 1,
+        "space_id": 2
+      },
+      "precision": "float32",
+      "device": "cuda"
+    },
+    "training_protocol": {
+      "seed": 42,
+      "optimizer": "AdamW",
+      "learning_rate": 0.001,
+      "weight_decay": 0.0001,
+      "lr_scheduler": {
+        "type": "ReduceLROnPlateau",
+        "monitored_metric": "validation_norm_cer"
+      },
+      "batch_size": 16,
+      "max_epochs": 40,
+      "early_stopping_metric": "validation_norm_cer",
+      "early_stopping_patience": 6,
+      "validation_reference_variant": "tr-normalized-v1",
+      "ctc_feasibility_rule": {
+        "zero_infinity": true,
+        "min_output_frames_check": "require_subsampled_frames_geq_target_length_and_log_dropped_clip_count"
+      },
+      "gradient_clip_norm": 5.0,
+      "compute_ceiling": {
+        "status": "pending_3step_memory_and_1epoch_probe",
+        "max_vram_gib": null,
+        "max_wall_clock_minutes": null,
+        "policy": "Numeric VRAM and wall-clock ceiling locked immediately after 3-step memory and 1-epoch probe on allocated training GPU."
+      }
+    },
+    "audio_constraints": {
+      "expected_duration_sec_range": [
+        10.0,
+        20.0
+      ],
+      "chunking": "none"
+    },
+    "decoding_policy": {
+      "language": "tr",
+      "primary_decode_mode": "greedy_ctc",
+      "num_return_sequences": 1,
+      "lm_rescoring": false,
+      "strip_leading_trailing_whitespace_in_raw": false
+    },
+    "eligibility_audit": {
+      "held_out_exposure": "none",
+      "rationale": "Trained from random initialization exclusively on the WorldSpeech-derived TURAS train split; zero validation/test recording overlap per split manifest, and character vocabulary is derived strictly from train transcripts."
+    }
+  },
+  "script_sha256": "49f3a21cb43e512b6e8bd99e6e4992e125e04c9605fce44ba11ee5c287b0867a",
+  "decoder": "greedy_ctc",
+  "requested_n": 1,
+  "timing": {
+    "subset": "m45-timing-30min.txt",
+    "repeats": 3,
+    "batch_size": 1,
+    "warmup_batches": 3
+  },
+  "limitations": [
+    "Single training seed",
+    "Working parliamentary minutes, not fully verified verbatim gold",
+    "GMM-HMM is a separate stage; no B5 settings selected from test scores"
+  ]
+}

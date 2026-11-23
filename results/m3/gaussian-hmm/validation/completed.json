@@ -1,0 +1,13 @@
+{
+  "state": "completed",
+  "rows": 438,
+  "files": {
+    "predictions.jsonl": "7b6c5f9139eb47f40ccfdc46a6c84f378b2222855e0d18b08f7ec81a973974a5",
+    "timing.jsonl": "7088e4f95a2477c8506deab8c01f1a9ebebe0b449a89cde45052739a86d80bda",
+    "manifest.json": "41fed1a9fc5cf2391794011cedd9c92b17d927f14601344033165a6c9f5c6e31"
+  },
+  "rtf": 0.002244440333635469,
+  "repeats": 1,
+  "requested_n": 0,
+  "timing_claim": "accuracy inference only"
+}

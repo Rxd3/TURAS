@@ -1,0 +1,2 @@
+provenance_id,source_uri,source_revision,content_sha256,rights_record_id,origin_kind,available_at_utc,allowed_split,review_status
+prov_test_references,turas-tr-econ-legis-v0.1.references.jsonl#split=test,turas-tr-econ-legis-v0.1,5085e1cb1a76f12f7a523fda55e3db39b979c04ca68ac31a644f8edbe6dbd9a5,rights_worldspeech_tr_tr_tbmm,test_annotation,2026-11-18T00:00:00Z,test,auto_extracted

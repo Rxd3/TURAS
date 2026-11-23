@@ -1,0 +1,196 @@
+{
+ "review_date": "2026-11-22",
+ "base_commit": "1dade5b17a6e3cd5d3b40901e2883a6a08e41969",
+ "offline_tests": {
+  "passed": 1200,
+  "skipped": 19,
+  "warnings": 4,
+  "subtests_passed": 51,
+  "utf8_mode": true,
+  "command": "python -X utf8 -m pytest -q",
+  "elapsed_seconds": 18.58
+ },
+ "public_verifier": {
+  "pinned_code_hashes": 56,
+  "m45_metric_conditions": 20,
+  "frozen_split_clips": 5450,
+  "state": "passed"
+ },
+ "m3_restored_execution": {
+  "state": "passed",
+  "kind": "local fresh-source/model restore using the existing installed environment",
+  "validation_clips": 3,
+  "train_warmups": 3,
+  "exact_transcript_matches": 3,
+  "reference_text_read": false,
+  "restored_model_code_import_verified": true,
+  "independent_reviewer_or_clean_environment_claimed": false,
+  "checkpoint_manifest_sha256": "f5d98c4e64c793c1c48e2a8aca70f9a6a503663fc5ffda5ff3c374f41aab8917"
+ },
+ "score_reproduction": {
+  "test_rows": 636,
+  "b5_norm_wer": 0.4777631643041551,
+  "state": "passed"
+ },
+ "presentation": {
+  "file": "presentation/TURAS-final-2-minute.pptx",
+  "sha256": "33e1b38b795b7e768c59018d5ae2ea15ca859375016cada5e55fb9cf136b7fb4",
+  "slides": 5,
+  "content_slides": 4,
+  "title_slide": true,
+  "spoken_words": 134,
+  "spoken_seconds": 76,
+  "language": "English",
+  "slot_seconds": 120,
+  "editable_native_chart_count": 7,
+  "opened_and_rendered_in_PowerPoint": true,
+  "package_validator": "pptx skill office/validate.py: All validations PASSED",
+  "generator": "presentation/build_presentation.js + presentation/add_error_bars.py",
+  "previous_record": {
+   "sha256": "5a2e7c17644fb890f36cab25de3333f79cda1ce3ee13be17a385f11276eee1cf",
+   "slides": 4,
+   "spoken_words": 203
+  },
+  "confidence_interval_plots": [
+   "slide 4: paired fine-tuning gains (dot = estimate, bar = 95% CI)",
+   "slide 5: graph-rescoring WER change (dot = estimate, bar = 95% CI)"
+  ]
+ },
+ "independent_human_approval": false,
+ "clean_environment_reproduction_claimed": false,
+ "cloud_upload_claimed": false,
+ "local_delivery_restore": {
+  "state": "passed",
+  "package_payloads_verified": 27,
+  "restored_audio_flacs": 5450,
+  "m45_indexed_members_verified": 226,
+  "b5_score_reproduction_rows": 636,
+  "hmm_score_reproduction_rows": 636,
+  "m3_metrics_match_archived_counts_exactly": true,
+  "historical_m45_reports_preserved_separately": true,
+  "independent_human_approval": false,
+  "clean_environment_or_cloud_download_claimed": false
+ },
+ "role_limited_checksum_verification": {
+  "state": "passed",
+  "m3_received_payloads": 3,
+  "other_role_payloads_reported_missing": 24
+ },
+ "fresh_python_environment_reproduction": {
+  "state": "passed",
+  "created_at_utc": "2026-11-22T14:04:59.998034+00:00",
+  "isolated_new_python_environment": true,
+  "system_site_packages": false,
+  "torch_loaded_from_new_environment": true,
+  "model_code_imported_from_archived_source": true,
+  "model_weights_restored_from_handoff": true,
+  "audio_restored_from_role_package": true,
+  "validation_transcripts_matching_exactly": 3,
+  "train_warmups": 3,
+  "gold_reference_text_read": false,
+  "independent_reviewer_claimed": false,
+  "checkpoint_manifest_sha256": "f5d98c4e64c793c1c48e2a8aca70f9a6a503663fc5ffda5ff3c374f41aab8917",
+  "environment_lock_sha256": "9029e41b2e5cce9af66521d203ba336903a6d533be5425e7f9ea030dfb1b58a9",
+  "proof_sha256": "fa4c93010fc5dbf5b534d2015c8d06d4af633eba1f98a78520bb705a8c47a345"
+ },
+ "additional_reference_free_replay_checks": {
+  "seda": {
+   "rows": 3,
+   "exact_archived_transcript_matches": 3,
+   "reference_text_read": false,
+   "report_sha256": "32831316dd2d7944ebace8e675e3015888a653775f43a577cf84d8aa1c9de095"
+  },
+  "gmm": {
+   "rows": 3,
+   "exact_archived_transcript_matches": 3,
+   "reference_text_read": false,
+   "report_sha256": "650c273127bb943eaaf7937423408bf7ef3d76a599d79722f16826de77234e78"
+  }
+ },
+ "expanded_fresh_environment_restoration": {
+  "state": "passed",
+  "report_sha256": "f1cccfe4ccca62f39909bfb2e8cf33c79411ae42505e973a042d460444cd8187",
+  "m45_verified_artifact_members": 226,
+  "m45_acoustic_models_executed": 3,
+  "m45_online_joint_models_executed": 3,
+  "m45_cached_controls_executed": 15,
+  "m45_validation_clips": 2,
+  "references_read": false,
+  "test_audio_decoded": false,
+  "independent_human_review": false
+ },
+ "controller_windows_lock_regression": {
+  "state": "passed",
+  "focused_tests": 2,
+  "completed_inference_reused_without_rerun": true,
+  "model_and_metric_source_hashes_unchanged": true
+ },
+ "model_download_restoration_regression": {
+  "state": "passed",
+  "focused_tests": 4,
+  "metadata_only_package_fetches_missing_weight": true,
+  "wrong_model_revision_or_weight_pin_rejected": true,
+  "existing_real_model_inventories_verified": 4
+ },
+ "followup_runtime_audio_identity": {
+  "state": "passed",
+  "audited_at_utc": "2026-11-22T16:00:55.517976+00:00",
+  "runtime_audio_root_relative": "data/private/turas-tr-econ-legis-v0.1/inference/turas-tr-econ-legis-v0.1",
+  "dataset_release": "turas-tr-econ-legis-v0.1",
+  "dataset_manifest_sha256": "b7255df53a5734d0bd52ffb50e97d191de34520b6f5d4e76c01023a8ea2a5afe",
+  "split_manifest_sha256": "a8fff65b99fcf11d9452685e438e250207032ecfe11152741562147126d095b8",
+  "reference_free_inference_exports_sha256": {
+   "train": "1e4bfd3df1bf10bb39bde558c50939631d71bdc003c56f19ff134a8edb36dc8d",
+   "validation": "1c6b12d4a7de3ed5b717d193f07d8194dc7105bd6785305029afef6d9e3ac3f2",
+   "test": "299dc6ae1f50772eb85081293c9bbe746c746a9aefc94870deff530a641059ef"
+  },
+  "split_counts": {
+   "train": 4376,
+   "validation": 438,
+   "test": 636
+  },
+  "audio_files_checked": 5450,
+  "audio_bytes_checked": 1983862856,
+  "method": "Original release index SHA and frozen ID order checked; every referenced audio file SHA-256 matched its index through the shared safe audio resolver",
+  "reference_text_read": false,
+  "detailed_report_sha256": "387f0b27abb03784b71a413ec52254fa73a6408f46afeafef3f6b681e2e05bcb"
+ },
+ "b2_test_export_integrity": {
+  "state": "passed",
+  "checked_at_utc": "2026-11-22T16:08:00.995122+00:00",
+  "b2_full_test_rows": 636,
+  "inference_error_rows": 0,
+  "files": {
+   "nbest.jsonl": "e91d803a346e041e6bf1d6edd89b6083bae6aa54010d1b192b11fccbd17aa689",
+   "predictions.jsonl": "7e3e6fb867d393905e91a37035d89dc82c92e45ae2a652c55571257a299dd632",
+   "timing.jsonl": "ff7ca9a527e5cdea8a311d12c8a5fa0304025bb5d77909e43c9f750224c46d49",
+   "manifest.json": "20f3a0e7f328828cff1aade2a0997d8c03d2d6f6ed63fb1b4d512b624c2c9106"
+  },
+  "contract_validation": [
+   {
+    "file": "predictions.jsonl",
+    "rows": 636,
+    "passed": true
+   },
+   {
+    "file": "nbest.jsonl",
+    "rows": 636,
+    "passed": true
+   }
+  ],
+  "reference_text_read": false,
+  "headline_timing_and_test_metrics": "pending; accuracy-run speed is not reported as headline",
+  "b3_selected_before_test": true,
+  "b3_selection_at_utc": "2026-11-22T15:38:54.554467+00:00",
+  "b3_test_frozen_at_utc": "2026-11-22T16:06:53.339713+00:00"
+ },
+ "offline_tests_current_head": {
+  "head_parent_commit": "f2bc8a2be13f4c893b4c52ea73513199fa892f58",
+  "passed": 1256,
+  "skipped": 43,
+  "subtests_passed": 51,
+  "environment": "lean: requirements/dev.txt, no torch (as CI)",
+  "command": "python -X utf8 -m pytest -q",
+  "date": "2026-11-22"
+ }
+}

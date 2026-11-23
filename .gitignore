@@ -34,7 +34,8 @@ _netrc
 .git-credentials
 
 # Downloaded or generated data; small reviewed metadata belongs elsewhere
-data/raw/
+data/raw/*
+!data/raw/worldspeech-tr_tr-b76b8539/
 data/downloads/
 data/processed/
 data/private/
@@ -53,6 +54,10 @@ data/audio/
 *.tgz
 *.zip
 *.7z
+# The cleaned benchmark audio is committed on purpose (course rule: data in the repo).
+!data/cleaned/**/*.flac
+# Raw WorldSpeech text/metadata (no audio) is committed on purpose as well.
+!data/raw/worldspeech-tr_tr-b76b8539/*.parquet
 
 # Weights, local databases, large predictions, training logs and artifacts
 artifacts/
@@ -90,5 +95,11 @@ results/nbest/
 .DS_Store
 Thumbs.db
 Desktop.ini
+~$*.pptx
 *.tmp
 *.swp
+*.errorbars.json
+
+# Committed on purpose: small checkpoints of reported baselines (B5 BiLSTM-CTC 37 MB, HMM 40 KB).
+!results/m3/b5/checkpoint/bilstm_ctc.pt
+!results/m3/gaussian-hmm/gaussian_hmm_character.npz

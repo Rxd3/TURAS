@@ -1,0 +1,15 @@
+{
+  "state": "completed",
+  "rows": 438,
+  "files": {
+    "nbest.jsonl": "78f11f3bd2f0db3a48c672b5d091f58521d9729fc32a2666bef10ba2c697b311",
+    "predictions.jsonl": "08e1a2a5ff42d2e1ce9d47723e86b423117fffd9051d56dcc09e673fe119da6c",
+    "timing.jsonl": "55e0be59d896e11c0c120912b2496018c472e0682ec217b329ce666dcc8c19f0",
+    "manifest.json": "6e338de65a90c24de4c644e800d9603cb2257146c6d6d27d75e15e5fe0a86d38"
+  },
+  "rtf": 0.009689129482565019,
+  "repeats": 1,
+  "thermal_flags": 0,
+  "vram_spill_suspected": false,
+  "timing_claim": "accuracy inference only"
+}

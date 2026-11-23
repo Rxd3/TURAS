@@ -1,0 +1,2 @@
+provenance_id,source_uri,source_revision,content_sha256,rights_record_id,origin_kind,available_at_utc,allowed_split,review_status
+prov_validation_references,references.validation.jsonl,owner-recovered-validation-minutes-v1,d0c8519ca6aed053f89786bc733541a70faee09cf8d8bdb6cc12065d97dbd958,rights_worldspeech_tr_tr_tbmm,validation_annotation,2026-11-21T12:21:32.831316+00:00,validation,auto_extracted

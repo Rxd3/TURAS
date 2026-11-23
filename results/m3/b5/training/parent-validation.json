@@ -1,0 +1,21 @@
+{
+  "view": "tr-normalized-v1",
+  "utterances": 438,
+  "zero_reference_utterances": 0,
+  "error_rows": 0,
+  "words": {
+    "substitutions": 5633,
+    "deletions": 791,
+    "insertions": 420,
+    "hits": 6957
+  },
+  "chars": {
+    "substitutions": 5986,
+    "deletions": 4864,
+    "insertions": 2979,
+    "hits": 85395
+  },
+  "wer": 0.5114714894253045,
+  "cer": 0.14368538625383137,
+  "wacc": 0.4885285105746955
+}

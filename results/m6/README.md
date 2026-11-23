@@ -64,7 +64,7 @@ Per utterance, the oracle is the candidate (of up to 5) with the fewest word err
 
 ## Post-freeze reproductions (2026-11-23)
 
-M6 re-trained F2 (seed 17), re-decoded B1 and B8, re-scored B5 and added a number-invariant WER view, all after
+M6 re-trained F2 (seeds 17 and 18), re-decoded B1 and B8, re-scored B5 and added a number-invariant WER view, all after
 the test references were opened and reported apart from the main results: [reproduction report](repro-2026-11-23/README.md).
 
 ## Provenance

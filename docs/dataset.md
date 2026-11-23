@@ -142,7 +142,7 @@ lexicon-screening-unverified`):
 Public (in Git): `data/splits/turas-tr-econ-legis-v0.1/{train,validation,test}.txt`
 and `split_manifest.json`; `data/manifests/turas-tr-econ-legis-v0.1.json`
 (hashes of the protected files and inference exports); source registry CSV.
-Protected (artifact root, outside Git): `audio/<utterance_id>.flac` (16 kHz mono
+Committed since D44 (2026-11-22) under data/cleaned/turas-tr-econ-legis-v0.1/ (before D44: protected, outside Git): `audio/<utterance_id>.flac` (16 kHz mono
 FLAC), `<release>.references.jsonl` (full data-contract rows),
 `<release>.inference.<split>.jsonl` (strict allowlist), `exclusion_ledger.jsonl`
 (every upstream row with its split or reason), relational tables.

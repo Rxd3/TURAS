@@ -26,39 +26,51 @@ This folder holds aggregates and hashes only, no per-utterance text.
 | Check | System | What M6 did | Files |
 | --- | --- | --- | --- |
 | Re-train | F2, Whisper-small full fine-tune, seed 17 (the frozen seed) | Trained from `configs/fine-tuning/whisper_small_full.json`, decoded validation after each of 3 epochs, selected the epoch on validation, then decoded and scored test once | [`f2-seed17/`](f2-seed17/) |
-| Re-train | F2, seed 18 (variance check, seed chosen in advance) | pending: added when the run finishes | pending |
+| Re-train | F2, seed 18 (variance check, seed chosen in advance) | Same recipe and steps with seed 18 | [`f2-seed18/`](f2-seed18/) |
 | Re-decode | B1, `openai/whisper-small` zero-shot | Validation decode by the `baseline` step of `tools/m6-repro/f2repro.ps1` (`scripts/m45_validation_baseline.py`); test decode with `scripts/m6_b23_harness_run.py`; both scored with `scripts/m6_score_baselines.py` | [`b1-whisper-small-m6/`](b1-whisper-small-m6/) |
 | Re-score | B5, BiLSTM-CTC | Re-scored PR #26's committed run folders with `scripts/m6_score_baselines.py` | [`b5-rescore/`](b5-rescore/) |
 | Re-decode | B8, Seda Zipformer2 RNN-T (`atasoglu/seda-v0.1` @ `5cbbda1b`) | Re-ran PR #26's own scripts at `dd7654b` on CPU and hashed the exports | hashes below |
-| New view | B1, B2, B3, B5, B6, B8 and the F2 re-train | Scored with `scripts/m6_number_invariant_wer.py` | [`number-invariant/`](number-invariant/) |
+| New view | B1, B2, Member 2's B2 reproduction, B3, B5, B6, B8 and the F2 seed 17 re-train | Scored with `scripts/m6_number_invariant_wer.py` | [`number-invariant/`](number-invariant/) |
 
-F3 and F1 were not reproduced: they did not fit in the time available.
+F3, F1 and F2 seed 19 did not run before the time limit.
 
 WER and CER are in %. "Frozen" is the committed result; differences are M6 minus frozen,
 in percentage points.
 
 ## F2 re-train
 
-Validation per epoch, normalized WER / CER: epoch 1 11.0754 / 3.6750, epoch 2
+Seed 17 validation per epoch, normalized WER / CER: epoch 1 11.0754 / 3.6750, epoch 2
 10.2235 / 3.5015, epoch 3 10.3430 / 3.6449. The config's rule (lowest validation normalized
 WER; raw WER, then the earlier epoch break ties) selected epoch 2, the same epoch as the frozen run.
+For seed 18 the same rule selected epoch 3 (validation normalized WER 10.3430), so the selected
+epoch differs by seed (2 against 3).
 
-| Split | Metric | Frozen | M6, seed 17 | Difference | M6, seed 18 |
-| --- | --- | ---: | ---: | ---: | --- |
-| Test | Normalized WER | 10.3707 | 10.4681 | +0.0974 | pending |
-| Test | Raw WER | 18.8825 | 19.0961 | +0.2136 | pending |
-| Test | Normalized CER | 3.6910 | 3.7341 | +0.0431 | pending |
-| Test | Raw CER | 5.1263 | 5.1824 | +0.0561 | pending |
-| Validation | Normalized WER | 10.1936 | 10.2235 | +0.0299 | pending |
-| Validation | Raw WER | 18.4468 | 18.6070 | +0.1602 | pending |
-| Validation | Normalized CER | 3.447 | 3.5015 | +0.054 | pending |
-| Validation | Raw CER | none in `compare.json` | 4.9028 | | pending |
+| Split | Metric | Frozen | M6, seed 17 | M6, seed 18 | Mean of 17 and 18 | Sample SD |
+| --- | --- | ---: | ---: | ---: | ---: | ---: |
+| Test | Normalized WER | 10.3707 | 10.4681 | 10.6045 | 10.5363 | 0.0964 |
+| Test | Raw WER | 18.8825 | 19.0961 | 19.6623 | 19.3792 | 0.4003 |
+| Test | Normalized CER | 3.6910 | 3.7341 | 4.1034 | 3.9188 | 0.2611 |
+| Test | Raw CER | 5.1263 | 5.1824 | 5.6355 | 5.4089 | 0.3204 |
+| Validation | Normalized WER | 10.1936 | 10.2235 | 10.3430 | 10.2832 | 0.0846 |
+| Validation | Raw WER | 18.4468 | 18.6070 | 18.6604 | 18.6337 | 0.0378 |
+| Validation | Normalized CER | 3.4475 | 3.5015 | 3.5867 | 3.5441 | 0.0602 |
+| Validation | Raw CER | 4.8144 | 4.9028 | 4.9506 | 4.9267 | 0.0338 |
 
-`compare.json` holds the frozen validation normalized CER to three decimals (3.447).
-Test N-best oracle (normalized): one-best 10.4681, oracle 9.0263 (headroom 1.4419 pp);
-CER 3.7341 to 3.2615; the oracle beats rank 1 on 229 of 636 utterances.
-Training took 30.2 minutes and the whole job 64.6 minutes, as recorded by M6 in its run
-log (no committed file holds these times).
+Frozen validation CERs are from
+[`m45_working_checkpoint_selection.json`](../../evaluation/m45_working_checkpoint_selection.json).
+Against the frozen test normalized WER, seed 17 differs by +0.0974 pp and seed 18 by +0.2338 pp.
+
+Seed spread, test normalized WER: 10.4681 and 10.6045, mean 10.5363, difference 0.1364 pp.
+There are two seeds only, so the SD is a rough indication. Both seeds land within 0.24 pp of
+the frozen 10.37%.
+
+Test N-best oracle (normalized): seed 17 one-best 10.4681, oracle 9.0263 (headroom 1.4419 pp;
+CER 3.7341 to 3.2615), oracle beats rank 1 on 229 of 636 utterances; seed 18 one-best 10.6045,
+oracle 9.0214, oracle beats rank 1 on 240 of 636.
+Seed 17 training took 30.2 minutes and the whole job 64.6 minutes. Seed 18 training took
+56.3 minutes, of which about 26 minutes were lost to a GPU power cap set by the laptop's power
+mode and lifted mid-run; this does not affect the results. These times are recorded by M6 in
+its run log; no committed file holds them.
 
 ## B1 re-decode
 
@@ -135,15 +147,15 @@ Its `tr-normalized-v1` output equals the committed scores exactly. Test set:
 
 ## Limitations
 
-- Post-freeze, one machine. The F2 re-train uses the frozen seed, so its +0.0974 pp is
-  run-to-run and machine difference, not seed variance; seed 18 is pending.
+- Post-freeze, one machine. Seed 17 is the frozen seed, so its +0.0974 pp is run-to-run and
+  machine difference, not seed variance. Seed 18 adds one more seed: two seeds only.
 - F2 and B1 are compared across scorers: M6 numbers come from `scripts/m6_score_baselines.py`,
   frozen numbers from the frozen evaluator (the note in `f2-seed17/compare.json`).
 - There are no paired intervals against the frozen runs: their per-utterance outputs are in
   the private M4/M5 bundle.
 - The F2 test decode uses a protocol derived from the frozen one: input paths point to the
   published data and the system entry names the new checkpoint; the decoder block is unchanged.
-- F1 and F3 were not reproduced.
+- F1, F3 and F2 seed 19 were not run.
 - The training and job times and the B8 run time and error count are recorded by M6 and have
   no committed file. The reference hashes can be recomputed from the committed files.
 
@@ -171,7 +183,13 @@ B1 on validation (the training gate); `smoke` runs a short training and partial 
 Number-invariant view (run folders hold `predictions.jsonl`; one `--run` per system):
 
 ```text
-python scripts/m6_number_invariant_wer.py --references data/cleaned/turas-tr-econ-legis-v0.1/turas-tr-econ-legis-v0.1.references.test.jsonl --references-sha256 31e372f0e35f504de59b49f1e0e1f3ed6fcc2772138c591a2cf2b054a4e7ef3f --run baseline-whisper-small=<B1_RUN_DIR> --run B2-whisper-large-v3=<B2_RUN_DIR> --run B3-qwen3-asr-1.7b=<B3_RUN_DIR> --run baseline-seda-zipformer2-rnnt=<B8_RUN_DIR> --output <NEW_OUTPUT_FILE>
+python scripts/m6_number_invariant_wer.py --references data/cleaned/turas-tr-econ-legis-v0.1/turas-tr-econ-legis-v0.1.references.test.jsonl --references-sha256 31e372f0e35f504de59b49f1e0e1f3ed6fcc2772138c591a2cf2b054a4e7ef3f --run baseline-whisper-small=<B1_RUN_DIR> --run B2-whisper-large-v3=<B2_RUN_DIR> --run B3-qwen3-asr-1.7b=<B3_RUN_DIR> --run baseline-seda-zipformer2-rnnt=<B8_RUN_DIR> --run B2-whisper-large-v3-m2repro=<M2_B2_RUN_DIR> --run baseline-bilstm-ctc=results/m3/b5/test --run baseline-m3-single-gaussian-character-hmm=results/m3/gaussian-hmm/test --output <NEW_OUTPUT_FILE>
+```
+
+The F2 entry (`number-invariant/test-number-invariant-F2s17.json`) comes from a second run:
+
+```text
+python scripts/m6_number_invariant_wer.py --references data/cleaned/turas-tr-econ-legis-v0.1/turas-tr-econ-legis-v0.1.references.test.jsonl --references-sha256 31e372f0e35f504de59b49f1e0e1f3ed6fcc2772138c591a2cf2b054a4e7ef3f --run F2-m6repro-s17=<F2_S17_RUN_DIR> --output <NEW_OUTPUT_FILE>
 ```
 
 Scoring with `scripts/m6_score_baselines.py` follows the command in

@@ -35,7 +35,7 @@ establish a conventional mixture-Gaussian phoneme HMM baseline.
 
 | Remaining item | Owner / evidence needed |
 | --- | --- |
-| Publish this local closeout | Published for review as PR #26, open on 2026-11-23. M6 (non-author) reviewed it at `a70b8e3` and `dd7654b` and requested changes. |
+| Publish this local closeout | Merged as PR #26 (`a2a681d`) on 2026-11-23. M6 (non-author) requested changes at `a70b8e3` and `dd7654b`, then approved `dd7654b`. |
 | Upload and test Drive retrieval | User uploads each role folder, sets actual named-account access, supplies the public submission URL, and tests downloads/checksums from a recipient account. |
 | B2/B3 official results | Done by M6 in [`results/m6/`](../results/m6/README.md): B2 12.319% and B3 (Qwen3-ASR-1.7B) 16.094% normalized test WER, paired intervals, N-best oracle and same-session timing. M6 also scored M2's B2 handoff (`fd8471e9`) as an independent reproduction (12.392%). Remaining: B1 parity of the M6 scorer and paired intervals against F1/F2, both needing the private M4/M5 bundle. |
 | Owner B2/B3 local rerun | A separate reproduction, not the reported result. It completed all 438 B2 validation IDs (12.847% WER, 5.679% CER) and 636 test exports with zero error rows; both Qwen candidates completed validation and its minimum-CER rule also selected 1.7B (5.423% versus 7.067% CER). Any timing or test scores from it should be reported only as agreement checks against `results/m6/`. |

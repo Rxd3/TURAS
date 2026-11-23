@@ -67,7 +67,7 @@ also appear in its train split.
   test clips, plus 15 validation and 10 train clips): 245 accepted, 4 corrected.
   57 have per-clip records and 192 are recorded as one batch confirmation.
   Independent second-listener adjudication of 55 items is pending. Reported
-  scores use the original references, which are the official edited minutes.
+  scores use the working test references: official edited minutes, with 10 of 636 corrected after listening; 611 are tagged unreviewed and 25 verified, and the verified-variant gate stays blocked (0 of 55 adjudications).
   [Review record](docs/m1_deadline_handoff.md)
 
 **Data in this repository:**
@@ -132,7 +132,7 @@ N-best lists, timing and training history in [`results/m3/`](results/m3/README.m
 B7 and B8: [baseline completion report](results/final/BASELINE_COMPLETION_REPORT.md)
 ([CSV](results/final/baseline_completion_metrics.csv), [summary](results/final/baseline_completion_summary.json)).
 That report also has a separate local rerun of B2 (12.39 / 5.46) and B3 (16.17 / 5.62),
-scored with the frozen evaluator; the table keeps M6's runs, chosen before test access.
+scored with the frozen evaluator; the table keeps M6's runs; the official B2 run was recorded before M6 opened the test references, after M3 and M4/M5 had already scored against them ([provenance](results/m6/provenance/reference_access.json)).
 B7 is a real GMM-HMM but has no pronunciation lexicon or language model, so it
 recognizes almost no whole words; its CER is reported for that reason. The test references were kept by
 agreement with an upstream ASR transcript (CER ≤ 0.25), which can favour
@@ -165,8 +165,8 @@ Intervals are paired recording-group bootstrap (28 groups, 2,000 replicates,
 seed 2026). [Final report](results/final/M4_M5_FINAL_REPORT.md) ·
 [Error analysis](docs/error_analysis.md)
 
-After the freeze, M6 re-trained F2 with the same recipe and seed on a second machine:
-10.47% normalized test WER against the frozen 10.37%. In a number-invariant view of M6's B1
+After the freeze, M6 re-trained F2 with the same recipe on a second machine, with seeds 17
+(the frozen seed) and 18: 10.47% and 10.60% normalized test WER against the frozen 10.37%. In a number-invariant view of M6's B1
 re-decode and F2 re-train, where digits and spelled-out numbers count the same, the B1 → F2 gain
 falls from 14.1 to 6.8 points, so about half of the gain is the minutes' number style. These are reported apart from the main results:
 [M6 reproductions](results/m6/repro-2026-11-23/README.md)
@@ -206,7 +206,7 @@ benchmark), `m6_score_baselines.py` (B2/B3), `m3_*.py` and `train_mixture_hmm.py
 | [`requirements/`](requirements/) | Pinned environments: `dev.txt` (tests), `windows-cu130.txt` (GPU), others for specific runs |
 | [`licenses/`](licenses/) | License texts for third-party model files |
 | [`.github/`](.github/) | CI workflows (tests and packaging) and the pull-request template |
-| `requirements.txt` | Pinned GPU environment used for the reported runs (copy of `requirements/windows-cu130.txt`) |
+| `requirements.txt` | Pinned team GPU environment (copy of `requirements/windows-cu130.txt`); the frozen M4/M5 runs used `requirements/owner-m45-windows-cu130.txt` (D31) |
 | `pyproject.toml` | Package metadata for `turkish_asr_rdl` |
 | `LICENSE`, `NOTICE` | MIT license for our code; attribution for the dataset and models |
 | `SUBMISSION.md` | Course submission guide |

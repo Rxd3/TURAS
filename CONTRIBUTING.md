@@ -45,7 +45,8 @@ fabricate an ACK, or mark baseline/training evidence complete. PR review continu
 to assess correctness and integration; this delegation does not itself merge PRs.
 
 Packaging CI builds/installs the package and checks imports, environment logic
-and offline unit behavior on Python 3.11 and 3.13. The adaptation workflow also
+and offline unit behavior on Python 3.11, 3.13 and 3.14, with the tests on Ubuntu
+and Windows. The adaptation workflow also
 exercises tiny/random-model training, decoding, score, leakage and checkpoint
 behavior on CPU. These tests do not download benchmark data/weights or establish
 corpus accuracy. Real training, held-out evaluation and restored-delivery checks

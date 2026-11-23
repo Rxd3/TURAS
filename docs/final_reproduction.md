@@ -8,8 +8,8 @@ role's package separate.
 
 For current source and public checks, extract `TURAS-submission-source.zip` into
 a fresh directory. It includes the merged `1dade5b` base plus the explicitly
-listed local closeout files. Those files were later published for review in
-PR #26; the ZIP stays the exact snapshot it records.
+listed local closeout files. Those files were later merged in PR #26
+(`a2a681d`); the ZIP stays the exact snapshot it records.
 
 ```text
 python scripts/verify_submission.py
